@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display, Geist } from "next/font/google";
+import { Inter, Syne, Geist } from "next/font/google";
 import "./globals.css";
 import { GlobalTvGrainOverlay } from "@/components/global-tv-grain-overlay";
 import { cn } from "@/lib/utils";
@@ -12,11 +12,10 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-const playfair = Playfair_Display({
+const syne = Syne({
   subsets: ["latin"],
-  weight: ["400", "600"],
-  style: ["normal", "italic"],
-  variable: "--font-playfair",
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-syne",
 });
 
 export const metadata: Metadata = {
@@ -33,7 +32,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn(inter.variable, playfair.variable, "font-sans", geist.variable, "dark")}
+      className={cn(inter.variable, syne.variable, "font-sans", geist.variable, "dark")}
     >
       <body
         className={`${inter.className} min-h-screen font-light text-[var(--fg)] antialiased`}

@@ -35,7 +35,7 @@ export function BrandStatements() {
     <section className="relative overflow-hidden py-24 sm:py-32">
       <div className="relative mx-auto max-w-5xl space-y-20 px-5 sm:space-y-28 sm:px-8 lg:space-y-60">
         <ScrollReveal from="right" delayMs={40} className="ml-auto w-full max-w-xl sm:max-w-2xl">
-          <h2 className="font-display text-right text-[clamp(1.75rem,4.5vw,3rem)] font-normal italic leading-[1.3] tracking-tight text-[var(--color-heading)] [text-shadow:0_2px_30px_rgba(0,0,0,0.7)]">
+          <h2 className="font-display text-right text-[clamp(1.75rem,4.5vw,3rem)] font-normal leading-[1.3] tracking-tight text-[var(--color-heading)] [text-shadow:0_2px_30px_rgba(0,0,0,0.7)]">
             Crossing the Telco Chasm
           </h2>
           <p className="mt-8 max-w-xl text-right text-lg font-light leading-relaxed text-[var(--color-body)] sm:ml-auto">
@@ -45,7 +45,7 @@ export function BrandStatements() {
         </ScrollReveal>
 
         <ScrollReveal from="left" delayMs={120} className="mr-auto w-full max-w-xl sm:max-w-2xl">
-          <h2 className="font-display text-left text-[clamp(1.75rem,4.5vw,3rem)] font-normal italic leading-[1.3] tracking-tight text-[var(--color-heading)] [text-shadow:0_2px_30px_rgba(0,0,0,0.7)]">
+          <h2 className="font-display text-left text-[clamp(1.75rem,4.5vw,3rem)] font-normal leading-[1.3] tracking-tight text-[var(--color-heading)] [text-shadow:0_2px_30px_rgba(0,0,0,0.7)]">
             Our Mission
           </h2>
           <p className="mt-8 max-w-xl text-left text-lg font-light leading-relaxed text-[var(--color-body)]">
@@ -138,17 +138,17 @@ export function ContactSection() {
           what we can prove, model, or measure together.
         </p>
         <div className="mt-10 flex flex-wrap justify-center gap-4">
-          <a
+          {/* <a
             href="mailto:hello@telcore.example"
             className="inline-flex items-center gap-2 rounded-full border border-[rgba(140,180,220,0.35)] bg-[rgba(15,25,50,0.78)] px-8 py-3.5 text-[13px] font-medium uppercase tracking-[0.1em] text-[var(--color-accent)] transition motion-safe:hover:scale-[1.02] hover:border-[rgba(140,180,220,0.55)] hover:bg-[rgba(30,50,90,0.88)]"
           >
             hello@telcore.example
-          </a>
+          </a> */}
           <a
             href="#home"
             className="inline-flex rounded-full border border-[rgba(140,180,220,0.22)] px-8 py-3.5 text-[13px] font-medium uppercase tracking-[0.08em] text-[rgba(215,230,190,0.65)] transition motion-safe:hover:scale-[1.02] hover:border-[rgba(140,180,220,0.4)] hover:text-[var(--accent-hover)]"
           >
-            Back to top
+            Contact Us
           </a>
         </div>
       </ScrollReveal>
