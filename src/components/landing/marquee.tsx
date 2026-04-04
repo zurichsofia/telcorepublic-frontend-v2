@@ -5,7 +5,7 @@ export function Marquee() {
   return (
     <div className="border-y border-white/[0.06] bg-[#07090c] py-4 overflow-hidden">
       <p
-        className="animate-drift whitespace-nowrap font-[family-name:var(--font-display)] text-sm text-white/25 sm:text-base"
+        className="animate-drift whitespace-nowrap text-sm font-medium text-white/25 sm:text-base"
         aria-hidden
       >
         {repeated}

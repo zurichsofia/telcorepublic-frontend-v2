@@ -57,11 +57,11 @@ export function IntroSection() {
       <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#7cb8ff]">
         Your research partner
       </p>
-      <h2 className="mt-4 max-w-3xl font-[family-name:var(--font-display)] text-4xl tracking-tight text-[#f4f2ed] sm:text-5xl">
+      <h2 className="mt-4 max-w-3xl text-4xl font-bold tracking-tight text-[#f4f2ed] sm:text-5xl">
         Networks that stay honest under load
       </h2>
       <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/55">
-        Telcore is an independent research practice focused on telecommunications
+        Telcorepublic is an independent research practice focused on telecommunications
         infrastructure, radio systems, and the economics of connectivity. We help
         you see trade-offs before they become outages or stranded assets.
       </p>
@@ -74,7 +74,7 @@ export function IntroSection() {
             <p className="text-xs font-semibold uppercase tracking-wider text-[#7cb8ff]/90">
               {p.tag}
             </p>
-            <h3 className="mt-4 font-[family-name:var(--font-display)] text-2xl text-[#f4f2ed]">
+            <h3 className="mt-4 font-bold tracking-tight text-2xl text-[#f4f2ed]">
               {p.title}
             </h3>
             <p className="mt-3 text-sm leading-relaxed text-white/55">{p.body}</p>
@@ -97,7 +97,7 @@ export function MethodologySection() {
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#7cb8ff]">
               How we work
             </p>
-            <h2 className="mt-4 font-[family-name:var(--font-display)] text-4xl tracking-tight text-[#f4f2ed] sm:text-[2.75rem]">
+            <h2 className="mt-4 text-4xl font-bold tracking-tight text-[#f4f2ed] sm:text-[2.75rem]">
               Methodology you can audit
             </h2>
             <p className="mt-5 max-w-md text-base leading-relaxed text-white/55">
@@ -118,7 +118,7 @@ export function MethodologySection() {
                 key={m.title}
                 className="rounded-2xl border border-white/[0.06] bg-[#050608]/80 p-7"
               >
-                <h3 className="font-[family-name:var(--font-display)] text-xl text-[#f4f2ed]">
+                <h3 className="font-bold tracking-tight text-xl text-[#f4f2ed]">
                   {m.title}
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-white/50">{m.body}</p>
@@ -139,7 +139,7 @@ export function StatementBand() {
         aria-hidden
       />
       <div className="relative mx-auto max-w-4xl px-5 text-center sm:px-8">
-        <h2 className="font-[family-name:var(--font-display)] text-[clamp(1.75rem,4.5vw,3rem)] leading-[1.15] tracking-tight text-[#f4f2ed]">
+        <h2 className="text-[clamp(1.75rem,4.5vw,3rem)] font-bold leading-[1.15] tracking-tight text-[#f4f2ed]">
           From spectrum maps to subscriber experience — we connect the physics to
           the business case.
         </h2>
@@ -160,7 +160,7 @@ export function InsightsSection() {
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#7cb8ff]">
             Outputs
           </p>
-          <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl tracking-tight text-[#f4f2ed] sm:text-5xl">
+          <h2 className="mt-3 text-4xl font-bold tracking-tight text-[#f4f2ed] sm:text-5xl">
             Insights &amp; collaboration
           </h2>
         </div>
@@ -177,7 +177,7 @@ export function InsightsSection() {
             key={i.title}
             className="flex flex-col rounded-2xl border border-white/[0.08] bg-white/[0.02] p-8"
           >
-            <h3 className="font-[family-name:var(--font-display)] text-2xl text-[#f4f2ed]">
+            <h3 className="font-bold tracking-tight text-2xl text-[#f4f2ed]">
               {i.title}
             </h3>
             <p className="mt-3 flex-1 text-sm leading-relaxed text-white/50">
@@ -203,7 +203,7 @@ export function ContactSection() {
         <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#7cb8ff]">
           Telcore Research
         </p>
-        <h2 className="mt-4 font-[family-name:var(--font-display)] text-4xl tracking-tight text-[#f4f2ed] sm:text-5xl">
+        <h2 className="mt-4 text-4xl font-bold tracking-tight text-[#f4f2ed] sm:text-5xl">
           Build on evidence
         </h2>
         <p className="mt-5 text-base text-white/55">

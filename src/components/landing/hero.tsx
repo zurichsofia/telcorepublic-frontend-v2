@@ -1,53 +1,100 @@
-import Link from "next/link";
-import { VideoBackground } from "./video-background";
+import { HeroImageBackground } from "./hero-image-background";
+import { HeroGlassNav } from "./hero-glass-nav";
+
+function GrainOverlay() {
+  return (
+    <div
+      className="pointer-events-none absolute inset-0 z-[1] mix-blend-overlay opacity-[0.35]"
+      aria-hidden
+    >
+      <svg className="h-full w-full opacity-90">
+        <filter id="grain">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.8"
+            numOctaves="4"
+            stitchTiles="stitch"
+          />
+        </filter>
+        <rect width="100%" height="100%" fill="white" filter="url(#grain)" />
+      </svg>
+    </div>
+  );
+}
+
+function SocialProof() {
+  const avatars = [
+    "from-violet-400 to-fuchsia-500",
+    "from-sky-400 to-indigo-500",
+    "from-amber-300 to-orange-500",
+    "from-emerald-400 to-teal-600",
+  ];
+
+  return (
+    <div className="animate-fade-up delay-100">
+      <p className="text-sm font-medium text-white/90">
+        Trusted by teams across operators &amp; policy
+      </p>
+      <div className="mt-3 flex items-center pl-1">
+        {avatars.map((gradient, i) => (
+          <div
+            key={gradient}
+            className={`relative -ml-2 first:ml-0 h-9 w-9 rounded-full border-2 border-white/25 bg-gradient-to-br ${gradient} shadow-md first:z-0`}
+            style={{ zIndex: avatars.length - i }}
+            aria-hidden
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export function Hero() {
   return (
-    <section className="relative min-h-[100svh] overflow-hidden">
-      <div className="absolute inset-0">
-        <VideoBackground />
-        <div
-          className="absolute inset-0 bg-gradient-to-b from-[#050608]/55 via-[#050608]/45 to-[#050608]"
-          aria-hidden
-        />
-        <div
-          className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_20%,rgba(124,184,255,0.12),transparent_55%)]"
-          aria-hidden
-        />
-      </div>
+    <section className="bg-[#0a0a0b] px-3 pb-10 pt-3 sm:px-5 sm:pb-14 sm:pt-5">
+      <div className="relative mx-auto max-w-[min(100%,1400px)] overflow-hidden rounded-[1.75rem] border border-white/[0.07] bg-black shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_40px_100px_-20px_rgba(0,0,0,0.85)] sm:rounded-[2.25rem]">
+        <div className="relative min-h-[100svh] w-full sm:min-h-[min(92svh,880px)]">
+          <div className="absolute inset-0">
+            <HeroImageBackground />
+            <div
+              className="absolute inset-0 bg-linear-to-b from-black/50 via-black/35 to-black/75"
+              aria-hidden
+            />
+            <div
+              className="absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_0%_40%,rgba(255,255,255,0.06),transparent_55%)]"
+              aria-hidden
+            />
+            <GrainOverlay />
+          </div>
 
-      <div className="relative mx-auto flex min-h-[100svh] max-w-5xl flex-col justify-end px-5 pb-24 pt-32 sm:px-8 sm:pb-32 md:justify-center md:pb-28 md:pt-40">
-        <p className="animate-fade-up mb-4 text-xs font-semibold uppercase tracking-[0.35em] text-[#7cb8ff]">
-          Independent telecom research
-        </p>
-        <h1 className="animate-fade-up delay-100 font-[family-name:var(--font-display)] text-[clamp(2.5rem,7vw,4.75rem)] leading-[1.05] tracking-[-0.02em] text-[#f4f2ed]">
-          Where rigor meets the network edge
-        </h1>
-        <p className="animate-fade-up delay-200 mt-6 max-w-2xl text-lg leading-relaxed text-white/65 sm:text-xl">
-          We model spectrum, infrastructure, and demand — so operators, regulators,
-          and builders can see what is coming before the signal arrives.
-        </p>
-        <div className="animate-fade-up delay-300 mt-10 flex flex-wrap items-center gap-4">
-          <Link
-            href="#research"
-            className="inline-flex rounded-full bg-[#f4f2ed] px-7 py-3.5 text-sm font-semibold text-[#050608] transition hover:bg-white"
-          >
-            Learn more
-          </Link>
-          <Link
-            href="#contact"
-            className="inline-flex rounded-full border border-white/20 bg-white/[0.04] px-7 py-3.5 text-sm font-semibold text-white/90 backdrop-blur-sm transition hover:border-white/35 hover:bg-white/[0.08]"
-          >
-            Partner with us
-          </Link>
+          <HeroGlassNav />
+
+          <div className="relative z-10 flex min-h-[100svh] flex-col justify-end px-6 pb-12 pt-28 sm:min-h-[min(92svh,880px)] sm:justify-center sm:px-12 sm:pb-16 sm:pt-32 lg:px-16">
+            <div className="max-w-xl">
+              <h1 className="animate-fade-up text-[clamp(2rem,5.5vw,3.75rem)] font-extrabold leading-[1.08] tracking-[-0.03em] text-white">
+                Research the networks that power what&apos;s next.
+              </h1>
+
+              {/* <div className="mt-8">
+                <SocialProof />
+              </div> */}
+
+              <p className="animate-fade-up delay-200 mt-8 text-base leading-relaxed text-white/75 sm:text-lg">
+                Independent spectrum, infrastructure, and traffic insight — so you
+                can plan coverage, policy, and investment with evidence, not noise.
+              </p>
+
+              {/* <div className="animate-fade-up delay-300 mt-10 flex flex-wrap items-center gap-3 sm:gap-4">
+                <PillCta href="#contact" variant="solid">
+                  Sign up
+                </PillCta>
+                <PillCta href="#research" variant="glass">
+                  Learn more
+                </PillCta>
+              </div> */}
+            </div>
+          </div>
         </div>
-      </div>
-
-      <div
-        className="pointer-events-none absolute bottom-8 left-1/2 hidden -translate-x-1/2 md:block"
-        aria-hidden
-      >
-        <div className="h-12 w-[1px] bg-gradient-to-b from-transparent via-white/35 to-transparent" />
       </div>
     </section>
   );

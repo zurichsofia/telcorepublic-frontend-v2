@@ -1,21 +1,14 @@
 import type { Metadata } from "next";
-import { Instrument_Serif, DM_Sans } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-const display = Instrument_Serif({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-display",
-  weight: "400",
-});
-
-const sans = DM_Sans({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
-  title: "Telcore Research | Networks, signals, insight",
+  title: "Telcorepublic Research | Networks, signals, insight",
   description:
     "Independent telecom research — spectrum, infrastructure, and the systems that connect the world.",
 };
@@ -26,8 +19,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable}`}>
-      <body className="min-h-screen antialiased font-[family-name:var(--font-sans)]">
+    <html lang="en">
+      <body
+        className={`${inter.className} min-h-screen bg-[#0a0a0b] antialiased`}
+      >
         {children}
       </body>
     </html>

@@ -1,4 +1,3 @@
-import { SiteHeader } from "@/components/landing/site-header";
 import { Hero } from "@/components/landing/hero";
 import { Marquee } from "@/components/landing/marquee";
 import {
@@ -13,7 +12,6 @@ import { SiteFooter } from "@/components/landing/site-footer";
 export default function Home() {
   return (
     <>
-      <SiteHeader />
       <main>
         <Hero />
         <Marquee />

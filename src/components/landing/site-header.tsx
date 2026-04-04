@@ -20,7 +20,7 @@ export function SiteHeader() {
           href="/"
           className="font-[family-name:var(--font-display)] text-xl tracking-tight text-[#f4f2ed] sm:text-2xl"
         >
-          Telcore
+          Telcorepublic
         </Link>
 
         <nav className="hidden items-center gap-10 md:flex" aria-label="Primary">

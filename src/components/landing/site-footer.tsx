@@ -5,8 +5,8 @@ export function SiteFooter() {
     <footer className="border-t border-white/[0.06] bg-[#050608] px-5 py-14 sm:px-8">
       <div className="mx-auto flex max-w-6xl flex-col gap-10 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <p className="font-[family-name:var(--font-display)] text-2xl text-[#f4f2ed]">
-            Telcore
+          <p className="text-2xl font-bold tracking-tight text-[#f4f2ed]">
+            Telcorepublic
           </p>
           <p className="mt-2 max-w-xs text-sm text-white/45">
             Independent research for the people who design, regulate, and invest in
