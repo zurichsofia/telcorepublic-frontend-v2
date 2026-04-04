@@ -30,7 +30,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn(inter.variable, playfair.variable, "font-sans", geist.variable)}>
+    <html
+      lang="en"
+      className={cn(inter.variable, playfair.variable, "font-sans", geist.variable, "dark")}
+    >
       <body
         className={`${inter.className} min-h-screen bg-[var(--bg)] font-light text-[var(--fg)] antialiased`}
       >
