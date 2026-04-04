@@ -15,8 +15,8 @@ function clamp(n: number, min: number, max: number) {
  * Horizontal parallax: positive X shifts the plate right as you scroll down, so the viewport reveals
  * more of the right side of the image (within the oversized 130% layer). Capped vw so it scales on large screens.
  */
-const SHIFT_X_VW = 11;
-const SHIFT_X_MAX_PX = 180;
+const SHIFT_X_VW = 6;
+const SHIFT_X_MAX_PX = 80;
 const SHIFT_Y = 72;
 /** Zoom range: starts slightly “in camera” at the top, eases out toward 1 as you scroll (dolly / parallax read). */
 const SCALE_START = 1.12;
