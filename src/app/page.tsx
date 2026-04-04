@@ -6,6 +6,7 @@ import {
   ServicesSection,
   ContactSection,
 } from "@/components/landing/sections";
+import { WhyTelcoRepublicSection } from "@/components/landing/why-telco-republic";
 import { SiteFooter } from "@/components/landing/site-footer";
 
 export default function Home() {
@@ -18,6 +19,7 @@ export default function Home() {
         </FirstSectionsParallaxBg>
         <Marquee />
         <ServicesSection />
+        <WhyTelcoRepublicSection />
         <ContactSection />
       </main>
       <SiteFooter />
