@@ -1,16 +1,27 @@
 "use client";
 
 import * as THREE from "three";
+import type { MutableRefObject } from "react";
 import { Suspense, useRef, useSyncExternalStore } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Cloud, Clouds } from "@react-three/drei";
+
+/** Scroll-driven motion shared with CSS parallax on the hero image (clouds stay out of transformed DOM). */
+export type HeroParallaxMotion = {
+  x: number;
+  y: number;
+  scale: number;
+};
+
+/** Tuned so 2D CSS px drift matches the billboard scene at this camera (adjust if clouds drift vs mountains). */
+const PARALLAX_PX_TO_WORLD = 0.024;
 
 /** Same asset as pmndrs/drei default; bundled locally so the hero works offline. */
 const CLOUD_TEXTURE = "/cloud-drei.png";
 
 /** Tuned for a lighter mist: lower volume/growth/segments/opacity = thinner, less “stacked” billboards. */
 const CLOUD_PRESET = {
-  segments: 28,
+  segments: 32,
   volume: 10,
   opacity: 0.52,
   fade: 12,
@@ -43,9 +54,16 @@ const CLOUD_BASE: [number, number, number][] = [
  * World Y shift for this camera ([0,-10,10]). **More negative moves the band up** on screen;
  * less negative / positive moves it **down** (tune slowly, e.g. -2 … +0.5).
  */
-const CLOUD_Y_OFFSET = -2.95;
+const CLOUD_Y_OFFSET = -4.95;
 
-function HeroCloudScene({ reducedMotion }: { reducedMotion: boolean; }) {
+function HeroCloudScene({
+  reducedMotion,
+  motionRef,
+}: {
+  reducedMotion: boolean;
+  motionRef: MutableRefObject<HeroParallaxMotion>;
+}) {
+  const parallaxRig = useRef<THREE.Group>(null);
   const cloud0 = useRef<THREE.Group>(null);
   const cloud1 = useRef<THREE.Group>(null);
   const cloud2 = useRef<THREE.Group>(null);
@@ -54,6 +72,13 @@ function HeroCloudScene({ reducedMotion }: { reducedMotion: boolean; }) {
   const cloudRefs = [cloud0, cloud1, cloud2, cloud3, cloud4];
 
   useFrame((state) => {
+    const rig = parallaxRig.current;
+    if (rig) {
+      const { x, y, scale } = motionRef.current;
+      rig.scale.setScalar(scale);
+      rig.position.set(-x * PARALLAX_PX_TO_WORLD, -y * PARALLAX_PX_TO_WORLD, 0);
+    }
+
     const t = state.clock.elapsedTime;
     const freq = 0.085;
     const amplitude = reducedMotion ? 0 : 3.2;
@@ -99,62 +124,68 @@ function HeroCloudScene({ reducedMotion }: { reducedMotion: boolean; }) {
         intensity={24}
       />
 
-      <Clouds
-        texture={CLOUD_TEXTURE}
-        material={THREE.MeshLambertMaterial}
-        limit={400}
-      >
-        <Cloud
-          ref={cloud0}
-          {...CLOUD_PRESET}
-          seed={1}
-          speed={0}
-          color="white"
-          position={CLOUD_BASE[0]}
-        />
-        <Cloud
-          ref={cloud1}
-          {...CLOUD_PRESET}
-          seed={2}
-          speed={0}
-          color="#eed0d0"
-          position={CLOUD_BASE[1]}
-        />
-        <Cloud
-          ref={cloud2}
-          {...CLOUD_PRESET}
-          seed={3}
-          speed={0}
-          color="#d0e0d0"
-          position={CLOUD_BASE[2]}
-        />
-        <Cloud
-          ref={cloud3}
-          {...CLOUD_PRESET}
-          seed={4}
-          speed={0}
-          color="#a0b0d0"
-          position={CLOUD_BASE[3]}
-        />
-        <Cloud
-          ref={cloud4}
-          {...CLOUD_PRESET}
-          seed={5}
-          speed={0}
-          color="#c0c0dd"
-          position={CLOUD_BASE[4]}
-        />
-      </Clouds>
+      <group ref={parallaxRig}>
+        <Clouds
+          texture={CLOUD_TEXTURE}
+          material={THREE.MeshLambertMaterial}
+          limit={400}
+        >
+          <Cloud
+            ref={cloud0}
+            {...CLOUD_PRESET}
+            seed={1}
+            speed={0}
+            color="white"
+            position={CLOUD_BASE[0]}
+          />
+          <Cloud
+            ref={cloud1}
+            {...CLOUD_PRESET}
+            seed={2}
+            speed={0}
+            color="#eed0d0"
+            position={CLOUD_BASE[1]}
+          />
+          <Cloud
+            ref={cloud2}
+            {...CLOUD_PRESET}
+            seed={3}
+            speed={0}
+            color="#d0e0d0"
+            position={CLOUD_BASE[2]}
+          />
+          <Cloud
+            ref={cloud3}
+            {...CLOUD_PRESET}
+            seed={4}
+            speed={0}
+            color="#a0b0d0"
+            position={CLOUD_BASE[3]}
+          />
+          <Cloud
+            ref={cloud4}
+            {...CLOUD_PRESET}
+            seed={5}
+            speed={0}
+            color="#c0c0dd"
+            position={CLOUD_BASE[4]}
+          />
+        </Clouds>
+      </group>
     </>
   );
 }
 
-export function HeroCloudsThree() {
+export function HeroCloudsThree({
+  motionRef,
+}: {
+  motionRef: MutableRefObject<HeroParallaxMotion>;
+}) {
   const reducedMotion = usePrefersReducedMotion();
 
   return (
     <div
-      className="pointer-events-none absolute inset-0 z-1 [&_canvas]:block [&_canvas]:h-full [&_canvas]:w-full"
+      className="pointer-events-none absolute inset-0 isolate z-1 [&_canvas]:block [&_canvas]:h-full [&_canvas]:w-full"
       aria-hidden
       style={{
         // Opaque stops = visible (same idea as before). Band shifted **down** vs #000 at 0–32%.
@@ -180,7 +211,7 @@ export function HeroCloudsThree() {
         }}
       >
         <Suspense fallback={null}>
-          <HeroCloudScene reducedMotion={reducedMotion} />
+          <HeroCloudScene reducedMotion={reducedMotion} motionRef={motionRef} />
         </Suspense>
       </Canvas>
     </div>

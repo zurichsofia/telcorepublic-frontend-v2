@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef } from "react";
 
 import { HeroCloudsThree } from "./hero-clouds-three";
+import type { HeroParallaxMotion } from "./hero-clouds-three";
 import { TvStaticGrain } from "./tv-static-grain";
 
 function clamp(n: number, min: number, max: number) {
@@ -11,10 +12,11 @@ function clamp(n: number, min: number, max: number) {
 }
 
 /**
- * Max pan (px) inside the 100vh “camera” while scrolling the first block.
- * Zoom + drift are driven from the full block scroll (not delayed) so motion is obvious from the first pixel.
+ * Horizontal parallax: positive X shifts the plate right as you scroll down, so the viewport reveals
+ * more of the right side of the image (within the oversized 130% layer). Capped vw so it scales on large screens.
  */
-const SHIFT_X = 48;
+const SHIFT_X_VW = 11;
+const SHIFT_X_MAX_PX = 180;
 const SHIFT_Y = 72;
 /** Zoom range: starts slightly “in camera” at the top, eases out toward 1 as you scroll (dolly / parallax read). */
 const SCALE_START = 1.12;
@@ -31,17 +33,21 @@ function smoothstep01(t: number) {
 /** Hero + marquee + intro: fixed 100vh scenic camera; scroll-driven zoom + drift; fade at block end. */
 export function FirstSectionsParallaxBg({ children }: { children: React.ReactNode; }) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const rafRef = useRef<number>(0);
-  const [layer, setLayer] = useState({
+  const fixedShellRef = useRef<HTMLDivElement>(null);
+  const parallaxLayerRef = useRef<HTMLDivElement>(null);
+  /** Mirrors CSS parallax for the Three.js layer (canvas must not sit under a transformed ancestor). */
+  const parallaxMotionRef = useRef<HeroParallaxMotion>({
     x: 0,
     y: 0,
-    scale: 1,
-    opacity: 1,
+    scale: SCALE_START,
   });
+  const rafRef = useRef<number>(0);
 
   const tick = useCallback(() => {
     const el = rootRef.current;
-    if (!el) return;
+    const shell = fixedShellRef.current;
+    const parallax = parallaxLayerRef.current;
+    if (!el || !shell || !parallax) return;
 
     const top = el.getBoundingClientRect().top + window.scrollY;
     const h = el.offsetHeight;
@@ -65,23 +71,37 @@ export function FirstSectionsParallaxBg({ children }: { children: React.ReactNod
       }
     }
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setLayer({ x: 0, y: 0, scale: 1, opacity: plateOpacity });
-      return;
-    }
+    let x = 0;
+    let y = 0;
+    let scale = 1;
 
-    // 0 → 1 over the whole scroll range through this block (parallax + zoom visible immediately)
     const scrollPast = Math.max(0, scrollY - top);
     const totalScroll = Math.max(1, h - vh);
     const progress = smoothstep01(clamp(scrollPast / totalScroll, 0, 1));
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    setLayer({
-      x: progress * SHIFT_X,
-      y: -progress * SHIFT_Y,
-      scale: SCALE_START + (SCALE_END - SCALE_START) * progress,
-      opacity: plateOpacity,
-    });
+    if (!reducedMotion) {
+      const shiftX = Math.min(SHIFT_X_MAX_PX, (window.innerWidth * SHIFT_X_VW) / 100);
+      x = progress * shiftX;
+      y = -progress * SHIFT_Y;
+      scale = SCALE_START + (SCALE_END - SCALE_START) * progress;
+    }
+
+    // Higher % = anchor shifts right → more of the right side of the photo stays in frame with the plate drift.
+    const objectXPercent = reducedMotion ? 44 : 40 + progress * 18;
+    parallax.style.setProperty("--hero-object-x", `${objectXPercent}%`);
+
+    parallax.style.transform = `translate3d(calc(-50% + ${x}px), calc(-50% + ${y}px), 0) scale(${scale})`;
+    parallaxMotionRef.current.x = x;
+    parallaxMotionRef.current.y = y;
+    parallaxMotionRef.current.scale = scale;
+    shell.style.opacity = String(plateOpacity);
+    shell.style.visibility = plateOpacity > 0.002 ? "visible" : "hidden";
   }, []);
+
+  useLayoutEffect(() => {
+    tick();
+  }, [tick]);
 
   useEffect(() => {
     const onScroll = () => {
@@ -103,19 +123,15 @@ export function FirstSectionsParallaxBg({ children }: { children: React.ReactNod
     <div ref={rootRef} className="relative isolate">
       {/* Fixed viewport: always exactly one screen tall — never 200vh / 300vh */}
       <div
+        ref={fixedShellRef}
         className="pointer-events-none fixed inset-x-0 top-0 z-0 h-svh max-h-svh min-h-0 w-full overflow-hidden"
-        style={{
-          opacity: layer.opacity,
-          visibility: layer.opacity > 0.002 ? "visible" : "hidden",
-        }}
+        style={{ opacity: 1, visibility: "visible" }}
         aria-hidden
       >
         <div className="absolute inset-0">
           <div
-            className="absolute left-1/2 top-1/2 h-[130%] w-[130%] will-change-transform"
-            style={{
-              transform: `translate3d(calc(-50% + ${layer.x}px), calc(-50% + ${layer.y}px), 0) scale(${layer.scale})`,
-            }}
+            ref={parallaxLayerRef}
+            className="absolute left-1/2 top-1/2 h-[130%] w-[130%] will-change-transform transform-[translate3d(-50%,-50%,0)_scale(1.12)] backface-hidden [--hero-object-x:44%]"
           >
             <div className="relative h-full w-full">
               <Image
@@ -124,12 +140,16 @@ export function FirstSectionsParallaxBg({ children }: { children: React.ReactNod
                 alt=""
                 fill
                 priority
-                className="object-cover object-[44%_42%]"
+                className="object-cover"
+                style={{ objectPosition: "var(--hero-object-x) 42%" }}
                 sizes="100vw"
                 quality={92}
               />
-              <HeroCloudsThree />
             </div>
+          </div>
+          {/* Same geometry as the image plate (130% centered), but no CSS transform — WebGL stays glitch-free. */}
+          <div className="absolute left-1/2 top-1/2 h-[130%] w-[130%] -translate-x-1/2 -translate-y-1/2">
+            <HeroCloudsThree motionRef={parallaxMotionRef} />
           </div>
           <div
             className="absolute inset-0 bg-linear-to-b from-black/52 via-black/38 to-black/80"
