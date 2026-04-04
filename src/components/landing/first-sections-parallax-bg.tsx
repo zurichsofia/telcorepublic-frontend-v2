@@ -9,6 +9,7 @@ import {
   useSyncExternalStore,
 } from "react";
 
+import { HeroMountainArches } from "./hero-mountain-arches";
 import { HeroCloudsThree } from "./hero-clouds-three";
 import type { HeroParallaxMotion } from "./hero-clouds-three";
 
@@ -102,8 +103,9 @@ export function FirstSectionsParallaxBg({ children }: { children: React.ReactNod
     parallaxMotionRef.current.scale = SCALE_START;
 
     shell.style.setProperty("--hero-bg-opacity", String(nextOpacity));
-    layer.style.setProperty("--parallax-x", `${shiftX}px`);
-    layer.style.setProperty("--parallax-y", `${shiftY}px`);
+    // Parallax vars on the fixed shell so siblings (e.g. signal arcs above gradients) inherit the same drift.
+    shell.style.setProperty("--parallax-x", `${shiftX}px`);
+    shell.style.setProperty("--parallax-y", `${shiftY}px`);
   }, []);
 
   const scheduleScrollFx = useCallback(() => {
@@ -179,6 +181,15 @@ export function FirstSectionsParallaxBg({ children }: { children: React.ReactNod
             className="absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_50%_40%,rgba(255,255,255,0.03),transparent_55%)]"
             aria-hidden
           />
+          {/* Above grade + clouds so arcs read as beams; same transform plate as the hero image (vars on shell). */}
+          <div
+            className="absolute left-1/2 top-1/2 h-[130%] w-[130%] will-change-transform backface-hidden"
+            style={{
+              transform: `translate3d(calc(-50% + var(--parallax-x, 0px)), calc(-50% + var(--parallax-y, 0px)), 0) scale(${SCALE_START})`,
+            }}
+          >
+            <HeroMountainArches />
+          </div>
         </div>
       </div>
 
