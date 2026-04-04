@@ -154,11 +154,11 @@ export function FirstSectionsParallaxBg({ children }: { children: React.ReactNod
           </div>
           {/* Neutral dark grade — matches black-base + cool mist (reference site) */}
           <div
-            className="absolute inset-0 bg-linear-to-b from-slate-950/20 via-transparent to-slate-900/18 mix-blend-soft-light"
+            className="absolute inset-0 bg-linear-to-b from-slate-950/55 via-transparent to-slate-900/52 mix-blend-soft-light"
             aria-hidden
           />
           <div
-            className="absolute inset-0 bg-linear-to-b from-black/55 via-black/45 to-black/90"
+            className="absolute inset-0 bg-linear-to-b from-black/68 via-black/58 to-black/[0.94]"
             aria-hidden
           />
           <div
