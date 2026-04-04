@@ -11,7 +11,7 @@ type ScrollRevealProps = {
   /** Entrance direction */
   from?: ScrollRevealFrom;
   delayMs?: number;
-  /** Subtle blur-in (heavier; use sparingly) */
+  /** Slightly softer entrance (no CSS filter — avoids expensive blur compositing while scrolling). */
   blur?: boolean;
 };
 
@@ -40,6 +40,7 @@ export function ScrollReveal({
 }: ScrollRevealProps) {
   const reduce = useReducedMotion();
   const { x, y } = offsetFor(from);
+  const extraY = blur ? 10 : 0;
 
   return (
     <motion.div
@@ -50,8 +51,7 @@ export function ScrollReveal({
           : {
               opacity: 0,
               x,
-              y,
-              filter: blur ? "blur(12px)" : "blur(0px)",
+              y: y + extraY,
             }
       }
       whileInView={
@@ -61,7 +61,6 @@ export function ScrollReveal({
               opacity: 1,
               x: 0,
               y: 0,
-              filter: "blur(0px)",
             }
       }
       viewport={{ once: true, amount: 0.14, margin: "0px 0px -12% 0px" }}

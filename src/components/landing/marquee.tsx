@@ -19,7 +19,7 @@ export function Marquee() {
 
   return (
     <motion.div
-      className="relative overflow-hidden border-y border-[rgba(140,180,220,0.1)] py-4 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] backdrop-blur-[2px]"
+      className="relative overflow-hidden border-y border-[rgba(140,180,220,0.1)] bg-[rgba(6,12,24,0.35)] py-4 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
       initial={reduce ? undefined : { opacity: 0 }}
       whileInView={reduce ? undefined : { opacity: 1 }}
       viewport={{ once: true, amount: 0.35 }}

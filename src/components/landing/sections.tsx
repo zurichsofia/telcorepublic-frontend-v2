@@ -78,7 +78,7 @@ export function ServicesSection() {
         <ScrollReveal from="right" delayMs={80} className="sm:self-end">
           <Link
             href="#contact"
-            className="inline-flex shrink-0 rounded-full border border-[rgba(140,180,220,0.35)] bg-[rgba(15,25,50,0.4)] px-6 py-3 text-[13px] font-medium uppercase tracking-[0.1em] text-[var(--color-accent)] backdrop-blur-[10px] transition hover:border-[rgba(140,180,220,0.55)] hover:bg-[rgba(30,50,90,0.5)]"
+            className="inline-flex shrink-0 rounded-full border border-[rgba(140,180,220,0.35)] bg-[rgba(15,25,50,0.78)] px-6 py-3 text-[13px] font-medium uppercase tracking-[0.1em] text-[var(--color-accent)] transition hover:border-[rgba(140,180,220,0.55)] hover:bg-[rgba(30,50,90,0.88)]"
           >
             Start a conversation
           </Link>
@@ -92,7 +92,7 @@ export function ServicesSection() {
             delayMs={i * 55}
             className="h-full"
           >
-            <article className="group flex h-full flex-col rounded-2xl border border-[rgba(120,160,210,0.12)] bg-[rgba(8,14,28,0.45)] p-8 backdrop-blur-sm transition-[border-color,box-shadow,transform] duration-500 ease-out motion-safe:hover:-translate-y-1 motion-safe:hover:border-[rgba(140,180,220,0.22)] motion-safe:hover:shadow-[0_20px_50px_-24px_rgba(0,0,0,0.85)]">
+            <article className="group flex h-full flex-col rounded-2xl border border-[rgba(120,160,210,0.12)] bg-[rgba(8,14,28,0.78)] p-8 transition-[border-color,box-shadow,transform] duration-500 ease-out motion-safe:hover:-translate-y-1 motion-safe:hover:border-[rgba(140,180,220,0.22)] motion-safe:hover:shadow-[0_20px_50px_-24px_rgba(0,0,0,0.85)]">
               <h3 className="font-display text-2xl font-normal tracking-tight text-[var(--color-heading)] transition-colors duration-300 group-hover:text-[rgba(248,252,240,0.98)]">
                 {s.title}
               </h3>
@@ -140,7 +140,7 @@ export function ContactSection() {
         <div className="mt-10 flex flex-wrap justify-center gap-4">
           <a
             href="mailto:hello@telcore.example"
-            className="inline-flex items-center gap-2 rounded-full border border-[rgba(140,180,220,0.35)] bg-[rgba(15,25,50,0.4)] px-8 py-3.5 text-[13px] font-medium uppercase tracking-[0.1em] text-[var(--color-accent)] backdrop-blur-[10px] transition motion-safe:hover:scale-[1.02] hover:border-[rgba(140,180,220,0.55)] hover:bg-[rgba(30,50,90,0.5)]"
+            className="inline-flex items-center gap-2 rounded-full border border-[rgba(140,180,220,0.35)] bg-[rgba(15,25,50,0.78)] px-8 py-3.5 text-[13px] font-medium uppercase tracking-[0.1em] text-[var(--color-accent)] transition motion-safe:hover:scale-[1.02] hover:border-[rgba(140,180,220,0.55)] hover:bg-[rgba(30,50,90,0.88)]"
           >
             hello@telcore.example
           </a>

@@ -221,7 +221,7 @@ export function WhyTelcoRepublicSection() {
           </p>
           <Link
             href="#contact"
-            className="group inline-flex items-center gap-2 rounded-full border border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.03)] px-6 py-3 text-sm font-medium text-[var(--color-heading)] backdrop-blur-sm transition motion-safe:hover:translate-x-0.5 hover:border-[rgba(255,255,255,0.2)] hover:bg-[rgba(255,255,255,0.06)]"
+            className="group inline-flex items-center gap-2 rounded-full border border-[rgba(255,255,255,0.12)] bg-[rgba(255,255,255,0.08)] px-6 py-3 text-sm font-medium text-[var(--color-heading)] transition motion-safe:hover:translate-x-0.5 hover:border-[rgba(255,255,255,0.22)] hover:bg-[rgba(255,255,255,0.12)]"
           >
             Start a conversation
             <span

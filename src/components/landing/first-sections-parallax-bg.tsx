@@ -6,7 +6,6 @@ import {
   useEffect,
   useLayoutEffect,
   useRef,
-  useState,
   useSyncExternalStore,
 } from "react";
 
@@ -60,14 +59,18 @@ export function FirstSectionsParallaxBg({ children }: { children: React.ReactNod
   });
 
   const reducedMotion = usePrefersReducedMotion();
+  const reducedMotionRef = useRef(reducedMotion);
+  reducedMotionRef.current = reducedMotion;
 
-  const [bgOpacity, setBgOpacity] = useState(1);
-  const [parallaxShiftX, setParallaxShiftX] = useState(0);
-  const [parallaxShiftY, setParallaxShiftY] = useState(0);
+  const scrollRafRef = useRef<number | null>(null);
 
-  const updateScrollFx = useCallback(() => {
+  /** DOM + ref only — avoids React re-rendering the hero (image + WebGL) on every scroll tick. */
+  const applyScrollFx = useCallback(() => {
     const el = rootRef.current;
-    if (!el) return;
+    const shell = fixedShellRef.current;
+    const layer = parallaxLayerRef.current;
+    if (!el || !shell || !layer) return;
+
     const rect = el.getBoundingClientRect();
     const vh = window.innerHeight;
     const t = rect.top;
@@ -85,7 +88,7 @@ export function FirstSectionsParallaxBg({ children }: { children: React.ReactNod
 
     let shiftX = 0;
     let shiftY = 0;
-    if (!reducedMotion && t < vh && b > 0) {
+    if (!reducedMotionRef.current && t < vh && b > 0) {
       const scrolledPastTop = Math.max(0, -t);
       const scrollRangePx = Math.max(1, el.offsetHeight - vh);
       const u = clamp(scrolledPastTop / scrollRangePx, 0, 1);
@@ -98,24 +101,35 @@ export function FirstSectionsParallaxBg({ children }: { children: React.ReactNod
     parallaxMotionRef.current.y = shiftY;
     parallaxMotionRef.current.scale = SCALE_START;
 
-    setBgOpacity(nextOpacity);
-    setParallaxShiftX(shiftX);
-    setParallaxShiftY(shiftY);
-  }, [reducedMotion]);
+    shell.style.setProperty("--hero-bg-opacity", String(nextOpacity));
+    layer.style.setProperty("--parallax-x", `${shiftX}px`);
+    layer.style.setProperty("--parallax-y", `${shiftY}px`);
+  }, []);
+
+  const scheduleScrollFx = useCallback(() => {
+    if (scrollRafRef.current != null) return;
+    scrollRafRef.current = requestAnimationFrame(() => {
+      scrollRafRef.current = null;
+      applyScrollFx();
+    });
+  }, [applyScrollFx]);
 
   useLayoutEffect(() => {
-    updateScrollFx();
-  }, [updateScrollFx]);
+    applyScrollFx();
+  }, [applyScrollFx, reducedMotion]);
 
   useEffect(() => {
-    updateScrollFx();
-    window.addEventListener("scroll", updateScrollFx, { passive: true });
-    window.addEventListener("resize", updateScrollFx);
+    window.addEventListener("scroll", scheduleScrollFx, { passive: true });
+    window.addEventListener("resize", scheduleScrollFx);
     return () => {
-      window.removeEventListener("scroll", updateScrollFx);
-      window.removeEventListener("resize", updateScrollFx);
+      window.removeEventListener("scroll", scheduleScrollFx);
+      window.removeEventListener("resize", scheduleScrollFx);
+      if (scrollRafRef.current != null) {
+        cancelAnimationFrame(scrollRafRef.current);
+        scrollRafRef.current = null;
+      }
     };
-  }, [updateScrollFx]);
+  }, [scheduleScrollFx]);
 
   return (
     <div ref={rootRef} className="relative isolate">
@@ -123,7 +137,7 @@ export function FirstSectionsParallaxBg({ children }: { children: React.ReactNod
       <div
         ref={fixedShellRef}
         className="pointer-events-none fixed inset-x-0 top-0 z-0 h-screen max-h-screen min-h-0 w-full overflow-hidden"
-        style={{ opacity: bgOpacity }}
+        style={{ opacity: "var(--hero-bg-opacity, 1)" }}
         aria-hidden
       >
         <div className="absolute inset-0">
@@ -131,7 +145,7 @@ export function FirstSectionsParallaxBg({ children }: { children: React.ReactNod
             ref={parallaxLayerRef}
             className="absolute left-1/2 top-1/2 h-[130%] w-[130%] will-change-transform backface-hidden [--hero-object-x:44%]"
             style={{
-              transform: `translate3d(calc(-50% + ${parallaxShiftX}px), calc(-50% + ${parallaxShiftY}px), 0) scale(${SCALE_START})`,
+              transform: `translate3d(calc(-50% + var(--parallax-x, 0px)), calc(-50% + var(--parallax-y, 0px)), 0) scale(${SCALE_START})`,
             }}
           >
             <div className="relative h-full w-full">
