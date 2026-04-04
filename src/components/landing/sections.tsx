@@ -138,7 +138,7 @@ export function MethodologySection() {
 
 export function BrandStatements() {
   return (
-    <section className="relative overflow-hidden border-y border-[rgba(140,180,120,0.08)] py-24 sm:py-32">
+    <section className="relative overflow-hidden py-24 sm:py-32">
       <div
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_50%,rgba(255,180,100,0.07),transparent_65%)]"
         aria-hidden

@@ -1,7 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 
 import { HeroCloudsThree } from "./hero-clouds-three";
 import type { HeroParallaxMotion } from "./hero-clouds-three";
@@ -25,6 +32,22 @@ function smoothstep01(t: number) {
   return x * x * (3 - 2 * x);
 }
 
+/** Parallax: minimal drift right / down (keep small — reads as depth, not motion). */
+const SHIFT_X_MAX_PX = 20;
+const SHIFT_Y_MAX_PX = 20;
+
+function usePrefersReducedMotion() {
+  return useSyncExternalStore(
+    (onStoreChange) => {
+      const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+      mq.addEventListener("change", onStoreChange);
+      return () => mq.removeEventListener("change", onStoreChange);
+    },
+    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    () => false,
+  );
+}
+
 /** Hero + statement: fixed 100vh scenic camera; only visible while this block intersects the viewport. */
 export function FirstSectionsParallaxBg({ children }: { children: React.ReactNode; }) {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -37,9 +60,13 @@ export function FirstSectionsParallaxBg({ children }: { children: React.ReactNod
     scale: SCALE_START,
   });
 
-  const [bgOpacity, setBgOpacity] = useState(1);
+  const reducedMotion = usePrefersReducedMotion();
 
-  const updateBgOpacity = useCallback(() => {
+  const [bgOpacity, setBgOpacity] = useState(1);
+  const [parallaxShiftX, setParallaxShiftX] = useState(0);
+  const [parallaxShiftY, setParallaxShiftY] = useState(0);
+
+  const updateScrollFx = useCallback(() => {
     const el = rootRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
@@ -47,33 +74,49 @@ export function FirstSectionsParallaxBg({ children }: { children: React.ReactNod
     const t = rect.top;
     const b = rect.bottom;
 
+    let nextOpacity = 1;
     if (t >= vh || b <= 0) {
-      setBgOpacity(0);
-      return;
+      nextOpacity = 0;
+    } else {
+      const fadePx = vh * EXIT_FADE_VH;
+      if (b < fadePx) {
+        nextOpacity = smoothstep01(b / fadePx);
+      }
     }
 
-    const fadePx = vh * EXIT_FADE_VH;
-    if (b >= fadePx) {
-      setBgOpacity(1);
-      return;
+    let shiftX = 0;
+    let shiftY = 0;
+    if (!reducedMotion && t < vh && b > 0) {
+      const scrolledPastTop = Math.max(0, -t);
+      const scrollRangePx = Math.max(1, el.offsetHeight - vh);
+      const u = clamp(scrolledPastTop / scrollRangePx, 0, 1);
+      const w = smoothstep01(u);
+      shiftX = w * SHIFT_X_MAX_PX;
+      shiftY = w * SHIFT_Y_MAX_PX;
     }
 
-    setBgOpacity(smoothstep01(b / fadePx));
-  }, []);
+    parallaxMotionRef.current.x = shiftX;
+    parallaxMotionRef.current.y = shiftY;
+    parallaxMotionRef.current.scale = SCALE_START;
+
+    setBgOpacity(nextOpacity);
+    setParallaxShiftX(shiftX);
+    setParallaxShiftY(shiftY);
+  }, [reducedMotion]);
 
   useLayoutEffect(() => {
-    updateBgOpacity();
-  }, [updateBgOpacity]);
+    updateScrollFx();
+  }, [updateScrollFx]);
 
   useEffect(() => {
-    updateBgOpacity();
-    window.addEventListener("scroll", updateBgOpacity, { passive: true });
-    window.addEventListener("resize", updateBgOpacity);
+    updateScrollFx();
+    window.addEventListener("scroll", updateScrollFx, { passive: true });
+    window.addEventListener("resize", updateScrollFx);
     return () => {
-      window.removeEventListener("scroll", updateBgOpacity);
-      window.removeEventListener("resize", updateBgOpacity);
+      window.removeEventListener("scroll", updateScrollFx);
+      window.removeEventListener("resize", updateScrollFx);
     };
-  }, [updateBgOpacity]);
+  }, [updateScrollFx]);
 
   return (
     <div ref={rootRef} className="relative isolate">
@@ -87,7 +130,10 @@ export function FirstSectionsParallaxBg({ children }: { children: React.ReactNod
         <div className="absolute inset-0">
           <div
             ref={parallaxLayerRef}
-            className="absolute left-1/2 top-1/2 h-[130%] w-[130%] will-change-transform transform-[translate3d(-50%,-50%,0)_scale(1.12)] backface-hidden [--hero-object-x:44%]"
+            className="absolute left-1/2 top-1/2 h-[130%] w-[130%] will-change-transform backface-hidden [--hero-object-x:44%]"
+            style={{
+              transform: `translate3d(calc(-50% + ${parallaxShiftX}px), calc(-50% + ${parallaxShiftY}px), 0) scale(${SCALE_START})`,
+            }}
           >
             <div className="relative h-full w-full">
               <Image
