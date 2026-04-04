@@ -6,9 +6,8 @@
 
 /* Alpine / editorial palette — Inter body, Syne titles, warm accent on black */
 :root {
-  /* Page background: single source — use on html only (see below) */
+  /* Page background fallback (animated gradient is Grainient in layout) */
   --bg: #0a1a2c;
-  --section-bg-gradient: linear-gradient(180deg, #111615 0%, #020308 100%);
   --fg: #e8ece4;
   --color-heading: #f8fcf0;
   --color-accent: rgba(255, 180, 100, 0.95);
@@ -57,12 +56,7 @@
 html {
   scroll-behavior: smooth;
   min-height: 100%;
-  /* One gradient locked to the viewport — avoids seams where sections stack */
   background-color: var(--bg);
-  background-image: var(--section-bg-gradient);
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
 }
 
 body {
@@ -258,7 +252,7 @@ body {
     @apply border-border outline-ring/50;
   }
   body {
-    /* Background lives on html (--section-bg-gradient); keep body transparent */
+    /* Grainient canvas is fixed behind content; keep body transparent */
     @apply text-foreground;
   }
   html {

@@ -72,7 +72,6 @@ export function PageLoader() {
       className="fixed inset-0 z-100 flex flex-col items-center justify-center px-6"
       style={{
         backgroundColor: "var(--bg)",
-        backgroundImage: "var(--section-bg-gradient)",
       }}
       initial={{ opacity: 1 }}
       animate={{ opacity: phase === "exit" ? 0 : 1 }}
