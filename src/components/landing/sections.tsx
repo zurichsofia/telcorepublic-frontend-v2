@@ -35,18 +35,30 @@ const methodology = [
   },
 ];
 
-const insights = [
+const services = [
   {
-    title: "White papers",
-    desc: "Deep dives on RAN evolution, fiber economics, and edge compute placement.",
+    title: "Disrupter Quadrants",
+    desc: "Evaluate and compare vendors that specialize in innovation and disruption in emerging next-generation telecom operations and business support systems.",
   },
   {
-    title: "Briefings",
-    desc: "Quarterly outlooks for investors and strategy teams — concise, sourced, actionable.",
+    title: "Competitive Positioning",
+    desc: "Differentiate yourself with SWOTs, best practices, benchmarking, whitepapers and roadmap evaluations.",
   },
   {
-    title: "Labs",
-    desc: "Collaborative experiments with vendors and universities on next-gen protocols.",
+    title: "Go-To-Market",
+    desc: "Refine your strategy with workshops, lead generation, RFP/RFI support, partner matchmaking, inquiry support and briefings.",
+  },
+  {
+    title: "Market Assessment",
+    desc: "Advance your business with addressable market insights, market entry evaluations, market segmentation and emerging vendors insights.",
+  },
+  {
+    title: "Custom Research",
+    desc: "Gain in-depth insights tailored toward your individual requirements with our personalized custom research services.",
+  },
+  {
+    title: "Subscription",
+    desc: "Always be up-to-speed with recurring insights and real-time access to industry experts.",
   },
 ];
 
@@ -168,16 +180,16 @@ export function BrandStatements() {
   );
 }
 
-export function InsightsSection() {
+export function ServicesSection() {
   return (
-    <section id="insights" className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-32">
+    <section id="services" className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-32">
       <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-[10px] font-medium uppercase tracking-[0.35em] text-[var(--color-label)] opacity-90">
-            Outputs
+            What we offer
           </p>
           <h2 className="font-display mt-3 text-4xl font-normal tracking-tight text-[var(--color-heading)] sm:text-5xl">
-            Insights &amp; collaboration
+            Our Services
           </h2>
         </div>
         <Link
@@ -187,21 +199,24 @@ export function InsightsSection() {
           Start a conversation
         </Link>
       </div>
-      <div className="mt-14 grid gap-6 md:grid-cols-3">
-        {insights.map((i) => (
+      <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {services.map((s) => (
           <article
-            key={i.title}
+            key={s.title}
             className="flex flex-col rounded-2xl border border-[rgba(120,160,210,0.12)] bg-[rgba(8,14,28,0.4)] p-8 backdrop-blur-sm"
           >
             <h3 className="font-display text-2xl font-normal tracking-tight text-[var(--color-heading)]">
-              {i.title}
+              {s.title}
             </h3>
             <p className="mt-3 flex-1 text-sm font-light leading-relaxed text-[var(--color-body)]">
-              {i.desc}
+              {s.desc}
             </p>
-            <span className="mt-6 text-[10px] font-medium uppercase tracking-[0.2em] text-[var(--color-label)] opacity-60">
-              Available on request
-            </span>
+            <Link
+              href="#contact"
+              className="mt-6 text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--color-accent)] transition hover:text-[var(--accent-hover)]"
+            >
+              Learn more
+            </Link>
           </article>
         ))}
       </div>

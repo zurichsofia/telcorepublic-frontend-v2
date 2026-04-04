@@ -27,10 +27,10 @@ export function SiteFooter() {
             Methodology
           </Link>
           <Link
-            href="#insights"
+            href="#services"
             className="text-xs font-light text-[rgba(215,230,190,0.5)] transition hover:text-[var(--accent-hover)]"
           >
-            Insights
+            Services
           </Link>
           <Link
             href="#contact"
