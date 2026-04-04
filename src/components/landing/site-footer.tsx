@@ -18,7 +18,7 @@ export function SiteFooter() {
   const reduce = useReducedMotion();
 
   return (
-    <footer className="relative z-[2] overflow-hidden border-t border-[rgba(140,180,120,0.08)] px-5 py-14 sm:px-8">
+    <footer className="relative z-[2] overflow-hidden border-t border-[rgba(255,255,255,0.06)] px-5 py-14 sm:px-8">
       <motion.div
         className="relative mx-auto flex max-w-6xl flex-col gap-10 sm:flex-row sm:items-start sm:justify-between"
         initial={reduce ? undefined : { opacity: 0, y: 20 }}
@@ -27,10 +27,10 @@ export function SiteFooter() {
         transition={{ duration: 0.75, ease }}
       >
         <div>
-          <p className="font-display text-[1.375rem] tracking-[0.02em] text-[rgba(240,250,220,0.7)]">
+          <p className="font-display text-[1.25rem] font-semibold tracking-[-0.03em] text-[var(--color-heading)]">
             Telcorepublic
           </p>
-          <p className="mt-2 max-w-xs text-xs font-light leading-[1.7] text-[rgba(215,230,190,0.4)]">
+          <p className="mt-2 max-w-xs text-xs font-light leading-[1.7] text-[var(--color-label)]">
             Independent research for the people who design, regulate, and invest in
             connectivity.
           </p>
@@ -46,7 +46,7 @@ export function SiteFooter() {
             >
               <Link
                 href={item.href}
-                className="text-xs font-light text-[rgba(215,230,190,0.5)] transition hover:text-[var(--accent-hover)]"
+                className="text-xs font-light text-[var(--color-label)] transition hover:text-[var(--color-heading)]"
               >
                 {item.label}
               </Link>
@@ -55,7 +55,7 @@ export function SiteFooter() {
         </nav>
       </motion.div>
       <motion.p
-        className="relative mx-auto mt-14 max-w-6xl border-t border-[rgba(140,180,120,0.06)] pt-6 text-[11px] font-light text-[rgba(215,230,190,0.25)]"
+        className="relative mx-auto mt-14 max-w-6xl border-t border-[rgba(255,255,255,0.06)] pt-6 text-[11px] font-light text-[rgba(113,113,122,0.55)]"
         initial={reduce ? undefined : { opacity: 0 }}
         whileInView={reduce ? undefined : { opacity: 1 }}
         viewport={{ once: true }}
