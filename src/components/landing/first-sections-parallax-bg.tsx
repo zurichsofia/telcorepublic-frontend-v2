@@ -140,7 +140,7 @@ export function FirstSectionsParallaxBg({ children }: { children: React.ReactNod
                 alt=""
                 fill
                 priority
-                className="object-cover"
+                className="object-cover brightness-[0.97] contrast-[1.03] saturate-[1.06]"
                 style={{ objectPosition: "var(--hero-object-x) 42%" }}
                 sizes="100vw"
                 quality={92}
@@ -151,8 +151,13 @@ export function FirstSectionsParallaxBg({ children }: { children: React.ReactNod
           <div className="absolute left-1/2 top-1/2 h-[130%] w-[130%] -translate-x-1/2 -translate-y-1/2">
             <HeroCloudsThree motionRef={parallaxMotionRef} />
           </div>
+          {/* Cool blue grade: reads premium / editorial over mountains + mist */}
           <div
-            className="absolute inset-0 bg-linear-to-b from-black/52 via-black/38 to-black/80"
+            className="absolute inset-0 bg-linear-to-b from-sky-950/28 via-blue-950/14 to-indigo-950/32 mix-blend-soft-light"
+            aria-hidden
+          />
+          <div
+            className="absolute inset-0 bg-linear-to-b from-black/48 via-slate-950/40 to-[rgb(15,23,42)]/88"
             aria-hidden
           />
           <div
