@@ -39,7 +39,7 @@ function projectLatLng(
   lat: number,
   lng: number,
   layout: DottedMapLayout
-): { x: number; y: number } {
+): { x: number; y: number; } {
   const [projX, projY] = proj4(layout.proj4String, [lng, lat]) as [
     number,
     number,
@@ -85,12 +85,12 @@ export default function WorldMap({
     radius: 0.22,
     color: "#FFFFFF40",
     shape: "circle",
-    backgroundColor: "#000000",
+    // backgroundColor: "#000000",
   });
 
   const createCurvedPath = (
-    start: { x: number; y: number },
-    end: { x: number; y: number },
+    start: { x: number; y: number; },
+    end: { x: number; y: number; },
     mapHeight: number
   ) => {
     const midX = (start.x + end.x) / 2;
@@ -105,11 +105,11 @@ export default function WorldMap({
   return (
     <div
       ref={containerRef}
-      className="relative aspect-[2/1] w-full rounded-lg bg-black font-sans"
+      className="relative w-full rounded-lg font-sans"
     >
       <img
         src={`data:image/svg+xml;utf8,${encodeURIComponent(svgMap)}`}
-        className="h-full w-full [mask-image:linear-gradient(to_bottom,transparent,white_10%,white_90%,transparent)] pointer-events-none select-none"
+        className="h-full w-full [mask-image:linear-gradient(to_bottom,transparent,white_8%,white_90%,transparent)] pointer-events-none select-none"
         alt="world map"
         height="495"
         width="1056"
