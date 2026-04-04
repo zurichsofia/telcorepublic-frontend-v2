@@ -16,30 +16,30 @@ export function HeroGlassNav() {
 
   return (
     <div className="absolute inset-x-0 top-0 z-20 px-5 pt-5 sm:px-8 sm:pt-7">
-      <div className="flex items-center justify-between gap-3">
+      <div className="relative flex items-center justify-between">
         <Link
           href="/"
-          className="font-display shrink-0 text-[1.125rem] font-normal tracking-[0.02em] text-[var(--color-heading)] sm:text-lg"
+          className="relative z-10 font-display shrink-0 text-[1.125rem] font-normal tracking-[0.02em] text-[var(--color-heading)] sm:text-lg"
         >
           Telcorepublic
         </Link>
 
         <nav
-          className="hidden items-center rounded-full border border-[rgba(140,180,220,0.18)] bg-[rgba(10,18,30,0.35)] px-1.5 py-1.5 shadow-[inset_0_1px_0_rgba(140,180,220,0.08)] backdrop-blur-xl md:flex"
+          className="absolute left-1/2 top-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 items-center rounded-full border border-[rgba(140,180,220,0.18)] bg-[rgba(10,18,30,0.35)] px-1.5 py-1.5 shadow-[inset_0_1px_0_rgba(140,180,220,0.08)] backdrop-blur-xl md:flex"
           aria-label="Primary"
         >
           {nav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="rounded-full px-4 py-2 text-[11px] font-medium uppercase tracking-[0.15em] text-[rgba(215,230,190,0.55)] transition hover:bg-[rgba(30,50,80,0.35)] hover:text-[var(--accent-hover)]"
+              className="rounded-full px-4 py-2 text-[11px] font-medium uppercase tracking-[0.15em] text-white transition hover:text-amber-100"
             >
               {item.label}
             </Link>
           ))}
         </nav>
 
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="relative z-10 flex shrink-0 items-center gap-2">
 
           <button
             type="button"

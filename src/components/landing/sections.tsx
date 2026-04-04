@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { ScrollReveal } from "@/components/landing/scroll-reveal";
+
 const pillars = [
   {
     tag: "Spectrum & policy",
@@ -141,15 +143,26 @@ export function StatementBand() {
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_50%,rgba(255,180,100,0.07),transparent_65%)]"
         aria-hidden
       />
-      <div className="relative mx-auto max-w-4xl px-5 text-center sm:px-8">
-        <h2 className="font-display text-[clamp(1.75rem,4.5vw,3rem)] font-normal italic leading-[1.3] tracking-tight text-[var(--color-heading)] [text-shadow:0_2px_30px_rgba(0,0,0,0.7)]">
-          From spectrum maps to subscriber experience — we connect the physics to
-          the business case.
-        </h2>
-        <p className="mx-auto mt-8 max-w-2xl text-lg font-light text-[var(--color-body)]">
-          Long-horizon research, short feedback loops. Tell us where your network is
-          headed; we will help you stress-test the path.
-        </p>
+      <div className="relative mx-auto max-w-5xl space-y-20 px-5 sm:space-y-28 sm:px-8 lg:space-y-60">
+        <ScrollReveal from="right" className="ml-auto w-full max-w-xl sm:max-w-2xl">
+          <h2 className="font-display text-right text-[clamp(1.75rem,4.5vw,3rem)] font-normal italic leading-[1.3] tracking-tight text-[var(--color-heading)] [text-shadow:0_2px_30px_rgba(0,0,0,0.7)]">
+            Crossing the Telco Chasm
+          </h2>
+          <p className="mt-8 max-w-xl text-right text-lg font-light leading-relaxed text-[var(--color-body)] sm:ml-auto">
+            We are the go-to, thought-provoking market research and advisory firm in
+            the new telecommunications software market.
+          </p>
+        </ScrollReveal>
+
+        <ScrollReveal from="left" delayMs={80} className="mr-auto w-full max-w-xl sm:max-w-2xl">
+          <h2 className="font-display text-left text-[clamp(1.75rem,4.5vw,3rem)] font-normal italic leading-[1.3] tracking-tight text-[var(--color-heading)] [text-shadow:0_2px_30px_rgba(0,0,0,0.7)]">
+            Our Mission
+          </h2>
+          <p className="mt-8 max-w-xl text-left text-lg font-light leading-relaxed text-[var(--color-body)]">
+            We track ongoing disruption and innovation related to telecommunications
+            business and operations.
+          </p>
+        </ScrollReveal>
       </div>
     </section>
   );

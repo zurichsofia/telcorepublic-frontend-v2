@@ -14,9 +14,9 @@ export default function Home() {
       <main>
         <FirstSectionsParallaxBg>
           <Hero />
-          <Marquee />
         </FirstSectionsParallaxBg>
         <StatementBand />
+        <Marquee />
         <InsightsSection />
         <ContactSection />
       </main>
