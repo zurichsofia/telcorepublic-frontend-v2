@@ -10,31 +10,24 @@ function clamp(n: number, min: number, max: number) {
 }
 
 /**
- * Max pan (px) inside the 100vh “camera” while scrolling the first block (~3 viewports).
- * Tuned for a Logo.ai–style drift: same scene, subtle X/Y + tiny scale.
+ * Max pan (px) inside the 100vh “camera” while scrolling the first block.
+ * Zoom + drift are driven from the full block scroll (not delayed) so motion is obvious from the first pixel.
  */
-const SHIFT_X = 32;
-const SHIFT_Y = 42;
-const SCALE_EXTRA = 0.045;
+const SHIFT_X = 48;
+const SHIFT_Y = 72;
+/** Zoom range: starts slightly “in camera” at the top, eases out toward 1 as you scroll (dolly / parallax read). */
+const SCALE_START = 1.12;
+const SCALE_END = 1;
 
 /** Fade the fixed plate out over the last ~this many viewports before the block ends (smooth handoff to solid bg below). */
 const EXIT_FADE_VH = 0.95;
-
-/**
- * Keep translate/scale at their “hero” values for the first this many viewports of
- * scroll through the block. Parallax drift only runs after that.
- */
-const HERO_LOCK_VH = 2;
-
-/** Always leave at least this much scroll range after the lock for parallax drift (if the block is tall enough). */
-const PARALLAX_TAIL_MIN_VH = 0.35;
 
 function smoothstep01(t: number) {
   const x = clamp(t, 0, 1);
   return x * x * (3 - 2 * x);
 }
 
-/** Hero + marquee + intro: fixed 100vh scenic camera; drift after 2 viewports of scroll; fade at block end. */
+/** Hero + marquee + intro: fixed 100vh scenic camera; scroll-driven zoom + drift; fade at block end. */
 export function FirstSectionsParallaxBg({ children }: { children: React.ReactNode; }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number>(0);
@@ -76,21 +69,15 @@ export function FirstSectionsParallaxBg({ children }: { children: React.ReactNod
       return;
     }
 
-    // 0 → 1 only after the hero “lock” region, over the remaining scroll through the block
+    // 0 → 1 over the whole scroll range through this block (parallax + zoom visible immediately)
     const scrollPast = Math.max(0, scrollY - top);
     const totalScroll = Math.max(1, h - vh);
-    const lockPx = Math.min(
-      HERO_LOCK_VH * vh,
-      Math.max(0, totalScroll - PARALLAX_TAIL_MIN_VH * vh),
-    );
-    const animRange = Math.max(1, totalScroll - lockPx);
-    const progress =
-      scrollPast <= lockPx ? 0 : clamp((scrollPast - lockPx) / animRange, 0, 1);
+    const progress = smoothstep01(clamp(scrollPast / totalScroll, 0, 1));
 
     setLayer({
       x: progress * SHIFT_X,
       y: -progress * SHIFT_Y,
-      scale: 1 + progress * SCALE_EXTRA,
+      scale: SCALE_START + (SCALE_END - SCALE_START) * progress,
       opacity: plateOpacity,
     });
   }, []);
@@ -124,7 +111,7 @@ export function FirstSectionsParallaxBg({ children }: { children: React.ReactNod
       >
         <div className="absolute inset-0">
           <div
-            className="absolute left-1/2 top-1/2 h-[122%] w-[122%] will-change-transform"
+            className="absolute left-1/2 top-1/2 h-[130%] w-[130%] will-change-transform"
             style={{
               transform: `translate3d(calc(-50% + ${layer.x}px), calc(-50% + ${layer.y}px), 0) scale(${layer.scale})`,
             }}
