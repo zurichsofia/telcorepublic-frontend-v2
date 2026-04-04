@@ -51,7 +51,7 @@ export function Hero() {
               </motion.p>
 
               <motion.div
-                className="pointer-events-none mx-auto mt-14 h-px w-24 max-w-[40%] origin-center bg-gradient-to-r from-transparent via-[rgba(255,180,100,0.45)] to-transparent sm:mt-16"
+                className="pointer-events-none mx-auto mt-14 h-px w-24 max-w-[40%] origin-center bg-gradient-to-r from-transparent via-[rgba(58,52,68,0.5)] to-transparent sm:mt-16"
                 initial={reduce ? undefined : { opacity: 0, scaleX: 0.2 }}
                 animate={reduce ? undefined : { opacity: 1, scaleX: 1 }}
                 transition={{ duration: 1.1, ease, delay: 0.45 }}

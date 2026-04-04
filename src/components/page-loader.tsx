@@ -92,17 +92,17 @@ export function PageLoader() {
           Research
         </span>
 
-        <div className="relative mt-10 h-[2px] w-[min(12rem,70vw)] overflow-hidden rounded-full bg-[rgba(120,160,210,0.12)]">
+        <div className="relative mt-10 h-[2px] w-[min(12rem,70vw)] overflow-hidden rounded-full bg-[var(--border-subtle)]">
           {!reduce && (
             <motion.span
-              className="absolute inset-y-0 w-1/3 rounded-full bg-linear-to-r from-transparent via-[rgba(255,180,100,0.65)] to-transparent"
+              className="absolute inset-y-0 w-1/3 rounded-full bg-linear-to-r from-transparent via-[rgba(58,52,68,0.65)] to-transparent"
               animate={{ left: ["-33%", "100%"] }}
               transition={{ duration: 1.35, repeat: Infinity, ease: "linear" }}
             />
           )}
           {reduce && (
             <span
-              className="absolute inset-0 bg-linear-to-r from-transparent via-[rgba(255,180,100,0.4)] to-transparent opacity-80"
+              className="absolute inset-0 bg-linear-to-r from-transparent via-[rgba(58,52,68,0.42)] to-transparent opacity-80"
               aria-hidden
             />
           )}

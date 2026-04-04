@@ -143,7 +143,7 @@ function HeroCloudScene({
             {...CLOUD_PRESET}
             seed={2}
             speed={0}
-            color="#eed0d0"
+            color="#d0dce8"
             position={CLOUD_BASE[1]}
           />
           <Cloud
@@ -151,7 +151,7 @@ function HeroCloudScene({
             {...CLOUD_PRESET}
             seed={3}
             speed={0}
-            color="#d0e0d0"
+            color="#c8d8e8"
             position={CLOUD_BASE[2]}
           />
           <Cloud
@@ -159,7 +159,7 @@ function HeroCloudScene({
             {...CLOUD_PRESET}
             seed={4}
             speed={0}
-            color="#a0b0d0"
+            color="#90a8c8"
             position={CLOUD_BASE[3]}
           />
           <Cloud
@@ -167,7 +167,7 @@ function HeroCloudScene({
             {...CLOUD_PRESET}
             seed={5}
             speed={0}
-            color="#c0c0dd"
+            color="#b8c8e0"
             position={CLOUD_BASE[4]}
           />
         </Clouds>

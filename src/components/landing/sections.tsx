@@ -78,7 +78,7 @@ export function ServicesSection() {
         <ScrollReveal from="right" delayMs={80} className="sm:self-end">
           <Link
             href="#contact"
-            className="inline-flex shrink-0 rounded-full border border-[rgba(140,180,220,0.35)] bg-[rgba(15,25,50,0.78)] px-6 py-3 text-[13px] font-medium uppercase tracking-[0.1em] text-[var(--color-accent)] transition hover:border-[rgba(140,180,220,0.55)] hover:bg-[rgba(30,50,90,0.88)]"
+            className="inline-flex shrink-0 rounded-full border border-[var(--border-tech-strong)] bg-[var(--surface-panel)] px-6 py-3 text-[13px] font-medium uppercase tracking-[0.1em] text-[var(--color-accent)] transition hover:border-[var(--border-tech-hover)] hover:bg-[var(--surface-panel-hover)]"
           >
             Start a conversation
           </Link>
@@ -92,8 +92,8 @@ export function ServicesSection() {
             delayMs={i * 55}
             className="h-full"
           >
-            <article className="group flex h-full flex-col rounded-2xl border border-[rgba(120,160,210,0.12)] bg-[rgba(8,14,28,0.78)] p-8 transition-[border-color,box-shadow,transform] duration-500 ease-out motion-safe:hover:-translate-y-1 motion-safe:hover:border-[rgba(140,180,220,0.22)] motion-safe:hover:shadow-[0_20px_50px_-24px_rgba(0,0,0,0.85)]">
-              <h3 className="font-display text-2xl font-normal tracking-tight text-[var(--color-heading)] transition-colors duration-300 group-hover:text-[rgba(248,252,240,0.98)]">
+            <article className="group flex h-full flex-col rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-panel)] p-8 transition-[border-color,box-shadow,transform] duration-500 ease-out motion-safe:hover:-translate-y-1 motion-safe:hover:border-[var(--border-tech)] motion-safe:hover:shadow-[0_20px_50px_-24px_rgba(0,0,0,0.85)]">
+              <h3 className="font-display text-2xl font-normal tracking-tight text-[var(--color-heading)] transition-colors duration-300 group-hover:text-[rgba(244,242,248,0.98)]">
                 {s.title}
               </h3>
               <p className="mt-3 flex-1 text-sm font-light leading-relaxed text-[var(--color-body)]">
@@ -117,7 +117,7 @@ export function ContactSection() {
   return (
     <section
       id="contact"
-      className="relative overflow-hidden border-t border-[rgba(140,180,120,0.08)] px-5 py-24 sm:px-8 sm:py-32"
+      className="relative overflow-hidden border-t border-[var(--border-subtle)] px-5 py-24 sm:px-8 sm:py-32"
     >
       <ScrollReveal
         from="up"
@@ -129,7 +129,7 @@ export function ContactSection() {
         </p>
         <h2 className="font-display mt-4 text-4xl font-normal tracking-tight text-[var(--color-heading)] sm:text-5xl">
           Build on{" "}
-          <em className="text-[var(--color-accent)] [text-shadow:0_0_30px_rgba(255,180,100,0.35)]">
+          <em className="text-[var(--color-accent)] [text-shadow:0_0_30px_var(--glow-accent)]">
             evidence
           </em>
         </h2>
@@ -140,13 +140,13 @@ export function ContactSection() {
         <div className="mt-10 flex flex-wrap justify-center gap-4">
           {/* <a
             href="mailto:hello@telcore.example"
-            className="inline-flex items-center gap-2 rounded-full border border-[rgba(140,180,220,0.35)] bg-[rgba(15,25,50,0.78)] px-8 py-3.5 text-[13px] font-medium uppercase tracking-[0.1em] text-[var(--color-accent)] transition motion-safe:hover:scale-[1.02] hover:border-[rgba(140,180,220,0.55)] hover:bg-[rgba(30,50,90,0.88)]"
+            className="inline-flex items-center gap-2 rounded-full border border-[var(--border-tech-strong)] bg-[var(--surface-panel)] px-8 py-3.5 text-[13px] font-medium uppercase tracking-[0.1em] text-[var(--color-accent)] transition motion-safe:hover:scale-[1.02] hover:border-[var(--border-tech-hover)] hover:bg-[var(--surface-panel-hover)]"
           >
             hello@telcore.example
           </a> */}
           <a
             href="#home"
-            className="inline-flex rounded-full border border-[rgba(140,180,220,0.22)] px-8 py-3.5 text-[13px] font-medium uppercase tracking-[0.08em] text-[rgba(215,230,190,0.65)] transition motion-safe:hover:scale-[1.02] hover:border-[rgba(140,180,220,0.4)] hover:text-[var(--accent-hover)]"
+            className="inline-flex rounded-full border border-[var(--border-tech)] px-8 py-3.5 text-[13px] font-medium uppercase tracking-[0.08em] text-[var(--text-nav-muted)] transition motion-safe:hover:scale-[1.02] hover:border-[var(--border-tech-hover)] hover:text-[var(--accent-hover)]"
           >
             Contact Us
           </a>

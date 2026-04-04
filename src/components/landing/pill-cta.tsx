@@ -31,10 +31,10 @@ export function PillCta({ href, children, variant }: PillCtaProps) {
     return (
       <Link
         href={href}
-        className="group inline-flex items-center gap-2 rounded-full border border-[rgba(140,180,220,0.35)] bg-[rgba(15,25,50,0.5)] px-1.5 py-1.5 pl-6 text-[13px] font-medium uppercase tracking-[0.08em] text-[var(--color-accent)] shadow-lg shadow-black/30 backdrop-blur-[10px] transition hover:border-[rgba(140,180,220,0.55)] hover:bg-[rgba(30,50,90,0.55)] sm:pl-7"
+        className="group inline-flex items-center gap-2 rounded-full border border-[var(--border-tech-strong)] bg-[var(--surface-panel)] px-1.5 py-1.5 pl-6 text-[13px] font-medium uppercase tracking-[0.08em] text-[var(--color-accent)] shadow-lg shadow-black/30 backdrop-blur-[10px] transition hover:border-[var(--border-tech-hover)] hover:bg-[var(--surface-panel-hover)] sm:pl-7"
       >
         <span>{children}</span>
-        <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[rgba(140,180,220,0.25)] bg-[rgba(10,18,30,0.6)] text-[var(--color-accent)] transition group-hover:border-[rgba(140,180,220,0.45)] sm:h-10 sm:w-10">
+        <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border-tech)] bg-[var(--surface-glass)] text-[var(--color-accent)] transition group-hover:border-[var(--border-tech-hover)] sm:h-10 sm:w-10">
           <ArrowIcon className="h-4 w-4" />
         </span>
       </Link>
@@ -44,7 +44,7 @@ export function PillCta({ href, children, variant }: PillCtaProps) {
   return (
     <Link
       href={href}
-      className="inline-flex items-center gap-2 rounded-full border border-[rgba(140,180,220,0.25)] bg-[rgba(10,18,30,0.35)] px-7 py-3 text-[12px] font-medium uppercase tracking-[0.12em] text-[var(--color-accent)] backdrop-blur-xl transition hover:border-[rgba(140,180,220,0.45)] hover:bg-[rgba(30,50,80,0.45)] sm:py-3.5"
+      className="inline-flex items-center gap-2 rounded-full border border-[var(--border-tech)] bg-[var(--surface-glass)] px-7 py-3 text-[12px] font-medium uppercase tracking-[0.12em] text-[var(--color-accent)] backdrop-blur-xl transition hover:border-[var(--border-tech-hover)] hover:bg-[var(--surface-panel)] sm:py-3.5"
     >
       {children}
     </Link>

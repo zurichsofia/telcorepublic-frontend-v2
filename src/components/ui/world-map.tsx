@@ -22,7 +22,13 @@ interface MapProps {
 }
 
 const DOT_R = 1;
-const DOT_R_PULSE = 1.1;
+const DOT_R_PULSE = 1.15;
+/** Expanding ring — viewBox height is ~100; keep ripple large enough to read on screen. */
+const PULSE_RING_MIN = 1.5;
+const PULSE_RING_MAX = 6;
+const PULSE_STROKE_W = 0.2;
+/** Brighter than route lines so the pulse reads on dark backgrounds */
+const PULSE_RING_COLOR = "rgba(210, 205, 225, 0.92)";
 
 /** Matches dotted-map internals (Mercator + same bounds as the raster SVG). */
 type DottedMapLayout = {
@@ -54,12 +60,13 @@ function projectLatLng(
 
 export default function WorldMap({
   dots = [],
-  lineColor = "#0ea5e9",
+  lineColor = "#3a3444",
 }: MapProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, amount: 0.35 });
   const gradientId = `wm-${useId().replace(/:/g, "")}`;
+  const arcGlowFilterId = `wm-arc-glow-${useId().replace(/:/g, "")}`;
 
   const map = useMemo(
     () => new DottedMap({ height: 100, grid: "diagonal" }),
@@ -121,34 +128,21 @@ export default function WorldMap({
         preserveAspectRatio="none"
         className="absolute inset-0 h-full w-full pointer-events-none select-none"
       >
-        {dots.map((dot, i) => {
-          const startPoint = projectLatLng(
-            dot.start.lat,
-            dot.start.lng,
-            layout
-          );
-          const endPoint = projectLatLng(dot.end.lat, dot.end.lng, layout);
-          return (
-            <g key={`path-group-${i}`}>
-              <motion.path
-                d={createCurvedPath(startPoint, endPoint, layout.height)}
-                fill="none"
-                stroke={`url(#${gradientId})`}
-                strokeWidth="0.38"
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: isInView ? 1 : 0 }}
-                transition={{
-                  duration: 1,
-                  delay: 0.45 * i,
-                  ease: "easeOut",
-                }}
-                key={`start-upper-${i}`}
-              />
-            </g>
-          );
-        })}
-
         <defs>
+          <filter
+            id={arcGlowFilterId}
+            x="-80%"
+            y="-80%"
+            width="260%"
+            height="260%"
+            filterUnits="objectBoundingBox"
+          >
+            <feGaussianBlur in="SourceGraphic" stdDeviation="1.35" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
           <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="white" stopOpacity="0" />
             <stop offset="5%" stopColor={lineColor} stopOpacity="1" />
@@ -156,6 +150,49 @@ export default function WorldMap({
             <stop offset="100%" stopColor="white" stopOpacity="0" />
           </linearGradient>
         </defs>
+
+        {dots.map((dot, i) => {
+          const startPoint = projectLatLng(
+            dot.start.lat,
+            dot.start.lng,
+            layout
+          );
+          const endPoint = projectLatLng(dot.end.lat, dot.end.lng, layout);
+          const d = createCurvedPath(startPoint, endPoint, layout.height);
+          const transition = {
+            duration: 1,
+            delay: 0.45 * i,
+            ease: "easeOut" as const,
+          };
+          return (
+            <g key={`path-group-${i}`}>
+              <motion.path
+                d={d}
+                fill="none"
+                stroke={`url(#${gradientId})`}
+                strokeWidth="1.3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                opacity={0.42}
+                filter={`url(#${arcGlowFilterId})`}
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: isInView ? 1 : 0 }}
+                transition={transition}
+              />
+              <motion.path
+                d={d}
+                fill="none"
+                stroke={`url(#${gradientId})`}
+                strokeWidth="0.38"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: isInView ? 1 : 0 }}
+                transition={transition}
+              />
+            </g>
+          );
+        })}
 
         {dots.map((dot, i) => {
           const start = projectLatLng(dot.start.lat, dot.start.lng, layout);
@@ -170,30 +207,76 @@ export default function WorldMap({
                   fill={lineColor}
                 />
                 {dot.start.pulse ? (
-                  <circle
-                    cx={start.x}
-                    cy={start.y}
-                    r={DOT_R_PULSE}
-                    fill={lineColor}
-                    opacity="0.4"
-                  >
-                    <animate
-                      attributeName="r"
-                      from={DOT_R_PULSE}
-                      to="4.5"
-                      dur="2s"
-                      begin="0s"
-                      repeatCount="indefinite"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      from="0.45"
-                      to="0"
-                      dur="2s"
-                      begin="0s"
-                      repeatCount="indefinite"
-                    />
-                  </circle>
+                  <g aria-hidden>
+                    <circle
+                      cx={start.x}
+                      cy={start.y}
+                      r={PULSE_RING_MIN}
+                      fill="none"
+                      stroke={PULSE_RING_COLOR}
+                      strokeWidth={PULSE_STROKE_W}
+                      strokeLinecap="round"
+                    >
+                      <animate
+                        attributeName="r"
+                        from={PULSE_RING_MIN}
+                        to={PULSE_RING_MAX}
+                        dur="2.2s"
+                        begin="0s"
+                        repeatCount="indefinite"
+                      />
+                      <animate
+                        attributeName="stroke-opacity"
+                        from="0.88"
+                        to="0"
+                        dur="2.2s"
+                        begin="0s"
+                        repeatCount="indefinite"
+                      />
+                      <animate
+                        attributeName="stroke-width"
+                        from={PULSE_STROKE_W}
+                        to="0.12"
+                        dur="2.2s"
+                        begin="0s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                    <circle
+                      cx={start.x}
+                      cy={start.y}
+                      r={PULSE_RING_MIN}
+                      fill="none"
+                      stroke={PULSE_RING_COLOR}
+                      strokeWidth={PULSE_STROKE_W}
+                      strokeLinecap="round"
+                    >
+                      <animate
+                        attributeName="r"
+                        from={PULSE_RING_MIN}
+                        to={PULSE_RING_MAX}
+                        dur="2.2s"
+                        begin="1.1s"
+                        repeatCount="indefinite"
+                      />
+                      <animate
+                        attributeName="stroke-opacity"
+                        from="0.88"
+                        to="0"
+                        dur="2.2s"
+                        begin="1.1s"
+                        repeatCount="indefinite"
+                      />
+                      <animate
+                        attributeName="stroke-width"
+                        from={PULSE_STROKE_W}
+                        to="0.12"
+                        dur="2.2s"
+                        begin="1.1s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                  </g>
                 ) : null}
               </g>
               <g key={`end-${i}`}>

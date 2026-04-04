@@ -36,11 +36,11 @@ export function CardSpotlight({
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
         style={{
-          /* Multi-stop so the glow reads dark purple → teal-green → blue (not flat cyan) */
+          /* Muted grey-violet */
           background: `radial-gradient(600px circle at ${position.x}px ${position.y}px,
-            rgba(95, 72, 128, 0.38) 0%,
-            rgba(52, 108, 98, 0.22) 34%,
-            rgba(62, 132, 168, 0.16) 54%,
+            rgba(62, 58, 76, 0.22) 0%,
+            rgba(48, 46, 62, 0.14) 38%,
+            rgba(38, 40, 52, 0.09) 55%,
             transparent 64%)`,
         }}
       />
