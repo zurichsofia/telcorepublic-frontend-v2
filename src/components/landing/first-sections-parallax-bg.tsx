@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useLayoutEffect, useRef } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { HeroCloudsThree } from "./hero-clouds-three";
 import type { HeroParallaxMotion } from "./hero-clouds-three";
@@ -11,26 +11,21 @@ function clamp(n: number, min: number, max: number) {
   return Math.min(max, Math.max(min, n));
 }
 
-/**
- * Horizontal parallax: positive X shifts the plate right as you scroll down, so the viewport reveals
- * more of the right side of the image (within the oversized 130% layer). Capped vw so it scales on large screens.
- */
-const SHIFT_X_VW = 6;
-const SHIFT_X_MAX_PX = 80;
-const SHIFT_Y = 72;
-/** Zoom range: starts slightly “in camera” at the top, eases out toward 1 as you scroll (dolly / parallax read). */
+/** Initial scale for the hero image plate (matches CSS transform on the layer). */
 const SCALE_START = 1.12;
-const SCALE_END = 1;
 
-/** Fade the fixed plate out over the last ~this many viewports before the block ends (smooth handoff to solid bg below). */
-const EXIT_FADE_VH = 0.95;
+/**
+ * Fade the fixed plate out over the last portion of the block (distance from viewport top to the block’s
+ * bottom edge). Larger = longer, gentler ramp before the solid sections below.
+ */
+const EXIT_FADE_VH = 0.55;
 
 function smoothstep01(t: number) {
   const x = clamp(t, 0, 1);
   return x * x * (3 - 2 * x);
 }
 
-/** Hero + marquee + intro: fixed 100vh scenic camera; scroll-driven zoom + drift; fade at block end. */
+/** Hero + statement: fixed 100vh scenic camera; only visible while this block intersects the viewport. */
 export function FirstSectionsParallaxBg({ children }: { children: React.ReactNode; }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const fixedShellRef = useRef<HTMLDivElement>(null);
@@ -42,13 +37,51 @@ export function FirstSectionsParallaxBg({ children }: { children: React.ReactNod
     scale: SCALE_START,
   });
 
+  const [bgOpacity, setBgOpacity] = useState(1);
+
+  const updateBgOpacity = useCallback(() => {
+    const el = rootRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const vh = window.innerHeight;
+    const t = rect.top;
+    const b = rect.bottom;
+
+    if (t >= vh || b <= 0) {
+      setBgOpacity(0);
+      return;
+    }
+
+    const fadePx = vh * EXIT_FADE_VH;
+    if (b >= fadePx) {
+      setBgOpacity(1);
+      return;
+    }
+
+    setBgOpacity(smoothstep01(b / fadePx));
+  }, []);
+
+  useLayoutEffect(() => {
+    updateBgOpacity();
+  }, [updateBgOpacity]);
+
+  useEffect(() => {
+    updateBgOpacity();
+    window.addEventListener("scroll", updateBgOpacity, { passive: true });
+    window.addEventListener("resize", updateBgOpacity);
+    return () => {
+      window.removeEventListener("scroll", updateBgOpacity);
+      window.removeEventListener("resize", updateBgOpacity);
+    };
+  }, [updateBgOpacity]);
+
   return (
     <div ref={rootRef} className="relative isolate">
-      {/* Fixed viewport: always exactly one screen tall — never 200vh / 300vh */}
+      {/* Fixed viewport: exactly one screen tall — does not extend with page length */}
       <div
         ref={fixedShellRef}
-        className="pointer-events-none fixed inset-x-0 top-0 z-0 h-svh max-h-svh min-h-0 w-full overflow-hidden"
-        style={{ opacity: 1, visibility: "visible" }}
+        className="pointer-events-none fixed inset-x-0 top-0 z-0 h-screen max-h-screen min-h-0 w-full overflow-hidden"
+        style={{ opacity: bgOpacity }}
         aria-hidden
       >
         <div className="absolute inset-0">

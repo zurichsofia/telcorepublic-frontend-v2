@@ -2,7 +2,7 @@ import { FirstSectionsParallaxBg } from "@/components/landing/first-sections-par
 import { Hero } from "@/components/landing/hero";
 import { Marquee } from "@/components/landing/marquee";
 import {
-  StatementBand,
+  BrandStatements,
   InsightsSection,
   ContactSection,
 } from "@/components/landing/sections";
@@ -14,8 +14,8 @@ export default function Home() {
       <main>
         <FirstSectionsParallaxBg>
           <Hero />
+          <BrandStatements />
         </FirstSectionsParallaxBg>
-        <StatementBand />
         <Marquee />
         <InsightsSection />
         <ContactSection />

@@ -136,7 +136,7 @@ export function MethodologySection() {
   );
 }
 
-export function StatementBand() {
+export function BrandStatements() {
   return (
     <section className="relative overflow-hidden border-y border-[rgba(140,180,120,0.08)] py-24 sm:py-32">
       <div
