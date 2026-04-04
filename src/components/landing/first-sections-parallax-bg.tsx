@@ -12,7 +12,6 @@ import {
 
 import { HeroCloudsThree } from "./hero-clouds-three";
 import type { HeroParallaxMotion } from "./hero-clouds-three";
-import { TvStaticGrain } from "./tv-static-grain";
 
 function clamp(n: number, min: number, max: number) {
   return Math.min(max, Math.max(min, n));
@@ -166,7 +165,6 @@ export function FirstSectionsParallaxBg({ children }: { children: React.ReactNod
             className="absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_50%_40%,rgba(255,255,255,0.05),transparent_55%)]"
             aria-hidden
           />
-          <TvStaticGrain opacity={0.2} staticAmount={0.94} />
         </div>
       </div>
 

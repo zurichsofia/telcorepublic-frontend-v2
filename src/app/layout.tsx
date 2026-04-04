@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display, Geist } from "next/font/google";
 import "./globals.css";
+import { GlobalTvGrainOverlay } from "@/components/global-tv-grain-overlay";
 import { cn } from "@/lib/utils";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
@@ -38,6 +39,7 @@ export default function RootLayout({
         className={`${inter.className} min-h-screen bg-[var(--bg)] font-light text-[var(--fg)] antialiased`}
       >
         {children}
+        <GlobalTvGrainOverlay />
       </body>
     </html>
   );
