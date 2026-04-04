@@ -47,21 +47,23 @@ export function WhyTelcoRepublicSection() {
       />
 
       <div className="relative mx-auto max-w-6xl px-5 py-28 sm:px-8 sm:py-36">
-        <header className="max-w-3xl">
-          <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-[var(--color-label)]">
-            Why Telco Republic
-          </p>
-          <h2
-            id="why-telco-republic-heading"
-            className="font-display mt-5 text-[clamp(2.25rem,5vw,3.5rem)] font-normal leading-[1.08] tracking-[-0.02em] text-[var(--color-heading)]"
-          >
-            Built on depth, not decks.
-          </h2>
-          <p className="mt-6 max-w-xl text-lg font-light leading-relaxed text-[var(--color-body)] sm:text-[1.05rem]">
-            Six reasons teams work with us — research-grade rigor with operator
-            context.
-          </p>
-        </header>
+        <ScrollReveal from="up" className="max-w-3xl">
+          <header>
+            <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-[var(--color-label)]">
+              Why Telco Republic
+            </p>
+            <h2
+              id="why-telco-republic-heading"
+              className="font-display mt-5 text-[clamp(2.25rem,5vw,3.5rem)] font-normal leading-[1.08] tracking-[-0.02em] text-[var(--color-heading)]"
+            >
+              Built on depth, not decks.
+            </h2>
+            <p className="mt-6 max-w-xl text-lg font-light leading-relaxed text-[var(--color-body)] sm:text-[1.05rem]">
+              Six reasons teams work with us — research-grade rigor with operator
+              context.
+            </p>
+          </header>
+        </ScrollReveal>
 
         <ol className="mt-20 list-none space-y-0 border-t border-[rgba(255,255,255,0.06)]">
           {reasons.map((item, index) => {
@@ -100,20 +102,27 @@ export function WhyTelcoRepublicSection() {
           })}
         </ol>
 
-        <div className="mt-16 flex flex-col items-start gap-6 border-t border-[rgba(255,255,255,0.06)] pt-12 sm:flex-row sm:items-center sm:justify-between">
+        <ScrollReveal
+          from="up"
+          delayMs={80}
+          className="mt-16 flex flex-col items-start gap-6 border-t border-[rgba(255,255,255,0.06)] pt-12 sm:flex-row sm:items-center sm:justify-between"
+        >
           <p className="max-w-md text-sm font-light leading-relaxed text-[var(--color-body)]">
             Ready to pressure-test a roadmap or benchmark a vendor landscape?
           </p>
           <Link
             href="#contact"
-            className="inline-flex items-center gap-2 rounded-full border border-[rgba(255,255,255,0.12)] bg-[rgba(255,255,255,0.03)] px-6 py-3 text-sm font-medium text-[var(--color-heading)] backdrop-blur-sm transition hover:border-[rgba(255,180,100,0.35)] hover:bg-[rgba(255,255,255,0.06)]"
+            className="group inline-flex items-center gap-2 rounded-full border border-[rgba(255,255,255,0.12)] bg-[rgba(255,255,255,0.03)] px-6 py-3 text-sm font-medium text-[var(--color-heading)] backdrop-blur-sm transition motion-safe:hover:translate-x-0.5 hover:border-[rgba(255,180,100,0.35)] hover:bg-[rgba(255,255,255,0.06)]"
           >
             Start a conversation
-            <span aria-hidden className="text-[var(--color-accent)]">
+            <span
+              aria-hidden
+              className="text-[var(--color-accent)] transition-transform motion-safe:group-hover:translate-x-0.5"
+            >
               ↗
             </span>
           </Link>
-        </div>
+        </ScrollReveal>
       </div>
     </section>
   );

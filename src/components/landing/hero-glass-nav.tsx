@@ -1,7 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { motion, useReducedMotion } from "motion/react";
 import { useState } from "react";
+
+const ease = [0.22, 1, 0.36, 1] as const;
 
 const nav = [
   { href: "#home", label: "Home" },
@@ -13,9 +16,15 @@ const nav = [
 
 export function HeroGlassNav() {
   const [open, setOpen] = useState(false);
+  const reduce = useReducedMotion();
 
   return (
-    <div className="absolute inset-x-0 top-0 z-20 px-5 pt-5 sm:px-8 sm:pt-7">
+    <motion.div
+      className="absolute inset-x-0 top-0 z-20 px-5 pt-5 sm:px-8 sm:pt-7"
+      initial={reduce ? undefined : { opacity: 0, y: -14 }}
+      animate={reduce ? undefined : { opacity: 1, y: 0 }}
+      transition={{ duration: 0.75, ease, delay: 0.04 }}
+    >
       <div className="relative flex items-center justify-between">
         <Link
           href="/"
@@ -86,6 +95,6 @@ export function HeroGlassNav() {
           </nav>
         </div>
       ) : null}
-    </div>
+    </motion.div>
   );
 }

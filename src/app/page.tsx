@@ -19,8 +19,8 @@ export default function Home() {
           <BrandStatements />
         </FirstSectionsParallaxBg>
         <Marquee />
-        <ServicesSection />
         <GlobalReachMapSection />
+        <ServicesSection />
         <WhyTelcoRepublicSection />
         <ContactSection />
       </main>

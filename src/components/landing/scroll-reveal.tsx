@@ -1,68 +1,77 @@
 "use client";
 
-import {
-  type ReactNode,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { motion, useReducedMotion } from "motion/react";
+import type { ReactNode } from "react";
+
+export type ScrollRevealFrom = "left" | "right" | "up" | "down";
 
 type ScrollRevealProps = {
   children: ReactNode;
   className?: string;
-  /** Horizontal entrance direction */
-  from?: "left" | "right";
+  /** Entrance direction */
+  from?: ScrollRevealFrom;
   delayMs?: number;
+  /** Subtle blur-in (heavier; use sparingly) */
+  blur?: boolean;
 };
+
+const ease = [0.22, 1, 0.36, 1] as const;
+
+function offsetFor(from: ScrollRevealFrom) {
+  switch (from) {
+    case "right":
+      return { x: 36, y: 0 };
+    case "up":
+      return { x: 0, y: 36 };
+    case "down":
+      return { x: 0, y: -28 };
+    case "left":
+    default:
+      return { x: -36, y: 0 };
+  }
+}
 
 export function ScrollReveal({
   children,
   className = "",
   from = "left",
   delayMs = 0,
+  blur = false,
 }: ScrollRevealProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setVisible(true);
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.unobserve(el);
-        }
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  const fromClass =
-    from === "right"
-      ? "translate-x-8 sm:translate-x-12"
-      : "-translate-x-8 sm:-translate-x-12";
+  const reduce = useReducedMotion();
+  const { x, y } = offsetFor(from);
 
   return (
-    <div ref={ref} className={className}>
-      <div
-        className={[
-          "transition-[opacity,transform] duration-700 ease-out motion-reduce:duration-0",
-          visible ? "translate-x-0 opacity-100" : `opacity-0 ${fromClass}`,
-        ].join(" ")}
-        style={{ transitionDelay: visible ? `${delayMs}ms` : "0ms" }}
-      >
-        {children}
-      </div>
-    </div>
+    <motion.div
+      className={className}
+      initial={
+        reduce
+          ? undefined
+          : {
+              opacity: 0,
+              x,
+              y,
+              filter: blur ? "blur(12px)" : "blur(0px)",
+            }
+      }
+      whileInView={
+        reduce
+          ? undefined
+          : {
+              opacity: 1,
+              x: 0,
+              y: 0,
+              filter: "blur(0px)",
+            }
+      }
+      viewport={{ once: true, amount: 0.14, margin: "0px 0px -12% 0px" }}
+      transition={{
+        duration: 0.75,
+        delay: delayMs / 1000,
+        ease,
+      }}
+    >
+      {children}
+    </motion.div>
   );
 }

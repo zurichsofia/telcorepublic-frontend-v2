@@ -111,6 +111,25 @@ body {
   }
 }
 
+/** Slow ambient opacity pulse for large gradient orbs (sections) */
+@keyframes ambient-glow {
+  0%,
+  100% {
+    opacity: 0.82;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-ambient-glow {
+  animation: ambient-glow 14s ease-in-out infinite;
+}
+
+.animate-ambient-glow-slow {
+  animation: ambient-glow 22s ease-in-out infinite;
+}
+
 .animate-fade-up {
   animation: fade-up 1s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -127,6 +146,11 @@ body {
     animation: none;
     opacity: 1;
     transform: none;
+  }
+  .animate-ambient-glow,
+  .animate-ambient-glow-slow {
+    animation: none;
+    opacity: 1;
   }
 }
 
