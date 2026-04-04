@@ -3,7 +3,7 @@ import { HeroGlassNav } from "./hero-glass-nav";
 export function Hero() {
   return (
     <section className="bg-transparent px-3 pb-10 pt-3 sm:px-5 sm:pb-14 sm:pt-5">
-      <div className="relative mx-auto max-w-[min(100%,1400px)] overflow-hidden rounded-[1.75rem] border border-[rgba(120,160,210,0.12)] bg-transparent shadow-[0_0_0_1px_rgba(140,180,220,0.06),0_40px_100px_-20px_rgba(0,0,0,0.85)] sm:rounded-[2.25rem]">
+      <div className="relative mx-auto w-full max-w-[min(100%,1400px)] border-0 bg-transparent shadow-none ring-0 outline-none">
         <div className="relative min-h-[90svh] w-full">
           <HeroGlassNav />
 
