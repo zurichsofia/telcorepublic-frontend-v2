@@ -4,9 +4,10 @@ import Link from "next/link";
 import { useState } from "react";
 
 const nav = [
-  { href: "#research", label: "Research" },
-  { href: "#methodology", label: "Methodology" },
-  { href: "#insights", label: "Insights" },
+  { href: "#home", label: "Home" },
+  { href: "#blog", label: "Blog" },
+  { href: "#aboutus", label: "About Us" },
+  { href: "#services", label: "Services" },
   { href: "#contact", label: "Contact" },
 ];
 
@@ -58,7 +59,7 @@ export function HeroGlassNav() {
         </nav>
 
         <div className="flex shrink-0 items-center gap-2">
-          <Link
+          {/* <Link
             href="#contact"
             className="hidden items-center gap-2 rounded-full bg-black px-1.5 py-1.5 pl-5 text-sm font-semibold text-white shadow-lg shadow-black/30 sm:inline-flex"
           >
@@ -66,7 +67,7 @@ export function HeroGlassNav() {
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-black">
               <ArrowIcon className="h-4 w-4" />
             </span>
-          </Link>
+          </Link> */}
 
           <button
             type="button"

@@ -50,36 +50,35 @@ const insights = [
 
 export function IntroSection() {
   return (
-    <section
-      id="research"
-      className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-32"
-    >
-      <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#7cb8ff]">
-        Your research partner
-      </p>
-      <h2 className="mt-4 max-w-3xl text-4xl font-bold tracking-tight text-[#f4f2ed] sm:text-5xl">
-        Networks that stay honest under load
-      </h2>
-      <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/55">
-        Telcorepublic is an independent research practice focused on telecommunications
-        infrastructure, radio systems, and the economics of connectivity. We help
-        you see trade-offs before they become outages or stranded assets.
-      </p>
-      <div className="mt-16 grid gap-8 md:grid-cols-3">
-        {pillars.map((p) => (
-          <article
-            key={p.title}
-            className="group rounded-2xl border border-white/[0.08] bg-white/[0.02] p-8 transition hover:border-white/[0.14] hover:bg-white/[0.04]"
-          >
-            <p className="text-xs font-semibold uppercase tracking-wider text-[#7cb8ff]/90">
-              {p.tag}
-            </p>
-            <h3 className="mt-4 font-bold tracking-tight text-2xl text-[#f4f2ed]">
-              {p.title}
-            </h3>
-            <p className="mt-3 text-sm leading-relaxed text-white/55">{p.body}</p>
-          </article>
-        ))}
+    <section id="research" className="relative">
+      <div className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-32">
+        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#7cb8ff]">
+          Your research partner
+        </p>
+        <h2 className="mt-4 max-w-3xl text-4xl font-bold tracking-tight text-[#f4f2ed] sm:text-5xl">
+          Networks that stay honest under load
+        </h2>
+        <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/55">
+          Telcorepublic is an independent research practice focused on telecommunications
+          infrastructure, radio systems, and the economics of connectivity. We help
+          you see trade-offs before they become outages or stranded assets.
+        </p>
+        <div className="mt-16 grid gap-8 md:grid-cols-3">
+          {pillars.map((p) => (
+            <article
+              key={p.title}
+              className="group rounded-2xl border border-white/[0.08] bg-white/[0.02] p-8 transition hover:border-white/[0.14] hover:bg-white/[0.04]"
+            >
+              <p className="text-xs font-semibold uppercase tracking-wider text-[#7cb8ff]/90">
+                {p.tag}
+              </p>
+              <h3 className="mt-4 font-bold tracking-tight text-2xl text-[#f4f2ed]">
+                {p.title}
+              </h3>
+              <p className="mt-3 text-sm leading-relaxed text-white/55">{p.body}</p>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );

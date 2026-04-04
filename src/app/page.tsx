@@ -1,3 +1,4 @@
+import { FirstSectionsParallaxBg } from "@/components/landing/first-sections-parallax-bg";
 import { Hero } from "@/components/landing/hero";
 import { Marquee } from "@/components/landing/marquee";
 import {
@@ -13,9 +14,11 @@ export default function Home() {
   return (
     <>
       <main>
-        <Hero />
-        <Marquee />
-        <IntroSection />
+        <FirstSectionsParallaxBg>
+          <Hero />
+          <Marquee />
+          <IntroSection />
+        </FirstSectionsParallaxBg>
         <MethodologySection />
         <StatementBand />
         <InsightsSection />
