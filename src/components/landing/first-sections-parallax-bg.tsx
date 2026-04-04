@@ -141,7 +141,7 @@ export function FirstSectionsParallaxBg({ children }: { children: React.ReactNod
                 alt=""
                 fill
                 priority
-                className="object-cover brightness-[0.97] contrast-[1.03] saturate-[1.06]"
+                className="object-cover brightness-[0.86] contrast-[1.03] saturate-[1.06]"
                 style={{ objectPosition: "var(--hero-object-x) 42%" }}
                 sizes="100vw"
                 quality={92}
@@ -154,15 +154,15 @@ export function FirstSectionsParallaxBg({ children }: { children: React.ReactNod
           </div>
           {/* Neutral dark grade — matches black-base + cool mist (reference site) */}
           <div
-            className="absolute inset-0 bg-linear-to-b from-slate-950/55 via-transparent to-slate-900/52 mix-blend-soft-light"
+            className="absolute inset-0 bg-linear-to-b from-slate-950/65 via-transparent to-slate-900/60 mix-blend-soft-light"
             aria-hidden
           />
           <div
-            className="absolute inset-0 bg-linear-to-b from-black/68 via-black/58 to-black/[0.94]"
+            className="absolute inset-0 bg-linear-to-b from-black/78 via-black/68 to-black/97"
             aria-hidden
           />
           <div
-            className="absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_50%_40%,rgba(255,255,255,0.05),transparent_55%)]"
+            className="absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_50%_40%,rgba(255,255,255,0.03),transparent_55%)]"
             aria-hidden
           />
         </div>
