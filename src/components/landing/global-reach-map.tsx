@@ -7,31 +7,20 @@ import { ScrollReveal } from "@/components/landing/scroll-reveal";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-/** Animated headline word — letter stagger on scroll */
-const headlineWord = "";
-
 export function GlobalReachMapSection() {
   const reduce = useReducedMotion();
 
   return (
     <section
       id="global-reach"
-      className="relative w-full overflow-hidden border-y border-[rgba(255,255,255,0.06)] bg-transparent py-24 sm:py-32"
+      className="relative w-full overflow-hidden border-y border-[rgba(255,255,255,0.06)] py-24 sm:py-32"
       aria-labelledby="global-reach-heading"
     >
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_60%_at_50%_0%,rgba(120,160,220,0.06),transparent_55%),radial-gradient(ellipse_70%_50%_at_50%_100%,rgba(255,180,100,0.05),transparent_50%)] animate-ambient-glow-slow"
-        aria-hidden
-      />
-
       <div className="relative mx-auto max-w-7xl px-5 text-center sm:px-8">
         <ScrollReveal from="up">
           <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-[var(--color-label)]">
             International footprint
           </p>
-        </ScrollReveal>
-        <ScrollReveal from="up" delayMs={50}>
-
         </ScrollReveal>
         <ScrollReveal from="up" delayMs={100}>
           <p className="mx-auto mt-5 max-w-2xl text-sm font-light leading-relaxed text-[var(--color-body)] md:text-lg">

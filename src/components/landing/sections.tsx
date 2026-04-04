@@ -33,10 +33,6 @@ const services = [
 export function BrandStatements() {
   return (
     <section className="relative overflow-hidden py-24 sm:py-32">
-      <div
-        className="pointer-events-none absolute inset-0 animate-ambient-glow bg-[radial-gradient(ellipse_70%_50%_at_50%_50%,rgba(255,180,100,0.07),transparent_65%)]"
-        aria-hidden
-      />
       <div className="relative mx-auto max-w-5xl space-y-20 px-5 sm:space-y-28 sm:px-8 lg:space-y-60">
         <ScrollReveal from="right" delayMs={40} className="ml-auto w-full max-w-xl sm:max-w-2xl">
           <h2 className="font-display text-right text-[clamp(1.75rem,4.5vw,3rem)] font-normal italic leading-[1.3] tracking-tight text-[var(--color-heading)] [text-shadow:0_2px_30px_rgba(0,0,0,0.7)]">
@@ -68,10 +64,6 @@ export function ServicesSection() {
       id="services"
       className="relative mx-auto max-w-6xl overflow-hidden px-5 py-24 sm:px-8 sm:py-32"
     >
-      <div
-        className="pointer-events-none absolute -left-1/4 top-1/2 h-[min(80vw,520px)] w-[min(80vw,520px)] -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(120,160,220,0.07),transparent_68%)] animate-ambient-glow-slow"
-        aria-hidden
-      />
       <div className="relative flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <ScrollReveal from="up" className="max-w-2xl">
           <div>
@@ -125,12 +117,8 @@ export function ContactSection() {
   return (
     <section
       id="contact"
-      className="relative overflow-hidden border-t border-[rgba(140,180,120,0.08)] bg-gradient-to-b from-[#000000] to-[#000000] px-5 py-24 sm:px-8 sm:py-32"
+      className="relative overflow-hidden border-t border-[rgba(140,180,120,0.08)] px-5 py-24 sm:px-8 sm:py-32"
     >
-      <div
-        className="pointer-events-none absolute inset-0 animate-ambient-glow-slow bg-[radial-gradient(ellipse_80%_50%_at_50%_120%,rgba(255,180,100,0.09),transparent_55%)]"
-        aria-hidden
-      />
       <ScrollReveal
         from="up"
         blur

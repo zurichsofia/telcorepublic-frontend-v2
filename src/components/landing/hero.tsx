@@ -12,9 +12,9 @@ export function Hero() {
   return (
     <section
       id="home"
-      className="bg-transparent px-3 pb-10 pt-3 sm:px-5 sm:pb-14 sm:pt-5"
+      className="px-3 pb-10 pt-3 sm:px-5 sm:pb-14 sm:pt-5"
     >
-      <div className="relative mx-auto w-full max-w-[min(100%,1400px)] border-0 bg-transparent shadow-none ring-0 outline-none">
+      <div className="relative mx-auto w-full max-w-[min(100%,1400px)] border-0 shadow-none ring-0 outline-none">
         <div className="relative min-h-[90svh] w-full">
           <HeroGlassNav />
 

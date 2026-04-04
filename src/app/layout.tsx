@@ -36,7 +36,7 @@ export default function RootLayout({
       className={cn(inter.variable, playfair.variable, "font-sans", geist.variable, "dark")}
     >
       <body
-        className={`${inter.className} min-h-screen bg-[var(--bg)] font-light text-[var(--fg)] antialiased`}
+        className={`${inter.className} min-h-screen font-light text-[var(--fg)] antialiased`}
       >
         {children}
         <GlobalTvGrainOverlay />

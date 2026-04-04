@@ -33,19 +33,9 @@ export function WhyTelcoRepublicSection() {
   return (
     <section
       id="why"
-      className="relative overflow-hidden border-y border-[rgba(255,255,255,0.06)] bg-[#020203]"
+      className="relative overflow-hidden border-y border-[rgba(255,255,255,0.06)]"
       aria-labelledby="why-telco-republic-heading"
     >
-      {/* Ambient depth — mesh + vignette (no skeuomorphic shapes) */}
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_100%_60%_at_50%_-10%,rgba(255,180,100,0.09),transparent_55%),radial-gradient(ellipse_80%_50%_at_100%_50%,rgba(120,160,220,0.06),transparent_50%),radial-gradient(ellipse_60%_40%_at_0%_80%,rgba(255,180,100,0.04),transparent_45%)]"
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,transparent,rgba(0,0,0,0.5)_100%)]"
-        aria-hidden
-      />
-
       <div className="relative mx-auto max-w-6xl px-5 py-28 sm:px-8 sm:py-36">
         <ScrollReveal from="up" className="max-w-3xl">
           <header>

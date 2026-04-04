@@ -18,11 +18,7 @@ export function SiteFooter() {
   const reduce = useReducedMotion();
 
   return (
-    <footer className="relative z-[2] overflow-hidden border-t border-[rgba(140,180,120,0.08)] bg-[#000000] px-5 py-14 sm:px-8">
-      <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-[radial-gradient(ellipse_80%_100%_at_50%_100%,rgba(255,180,100,0.04),transparent_70%)] animate-ambient-glow-slow"
-        aria-hidden
-      />
+    <footer className="relative z-[2] overflow-hidden border-t border-[rgba(140,180,120,0.08)] px-5 py-14 sm:px-8">
       <motion.div
         className="relative mx-auto flex max-w-6xl flex-col gap-10 sm:flex-row sm:items-start sm:justify-between"
         initial={reduce ? undefined : { opacity: 0, y: 20 }}

@@ -1,12 +1,14 @@
 @import 'tailwindcss';
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
 
 @custom-variant dark (&:is(.dark *));
 
 /* Alpine / editorial palette — matches remix-3d reference (Inter + Playfair, warm accent on black) */
 :root {
-  --bg: #000000;
+  /* Page background: single source — use on html only (see below) */
+  --bg: #0a1a2c;
+  --section-bg-gradient: linear-gradient(180deg, #111615 0%, #020308 100%);
   --fg: #e8ece4;
   --color-heading: #f8fcf0;
   --color-accent: rgba(255, 180, 100, 0.95);
@@ -55,10 +57,18 @@
 
 html {
   scroll-behavior: smooth;
+  min-height: 100%;
+  /* One gradient locked to the viewport — avoids seams where sections stack */
+  background-color: var(--bg);
+  background-image: var(--section-bg-gradient);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
 
 body {
-  background: var(--bg);
+  min-height: 100%;
+  background: transparent;
   color: var(--fg);
   font-feature-settings:
     'ss01' on,
@@ -249,7 +259,8 @@ body {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    /* Background lives on html (--section-bg-gradient); keep body transparent */
+    @apply text-foreground;
   }
   html {
     @apply font-sans;
