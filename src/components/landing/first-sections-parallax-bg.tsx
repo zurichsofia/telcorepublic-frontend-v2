@@ -41,83 +41,6 @@ export function FirstSectionsParallaxBg({ children }: { children: React.ReactNod
     y: 0,
     scale: SCALE_START,
   });
-  const rafRef = useRef<number>(0);
-
-  const tick = useCallback(() => {
-    const el = rootRef.current;
-    const shell = fixedShellRef.current;
-    const parallax = parallaxLayerRef.current;
-    if (!el || !shell || !parallax) return;
-
-    const top = el.getBoundingClientRect().top + window.scrollY;
-    const h = el.offsetHeight;
-    const vh = window.innerHeight;
-    const scrollY = window.scrollY;
-
-    const blockEnd = top + h;
-    const viewportTop = scrollY;
-    const viewportBottom = scrollY + vh;
-    const overlapsBlock =
-      viewportBottom > top + 0.5 && viewportTop < blockEnd - 0.5;
-
-    const fadeDistance = Math.min(vh * EXIT_FADE_VH, Math.max(0, h - 1));
-    let plateOpacity = 0;
-    if (overlapsBlock) {
-      if (viewportBottom <= blockEnd - fadeDistance) {
-        plateOpacity = 1;
-      } else {
-        const t = clamp((blockEnd - viewportBottom) / fadeDistance, 0, 1);
-        plateOpacity = smoothstep01(t);
-      }
-    }
-
-    let x = 0;
-    let y = 0;
-    let scale = 1;
-
-    const scrollPast = Math.max(0, scrollY - top);
-    const totalScroll = Math.max(1, h - vh);
-    const progress = smoothstep01(clamp(scrollPast / totalScroll, 0, 1));
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    if (!reducedMotion) {
-      const shiftX = Math.min(SHIFT_X_MAX_PX, (window.innerWidth * SHIFT_X_VW) / 100);
-      x = progress * shiftX;
-      y = -progress * SHIFT_Y;
-      scale = SCALE_START + (SCALE_END - SCALE_START) * progress;
-    }
-
-    // Higher % = anchor shifts right → more of the right side of the photo stays in frame with the plate drift.
-    const objectXPercent = reducedMotion ? 44 : 40 + progress * 18;
-    parallax.style.setProperty("--hero-object-x", `${objectXPercent}%`);
-
-    parallax.style.transform = `translate3d(calc(-50% + ${x}px), calc(-50% + ${y}px), 0) scale(${scale})`;
-    parallaxMotionRef.current.x = x;
-    parallaxMotionRef.current.y = y;
-    parallaxMotionRef.current.scale = scale;
-    shell.style.opacity = String(plateOpacity);
-    shell.style.visibility = plateOpacity > 0.002 ? "visible" : "hidden";
-  }, []);
-
-  useLayoutEffect(() => {
-    tick();
-  }, [tick]);
-
-  useEffect(() => {
-    const onScroll = () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      rafRef.current = requestAnimationFrame(tick);
-    };
-
-    tick();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, [tick]);
 
   return (
     <div ref={rootRef} className="relative isolate">
@@ -151,13 +74,13 @@ export function FirstSectionsParallaxBg({ children }: { children: React.ReactNod
           <div className="absolute left-1/2 top-1/2 h-[130%] w-[130%] -translate-x-1/2 -translate-y-1/2">
             <HeroCloudsThree motionRef={parallaxMotionRef} />
           </div>
-          {/* Cool blue grade: reads premium / editorial over mountains + mist */}
+          {/* Neutral dark grade — matches black-base + cool mist (reference site) */}
           <div
-            className="absolute inset-0 bg-linear-to-b from-sky-950/28 via-blue-950/14 to-indigo-950/32 mix-blend-soft-light"
+            className="absolute inset-0 bg-linear-to-b from-slate-950/20 via-transparent to-slate-900/18 mix-blend-soft-light"
             aria-hidden
           />
           <div
-            className="absolute inset-0 bg-linear-to-b from-black/48 via-slate-950/40 to-[rgb(15,23,42)]/88"
+            className="absolute inset-0 bg-linear-to-b from-black/55 via-black/45 to-black/90"
             aria-hidden
           />
           <div

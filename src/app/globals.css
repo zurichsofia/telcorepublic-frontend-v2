@@ -1,12 +1,22 @@
 @import "tailwindcss";
 
+/* Alpine / editorial palette — matches remix-3d reference (Inter + Playfair, warm accent on black) */
 :root {
-  --bg: #050608;
-  --fg: #f4f2ed;
-  --muted: rgba(244, 242, 237, 0.55);
-  --accent: #7cb8ff;
-  --accent-soft: rgba(124, 184, 255, 0.15);
-  --border: rgba(255, 255, 255, 0.08);
+  --bg: #000000;
+  --fg: #e8ece4;
+  --color-heading: #f8fcf0;
+  --color-accent: rgba(255, 180, 100, 0.95);
+  --color-body: rgba(200, 215, 235, 0.72);
+  --color-label: rgba(180, 210, 235, 0.85);
+  --muted: var(--color-body);
+  --accent: var(--color-accent);
+  --accent-hover: rgba(230, 245, 120, 0.9);
+  --accent-soft: rgba(255, 180, 100, 0.12);
+  --border: rgba(140, 180, 220, 0.22);
+  --border-subtle: rgba(120, 160, 210, 0.12);
+  --glass: rgba(8, 14, 28, 0.55);
+  --glass-strong: rgba(15, 25, 50, 0.4);
+  --font-display: var(--font-playfair), ui-serif, Georgia, "Times New Roman", serif;
 }
 
 html {
@@ -19,9 +29,29 @@ body {
   font-feature-settings: "ss01" on, "cv02" on;
 }
 
+.font-display {
+  font-family: var(--font-display);
+}
+
+.text-heading {
+  color: var(--color-heading);
+}
+
+.text-body {
+  color: var(--color-body);
+}
+
+.text-label {
+  color: var(--color-label);
+}
+
+.text-accent {
+  color: var(--color-accent);
+}
+
 ::selection {
-  background: rgba(124, 184, 255, 0.35);
-  color: var(--fg);
+  background: rgba(255, 180, 100, 0.28);
+  color: var(--color-heading);
 }
 
 @keyframes fade-up {

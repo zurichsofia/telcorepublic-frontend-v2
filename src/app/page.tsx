@@ -2,8 +2,6 @@ import { FirstSectionsParallaxBg } from "@/components/landing/first-sections-par
 import { Hero } from "@/components/landing/hero";
 import { Marquee } from "@/components/landing/marquee";
 import {
-  IntroSection,
-  MethodologySection,
   StatementBand,
   InsightsSection,
   ContactSection,
@@ -17,9 +15,7 @@ export default function Home() {
         <FirstSectionsParallaxBg>
           <Hero />
           <Marquee />
-          <IntroSection />
         </FirstSectionsParallaxBg>
-        <MethodologySection />
         <StatementBand />
         <InsightsSection />
         <ContactSection />

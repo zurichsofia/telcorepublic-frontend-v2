@@ -52,13 +52,13 @@ export function IntroSection() {
   return (
     <section id="research" className="relative">
       <div className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-32">
-        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#7cb8ff]">
+        <p className="text-[10px] font-medium uppercase tracking-[0.35em] text-[var(--color-label)] [text-shadow:0_1px_12px_rgba(0,0,0,0.5)]">
           Your research partner
         </p>
-        <h2 className="mt-4 max-w-3xl text-4xl font-bold tracking-tight text-[#f4f2ed] sm:text-5xl">
+        <h2 className="font-display mt-4 max-w-3xl text-4xl font-normal leading-[1.2] tracking-tight text-[var(--color-heading)] sm:text-5xl [text-shadow:0_2px_30px_rgba(0,0,0,0.7),0_0_60px_rgba(0,0,0,0.4)]">
           Networks that stay honest under load
         </h2>
-        <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/55">
+        <p className="mt-6 max-w-2xl text-lg font-light leading-relaxed text-[var(--color-body)]">
           Telcorepublic is an independent research practice focused on telecommunications
           infrastructure, radio systems, and the economics of connectivity. We help
           you see trade-offs before they become outages or stranded assets.
@@ -67,15 +67,17 @@ export function IntroSection() {
           {pillars.map((p) => (
             <article
               key={p.title}
-              className="group rounded-2xl border border-white/[0.08] bg-white/[0.02] p-8 transition hover:border-white/[0.14] hover:bg-white/[0.04]"
+              className="group rounded-2xl border border-[rgba(120,160,210,0.12)] bg-[rgba(8,14,28,0.55)] p-8 shadow-[0_8px_40px_rgba(0,0,0,0.4)] backdrop-blur-[16px] transition hover:border-[rgba(120,160,210,0.3)] hover:bg-[rgba(15,25,50,0.45)]"
             >
-              <p className="text-xs font-semibold uppercase tracking-wider text-[#7cb8ff]/90">
+              <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-[var(--color-accent)]">
                 {p.tag}
               </p>
-              <h3 className="mt-4 font-bold tracking-tight text-2xl text-[#f4f2ed]">
+              <h3 className="font-display mt-4 text-[1.375rem] font-normal tracking-tight text-[var(--color-heading)] [text-shadow:0_1px_12px_rgba(0,0,0,0.4)]">
                 {p.title}
               </h3>
-              <p className="mt-3 text-sm leading-relaxed text-white/55">{p.body}</p>
+              <p className="mt-3 text-[13px] font-light leading-[1.7] text-[var(--color-body)]">
+                {p.body}
+              </p>
             </article>
           ))}
         </div>
@@ -88,25 +90,25 @@ export function MethodologySection() {
   return (
     <section
       id="methodology"
-      className="border-t border-white/[0.06] bg-[#07090c]"
+      className="border-t border-[rgba(140,180,120,0.08)] bg-[#000000]"
     >
       <div className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-32">
         <div className="grid gap-14 lg:grid-cols-[1fr_1.2fr] lg:items-start">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#7cb8ff]">
+            <p className="text-[10px] font-medium uppercase tracking-[0.35em] text-[var(--color-label)] opacity-80 [text-shadow:0_1px_12px_rgba(0,0,0,0.5)]">
               How we work
             </p>
-            <h2 className="mt-4 text-4xl font-bold tracking-tight text-[#f4f2ed] sm:text-[2.75rem]">
+            <h2 className="font-display mt-4 text-4xl font-normal tracking-tight text-[var(--color-heading)] sm:text-[2.75rem] [text-shadow:0_2px_30px_rgba(0,0,0,0.7)]">
               Methodology you can audit
             </h2>
-            <p className="mt-5 max-w-md text-base leading-relaxed text-white/55">
+            <p className="mt-5 max-w-md text-base font-light leading-relaxed text-[var(--color-body)]">
               From lab benchmarks to national models, every engagement is documented
               so your technical and executive stakeholders share one picture of risk
               and opportunity.
             </p>
             <Link
               href="#contact"
-              className="mt-8 inline-flex rounded-full border border-white/15 bg-white/[0.04] px-6 py-3 text-sm font-semibold text-white/90 transition hover:border-white/25"
+              className="mt-8 inline-flex items-center gap-2 rounded-full border border-[rgba(140,180,220,0.35)] bg-[rgba(15,25,50,0.4)] px-7 py-3.5 text-[13px] font-medium uppercase tracking-[0.12em] text-[var(--color-accent)] backdrop-blur-[10px] transition hover:border-[rgba(140,180,220,0.55)] hover:bg-[rgba(30,50,90,0.5)]"
             >
               Request a scope
             </Link>
@@ -115,12 +117,14 @@ export function MethodologySection() {
             {methodology.map((m) => (
               <li
                 key={m.title}
-                className="rounded-2xl border border-white/[0.06] bg-[#050608]/80 p-7"
+                className="rounded-2xl border border-[rgba(120,160,210,0.1)] bg-[rgba(8,14,28,0.45)] p-7 backdrop-blur-sm"
               >
-                <h3 className="font-bold tracking-tight text-xl text-[#f4f2ed]">
+                <h3 className="font-display text-xl font-normal tracking-tight text-[var(--color-heading)]">
                   {m.title}
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed text-white/50">{m.body}</p>
+                <p className="mt-2 text-sm font-light leading-relaxed text-[var(--color-body)]">
+                  {m.body}
+                </p>
               </li>
             ))}
           </ul>
@@ -132,17 +136,17 @@ export function MethodologySection() {
 
 export function StatementBand() {
   return (
-    <section className="relative overflow-hidden border-y border-white/[0.06] py-24 sm:py-32">
+    <section className="relative overflow-hidden border-y border-[rgba(140,180,120,0.08)] py-24 sm:py-32">
       <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_50%,rgba(124,184,255,0.08),transparent_65%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_50%,rgba(255,180,100,0.07),transparent_65%)]"
         aria-hidden
       />
       <div className="relative mx-auto max-w-4xl px-5 text-center sm:px-8">
-        <h2 className="text-[clamp(1.75rem,4.5vw,3rem)] font-bold leading-[1.15] tracking-tight text-[#f4f2ed]">
+        <h2 className="font-display text-[clamp(1.75rem,4.5vw,3rem)] font-normal italic leading-[1.3] tracking-tight text-[var(--color-heading)] [text-shadow:0_2px_30px_rgba(0,0,0,0.7)]">
           From spectrum maps to subscriber experience — we connect the physics to
           the business case.
         </h2>
-        <p className="mx-auto mt-8 max-w-2xl text-lg text-white/55">
+        <p className="mx-auto mt-8 max-w-2xl text-lg font-light text-[var(--color-body)]">
           Long-horizon research, short feedback loops. Tell us where your network is
           headed; we will help you stress-test the path.
         </p>
@@ -156,16 +160,16 @@ export function InsightsSection() {
     <section id="insights" className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-32">
       <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#7cb8ff]">
+          <p className="text-[10px] font-medium uppercase tracking-[0.35em] text-[var(--color-label)] opacity-90">
             Outputs
           </p>
-          <h2 className="mt-3 text-4xl font-bold tracking-tight text-[#f4f2ed] sm:text-5xl">
+          <h2 className="font-display mt-3 text-4xl font-normal tracking-tight text-[var(--color-heading)] sm:text-5xl">
             Insights &amp; collaboration
           </h2>
         </div>
         <Link
           href="#contact"
-          className="shrink-0 rounded-full bg-[#f4f2ed] px-6 py-3 text-sm font-semibold text-[#050608] transition hover:bg-white"
+          className="shrink-0 rounded-full border border-[rgba(140,180,220,0.35)] bg-[rgba(15,25,50,0.4)] px-6 py-3 text-[13px] font-medium uppercase tracking-[0.1em] text-[var(--color-accent)] backdrop-blur-[10px] transition hover:border-[rgba(140,180,220,0.55)] hover:bg-[rgba(30,50,90,0.5)]"
         >
           Start a conversation
         </Link>
@@ -174,15 +178,15 @@ export function InsightsSection() {
         {insights.map((i) => (
           <article
             key={i.title}
-            className="flex flex-col rounded-2xl border border-white/[0.08] bg-white/[0.02] p-8"
+            className="flex flex-col rounded-2xl border border-[rgba(120,160,210,0.12)] bg-[rgba(8,14,28,0.4)] p-8 backdrop-blur-sm"
           >
-            <h3 className="font-bold tracking-tight text-2xl text-[#f4f2ed]">
+            <h3 className="font-display text-2xl font-normal tracking-tight text-[var(--color-heading)]">
               {i.title}
             </h3>
-            <p className="mt-3 flex-1 text-sm leading-relaxed text-white/50">
+            <p className="mt-3 flex-1 text-sm font-light leading-relaxed text-[var(--color-body)]">
               {i.desc}
             </p>
-            <span className="mt-6 text-xs font-semibold uppercase tracking-wider text-white/35">
+            <span className="mt-6 text-[10px] font-medium uppercase tracking-[0.2em] text-[var(--color-label)] opacity-60">
               Available on request
             </span>
           </article>
@@ -196,29 +200,32 @@ export function ContactSection() {
   return (
     <section
       id="contact"
-      className="border-t border-white/[0.06] bg-gradient-to-b from-[#07090c] to-[#050608] px-5 py-24 sm:px-8 sm:py-32"
+      className="border-t border-[rgba(140,180,120,0.08)] bg-gradient-to-b from-[#000000] to-[#000000] px-5 py-24 sm:px-8 sm:py-32"
     >
       <div className="mx-auto max-w-2xl text-center">
-        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#7cb8ff]">
+        <p className="text-[10px] font-medium uppercase tracking-[0.35em] text-[var(--color-label)]">
           Telcore Research
         </p>
-        <h2 className="mt-4 text-4xl font-bold tracking-tight text-[#f4f2ed] sm:text-5xl">
-          Build on evidence
+        <h2 className="font-display mt-4 text-4xl font-normal tracking-tight text-[var(--color-heading)] sm:text-5xl">
+          Build on{" "}
+          <em className="text-[var(--color-accent)] [text-shadow:0_0_30px_rgba(255,180,100,0.35)]">
+            evidence
+          </em>
         </h2>
-        <p className="mt-5 text-base text-white/55">
+        <p className="mt-5 text-base font-light text-[var(--color-body)]">
           Share your timeline and constraints — we will respond with a clear view of
           what we can prove, model, or measure together.
         </p>
         <div className="mt-10 flex flex-wrap justify-center gap-4">
           <a
             href="mailto:hello@telcore.example"
-            className="inline-flex rounded-full bg-[#f4f2ed] px-8 py-3.5 text-sm font-semibold text-[#050608] transition hover:bg-white"
+            className="inline-flex items-center gap-2 rounded-full border border-[rgba(140,180,220,0.35)] bg-[rgba(15,25,50,0.4)] px-8 py-3.5 text-[13px] font-medium uppercase tracking-[0.1em] text-[var(--color-accent)] backdrop-blur-[10px] transition hover:border-[rgba(140,180,220,0.55)] hover:bg-[rgba(30,50,90,0.5)]"
           >
             hello@telcore.example
           </a>
           <a
             href="#research"
-            className="inline-flex rounded-full border border-white/15 px-8 py-3.5 text-sm font-semibold text-white/85 transition hover:border-white/30"
+            className="inline-flex rounded-full border border-[rgba(140,180,220,0.22)] px-8 py-3.5 text-[13px] font-medium uppercase tracking-[0.08em] text-[rgba(215,230,190,0.65)] transition hover:border-[rgba(140,180,220,0.4)] hover:text-[var(--accent-hover)]"
           >
             Back to top
           </a>
