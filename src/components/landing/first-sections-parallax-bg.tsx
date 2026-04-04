@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { HeroCloudsThree } from "./hero-clouds-three";
 import { TvStaticGrain } from "./tv-static-grain";
 
 function clamp(n: number, min: number, max: number) {
@@ -127,6 +128,7 @@ export function FirstSectionsParallaxBg({ children }: { children: React.ReactNod
                 sizes="100vw"
                 quality={92}
               />
+              <HeroCloudsThree />
             </div>
           </div>
           <div
@@ -134,7 +136,7 @@ export function FirstSectionsParallaxBg({ children }: { children: React.ReactNod
             aria-hidden
           />
           <div
-            className="absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_0%_40%,rgba(255,255,255,0.06),transparent_55%)]"
+            className="absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_50%_40%,rgba(255,255,255,0.05),transparent_55%)]"
             aria-hidden
           />
           <TvStaticGrain opacity={0.2} staticAmount={0.94} />
