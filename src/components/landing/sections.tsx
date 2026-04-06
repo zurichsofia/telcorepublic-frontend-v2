@@ -29,48 +29,23 @@ const services = [
     desc: "Always be up-to-speed with recurring insights and real-time access to industry experts.",
   },
 ];
-
-export function BrandStatements() {
-  return (
-    <section className="relative overflow-hidden py-24 sm:py-32">
-      <div className="relative mx-auto max-w-5xl space-y-20 px-5 sm:space-y-28 sm:px-8 lg:space-y-60">
-        <ScrollReveal from="right" delayMs={40} className="ml-auto w-full max-w-xl sm:max-w-2xl">
-          <h2 className="font-display text-right text-[clamp(1.75rem,4.5vw,3rem)] font-normal leading-[1.3] tracking-tight text-[var(--color-heading)] [text-shadow:0_2px_30px_rgba(0,0,0,0.7)]">
-            Crossing the Telco Chasm
-          </h2>
-          <p className="mt-8 max-w-xl text-right text-lg font-light leading-relaxed text-[var(--color-body)] sm:ml-auto">
-            We are the go-to, thought-provoking market research and advisory firm in
-            the new telecommunications software market.
-          </p>
-        </ScrollReveal>
-
-        <ScrollReveal from="left" delayMs={120} className="mr-auto w-full max-w-xl sm:max-w-2xl">
-          <h2 className="font-display text-left text-[clamp(1.75rem,4.5vw,3rem)] font-normal leading-[1.3] tracking-tight text-[var(--color-heading)] [text-shadow:0_2px_30px_rgba(0,0,0,0.7)]">
-            Our Mission
-          </h2>
-          <p className="mt-8 max-w-xl text-left text-lg font-light leading-relaxed text-[var(--color-body)]">
-            We track ongoing disruption and innovation related to telecommunications
-            business and operations.
-          </p>
-        </ScrollReveal>
-      </div>
-    </section>
-  );
-}
-
 export function ServicesSection() {
   return (
     <section
       id="services"
       className="relative mx-auto max-w-6xl overflow-hidden px-5 py-24 sm:px-8 sm:py-32"
     >
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-[min(60%,28rem)] bg-[radial-gradient(ellipse_80%_80%_at_50%_0%,rgba(56,189,248,0.1),transparent_65%)]"
+        aria-hidden
+      />
       <div className="relative flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <ScrollReveal from="up" className="max-w-2xl">
           <div>
-            <p className="text-[10px] font-medium uppercase tracking-[0.35em] text-[var(--color-label)] opacity-90">
+            <p className="text-[10px] font-medium uppercase tracking-[0.35em] text-[var(--color-label)] opacity-95">
               What we offer
             </p>
-            <h2 className="font-display mt-3 text-4xl font-normal tracking-tight text-[var(--color-heading)] sm:text-5xl">
+            <h2 className="font-display mt-3 bg-gradient-to-r from-slate-900 via-cyan-900 to-cyan-700 bg-clip-text text-4xl font-normal tracking-tight text-transparent sm:text-5xl">
               Our Services
             </h2>
           </div>
@@ -78,7 +53,7 @@ export function ServicesSection() {
         <ScrollReveal from="right" delayMs={80} className="sm:self-end">
           <Link
             href="#contact"
-            className="inline-flex shrink-0 rounded-full border border-[var(--border-tech-strong)] bg-[var(--surface-panel)] px-6 py-3 text-[13px] font-medium uppercase tracking-[0.1em] text-[var(--color-accent)] transition hover:border-[var(--border-tech-hover)] hover:bg-[var(--surface-panel-hover)]"
+            className="inline-flex shrink-0 rounded-full border border-cyan-600/25 bg-white px-6 py-3 text-[13px] font-semibold uppercase tracking-[0.1em] text-[var(--color-accent)] shadow-sm transition hover:border-cyan-600/40 hover:bg-sky-50/90"
           >
             Start a conversation
           </Link>
@@ -92,16 +67,24 @@ export function ServicesSection() {
             delayMs={i * 55}
             className="h-full"
           >
-            <article className="group flex h-full flex-col rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-panel)] p-8 transition-[border-color,box-shadow,transform] duration-500 ease-out motion-safe:hover:-translate-y-1 motion-safe:hover:border-[var(--border-tech)] motion-safe:hover:shadow-[0_20px_50px_-24px_rgba(0,0,0,0.85)]">
-              <h3 className="font-display text-2xl font-normal tracking-tight text-[var(--color-heading)] transition-colors duration-300 group-hover:text-[rgba(244,242,248,0.98)]">
+            <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-sky-200/80 bg-white/90 p-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] backdrop-blur-md transition-[border-color,box-shadow,transform] duration-500 ease-out motion-safe:hover:-translate-y-1 motion-safe:hover:border-cyan-400/50 motion-safe:hover:shadow-[0_20px_50px_-24px_rgba(14,116,144,0.12)]">
+              <div
+                className="pointer-events-none absolute -right-6 -top-6 h-36 w-36 rounded-full bg-sky-200/40 blur-3xl transition duration-500 group-hover:bg-cyan-200/45"
+                aria-hidden
+              />
+              <div
+                className="pointer-events-none absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/25 to-transparent opacity-0 transition group-hover:opacity-100"
+                aria-hidden
+              />
+              <h3 className="relative font-display text-2xl font-normal tracking-tight text-[var(--color-heading)] transition-colors duration-300 group-hover:text-cyan-800">
                 {s.title}
               </h3>
-              <p className="mt-3 flex-1 text-sm font-light leading-relaxed text-[var(--color-body)]">
+              <p className="relative mt-3 flex-1 text-sm font-light leading-relaxed text-[var(--color-body)]">
                 {s.desc}
               </p>
               <Link
                 href="#contact"
-                className="mt-6 text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--color-accent)] transition hover:text-[var(--accent-hover)]"
+                className="relative mt-6 text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--color-accent)] transition hover:text-[var(--accent-hover)]"
               >
                 Learn more
               </Link>

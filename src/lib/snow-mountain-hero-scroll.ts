@@ -57,7 +57,7 @@ export function heroScrollHintOpacity(progress: number): number {
 const HANDOFF_START = 0.66;
 const HANDOFF_END = 0.97;
 
-/** Dark wash into the next section; overlaps slightly with mid copy tail. */
+/** Frost wash into the next section (matches `--bg`); overlaps slightly with mid copy tail. */
 export function heroHandoffOverlayOpacity(progress: number): number {
   if (progress <= HANDOFF_START) return 0;
   if (progress >= HANDOFF_END) return 1;
