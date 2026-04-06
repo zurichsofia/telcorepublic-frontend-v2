@@ -17,6 +17,9 @@ import * as THREE from "three";
 
 import { SNOW_MOUNTAIN_FOG_COLOR } from "@/lib/snow-mountain-fog";
 import { heroSubtleMotionT } from "@/lib/snow-mountain-hero-scroll";
+
+/** Extra Y rotation (rad) during 100–200vh scroll — reads as camera orbiting slightly right. */
+const HERO_SCROLL_YAW_RAD = 0.11;
 import { applyTerrainIceStyle } from "@/lib/snow-mountain-terrain-ice";
 import { WindParticleField } from "@/components/snow-mountain-wind-particles";
 import { SnowMountainSky } from "@/components/snow-mountain-sky";
@@ -62,6 +65,7 @@ function ParallaxWorld({
   children: ReactNode;
 }) {
   const groupRef = useRef<THREE.Group>(null);
+  const scrollYawRef = useRef<THREE.Group>(null);
   const mouse = useRef({ x: 0, y: 0 });
   const smooth = useRef({ x: 0, y: 0 });
 
@@ -76,7 +80,8 @@ function ParallaxWorld({
 
   useFrame((_, delta) => {
     const g = groupRef.current;
-    if (!g) return;
+    const yaw = scrollYawRef.current;
+    if (!g || !yaw) return;
     const lerp = 1 - Math.pow(0.9, delta * 60);
     const p = scrollProgressRef?.current ?? 0;
     const subtleT = reduceMotion ? 0 : heroSubtleMotionT(p);
@@ -85,16 +90,23 @@ function ParallaxWorld({
       smooth.current.y = 0;
       g.rotation.x = 0;
       g.rotation.y = 0;
+      yaw.rotation.y = 0;
       return;
     }
     smooth.current.x += (mouse.current.x - smooth.current.x) * lerp;
     smooth.current.y += (mouse.current.y - smooth.current.y) * lerp;
-    /* Scroll-driven tilt only after first ⅓; keep amplitudes small. */
+    /* Scroll-driven tilt scales with subtleT from first scroll; keep amplitudes small. */
     g.rotation.x = subtleT * 0.028 + smooth.current.y * -0.038;
     g.rotation.y = subtleT * 0.018 + smooth.current.x * 0.042;
+    /* Orbit camera slightly right as subtleT ramps. */
+    yaw.rotation.y = subtleT * HERO_SCROLL_YAW_RAD;
   });
 
-  return <group ref={groupRef}>{children}</group>;
+  return (
+    <group ref={groupRef}>
+      <group ref={scrollYawRef}>{children}</group>
+    </group>
+  );
 }
 
 type SnowMountainModelProps = {
@@ -177,10 +189,7 @@ function PostFx({ enabled }: { enabled: boolean; }) {
 }
 
 export type SnowMountainSceneProps = {
-  /**
-   * 0 = hero top, 1 = hero end. Used with `heroSubtleMotionT`: first ⅓ stable,
-   * second ⅓ subtle motion, last ⅓ hold + HTML handoff.
-   */
+  /** 0 = hero top, 1 = hero end. Drives `heroSubtleMotionT` (immediate ramp, hold last third). */
   scrollProgressRef?: MutableRefObject<number>;
 };
 

@@ -14,6 +14,18 @@ import { ArrowDownRight, ChevronRight, Radio, Signal, Waves } from "lucide-react
 import { SnowMountainScene } from "@/components/snow-mountain-scene";
 import { ScrollReveal } from "@/components/landing/scroll-reveal";
 import { SNOW_MOUNTAIN_FOG_COLOR } from "@/lib/snow-mountain-fog";
+import {
+  heroHandoffOverlayOpacity,
+  heroMidBlockY,
+  heroMidCopyOpacity,
+  heroMidLineY,
+  heroPrimaryCopyOpacity,
+  heroPrimaryHeadlineLineY,
+  heroPrimaryParallaxX,
+  heroPrimaryParallaxY,
+  heroPrimarySubcopyY,
+  heroScrollHintOpacity,
+} from "@/lib/snow-mountain-hero-scroll";
 import { cn } from "@/lib/utils";
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -84,15 +96,45 @@ export function SnowMountainLanding() {
     offset: ["start start", "end start"],
   });
 
-  const handoffOverlayOpacity = useTransform(
-    scrollYProgress,
-    [0.68, 0.98],
-    [0, 1],
+  const handoffOverlayOpacity = useTransform(scrollYProgress, (p) =>
+    reduce ? 0 : heroHandoffOverlayOpacity(p),
   );
-  const heroCopyOpacity = useTransform(
-    scrollYProgress,
-    [0.38, 0.52],
-    [1, 0],
+  const heroCopyOpacity = useTransform(scrollYProgress, (p) =>
+    reduce ? 1 : heroPrimaryCopyOpacity(p),
+  );
+  const heroMidCopyOpacityMotion = useTransform(scrollYProgress, (p) =>
+    reduce ? 0 : heroMidCopyOpacity(p),
+  );
+  const scrollHintOpacity = useTransform(scrollYProgress, (p) =>
+    reduce ? 1 : heroScrollHintOpacity(p),
+  );
+
+  const primaryParallaxY = useTransform(scrollYProgress, (p) =>
+    reduce ? 0 : heroPrimaryParallaxY(p),
+  );
+  const primaryParallaxX = useTransform(scrollYProgress, (p) =>
+    reduce ? 0 : heroPrimaryParallaxX(p),
+  );
+  const primarySubcopyY = useTransform(scrollYProgress, (p) =>
+    reduce ? 0 : heroPrimarySubcopyY(p),
+  );
+  const headlineLine0Y = useTransform(scrollYProgress, (p) =>
+    reduce ? 0 : heroPrimaryHeadlineLineY(p, 0),
+  );
+  const headlineLine1Y = useTransform(scrollYProgress, (p) =>
+    reduce ? 0 : heroPrimaryHeadlineLineY(p, 1),
+  );
+  const midBlockY = useTransform(scrollYProgress, (p) =>
+    reduce ? 0 : heroMidBlockY(p),
+  );
+  const midLabelY = useTransform(scrollYProgress, (p) =>
+    reduce ? 0 : heroMidLineY(p, 0),
+  );
+  const midTitleY = useTransform(scrollYProgress, (p) =>
+    reduce ? 0 : heroMidLineY(p, 1),
+  );
+  const midBodyY = useTransform(scrollYProgress, (p) =>
+    reduce ? 0 : heroMidLineY(p, 2),
   );
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
@@ -159,7 +201,11 @@ export function SnowMountainLanding() {
 
           <motion.div
             className="pointer-events-auto mx-auto flex min-h-dvh w-full max-w-[min(100%,1400px)] flex-col justify-end px-5 pb-12 pt-28 sm:px-8 sm:pb-16 sm:pt-32 lg:px-12 lg:pb-24"
-            style={{ opacity: reduce ? 1 : heroCopyOpacity }}
+            style={{
+              opacity: reduce ? 1 : heroCopyOpacity,
+              x: primaryParallaxX,
+              y: primaryParallaxY,
+            }}
           >
           <div className="max-w-2xl">
             <p className="font-display text-[11px] font-medium uppercase tracking-[0.38em] text-[rgba(232,236,242,0.72)] [text-shadow:0_1px_20px_rgba(0,0,0,0.5)]">
@@ -180,7 +226,7 @@ export function SnowMountainLanding() {
             </p>
 
             <h1 className="mt-5 font-display text-[clamp(2.5rem,7.5vw,4.25rem)] font-normal leading-[1.04] tracking-[-0.03em] text-[var(--color-heading)] [text-shadow:0_4px_48px_rgba(0,0,0,0.55),0_0_1px_rgba(0,0,0,0.8)]">
-              <span className="block">
+              <motion.span className="block" style={{ y: headlineLine0Y }}>
                 {["Clarity", "above"].map((word, i) => (
                   <span
                     key={word}
@@ -195,8 +241,11 @@ export function SnowMountainLanding() {
                     {word}
                   </span>
                 ))}
-              </span>
-              <span className="mt-1 block sm:mt-1.5">
+              </motion.span>
+              <motion.span
+                className="mt-1 block sm:mt-1.5"
+                style={{ y: headlineLine1Y }}
+              >
                 {["the", "noise", "floor."].map((word, i) => (
                   <span
                     key={word}
@@ -213,25 +262,16 @@ export function SnowMountainLanding() {
                     {word}
                   </span>
                 ))}
-              </span>
+              </motion.span>
             </h1>
 
-            <motion.p
-              className="mt-7 max-w-md text-base font-light leading-[1.75] text-[rgba(228,232,238,0.82)] [text-shadow:0_2px_24px_rgba(0,0,0,0.45)] sm:text-[1.05rem]"
-              initial={reduce ? undefined : { opacity: 0, y: 22 }}
-              animate={reduce ? undefined : { opacity: 1, y: 0 }}
-              transition={{ duration: 0.85, ease, delay: 0.38 }}
-            >
-              Spectrum, infrastructure, and market intelligence—delivered with the
-              precision your stakeholders expect.
-            </motion.p>
+            <motion.div style={{ y: primarySubcopyY }}>
+              <p className="mt-7 max-w-md text-base font-light leading-[1.75] text-[rgba(228,232,238,0.82)] [text-shadow:0_2px_24px_rgba(0,0,0,0.45)] sm:text-[1.05rem]">
+                Spectrum, infrastructure, and market intelligence—delivered with the
+                precision your stakeholders expect.
+              </p>
 
-            <motion.div
-              className="mt-10 flex flex-wrap items-center gap-4"
-              initial={reduce ? undefined : { opacity: 0, y: 16 }}
-              animate={reduce ? undefined : { opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease, delay: 0.5 }}
-            >
+              <div className="mt-10 flex flex-wrap items-center gap-4">
               <Link
                 href="/#services"
                 className={cn(
@@ -248,35 +288,81 @@ export function SnowMountainLanding() {
               >
                 Schedule a briefing
               </Link>
+              </div>
             </motion.div>
           </div>
 
-          <motion.div
-            className="mt-16 flex items-center gap-3 sm:mt-24"
-            initial={reduce ? undefined : { opacity: 0 }}
-            animate={reduce ? undefined : { opacity: 1 }}
-            transition={{ duration: 1, ease, delay: 0.75 }}
-          >
-            <span className="h-px w-10 bg-gradient-to-r from-transparent to-[rgba(200,210,224,0.45)]" aria-hidden />
-            <span className="text-[10px] font-medium uppercase tracking-[0.28em] text-[rgba(200,210,224,0.55)]">
-              Scroll
-            </span>
-            <motion.span
-              className="inline-flex text-[rgba(200,210,224,0.5)]"
-              animate={reduce ? undefined : { y: [0, 5, 0] }}
-              transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-              aria-hidden
-            >
-              <ArrowDownRight className="size-4 rotate-90" />
-            </motion.span>
           </motion.div>
+
+          <motion.div
+            className="pointer-events-auto mx-auto flex min-h-dvh w-full max-w-[min(100%,1400px)] flex-col justify-end px-5 pb-12 pt-28 sm:px-8 sm:pb-16 sm:pt-32 lg:px-12 lg:pb-24"
+            style={{
+              opacity: reduce ? 0 : heroMidCopyOpacityMotion,
+              y: midBlockY,
+            }}
+            aria-hidden={reduce === true ? true : undefined}
+          >
+            <div className="max-w-2xl">
+              <motion.p
+                className="font-display text-[11px] font-medium uppercase tracking-[0.32em] text-[rgba(232,236,242,0.68)] [text-shadow:0_1px_20px_rgba(0,0,0,0.5)]"
+                style={{ y: midLabelY }}
+              >
+                Depth without noise
+              </motion.p>
+              <motion.p
+                className="mt-6 max-w-md font-display text-[clamp(1.75rem,4.5vw,2.35rem)] font-normal leading-[1.12] tracking-[-0.02em] text-[var(--color-heading)] [text-shadow:0_4px_40px_rgba(0,0,0,0.5)]"
+                style={{ y: midTitleY }}
+              >
+                Hold the full picture—spectrum, policy, and economics in one coherent frame.
+              </motion.p>
+              <motion.p
+                className="mt-6 max-w-md text-base font-light leading-[1.75] text-[rgba(228,232,238,0.82)] [text-shadow:0_2px_24px_rgba(0,0,0,0.45)] sm:text-[1.05rem]"
+                style={{ y: midBodyY }}
+              >
+                As you move through the view, perspective shifts only slightly—enough to feel
+                the terrain, not enough to distract from the decision in front of you.
+              </motion.p>
+            </div>
           </motion.div>
 
           <div
             className="shrink-0"
-            style={{ minHeight: `${HERO_STICKY_SCROLL_VH}vh` }}
+            style={{ minHeight: `${HERO_STICKY_SCROLL_VH / 2}vh` }}
             aria-hidden
           />
+        </div>
+
+        <div className="pointer-events-none absolute inset-0 z-[24] flex justify-center">
+          <div className="sticky top-0 flex h-dvh w-full flex-col items-center justify-end pb-10 sm:pb-14">
+            <motion.div
+              className="flex flex-col items-center"
+              style={{ opacity: reduce ? 1 : scrollHintOpacity }}
+            >
+              <a
+                href="#signal"
+                className="pointer-events-auto flex items-center gap-3 rounded-full border border-white/[0.12] bg-[rgba(8,10,18,0.38)] px-5 py-2.5 text-[10px] font-medium uppercase tracking-[0.28em] text-[rgba(200,210,224,0.78)] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-md transition hover:border-white/22 hover:bg-[rgba(8,10,18,0.52)] hover:text-[rgba(232,236,242,0.95)]"
+                aria-label="Scroll to Signal intelligence"
+              >
+                <span
+                  className="h-px w-8 bg-gradient-to-r from-transparent to-[rgba(200,210,224,0.45)]"
+                  aria-hidden
+                />
+                <span>Scroll</span>
+                <motion.span
+                  className="inline-flex text-[rgba(200,210,224,0.55)]"
+                  animate={reduce ? undefined : { y: [0, 4, 0] }}
+                  transition={{
+                    duration: 2.2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  aria-hidden
+                >
+                  <ArrowDownRight className="size-4 rotate-90" />
+                </motion.span>
+              </a>
+            </motion.div>
+          </div>
         </div>
       </section>
 
