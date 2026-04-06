@@ -7,7 +7,7 @@
 /* High-tech telecom — deep navy, grey-violet accent (muted, near-neutral) */
 :root {
   /* Page background fallback (animated gradient is Grainient in layout) */
-  --bg: #030712;
+  --bg: #ffffff;
   --fg: #eae8ed;
   --color-heading: #f2f0f5;
   --color-accent: rgba(58, 52, 68, 0.97);
@@ -328,7 +328,8 @@ body {
 .snow-mountain-hero-clip {
   display: inline-block;
   clip-path: inset(0 100% 0 0);
-  animation: snow-mountain-hero-clip 0.95s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: snow-mountain-hero-clip 0.95s cubic-bezier(0.22, 1, 0.36, 1)
+    forwards;
   animation-delay: var(--clip-delay, 0s);
 }
 

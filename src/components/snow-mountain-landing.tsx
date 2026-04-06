@@ -1,18 +1,22 @@
 "use client";
 
-import { useEffect, useRef, type CSSProperties } from "react";
+import { useLayoutEffect, useRef, type CSSProperties } from "react";
 import Link from "next/link";
 import {
   motion,
   useMotionValueEvent,
   useReducedMotion,
   useScroll,
-  useTransform,
 } from "motion/react";
-import { ArrowDownRight, ChevronRight, Radio, Signal, Waves } from "lucide-react";
+import { ArrowDownRight, ChevronRight } from "lucide-react";
 
+import {
+  BrandStatements,
+  ContactSection,
+  ServicesSection,
+} from "@/components/landing/sections";
 import { SnowMountainScene } from "@/components/snow-mountain-scene";
-import { ScrollReveal } from "@/components/landing/scroll-reveal";
+import { SnowMountainSignalSection } from "@/components/snow-mountain-signal-section";
 import { SNOW_MOUNTAIN_FOG_COLOR } from "@/lib/snow-mountain-fog";
 import {
   heroHandoffOverlayOpacity,
@@ -33,6 +37,59 @@ const ease = [0.22, 1, 0.36, 1] as const;
 /** 200vh scroll while mountain is pinned + 100vh sticky layer = 300vh hero. */
 const HERO_STICKY_SCROLL_VH = 200;
 const HERO_SECTION_VH = HERO_STICKY_SCROLL_VH + 100;
+
+/** Initial custom props for p=0 (avoids unset vars before layout sync). */
+const HERO_SCROLL_VARS_INITIAL = {
+  "--sm-handoff": "0",
+  "--sm-primary-opacity": "1",
+  "--sm-mid-opacity": "0",
+  "--sm-scroll-hint": "1",
+  "--sm-primary-x": "0px",
+  "--sm-primary-y": "0px",
+  "--sm-subcopy-y": "0px",
+  "--sm-h1-0-y": "0px",
+  "--sm-h1-1-y": "0px",
+  "--sm-mid-block-y": "16px",
+  "--sm-mid-label-y": "10px",
+  "--sm-mid-title-y": "10px",
+  "--sm-mid-body-y": "10px",
+} as const satisfies Record<string, string>;
+
+function applyHeroScrollVars(
+  el: HTMLElement,
+  p: number,
+  reduce: boolean | null,
+) {
+  if (reduce) {
+    el.style.setProperty("--sm-handoff", "0");
+    el.style.setProperty("--sm-primary-opacity", "1");
+    el.style.setProperty("--sm-mid-opacity", "0");
+    el.style.setProperty("--sm-scroll-hint", "1");
+    el.style.setProperty("--sm-primary-x", "0px");
+    el.style.setProperty("--sm-primary-y", "0px");
+    el.style.setProperty("--sm-subcopy-y", "0px");
+    el.style.setProperty("--sm-h1-0-y", "0px");
+    el.style.setProperty("--sm-h1-1-y", "0px");
+    el.style.setProperty("--sm-mid-block-y", "0px");
+    el.style.setProperty("--sm-mid-label-y", "0px");
+    el.style.setProperty("--sm-mid-title-y", "0px");
+    el.style.setProperty("--sm-mid-body-y", "0px");
+    return;
+  }
+  el.style.setProperty("--sm-handoff", String(heroHandoffOverlayOpacity(p)));
+  el.style.setProperty("--sm-primary-opacity", String(heroPrimaryCopyOpacity(p)));
+  el.style.setProperty("--sm-mid-opacity", String(heroMidCopyOpacity(p)));
+  el.style.setProperty("--sm-scroll-hint", String(heroScrollHintOpacity(p)));
+  el.style.setProperty("--sm-primary-x", `${heroPrimaryParallaxX(p)}px`);
+  el.style.setProperty("--sm-primary-y", `${heroPrimaryParallaxY(p)}px`);
+  el.style.setProperty("--sm-subcopy-y", `${heroPrimarySubcopyY(p)}px`);
+  el.style.setProperty("--sm-h1-0-y", `${heroPrimaryHeadlineLineY(p, 0)}px`);
+  el.style.setProperty("--sm-h1-1-y", `${heroPrimaryHeadlineLineY(p, 1)}px`);
+  el.style.setProperty("--sm-mid-block-y", `${heroMidBlockY(p)}px`);
+  el.style.setProperty("--sm-mid-label-y", `${heroMidLineY(p, 0)}px`);
+  el.style.setProperty("--sm-mid-title-y", `${heroMidLineY(p, 1)}px`);
+  el.style.setProperty("--sm-mid-body-y", `${heroMidLineY(p, 2)}px`);
+}
 
 const nav = [
   { href: "/#services", label: "Services" },
@@ -96,53 +153,17 @@ export function SnowMountainLanding() {
     offset: ["start start", "end start"],
   });
 
-  const handoffOverlayOpacity = useTransform(scrollYProgress, (p) =>
-    reduce ? 0 : heroHandoffOverlayOpacity(p),
-  );
-  const heroCopyOpacity = useTransform(scrollYProgress, (p) =>
-    reduce ? 1 : heroPrimaryCopyOpacity(p),
-  );
-  const heroMidCopyOpacityMotion = useTransform(scrollYProgress, (p) =>
-    reduce ? 0 : heroMidCopyOpacity(p),
-  );
-  const scrollHintOpacity = useTransform(scrollYProgress, (p) =>
-    reduce ? 1 : heroScrollHintOpacity(p),
-  );
-
-  const primaryParallaxY = useTransform(scrollYProgress, (p) =>
-    reduce ? 0 : heroPrimaryParallaxY(p),
-  );
-  const primaryParallaxX = useTransform(scrollYProgress, (p) =>
-    reduce ? 0 : heroPrimaryParallaxX(p),
-  );
-  const primarySubcopyY = useTransform(scrollYProgress, (p) =>
-    reduce ? 0 : heroPrimarySubcopyY(p),
-  );
-  const headlineLine0Y = useTransform(scrollYProgress, (p) =>
-    reduce ? 0 : heroPrimaryHeadlineLineY(p, 0),
-  );
-  const headlineLine1Y = useTransform(scrollYProgress, (p) =>
-    reduce ? 0 : heroPrimaryHeadlineLineY(p, 1),
-  );
-  const midBlockY = useTransform(scrollYProgress, (p) =>
-    reduce ? 0 : heroMidBlockY(p),
-  );
-  const midLabelY = useTransform(scrollYProgress, (p) =>
-    reduce ? 0 : heroMidLineY(p, 0),
-  );
-  const midTitleY = useTransform(scrollYProgress, (p) =>
-    reduce ? 0 : heroMidLineY(p, 1),
-  );
-  const midBodyY = useTransform(scrollYProgress, (p) =>
-    reduce ? 0 : heroMidLineY(p, 2),
-  );
-
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    scrollProgressRef.current = reduce ? 0 : latest;
+  useMotionValueEvent(scrollYProgress, "change", (p) => {
+    scrollProgressRef.current = reduce ? 0 : p;
+    const el = heroRef.current;
+    if (el) applyHeroScrollVars(el, p, reduce);
   });
 
-  useEffect(() => {
-    scrollProgressRef.current = reduce ? 0 : scrollYProgress.get();
+  useLayoutEffect(() => {
+    const p = scrollYProgress.get();
+    scrollProgressRef.current = reduce ? 0 : p;
+    const el = heroRef.current;
+    if (el) applyHeroScrollVars(el, p, reduce);
   }, [reduce, scrollYProgress]);
 
   return (
@@ -155,6 +176,7 @@ export function SnowMountainLanding() {
           backgroundColor: SNOW_MOUNTAIN_FOG_COLOR,
           height: `${HERO_SECTION_VH}vh`,
           minHeight: `${HERO_SECTION_VH}vh`,
+          ...HERO_SCROLL_VARS_INITIAL,
         }}
       >
         <div className="sticky top-0 z-0 h-dvh min-h-dvh w-full overflow-hidden">
@@ -187,9 +209,9 @@ export function SnowMountainLanding() {
 
           <div className="snow-mountain-hero-film" aria-hidden />
 
-          <motion.div
+          <div
             className="pointer-events-none absolute inset-0 z-[12] bg-[var(--ice-950)]"
-            style={{ opacity: reduce ? 0 : handoffOverlayOpacity }}
+            style={{ opacity: "var(--sm-handoff)" }}
             aria-hidden
           />
         </div>
@@ -199,12 +221,12 @@ export function SnowMountainLanding() {
             <SnowMountainNav />
           </div>
 
-          <motion.div
+          <div
             className="pointer-events-auto mx-auto flex min-h-dvh w-full max-w-[min(100%,1400px)] flex-col justify-end px-5 pb-12 pt-28 sm:px-8 sm:pb-16 sm:pt-32 lg:px-12 lg:pb-24"
             style={{
-              opacity: reduce ? 1 : heroCopyOpacity,
-              x: primaryParallaxX,
-              y: primaryParallaxY,
+              opacity: "var(--sm-primary-opacity)",
+              transform:
+                "translate3d(var(--sm-primary-x), var(--sm-primary-y), 0)",
             }}
           >
           <div className="max-w-2xl">
@@ -226,7 +248,10 @@ export function SnowMountainLanding() {
             </p>
 
             <h1 className="mt-5 font-display text-[clamp(2.5rem,7.5vw,4.25rem)] font-normal leading-[1.04] tracking-[-0.03em] text-[var(--color-heading)] [text-shadow:0_4px_48px_rgba(0,0,0,0.55),0_0_1px_rgba(0,0,0,0.8)]">
-              <motion.span className="block" style={{ y: headlineLine0Y }}>
+              <span
+                className="block"
+                style={{ transform: "translateY(var(--sm-h1-0-y))" }}
+              >
                 {["Clarity", "above"].map((word, i) => (
                   <span
                     key={word}
@@ -241,10 +266,10 @@ export function SnowMountainLanding() {
                     {word}
                   </span>
                 ))}
-              </motion.span>
-              <motion.span
+              </span>
+              <span
                 className="mt-1 block sm:mt-1.5"
-                style={{ y: headlineLine1Y }}
+                style={{ transform: "translateY(var(--sm-h1-1-y))" }}
               >
                 {["the", "noise", "floor."].map((word, i) => (
                   <span
@@ -262,10 +287,10 @@ export function SnowMountainLanding() {
                     {word}
                   </span>
                 ))}
-              </motion.span>
+              </span>
             </h1>
 
-            <motion.div style={{ y: primarySubcopyY }}>
+            <div style={{ transform: "translateY(var(--sm-subcopy-y))" }}>
               <p className="mt-7 max-w-md text-base font-light leading-[1.75] text-[rgba(228,232,238,0.82)] [text-shadow:0_2px_24px_rgba(0,0,0,0.45)] sm:text-[1.05rem]">
                 Spectrum, infrastructure, and market intelligence—delivered with the
                 precision your stakeholders expect.
@@ -289,41 +314,41 @@ export function SnowMountainLanding() {
                 Schedule a briefing
               </Link>
               </div>
-            </motion.div>
+            </div>
           </div>
 
-          </motion.div>
+          </div>
 
-          <motion.div
+          <div
             className="pointer-events-auto mx-auto flex min-h-dvh w-full max-w-[min(100%,1400px)] flex-col justify-end px-5 pb-12 pt-28 sm:px-8 sm:pb-16 sm:pt-32 lg:px-12 lg:pb-24"
             style={{
-              opacity: reduce ? 0 : heroMidCopyOpacityMotion,
-              y: midBlockY,
+              opacity: "var(--sm-mid-opacity)",
+              transform: "translateY(var(--sm-mid-block-y))",
             }}
             aria-hidden={reduce === true ? true : undefined}
           >
             <div className="max-w-2xl">
-              <motion.p
+              <p
                 className="font-display text-[11px] font-medium uppercase tracking-[0.32em] text-[rgba(232,236,242,0.68)] [text-shadow:0_1px_20px_rgba(0,0,0,0.5)]"
-                style={{ y: midLabelY }}
+                style={{ transform: "translateY(var(--sm-mid-label-y))" }}
               >
                 Depth without noise
-              </motion.p>
-              <motion.p
+              </p>
+              <p
                 className="mt-6 max-w-md font-display text-[clamp(1.75rem,4.5vw,2.35rem)] font-normal leading-[1.12] tracking-[-0.02em] text-[var(--color-heading)] [text-shadow:0_4px_40px_rgba(0,0,0,0.5)]"
-                style={{ y: midTitleY }}
+                style={{ transform: "translateY(var(--sm-mid-title-y))" }}
               >
                 Hold the full picture—spectrum, policy, and economics in one coherent frame.
-              </motion.p>
-              <motion.p
+              </p>
+              <p
                 className="mt-6 max-w-md text-base font-light leading-[1.75] text-[rgba(228,232,238,0.82)] [text-shadow:0_2px_24px_rgba(0,0,0,0.45)] sm:text-[1.05rem]"
-                style={{ y: midBodyY }}
+                style={{ transform: "translateY(var(--sm-mid-body-y))" }}
               >
                 As you move through the view, perspective shifts only slightly—enough to feel
                 the terrain, not enough to distract from the decision in front of you.
-              </motion.p>
+              </p>
             </div>
-          </motion.div>
+          </div>
 
           <div
             className="shrink-0"
@@ -334,9 +359,9 @@ export function SnowMountainLanding() {
 
         <div className="pointer-events-none absolute inset-0 z-[24] flex justify-center">
           <div className="sticky top-0 flex h-dvh w-full flex-col items-center justify-end pb-10 sm:pb-14">
-            <motion.div
+            <div
               className="flex flex-col items-center"
-              style={{ opacity: reduce ? 1 : scrollHintOpacity }}
+              style={{ opacity: "var(--sm-scroll-hint)" }}
             >
               <a
                 href="#signal"
@@ -361,91 +386,15 @@ export function SnowMountainLanding() {
                   <ArrowDownRight className="size-4 rotate-90" />
                 </motion.span>
               </a>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      <section
-        id="signal"
-        className="relative z-0 border-t border-[var(--border-tech)] bg-[var(--ice-950)]"
-      >
-        <div
-          className="pointer-events-none absolute inset-x-0 top-0 z-0 h-40 bg-gradient-to-b from-[var(--ice-800)]/40 to-transparent"
-          aria-hidden
-        />
-
-        <div className="relative mx-auto max-w-[min(100%,1200px)] px-5 pb-28 pt-16 sm:px-8 sm:pb-36 sm:pt-20 lg:px-10">
-          <ScrollReveal from="up" className="max-w-2xl">
-            <p className="font-display text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-label)]">
-              Signal intelligence
-            </p>
-            <h2 className="mt-4 font-display text-3xl font-normal leading-[1.15] tracking-[-0.02em] text-[var(--color-heading)] sm:text-4xl lg:text-[2.65rem]">
-              From raw data to board-ready narrative.
-            </h2>
-            <p className="mt-6 max-w-xl text-base font-light leading-[1.75] text-[var(--color-body)]">
-              We combine proprietary models with on-the-ground context so operators,
-              investors, and policymakers can act—without sacrificing rigor.
-            </p>
-          </ScrollReveal>
-
-          <div className="mt-16 grid gap-5 sm:mt-20 sm:grid-cols-3 sm:gap-6">
-            {[
-              {
-                icon: Radio,
-                title: "Spectrum & policy",
-                body: "Auction dynamics, licensing, and cross-border frameworks—mapped to your risk horizon.",
-              },
-              {
-                icon: Signal,
-                title: "Network economics",
-                body: "CAPEX paths, vendor landscapes, and performance benchmarks you can defend in the room.",
-              },
-              {
-                icon: Waves,
-                title: "Foresight streams",
-                body: "Scenario labs and monitoring that turn volatility into a structured point of view.",
-              },
-            ].map((item, i) => (
-              <ScrollReveal key={item.title} from="up" delayMs={80 + i * 70}>
-                <article
-                  className={cn(
-                    "group relative h-full overflow-hidden rounded-2xl border border-[var(--border-tech)] bg-[var(--surface-panel)]/40 p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-sm transition",
-                    "hover:border-[var(--border-tech-hover)] hover:bg-[var(--surface-panel)]/55",
-                  )}
-                >
-                  <div className="mb-5 inline-flex rounded-xl border border-[var(--border-tech)] bg-[rgba(58,52,68,0.15)] p-2.5 text-[var(--color-heading)]">
-                    <item.icon className="size-5" strokeWidth={1.5} aria-hidden />
-                  </div>
-                  <h3 className="font-display text-lg font-medium tracking-[-0.01em] text-[var(--color-heading)]">
-                    {item.title}
-                  </h3>
-                  <p className="mt-3 text-sm font-light leading-relaxed text-[var(--color-body)]">
-                    {item.body}
-                  </p>
-                  <div className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-[var(--glow-accent)] opacity-0 blur-2xl transition group-hover:opacity-100" aria-hidden />
-                </article>
-              </ScrollReveal>
-            ))}
-          </div>
-
-          <ScrollReveal from="up" delayMs={120} className="mt-16 sm:mt-20">
-            <div className="flex flex-col items-start justify-between gap-6 border-t border-[var(--border-tech)] pt-10 sm:flex-row sm:items-center">
-              <p className="max-w-md text-sm font-light text-[var(--color-label)]">
-                This block is a sample handoff—your mountain hero should ease into
-                content with the same temperature and restraint.
-              </p>
-              <Link
-                href="/#contact"
-                className="inline-flex items-center gap-2 text-sm font-medium text-[var(--color-heading)] transition hover:text-[var(--accent-hover)]"
-              >
-                Start a conversation
-                <ChevronRight className="size-4" aria-hidden />
-              </Link>
             </div>
-          </ScrollReveal>
+          </div>
         </div>
       </section>
+
+      <SnowMountainSignalSection />
+      <BrandStatements />
+      <ServicesSection />
+      <ContactSection />
     </>
   );
 }
