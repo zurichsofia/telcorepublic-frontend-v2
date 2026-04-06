@@ -59,6 +59,32 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* Ice white — precision accent (snow / telecom clarity) */
+  --ice-50: #f0f4fa;
+  --ice-100: #d8e2f0;
+  --ice-200: #b8c8e0;
+  --ice-400: #7a96bc;
+  --ice-600: #4d72a0;
+  --ice-800: #2a4a78;
+  --ice-950: #12264a;
+  /* Three.js terrain tokens */
+  --t-ridge: #7a96bc;
+  --t-deep: #0b1220;
+  --t-bloom: #f5a820;
+}
+
+.theme-snow-ice {
+  --color-heading: var(--ice-50);
+  --color-body: rgba(216, 226, 240, 0.82);
+  --color-label: rgba(184, 200, 224, 0.88);
+  --accent-hover: var(--ice-200);
+  --border-tech: rgba(122, 150, 188, 0.32);
+  --border-tech-hover: rgba(122, 150, 188, 0.48);
+  --border-tech-strong: rgba(77, 114, 160, 0.42);
+  --surface-panel: rgba(18, 38, 74, 0.78);
+  --surface-panel-hover: rgba(28, 52, 92, 0.88);
+  --glow-accent: rgba(122, 150, 188, 0.35);
 }
 
 html {
@@ -265,5 +291,50 @@ body {
   }
   html {
     @apply font-sans;
+  }
+}
+
+/* Snow mountain hero — light edge vignette; grain kept subtle (no post Noise) */
+.snow-mountain-hero-film {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 140px rgba(8, 28, 48, 0.14),
+    inset 0 0 72px rgba(12, 36, 56, 0.08);
+  z-index: 10;
+}
+
+.snow-mountain-hero-film::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.018;
+  border-radius: inherit;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+  mix-blend-mode: soft-light;
+}
+
+@keyframes snow-mountain-hero-clip {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0% 0 0);
+  }
+}
+
+.snow-mountain-hero-clip {
+  display: inline-block;
+  clip-path: inset(0 100% 0 0);
+  animation: snow-mountain-hero-clip 0.95s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: var(--clip-delay, 0s);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .snow-mountain-hero-clip {
+    animation: none;
+    clip-path: inset(0 0% 0 0);
   }
 }
