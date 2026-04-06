@@ -7,6 +7,7 @@ import {
   useMotionValueEvent,
   useReducedMotion,
   useScroll,
+  useTransform,
 } from "motion/react";
 import { ArrowDownRight, ChevronRight, Radio, Signal, Waves } from "lucide-react";
 
@@ -16,6 +17,10 @@ import { SNOW_MOUNTAIN_FOG_COLOR } from "@/lib/snow-mountain-fog";
 import { cn } from "@/lib/utils";
 
 const ease = [0.22, 1, 0.36, 1] as const;
+
+/** 200vh scroll while mountain is pinned + 100vh sticky layer = 300vh hero. */
+const HERO_STICKY_SCROLL_VH = 200;
+const HERO_SECTION_VH = HERO_STICKY_SCROLL_VH + 100;
 
 const nav = [
   { href: "/#services", label: "Services" },
@@ -79,6 +84,17 @@ export function SnowMountainLanding() {
     offset: ["start start", "end start"],
   });
 
+  const handoffOverlayOpacity = useTransform(
+    scrollYProgress,
+    [0.68, 0.98],
+    [0, 1],
+  );
+  const heroCopyOpacity = useTransform(
+    scrollYProgress,
+    [0.38, 0.52],
+    [1, 0],
+  );
+
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     scrollProgressRef.current = reduce ? 0 : latest;
   });
@@ -92,42 +108,59 @@ export function SnowMountainLanding() {
       <section
         ref={heroRef}
         id="summit"
-        className="relative min-h-dvh overflow-hidden"
-        style={{ backgroundColor: SNOW_MOUNTAIN_FOG_COLOR }}
+        className="relative isolate z-20"
+        style={{
+          backgroundColor: SNOW_MOUNTAIN_FOG_COLOR,
+          height: `${HERO_SECTION_VH}vh`,
+          minHeight: `${HERO_SECTION_VH}vh`,
+        }}
       >
-        <div className="absolute inset-0 z-0">
-          <SnowMountainScene scrollProgressRef={scrollProgressRef} />
+        <div className="sticky top-0 z-0 h-dvh min-h-dvh w-full overflow-hidden">
+          <div className="absolute inset-0 min-h-dvh">
+            <SnowMountainScene scrollProgressRef={scrollProgressRef} />
+          </div>
+
+          {/* Readability: cool storm side + depth */}
+          <div
+            className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-r from-[#0c2840]/[0.38] via-[#0a2034]/18 to-transparent sm:from-[#0c2840]/32 sm:via-[#081c2c]/14"
+            aria-hidden
+          />
+          <div
+            className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-[#0a1c2e]/22 via-transparent to-transparent"
+            aria-hidden
+          />
+          <div
+            className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(ellipse_80%_60%_at_70%_45%,transparent_40%,rgba(12,40,64,0.14)_100%)]"
+            aria-hidden
+          />
+
+          <div
+            className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-[min(42vh,28rem)] bg-gradient-to-t from-[#0c1828] via-[#0a1420]/88 to-transparent"
+            aria-hidden
+          />
+          <div
+            className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-32 bg-gradient-to-t from-[#08121c] to-transparent opacity-85"
+            aria-hidden
+          />
+
+          <div className="snow-mountain-hero-film" aria-hidden />
+
+          <motion.div
+            className="pointer-events-none absolute inset-0 z-[12] bg-[var(--ice-950)]"
+            style={{ opacity: reduce ? 0 : handoffOverlayOpacity }}
+            aria-hidden
+          />
         </div>
 
-        {/* Readability: cool storm side + depth */}
-        <div
-          className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-r from-[#0c2840]/[0.38] via-[#0a2034]/18 to-transparent sm:from-[#0c2840]/32 sm:via-[#081c2c]/14"
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-[#0a1c2e]/22 via-transparent to-transparent"
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(ellipse_80%_60%_at_70%_45%,transparent_40%,rgba(12,40,64,0.14)_100%)]"
-          aria-hidden
-        />
+        <div className="pointer-events-none absolute inset-0 z-20 flex flex-col">
+          <div className="pointer-events-auto">
+            <SnowMountainNav />
+          </div>
 
-        {/* Transition into next section */}
-        <div
-          className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-[min(42vh,28rem)] bg-gradient-to-t from-[#0c1828] via-[#0a1420]/88 to-transparent"
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-32 bg-gradient-to-t from-[#08121c] to-transparent opacity-85"
-          aria-hidden
-        />
-
-        <div className="snow-mountain-hero-film" aria-hidden />
-
-        <SnowMountainNav />
-
-        <div className="relative z-20 mx-auto flex min-h-dvh max-w-[min(100%,1400px)] flex-col justify-end px-5 pb-12 pt-28 sm:px-8 sm:pb-16 sm:pt-32 lg:px-12 lg:pb-24">
+          <motion.div
+            className="pointer-events-auto mx-auto flex min-h-dvh w-full max-w-[min(100%,1400px)] flex-col justify-end px-5 pb-12 pt-28 sm:px-8 sm:pb-16 sm:pt-32 lg:px-12 lg:pb-24"
+            style={{ opacity: reduce ? 1 : heroCopyOpacity }}
+          >
           <div className="max-w-2xl">
             <p className="font-display text-[11px] font-medium uppercase tracking-[0.38em] text-[rgba(232,236,242,0.72)] [text-shadow:0_1px_20px_rgba(0,0,0,0.5)]">
               {["Independent", "telecom", "research"].map((word, i) => (
@@ -237,13 +270,19 @@ export function SnowMountainLanding() {
               <ArrowDownRight className="size-4 rotate-90" />
             </motion.span>
           </motion.div>
+          </motion.div>
+
+          <div
+            className="shrink-0"
+            style={{ minHeight: `${HERO_STICKY_SCROLL_VH}vh` }}
+            aria-hidden
+          />
         </div>
       </section>
 
-      {/* Second section — deliberate tonal shift, still on-brand */}
       <section
         id="signal"
-        className="relative z-10 border-t border-[var(--border-tech)] bg-[var(--ice-950)]"
+        className="relative z-0 border-t border-[var(--border-tech)] bg-[var(--ice-950)]"
       >
         <div
           className="pointer-events-none absolute inset-x-0 top-0 z-0 h-40 bg-gradient-to-b from-[var(--ice-800)]/40 to-transparent"

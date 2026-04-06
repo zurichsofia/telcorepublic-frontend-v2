@@ -16,6 +16,7 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 
 import { SNOW_MOUNTAIN_FOG_COLOR } from "@/lib/snow-mountain-fog";
+import { heroSubtleMotionT } from "@/lib/snow-mountain-hero-scroll";
 import { applyTerrainIceStyle } from "@/lib/snow-mountain-terrain-ice";
 import { WindParticleField } from "@/components/snow-mountain-wind-particles";
 import { SnowMountainSky } from "@/components/snow-mountain-sky";
@@ -32,7 +33,7 @@ const ROT_Y_180 = 1;
 const FOG_EXP_BASE = 0.02;
 const FOG_EXP_BREATH = 0.003;
 
-function BreathingFogExp2({ reduceMotion }: { reduceMotion: boolean }) {
+function BreathingFogExp2({ reduceMotion }: { reduceMotion: boolean; }) {
   const scene = useThree((s) => s.scene);
 
   useFrame(({ clock }) => {
@@ -77,18 +78,20 @@ function ParallaxWorld({
     const g = groupRef.current;
     if (!g) return;
     const lerp = 1 - Math.pow(0.9, delta * 60);
-    const scroll = scrollProgressRef?.current ?? 0;
+    const p = scrollProgressRef?.current ?? 0;
+    const subtleT = reduceMotion ? 0 : heroSubtleMotionT(p);
     if (reduceMotion) {
       smooth.current.x = 0;
       smooth.current.y = 0;
-      g.rotation.x = scroll * 0.078;
+      g.rotation.x = 0;
       g.rotation.y = 0;
       return;
     }
     smooth.current.x += (mouse.current.x - smooth.current.x) * lerp;
     smooth.current.y += (mouse.current.y - smooth.current.y) * lerp;
-    g.rotation.x = scroll * 0.078 + smooth.current.y * -0.038;
-    g.rotation.y = smooth.current.x * 0.045;
+    /* Scroll-driven tilt only after first ⅓; keep amplitudes small. */
+    g.rotation.x = subtleT * 0.028 + smooth.current.y * -0.038;
+    g.rotation.y = subtleT * 0.018 + smooth.current.x * 0.042;
   });
 
   return <group ref={groupRef}>{children}</group>;
@@ -113,22 +116,25 @@ function SnowMountainModel({
   }, [gltf]);
 
   useFrame((state) => {
-    const t = reduceMotion ? 0 : (scrollProgressRef?.current ?? 0);
+    const p = scrollProgressRef?.current ?? 0;
+    const subtleT = reduceMotion ? 0 : heroSubtleMotionT(p);
     if (rigRef.current) {
       rigRef.current.rotation.set(
-        t * 0.03,
-        ROT_Y_180 + t * 0.25,
-        t * -0.01,
+        subtleT * 0.012,
+        ROT_Y_180 + subtleT * 0.052,
+        subtleT * -0.005,
       );
     }
 
     if (applied.current || !controls || !rigRef.current) return;
-    if (state.clock.elapsedTime < 0.2) return;
+    if (state.clock.elapsedTime < 0.45) return;
     const box = new THREE.Box3().setFromObject(rigRef.current);
+    if (box.isEmpty()) return;
     const size = box.getSize(new THREE.Vector3());
+    if (Math.max(size.x, size.y, size.z) < 1e-4) return;
     const center = box.getCenter(new THREE.Vector3());
     const oc = controls as ThreeOrbitControls;
-    oc.target.set(center.x, center.y + size.y * 0.36, center.z);
+    oc.target.set(center.x, center.y + size.y * 0.3, center.z);
     oc.update();
     applied.current = true;
   });
@@ -140,7 +146,23 @@ function SnowMountainModel({
   );
 }
 
-function PostFx({ enabled }: { enabled: boolean }) {
+/**
+ * Stage fits the camera; OrbitControls defaults allow infinite dolly-out — hero looks empty.
+ * Lock zoom (and pan) so the framed shot stays; user can still orbit slightly.
+ */
+function HeroOrbitControls() {
+  return (
+    <OrbitControls
+      makeDefault
+      enableDamping
+      dampingFactor={0.08}
+      enableZoom={false}
+      enablePan={false}
+    />
+  );
+}
+
+function PostFx({ enabled }: { enabled: boolean; }) {
   if (!enabled) return null;
   return (
     <EffectComposer multisampling={4} enableNormalPass={false}>
@@ -155,7 +177,10 @@ function PostFx({ enabled }: { enabled: boolean }) {
 }
 
 export type SnowMountainSceneProps = {
-  /** 0 = top of hero, 1 = hero scrolled out — drives tilt + terrain motion. */
+  /**
+   * 0 = hero top, 1 = hero end. Used with `heroSubtleMotionT`: first ⅓ stable,
+   * second ⅓ subtle motion, last ⅓ hold + HTML handoff.
+   */
   scrollProgressRef?: MutableRefObject<number>;
 };
 
@@ -164,9 +189,10 @@ export function SnowMountainScene({ scrollProgressRef }: SnowMountainSceneProps)
 
   return (
     <Canvas
-      className="h-full w-full touch-none"
-      camera={{ fov: 36 }}
+      className="h-full min-h-dvh w-full touch-none"
+      camera={{ fov: 28, near: 0.1, far: 500 }}
       dpr={[1, 2]}
+      resize={{ debounce: { scroll: 0, resize: 0 } }}
       gl={{
         antialias: true,
         powerPreference: "high-performance",
@@ -214,7 +240,7 @@ export function SnowMountainScene({ scrollProgressRef }: SnowMountainSceneProps)
         </Suspense>
       </ParallaxWorld>
 
-      <OrbitControls makeDefault enableDamping dampingFactor={0.08} />
+      <HeroOrbitControls />
       <PostFx enabled={!reduceMotion} />
     </Canvas>
   );
