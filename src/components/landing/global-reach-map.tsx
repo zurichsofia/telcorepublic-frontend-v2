@@ -13,17 +13,17 @@ export function GlobalReachMapSection() {
   return (
     <section
       id="global-reach"
-      className="relative w-full overflow-hidden border-y border-[#001438] py-24 sm:py-32"
+      className="relative w-full overflow-hidden bg-[#ffffff] py-24 sm:py-32"
       aria-labelledby="global-reach-heading"
     >
       <div className="relative mx-auto max-w-7xl px-5 text-center sm:px-8">
         <ScrollReveal from="up">
-          <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-[var(--color-label)]">
+          <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-[var(--color-telco-red)]">
             International footprint
           </p>
         </ScrollReveal>
         <ScrollReveal from="up" delayMs={100}>
-          <p className="mx-auto mt-5 max-w-2xl text-sm font-light leading-relaxed text-[var(--color-body)] md:text-lg">
+          <p className="mx-auto mt-5 max-w-2xl text-sm font-light leading-relaxed text-black md:text-lg">
             Leverage Telco Republic&apos;s network to connect with industry leaders and
             emerging technology solutions, fostering co-innovation and expanding your
             market reach.
@@ -39,7 +39,7 @@ export function GlobalReachMapSection() {
         transition={{ duration: 0.95, ease }}
       >
         <WorldMap
-          lineColor="#9bb8ea"
+          lineColor="#b5bec7"
           dots={[
             {
               start: { lat: 47.3769, lng: 8.5417, pulse: true },

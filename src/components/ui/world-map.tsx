@@ -18,8 +18,16 @@ interface MapProps {
     start: MapEndpoint;
     end: MapEndpoint;
   }>;
+  /** Arc stroke color (matches brand cloud grey). */
   lineColor?: string;
+  /** Non-highlight location dots (separate from line so markers stay readable). */
+  markerColor?: string;
+  /** Brand accent: only the pulsing home point (e.g. Zurich) uses this. */
+  accentColor?: string;
 }
+
+/** Landmass grid: black dots on white for contrast. */
+const LAND_DOT_COLOR = "#00000055";
 
 const DOT_R = 1;
 const DOT_R_PULSE = 1.15;
@@ -58,7 +66,9 @@ function projectLatLng(
 
 export default function WorldMap({
   dots = [],
-  lineColor = "#7cadff",
+  lineColor = "#b5bec7",
+  markerColor = "#000000",
+  accentColor = "#eb1e25",
 }: MapProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -84,14 +94,13 @@ export default function WorldMap({
     };
   }, [map]);
 
-  // Landmass dots: must contrast the page background. Pure white (#FFFFFF40)
-  // was tuned for dark UIs and disappears on the frost theme - use ink tint.
-  // Do not use useTheme() here: it is undefined on the server, which breaks
-  // stable img data URLs + hydration.
+  // Landmass dots: black on white. Do not use useTheme() here: it is undefined
+  // on the server, which breaks stable img data URLs + hydration.
   const svgMap = map.getSVG({
-    radius: 0.22,
-    color: "#6a94df",
+    radius: 0.24,
+    color: LAND_DOT_COLOR,
     shape: "circle",
+    backgroundColor: "#ffffff",
   });
 
   const createCurvedPath = (
@@ -111,7 +120,7 @@ export default function WorldMap({
   return (
     <div
       ref={containerRef}
-      className="relative w-full rounded-lg font-sans"
+      className="relative w-full rounded-lg bg-white font-sans"
     >
       <img
         src={`data:image/svg+xml;utf8,${encodeURIComponent(svgMap)}`}
@@ -143,10 +152,10 @@ export default function WorldMap({
             </feMerge>
           </filter>
           <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="white" stopOpacity="0" />
+            <stop offset="0%" stopColor="#ffffff" stopOpacity="0" />
             <stop offset="5%" stopColor={lineColor} stopOpacity="1" />
             <stop offset="95%" stopColor={lineColor} stopOpacity="1" />
-            <stop offset="100%" stopColor="white" stopOpacity="0" />
+            <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
           </linearGradient>
         </defs>
 
@@ -172,7 +181,7 @@ export default function WorldMap({
                 strokeWidth="1.3"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                opacity={0.42}
+                opacity={0.38}
                 filter={`url(#${arcGlowFilterId})`}
                 initial={{ pathLength: 0 }}
                 animate={{ pathLength: isInView ? 1 : 0 }}
@@ -203,7 +212,7 @@ export default function WorldMap({
                   cx={start.x}
                   cy={start.y}
                   r={dot.start.pulse ? DOT_R_PULSE : DOT_R}
-                  fill={lineColor}
+                  fill={dot.start.pulse ? accentColor : markerColor}
                 />
                 {dot.start.pulse ? (
                   <g aria-hidden>
@@ -212,7 +221,7 @@ export default function WorldMap({
                       cy={start.y}
                       r={PULSE_RING_MIN}
                       fill="none"
-                      stroke={lineColor}
+                      stroke={accentColor}
                       strokeWidth={PULSE_STROKE_W}
                       strokeLinecap="round"
                     >
@@ -246,7 +255,7 @@ export default function WorldMap({
                       cy={start.y}
                       r={PULSE_RING_MIN}
                       fill="none"
-                      stroke={lineColor}
+                      stroke={accentColor}
                       strokeWidth={PULSE_STROKE_W}
                       strokeLinecap="round"
                     >
@@ -279,7 +288,7 @@ export default function WorldMap({
                 ) : null}
               </g>
               <g key={`end-${i}`}>
-                <circle cx={end.x} cy={end.y} r={DOT_R} fill={lineColor} />
+                <circle cx={end.x} cy={end.y} r={DOT_R} fill={markerColor} />
               </g>
             </g>
           );

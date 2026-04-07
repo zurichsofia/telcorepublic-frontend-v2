@@ -4,88 +4,85 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Frost page - #f2f9ff base, slate copy, cyan accents */
+/* Brand palette (hex). Three.js terrain tokens kept for the snow mountain scene. */
 :root {
-  --bg: #f2f9ff;
-  --fg: #001538;
-  --color-heading: #001538;
-  --color-accent: #001538;
-  --color-body: #001538;
-  --color-label: #001538;
-  --muted: oklch(0.97 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-hover: #0891b2;
-  --accent-soft: rgba(14, 116, 144, 0.12);
-  --border: oklch(0.922 0 0);
-  --border-subtle: rgba(14, 116, 144, 0.16);
-  --border-tech: rgba(14, 116, 144, 0.26);
-  --border-tech-hover: rgba(8, 145, 178, 0.42);
-  --border-tech-strong: rgba(8, 145, 178, 0.36);
-  --surface-panel: rgba(255, 255, 255, 0.9);
-  --surface-panel-hover: rgba(255, 255, 255, 0.98);
-  --surface-glass: rgba(255, 255, 255, 0.75);
-  --text-nav-muted: #001538;
-  --glow-accent: rgba(8, 145, 178, 0.22);
-  --glass: rgba(255, 255, 255, 0.92);
-  --glass-strong: rgba(255, 255, 255, 0.98);
-  --font-display: var(--font-syne), sans-serif;
-  --background: oklch(1 0 0);
-  --foreground: #001538;
-  --card: oklch(1 0 0);
-  --card-foreground: #001538;
-  --popover: oklch(1 0 0);
-  --popover-foreground: #001538;
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: #001538;
-  --muted-foreground: #001538;
-  --accent-foreground: #001538;
-  --destructive: oklch(0.577 0.245 27.325);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: #001538;
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: #001538;
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --color-telco-red: #eb1e25;
+  --color-clouds: #b5bec7;
+  --color-white: #ffffff;
+  --color-black: #000000;
 
-  /* Ice - brighter frost + cyan for hero gradients */
-  --ice-50: #f4fdff;
-  --ice-100: #c5f8ff;
-  --ice-200: #7ce8f8;
-  --ice-400: #22d3ee;
-  --ice-600: #0891b2;
-  --ice-800: #155e75;
-  --ice-950: #0c4a6e;
-  /* Three.js terrain tokens */
+  /* Three.js terrain (scene) */
   --t-ridge: #7a96bc;
   --t-deep: #0b1220;
   --t-bloom: #f5a820;
+
+  --bg: #ffffff;
+  --fg: #000000;
+  --color-heading: #000000;
+  --color-accent: #eb1e25;
+  --color-body: #000000;
+  --color-label: #b5bec7;
+  --muted: #b5bec7;
+  --accent: #b5bec7;
+  --accent-hover: #eb1e25;
+  --accent-soft: rgba(235, 30, 37, 0.12);
+  --border: rgba(181, 190, 199, 0.45);
+  --border-subtle: rgba(181, 190, 199, 0.28);
+  --border-tech: rgba(181, 190, 199, 0.5);
+  --border-tech-hover: rgba(235, 30, 37, 0.55);
+  --border-tech-strong: rgba(181, 190, 199, 0.65);
+  --surface-panel: rgba(255, 255, 255, 0.9);
+  --surface-panel-hover: #ffffff;
+  --surface-glass: rgba(255, 255, 255, 0.75);
+  --text-nav-muted: #000000;
+  --glow-accent: rgba(235, 30, 37, 0.22);
+  --glass: rgba(255, 255, 255, 0.92);
+  --glass-strong: #ffffff;
+  --font-display: var(--font-sans), sans-serif;
+  --background: #ffffff;
+  --foreground: #000000;
+  --card: #ffffff;
+  --card-foreground: #000000;
+  --popover: #ffffff;
+  --popover-foreground: #000000;
+  --primary: #000000;
+  --primary-foreground: #ffffff;
+  --secondary: #b5bec7;
+  --secondary-foreground: #000000;
+  --muted-foreground: #b5bec7;
+  --accent-foreground: #000000;
+  --destructive: #eb1e25;
+  --input: rgba(181, 190, 199, 0.35);
+  --ring: #eb1e25;
+  --chart-1: #eb1e25;
+  --chart-2: #b5bec7;
+  --chart-3: #000000;
+  --chart-4: #b5bec7;
+  --chart-5: #000000;
+  --radius: 0.625rem;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #000000;
+  --sidebar-primary: #000000;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #b5bec7;
+  --sidebar-accent-foreground: #000000;
+  --sidebar-border: rgba(181, 190, 199, 0.45);
+  --sidebar-ring: #eb1e25;
 }
 
 .theme-snow-ice {
-  --bg: #f2f9ff;
-  --color-heading: #001538;
-  --color-body: #001538;
-  --color-label: #001538;
-  --color-accent: #001538;
-  --accent-hover: #0891b2;
-  --border-tech: rgba(14, 116, 144, 0.28);
-  --border-tech-hover: rgba(8, 145, 178, 0.45);
-  --border-tech-strong: rgba(8, 145, 178, 0.38);
+  --bg: #ffffff;
+  --color-heading: #000000;
+  --color-body: #000000;
+  --color-label: #b5bec7;
+  --color-accent: #eb1e25;
+  --accent-hover: #eb1e25;
+  --border-tech: rgba(181, 190, 199, 0.5);
+  --border-tech-hover: rgba(235, 30, 37, 0.55);
+  --border-tech-strong: rgba(181, 190, 199, 0.65);
   --surface-panel: rgba(255, 255, 255, 0.9);
-  --surface-panel-hover: rgba(255, 255, 255, 0.98);
-  --glow-accent: rgba(8, 145, 178, 0.22);
+  --surface-panel-hover: #ffffff;
+  --glow-accent: rgba(235, 30, 37, 0.22);
 }
 
 /**
@@ -93,61 +90,37 @@
  * Add `theme-light` on a wrapper (sections below hero, modals, etc.).
  */
 .theme-light {
-  --fg: #001538;
-  --color-heading: #001538;
-  --color-accent: #001538;
-  --color-body: #001538;
-  --color-label: #001538;
-  --accent-hover: rgba(72, 58, 98, 0.92);
-  --accent-soft: rgba(52, 46, 72, 0.1);
-  --border-subtle: rgba(48, 46, 58, 0.12);
-  --border-tech: rgba(62, 58, 74, 0.2);
-  --border-tech-hover: rgba(88, 84, 102, 0.34);
-  --border-tech-strong: rgba(52, 48, 64, 0.26);
-  --surface-panel: rgba(248, 246, 252, 0.97);
-  --surface-panel-hover: rgba(238, 234, 246, 0.98);
+  --fg: #000000;
+  --color-heading: #000000;
+  --color-accent: #eb1e25;
+  --color-body: #000000;
+  --color-label: #b5bec7;
+  --accent-hover: #eb1e25;
+  --accent-soft: rgba(235, 30, 37, 0.1);
+  --border-subtle: rgba(181, 190, 199, 0.28);
+  --border-tech: rgba(181, 190, 199, 0.45);
+  --border-tech-hover: rgba(235, 30, 37, 0.5);
+  --border-tech-strong: rgba(181, 190, 199, 0.55);
+  --surface-panel: rgba(255, 255, 255, 0.97);
+  --surface-panel-hover: #ffffff;
   --surface-glass: rgba(255, 255, 255, 0.72);
-  --text-nav-muted: #001538;
-  --glow-accent: rgba(72, 68, 96, 0.18);
+  --text-nav-muted: #000000;
+  --glow-accent: rgba(235, 30, 37, 0.18);
   --glass: rgba(255, 255, 255, 0.88);
-  --glass-strong: rgba(250, 248, 255, 0.94);
+  --glass-strong: #ffffff;
   --bg: #ffffff;
-}
-
-.theme-light ::selection {
-  background: rgba(52, 46, 72, 0.14);
-  color: var(--color-heading);
 }
 
 html {
   scroll-behavior: smooth;
   min-height: 100%;
-  background-color: #f2f9ff;
-  background-image:
-    repeating-linear-gradient(
-      118deg,
-      transparent 0,
-      transparent 11px,
-      rgba(255, 255, 255, 0.45) 11px,
-      rgba(255, 255, 255, 0.45) 12px
-    ),
-    radial-gradient(
-      ellipse 100% 60% at 50% -15%,
-      rgba(125, 211, 252, 0.35),
-      transparent 55%
-    ),
-    radial-gradient(
-      ellipse 70% 50% at 100% 0%,
-      rgba(56, 189, 248, 0.12),
-      transparent 50%
-    ),
-    linear-gradient(180deg, #f2f9ff 0%, #e8f4fc 45%, #f2f9ff 100%);
+  background-color: #ffffff;
   background-attachment: fixed;
 }
 
 body {
   min-height: 100%;
-  background: transparent;
+  background-color: #ffffff;
   color: var(--fg);
   font-feature-settings:
     'ss01' on,
@@ -172,11 +145,6 @@ body {
 
 .text-accent {
   color: var(--color-accent);
-}
-
-::selection {
-  background: rgba(14, 116, 144, 0.2);
-  color: var(--color-heading);
 }
 
 @keyframes fade-up {
@@ -315,37 +283,37 @@ body {
 }
 
 .dark {
-  --background: oklch(0.14 0.02 290);
-  --foreground: oklch(0.96 0.01 290);
-  --card: oklch(0.18 0.025 292);
-  --card-foreground: oklch(0.96 0.01 290);
-  --popover: oklch(0.18 0.025 292);
-  --popover-foreground: oklch(0.96 0.01 290);
-  --primary: oklch(0.44 0.04 292);
-  --primary-foreground: oklch(0.97 0.01 290);
-  --secondary: oklch(0.24 0.03 292);
-  --secondary-foreground: oklch(0.96 0.01 290);
-  --muted: oklch(0.24 0.03 292);
-  --muted-foreground: oklch(0.72 0.03 290);
-  --accent: oklch(0.28 0.035 292);
-  --accent-foreground: oklch(0.96 0.01 290);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(0.42 0.03 292 / 22%);
-  --input: oklch(0.42 0.03 292 / 26%);
-  --ring: oklch(0.5 0.04 292);
-  --chart-1: oklch(0.48 0.045 292);
-  --chart-2: oklch(0.52 0.05 280);
-  --chart-3: oklch(0.46 0.04 270);
-  --chart-4: oklch(0.4 0.035 260);
-  --chart-5: oklch(0.34 0.03 250);
-  --sidebar: oklch(0.16 0.025 292);
-  --sidebar-foreground: oklch(0.96 0.01 290);
-  --sidebar-primary: oklch(0.44 0.04 292);
-  --sidebar-primary-foreground: oklch(0.97 0.01 290);
-  --sidebar-accent: oklch(0.24 0.03 292);
-  --sidebar-accent-foreground: oklch(0.96 0.01 290);
-  --sidebar-border: oklch(0.42 0.03 292 / 22%);
-  --sidebar-ring: oklch(0.5 0.04 292);
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #000000;
+  --card-foreground: #ffffff;
+  --popover: #000000;
+  --popover-foreground: #ffffff;
+  --primary: #ffffff;
+  --primary-foreground: #000000;
+  --secondary: #b5bec7;
+  --secondary-foreground: #000000;
+  --muted: #b5bec7;
+  --muted-foreground: #b5bec7;
+  --accent: #b5bec7;
+  --accent-foreground: #000000;
+  --destructive: #eb1e25;
+  --border: rgba(181, 190, 199, 0.22);
+  --input: rgba(181, 190, 199, 0.26);
+  --ring: #eb1e25;
+  --chart-1: #eb1e25;
+  --chart-2: #b5bec7;
+  --chart-3: #ffffff;
+  --chart-4: #b5bec7;
+  --chart-5: #ffffff;
+  --sidebar: #000000;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #ffffff;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #b5bec7;
+  --sidebar-accent-foreground: #000000;
+  --sidebar-border: rgba(181, 190, 199, 0.22);
+  --sidebar-ring: #eb1e25;
 }
 
 @layer base {
@@ -361,26 +329,16 @@ body {
   }
 }
 
-/* Snow mountain hero - bottom-only lift (full inset vignette was greying left/right sky edges) */
+/* Snow mountain hero - bottom-only lift */
 .snow-mountain-hero-film {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  box-shadow: inset 0 -72px 120px rgba(8, 22, 38, 0.1);
+  box-shadow: inset 0 -72px 120px rgba(0, 0, 0, 0.1);
   z-index: 10;
 }
 
-/* Grain only - soft-light was lifting bright sky pixels to flat white on one side */
-.snow-mountain-hero-film::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  opacity: 0.014;
-  border-radius: inherit;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 220px 220px;
-  mix-blend-mode: multiply;
-}
+/* Grain only */
 
 @keyframes snow-mountain-hero-clip {
   from {
@@ -423,7 +381,7 @@ body {
   width: 5px;
   height: 5px;
   border-radius: 9999px;
-  background-color: var(--signal-dot-color, #fff);
+  background-color: var(--signal-dot-color, #ffffff);
   animation: hero-nav-signal-dot 3s ease-in-out infinite;
 }
 

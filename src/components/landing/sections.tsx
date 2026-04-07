@@ -34,7 +34,7 @@ export function ServicesSection() {
   return (
     <section
       id="services"
-      className="relative isolate w-full overflow-hidden py-24 sm:py-32"
+      className="relative isolate w-full overflow-hidden bg-[#ffffff] py-24 sm:py-32"
     >
       {/* <ServicesAuroraBackground /> */}
       <div className="relative z-10 mx-auto max-w-6xl px-5 sm:px-8">
@@ -42,16 +42,16 @@ export function ServicesSection() {
           <ScrollReveal from="up" className="lg:col-span-5">
             <div className="lg:sticky lg:top-28 lg:max-w-md">
               <div
-                className="mb-5 h-px w-12 bg-gradient-to-r from-[var(--ice-600)]/55 to-transparent sm:w-16"
+                className="mb-5 h-px w-12 bg-gradient-to-r from-[var(--color-telco-red)]/55 to-transparent sm:w-16"
                 aria-hidden
               />
-              <p className="text-[10px] font-medium uppercase tracking-[0.38em] text-[#001438]/75">
+              <p className="text-[10px] font-medium uppercase tracking-[0.38em] text-[var(--color-black)]/75">
                 What we offer
               </p>
-              <h2 className="font-display mt-3 bg-gradient-to-br from-[#001438] via-[#0c2d4a] to-[#134e6f] bg-clip-text text-4xl font-normal tracking-[-0.02em] text-transparent sm:text-[2.65rem] sm:leading-[1.12]">
+              <h2 className="font-display mt-3 bg-gradient-to-br text-[var(--color-telco-red)] text-4xl font-normal tracking-[-0.02em] sm:text-[2.65rem] sm:leading-[1.12]">
                 Our Services
               </h2>
-              <p className="mt-6 text-[15px] font-light leading-[1.75] text-[#001438]/78">
+              <p className="mt-6 text-[15px] font-light leading-[1.75] text-[var(--color-black)]/78">
                 Research-led advisory across positioning, go-to-market, and
                 long-term intelligence - structured for clarity at every step.
               </p>
@@ -68,7 +68,7 @@ export function ServicesSection() {
                       <article className="group py-9 sm:py-10">
                         <div className="flex gap-5 sm:gap-8">
                           <span
-                            className="font-display w-9 shrink-0 pt-0.5 tabular-nums text-[13px] font-medium tracking-wide text-[#001438]/38 sm:w-10"
+                            className="font-display w-9 shrink-0 pt-0.5 tabular-nums text-[13px] font-medium tracking-wide text-[var(--color-telco-red)] sm:w-10"
                             aria-hidden
                           >
                             {n}
@@ -86,7 +86,7 @@ export function ServicesSection() {
                                 <ArrowUpRight className="h-[1.1rem] w-[1.1rem] stroke-[1.75] transition-transform duration-300 group-hover:-translate-y-px group-hover:translate-x-px" />
                               </Link>
                             </div>
-                            <p className="mt-4 max-w-xl text-[13.5px] font-light leading-[1.72] text-[#001438]/76">
+                            <p className="mt-4 max-w-xl text-[13.5px] font-light leading-[1.72] text-[var(--color-black)]/76">
                               {s.desc}
                             </p>
                           </div>
@@ -108,14 +108,14 @@ export function ContactSection() {
   return (
     <section
       id="contact"
-      className="relative overflow-hidden border-t border-[var(--border-subtle)] px-5 py-24 sm:px-8 sm:py-32"
+      className="relative overflow-hidden border-t border-[var(--border-subtle)] bg-[#ffffff] px-5 py-24 sm:px-8 sm:py-32"
     >
       <ScrollReveal
         from="up"
         blur
         className="relative mx-auto max-w-2xl text-center"
       >
-        <p className="text-[10px] font-medium uppercase tracking-[0.35em] text-[var(--color-label)]">
+        <p className="text-[10px] font-medium uppercase tracking-[0.35em] text-[var(--color-telco-red)]">
           Telcorepublic
         </p>
         <h2 className="font-display mt-4 text-4xl font-normal tracking-tight text-[var(--color-heading)] sm:text-5xl">

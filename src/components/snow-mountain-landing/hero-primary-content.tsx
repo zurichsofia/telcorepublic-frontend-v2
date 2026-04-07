@@ -9,8 +9,6 @@ type HeroPrimaryContentProps = {
 };
 
 const labelWords = ["Independent", "telecom", "research"] as const;
-const headlineLine0 = ["Navigating", "the", "shift."] as const;
-const headlineLine1 = ["Leading", "the", "Techco", "Revolution"] as const;
 
 export function HeroPrimaryContent({ reduceMotion }: HeroPrimaryContentProps) {
   return (
@@ -22,7 +20,7 @@ export function HeroPrimaryContent({ reduceMotion }: HeroPrimaryContentProps) {
       }}
     >
       <div className="max-w-2xl">
-        <p className="font-display text-[11px] font-medium uppercase tracking-[0.38em] text-[#001538]">
+        <p className="font-display text-[11px] font-medium uppercase tracking-[0.38em] text-[#eb1e25]">
           {labelWords.map((word, i) => (
             <span
               key={word}
@@ -39,57 +37,27 @@ export function HeroPrimaryContent({ reduceMotion }: HeroPrimaryContentProps) {
           ))}
         </p>
 
-        <h1
-          className={cn(
-            "mt-5 font-display text-[clamp(2.5rem,7.5vw,4.25rem)] font-medium leading-[1.04] tracking-[-0.022em] text-[#001538]",
-            "[text-shadow:0_1px_0_rgba(255,255,255,0.92),0_0_20px_rgba(248,252,255,0.55),0_0_48px_rgba(255,255,255,0.22)]",
-          )}
-        >
+        <h1 className="mt-5 font-display text-6xl font-normal leading-[1.12] tracking-[-0.02em] text-white">
           <span
             className="block"
             style={{ transform: "translateY(var(--sm-h1-0-y))" }}
           >
-            {headlineLine0.map((word, i) => (
-              <span
-                key={word}
-                className={cn(
-                  "mr-[0.32em] inline-block last:mr-0",
-                  !reduceMotion && "snow-mountain-hero-clip",
-                )}
-                style={
-                  { "--clip-delay": `${0.14 + i * 0.08}s` } as CSSProperties
-                }
-              >
-                {word}
-              </span>
-            ))}
+            Navigating the shift.
           </span>
           <span
             className="mt-1 block sm:mt-1.5"
             style={{ transform: "translateY(var(--sm-h1-1-y))" }}
           >
-            {headlineLine1.map((word, i) => (
-              <span
-                key={word}
-                className={cn(
-                  "mr-[0.32em] inline-block text-[#001538] last:mr-0",
-                  !reduceMotion && "snow-mountain-hero-clip",
-                )}
-                style={
-                  {
-                    "--clip-delay": `${0.3 + i * 0.07}s`,
-                  } as CSSProperties
-                }
-              >
-                {word}
-              </span>
-            ))}
+            Leading the Techco Revolution
           </span>
         </h1>
 
         <div style={{ transform: "translateY(var(--sm-subcopy-y))" }}>
           <p className="mt-7 mb-32 max-w-md text-base font-light leading-[1.75] text-white sm:text-[1.05rem]">
-            Fact-Based Research. Actionable Disruption.
+            Leading the Techco Revolution
+            <br />
+            Fact-Based Research.
+            <br />
           </p>
         </div>
       </div>

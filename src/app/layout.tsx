@@ -1,21 +1,13 @@
 import type { Metadata } from "next";
-import { Inter, Syne, Geist } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { PageLoader } from "@/components/page-loader";
 import { cn } from "@/lib/utils";
 
-const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
-  variable: "--font-inter",
-});
-
-const syne = Syne({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-syne",
+const helveticaNeue = localFont({
+  src: "../fonts/helvetica-neue-lt-std-53-extended.otf",
+  variable: "--font-sans",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -32,10 +24,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn(inter.variable, syne.variable, "font-sans", geist.variable, "dark")}
+      className={cn(helveticaNeue.variable, "font-sans")}
     >
       <body
-        className={`${inter.className} relative min-h-screen font-light text-[var(--fg)] antialiased`}
+        className={`${helveticaNeue.className} relative min-h-screen font-light text-[var(--fg)] antialiased`}
       >
         <PageLoader />
         {children}

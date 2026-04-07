@@ -10,7 +10,7 @@ export function SnowMountainLanding() {
     <>
       <SnowMountainHero />
 
-      <div className="theme-snow-ice relative border-t border-cyan-500/20 bg-gradient-to-b from-[#f2f9ff] via-[#f2f9ff] to-[#f2f9ff]">
+      <div className="theme-snow-ice relative border-t border-[var(--color-clouds)]/25 bg-[#ffffff]">
         <GlobalReachMapSection />
         <ServicesSection />
         <ContactSection />
