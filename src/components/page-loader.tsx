@@ -88,9 +88,6 @@ export function PageLoader() {
         <span className="font-display text-[clamp(1.5rem,5vw,2rem)] font-normal tracking-[0.04em] text-(--color-heading)">
           Telcorepublic
         </span>
-        <span className="mt-2 text-xs font-light uppercase tracking-[0.35em] text-(--color-label)">
-          Research
-        </span>
 
         <div className="relative mt-10 h-[2px] w-[min(12rem,70vw)] overflow-hidden rounded-full bg-[var(--border-subtle)]">
           {!reduce && (

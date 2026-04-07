@@ -29,7 +29,7 @@ import { cn } from "@/lib/utils";
 /** Extra Y rotation (rad) as the user scrolls through the hero — subtle orbit. */
 const HERO_SCROLL_YAW_RAD = 0.11;
 
-useGLTF.preload("/snow_mountain.glb");
+useGLTF.preload("/scene/snow_mountain.glb");
 
 const HeroScrollSmoothContext = createContext<MutableRefObject<number> | null>(
   null,
@@ -263,7 +263,7 @@ function SnowMountainModel({
   scrollProgressRef,
   reduceMotion,
 }: SnowMountainModelProps) {
-  const gltf = useGLTF("/snow_mountain.glb");
+  const gltf = useGLTF("/scene/snow_mountain.glb");
   const rigRef = useRef<THREE.Group>(null);
   const smoothScrollRef = useContext(HeroScrollSmoothContext);
 
