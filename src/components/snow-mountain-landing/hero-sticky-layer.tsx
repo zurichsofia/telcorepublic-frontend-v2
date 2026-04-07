@@ -17,11 +17,11 @@ export function HeroStickyLayer({
   scrollProgressRef,
 }: HeroStickyLayerProps) {
   return (
-    <div className="sticky top-0 z-0 h-dvh min-h-dvh w-full overflow-hidden">
+    <div className="sticky top-0 z-0 h-dvh min-h-dvh w-full overflow-hidden contain-[layout]">
       <div
         ref={heroCanvasRef}
         className={cn(
-          "absolute inset-0 min-h-dvh",
+          "absolute inset-0 min-h-dvh contain-paint",
           !reduceMotion && "cursor-none",
         )}
       >

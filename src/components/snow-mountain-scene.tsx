@@ -2,6 +2,8 @@
 
 import {
   Suspense,
+  createContext,
+  useContext,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -18,10 +20,10 @@ import * as THREE from "three";
 
 import { SNOW_MOUNTAIN_FOG_COLOR } from "@/lib/snow-mountain-fog";
 import { heroSubtleMotionT } from "@/lib/snow-mountain-hero-scroll";
+import { applyTerrainIceStyle } from "@/lib/snow-mountain-terrain-ice";
 
 /** Extra Y rotation (rad) during 100–200vh scroll - reads as camera orbiting slightly right. */
 const HERO_SCROLL_YAW_RAD = 0.11;
-import { applyTerrainIceStyle } from "@/lib/snow-mountain-terrain-ice";
 import { WindParticleField } from "@/components/snow-mountain-wind-particles";
 import { SnowMountainDreiSkyClouds } from "@/components/snow-mountain-drei-sky-clouds";
 import { AtmosphericParticles } from "@/components/snow-mountain-atmospheric-particles";
@@ -30,6 +32,42 @@ import { OrbitControls as ThreeOrbitControls } from "three/examples/jsm/controls
 import { cn } from "@/lib/utils";
 
 useGLTF.preload("/snow_mountain.glb");
+
+const HeroScrollSmoothContext = createContext<MutableRefObject<number> | null>(
+  null,
+);
+
+const FALLBACK_SCROLL_PROGRESS: MutableRefObject<number> = { current: 0 };
+
+/**
+ * Lerp raw window scroll progress inside the R3F loop so terrain motion matches
+ * frame timing (avoids jitter vs. irregular scroll events).
+ */
+function SmoothHeroScrollProvider({
+  rawRef,
+  reduceMotion,
+  children,
+}: {
+  rawRef: MutableRefObject<number>;
+  reduceMotion: boolean;
+  children: React.ReactNode;
+}) {
+  const smoothRef = useRef(rawRef.current);
+  useFrame((_, delta) => {
+    if (reduceMotion) {
+      smoothRef.current = rawRef.current;
+      return;
+    }
+    const target = rawRef.current;
+    const k = 1 - Math.pow(0.76, delta * 60);
+    smoothRef.current += (target - smoothRef.current) * k;
+  }, 10);
+  return (
+    <HeroScrollSmoothContext.Provider value={smoothRef}>
+      {children}
+    </HeroScrollSmoothContext.Provider>
+  );
+}
 
 /** Y rotation π - show the opposite face of the terrain. */
 const ROT_Y_180 = 1;
@@ -70,6 +108,7 @@ function ParallaxWorld({
   const scrollYawRef = useRef<THREE.Group>(null);
   const mouse = useRef({ x: 0, y: 0 });
   const smooth = useRef({ x: 0, y: 0 });
+  const smoothScrollRef = useContext(HeroScrollSmoothContext);
 
   useEffect(() => {
     const onMove = (e: MouseEvent) => {
@@ -85,7 +124,8 @@ function ParallaxWorld({
     const yaw = scrollYawRef.current;
     if (!g || !yaw) return;
     const lerp = 1 - Math.pow(0.9, delta * 60);
-    const p = scrollProgressRef?.current ?? 0;
+    const p =
+      smoothScrollRef?.current ?? scrollProgressRef?.current ?? 0;
     const subtleT = reduceMotion ? 0 : heroSubtleMotionT(p);
     if (reduceMotion) {
       smooth.current.x = 0;
@@ -183,13 +223,14 @@ function SnowMountainModel({
   const rigRef = useRef<THREE.Group>(null);
   const controls = useThree((s) => s.controls);
   const applied = useRef(false);
+  const smoothScrollRef = useContext(HeroScrollSmoothContext);
 
   useLayoutEffect(() => {
     applyTerrainIceStyle(gltf.scene);
   }, [gltf]);
 
   useFrame((state) => {
-    const p = scrollProgressRef?.current ?? 0;
+    const p = smoothScrollRef?.current ?? scrollProgressRef?.current ?? 0;
     const subtleT = reduceMotion ? 0 : heroSubtleMotionT(p);
     if (rigRef.current) {
       rigRef.current.rotation.set(
@@ -261,13 +302,17 @@ export function SnowMountainScene({
   className,
 }: SnowMountainSceneProps) {
   const reduceMotion = useReducedMotion() ?? false;
+  const rawScrollRef = scrollProgressRef ?? FALLBACK_SCROLL_PROGRESS;
 
   return (
     <Canvas
       className={cn("h-full min-h-dvh w-full touch-none", className)}
       camera={{ fov: 28, near: 0.1, far: 500 }}
       dpr={[1, 2]}
-      resize={{ debounce: { scroll: 0, resize: 0 } }}
+      resize={{
+        scroll: false,
+        debounce: { scroll: 0, resize: 0 },
+      }}
       gl={{
         antialias: true,
         powerPreference: "high-performance",
@@ -278,47 +323,52 @@ export function SnowMountainScene({
         gl.toneMappingExposure = 1.02;
       }}
     >
-      <BreathingFogExp2 reduceMotion={reduceMotion} />
-      <SnowMountainDreiSkyClouds reduceMotion={reduceMotion} />
-      <WindParticleField reduceMotion={reduceMotion} />
-      <hemisphereLight args={["#F5FAFF", "#6FA0D4", 0.85]} />
-      <ambientLight intensity={0.38} color="#D0E4F8" />
-      <directionalLight
-        position={[22, 38, 18]}
-        intensity={1.12}
-        color="#FAFCFF"
-      />
-      <directionalLight
-        position={[-16, 8, -22]}
-        intensity={0.52}
-        color="#A8C8EC"
-      />
-
-      <CursorWorldLight reduceMotion={reduceMotion} />
-
-      <ParallaxWorld
-        scrollProgressRef={scrollProgressRef}
+      <SmoothHeroScrollProvider
+        rawRef={rawScrollRef}
         reduceMotion={reduceMotion}
       >
-        <AtmosphericParticles reduceMotion={reduceMotion} />
-        <Suspense fallback={null}>
-          <Stage
-            adjustCamera={0.36}
-            intensity={0.58}
-            environment="dawn"
-            preset="soft"
-            shadows={false}
-          >
-            <SnowMountainModel
-              scrollProgressRef={scrollProgressRef}
-              reduceMotion={reduceMotion}
-            />
-          </Stage>
-        </Suspense>
-      </ParallaxWorld>
+        <BreathingFogExp2 reduceMotion={reduceMotion} />
+        <SnowMountainDreiSkyClouds reduceMotion={reduceMotion} />
+        <WindParticleField reduceMotion={reduceMotion} />
+        <hemisphereLight args={["#F5FAFF", "#6FA0D4", 0.85]} />
+        <ambientLight intensity={0.38} color="#D0E4F8" />
+        <directionalLight
+          position={[22, 38, 18]}
+          intensity={1.12}
+          color="#FAFCFF"
+        />
+        <directionalLight
+          position={[-16, 8, -22]}
+          intensity={0.52}
+          color="#A8C8EC"
+        />
 
-      <HeroOrbitControls />
-      <PostFx enabled={!reduceMotion} />
+        <CursorWorldLight reduceMotion={reduceMotion} />
+
+        <ParallaxWorld
+          scrollProgressRef={scrollProgressRef}
+          reduceMotion={reduceMotion}
+        >
+          <AtmosphericParticles reduceMotion={reduceMotion} />
+          <Suspense fallback={null}>
+            <Stage
+              adjustCamera={0.36}
+              intensity={0.58}
+              environment="dawn"
+              preset="soft"
+              shadows={false}
+            >
+              <SnowMountainModel
+                scrollProgressRef={scrollProgressRef}
+                reduceMotion={reduceMotion}
+              />
+            </Stage>
+          </Suspense>
+        </ParallaxWorld>
+
+        <HeroOrbitControls />
+        <PostFx enabled={!reduceMotion} />
+      </SmoothHeroScrollProvider>
     </Canvas>
   );
 }
