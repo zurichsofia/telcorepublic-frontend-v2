@@ -1,7 +1,8 @@
 import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 
 import { ScrollReveal } from "@/components/landing/scroll-reveal";
-
+import { ServicesAuroraBackground } from "@/components/landing/services-aurora-bg";
 
 const services = [
   {
@@ -28,69 +29,77 @@ const services = [
     title: "Subscription",
     desc: "Always be up-to-speed with recurring insights and real-time access to industry experts.",
   },
-];
+] as const;
+
 export function ServicesSection() {
   return (
     <section
       id="services"
-      className="relative mx-auto max-w-6xl overflow-hidden px-5 py-24 sm:px-8 sm:py-32"
+      className="relative isolate w-full overflow-hidden py-24 sm:py-32"
     >
-      <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-[min(60%,28rem)] bg-[radial-gradient(ellipse_80%_80%_at_50%_0%,rgba(56,189,248,0.1),transparent_65%)]"
-        aria-hidden
-      />
-      <div className="relative flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-        <ScrollReveal from="up" className="max-w-2xl">
-          <div>
-            <p className="text-[10px] font-medium uppercase tracking-[0.35em] text-[var(--color-label)] opacity-95">
-              What we offer
-            </p>
-            <h2 className="font-display mt-3 bg-gradient-to-r from-slate-900 via-cyan-900 to-cyan-700 bg-clip-text text-4xl font-normal tracking-tight text-transparent sm:text-5xl">
-              Our Services
-            </h2>
-          </div>
-        </ScrollReveal>
-        <ScrollReveal from="right" delayMs={80} className="sm:self-end">
-          <Link
-            href="#contact"
-            className="inline-flex shrink-0 rounded-full border border-cyan-600/25 bg-white px-6 py-3 text-[13px] font-semibold uppercase tracking-[0.1em] text-[var(--color-accent)] shadow-sm transition hover:border-cyan-600/40 hover:bg-sky-50/90"
-          >
-            Start a conversation
-          </Link>
-        </ScrollReveal>
-      </div>
-      <div className="relative mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {services.map((s, i) => (
-          <ScrollReveal
-            key={s.title}
-            from={i % 2 === 0 ? "up" : "left"}
-            delayMs={i * 55}
-            className="h-full"
-          >
-            <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-sky-200/80 bg-white/90 p-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] backdrop-blur-md transition-[border-color,box-shadow,transform] duration-500 ease-out motion-safe:hover:-translate-y-1 motion-safe:hover:border-cyan-400/50 motion-safe:hover:shadow-[0_20px_50px_-24px_rgba(14,116,144,0.12)]">
+      {/* <ServicesAuroraBackground /> */}
+      <div className="relative z-10 mx-auto max-w-6xl px-5 sm:px-8">
+        <div className="grid gap-14 lg:grid-cols-12 lg:gap-12 xl:gap-16">
+          <ScrollReveal from="up" className="lg:col-span-5">
+            <div className="lg:sticky lg:top-28 lg:max-w-md">
               <div
-                className="pointer-events-none absolute -right-6 -top-6 h-36 w-36 rounded-full bg-sky-200/40 blur-3xl transition duration-500 group-hover:bg-cyan-200/45"
+                className="mb-5 h-px w-12 bg-gradient-to-r from-[var(--ice-600)]/55 to-transparent sm:w-16"
                 aria-hidden
               />
-              <div
-                className="pointer-events-none absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/25 to-transparent opacity-0 transition group-hover:opacity-100"
-                aria-hidden
-              />
-              <h3 className="relative font-display text-2xl font-normal tracking-tight text-[var(--color-heading)] transition-opacity duration-300 group-hover:opacity-85">
-                {s.title}
-              </h3>
-              <p className="relative mt-3 flex-1 text-sm font-light leading-relaxed text-[var(--color-body)]">
-                {s.desc}
+              <p className="text-[10px] font-medium uppercase tracking-[0.38em] text-[#001438]/75">
+                What we offer
               </p>
-              <Link
-                href="#contact"
-                className="relative mt-6 text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--color-accent)] transition hover:text-[var(--accent-hover)]"
-              >
-                Learn more
-              </Link>
-            </article>
+              <h2 className="font-display mt-3 bg-gradient-to-br from-[#001438] via-[#0c2d4a] to-[#134e6f] bg-clip-text text-4xl font-normal tracking-[-0.02em] text-transparent sm:text-[2.65rem] sm:leading-[1.12]">
+                Our Services
+              </h2>
+              <p className="mt-6 text-[15px] font-light leading-[1.75] text-[#001438]/78">
+                Research-led advisory across positioning, go-to-market, and
+                long-term intelligence - structured for clarity at every step.
+              </p>
+            </div>
           </ScrollReveal>
-        ))}
+
+          <ScrollReveal from="left" delayMs={80} className="lg:col-span-7">
+            <div className="border-t border-b border-[var(--border-tech)]/45">
+              <ul className="divide-y divide-[var(--border-tech)]/40">
+                {services.map((s, i) => {
+                  const n = String(i + 1).padStart(2, "0");
+                  return (
+                    <li key={s.title}>
+                      <article className="group py-9 sm:py-10">
+                        <div className="flex gap-5 sm:gap-8">
+                          <span
+                            className="font-display w-9 shrink-0 pt-0.5 tabular-nums text-[13px] font-medium tracking-wide text-[#001438]/38 sm:w-10"
+                            aria-hidden
+                          >
+                            {n}
+                          </span>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-start justify-between gap-4">
+                              <h3 className="font-display text-[1.05rem] font-normal leading-snug tracking-[-0.02em] text-[var(--color-heading)] sm:text-[1.125rem]">
+                                {s.title}
+                              </h3>
+                              <Link
+                                href="#contact"
+                                className="mt-0.5 shrink-0 text-[var(--color-heading)] opacity-55 transition duration-300 group-hover:opacity-100 group-hover:text-[var(--accent-hover)]"
+                                aria-label={`Contact - ${s.title}`}
+                              >
+                                <ArrowUpRight className="h-[1.1rem] w-[1.1rem] stroke-[1.75] transition-transform duration-300 group-hover:-translate-y-px group-hover:translate-x-px" />
+                              </Link>
+                            </div>
+                            <p className="mt-4 max-w-xl text-[13.5px] font-light leading-[1.72] text-[#001438]/76">
+                              {s.desc}
+                            </p>
+                          </div>
+                        </div>
+                      </article>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </ScrollReveal>
+        </div>
       </div>
     </section>
   );
@@ -108,7 +117,7 @@ export function ContactSection() {
         className="relative mx-auto max-w-2xl text-center"
       >
         <p className="text-[10px] font-medium uppercase tracking-[0.35em] text-[var(--color-label)]">
-          Telcore Research
+          Telcorepublic
         </p>
         <h2 className="font-display mt-4 text-4xl font-normal tracking-tight text-[var(--color-heading)] sm:text-5xl">
           Build on{" "}
@@ -117,7 +126,7 @@ export function ContactSection() {
           </em>
         </h2>
         <p className="mt-5 text-base font-light text-[var(--color-body)]">
-          Share your timeline and constraints — we will respond with a clear view of
+          Share your timeline and constraints - we will respond with a clear view of
           what we can prove, model, or measure together.
         </p>
         <div className="mt-10 flex flex-wrap justify-center gap-4">
@@ -131,7 +140,7 @@ export function ContactSection() {
             href="#home"
             className="inline-flex rounded-full border border-[var(--border-tech)] px-8 py-3.5 text-[13px] font-medium uppercase tracking-[0.08em] text-[var(--text-nav-muted)] transition motion-safe:hover:scale-[1.02] hover:border-[var(--border-tech-hover)] hover:text-[var(--accent-hover)]"
           >
-            Contact Us
+            Get in touch
           </a>
         </div>
       </ScrollReveal>

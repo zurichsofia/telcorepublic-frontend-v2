@@ -31,7 +31,7 @@ function smoothstep01(t: number) {
   return x * x * (3 - 2 * x);
 }
 
-/** Parallax: minimal drift right / down (keep small — reads as depth, not motion). */
+/** Parallax: minimal drift right / down (keep small - reads as depth, not motion). */
 const SHIFT_X_MAX_PX = 20;
 const SHIFT_Y_MAX_PX = 20;
 
@@ -65,7 +65,7 @@ export function FirstSectionsParallaxBg({ children }: { children: React.ReactNod
 
   const scrollRafRef = useRef<number | null>(null);
 
-  /** DOM + ref only — avoids React re-rendering the hero (image + WebGL) on every scroll tick. */
+  /** DOM + ref only - avoids React re-rendering the hero (image + WebGL) on every scroll tick. */
   const applyScrollFx = useCallback(() => {
     const el = rootRef.current;
     const shell = fixedShellRef.current;
@@ -135,7 +135,7 @@ export function FirstSectionsParallaxBg({ children }: { children: React.ReactNod
 
   return (
     <div ref={rootRef} className="relative isolate">
-      {/* Fixed viewport: exactly one screen tall — does not extend with page length */}
+      {/* Fixed viewport: exactly one screen tall - does not extend with page length */}
       <div
         ref={fixedShellRef}
         className="pointer-events-none fixed inset-x-0 top-0 z-0 h-screen max-h-screen min-h-0 w-full overflow-hidden"
@@ -164,11 +164,11 @@ export function FirstSectionsParallaxBg({ children }: { children: React.ReactNod
               />
             </div>
           </div>
-          {/* Same geometry as the image plate (130% centered), but no CSS transform — WebGL stays glitch-free. */}
+          {/* Same geometry as the image plate (130% centered), but no CSS transform - WebGL stays glitch-free. */}
           <div className="absolute left-1/2 top-1/2 h-[130%] w-[130%] -translate-x-1/2 -translate-y-1/2">
             <HeroCloudsThree motionRef={parallaxMotionRef} />
           </div>
-          {/* Neutral dark grade — matches black-base + cool mist (reference site) */}
+          {/* Neutral dark grade - matches black-base + cool mist (reference site) */}
           <div
             className="absolute inset-0 bg-linear-to-b from-slate-950/65 via-transparent to-slate-900/60 mix-blend-soft-light"
             aria-hidden

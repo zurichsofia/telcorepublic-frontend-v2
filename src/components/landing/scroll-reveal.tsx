@@ -11,7 +11,7 @@ type ScrollRevealProps = {
   /** Entrance direction */
   from?: ScrollRevealFrom;
   delayMs?: number;
-  /** Slightly softer entrance (no CSS filter — avoids expensive blur compositing while scrolling). */
+  /** Slightly softer entrance (no CSS filter - avoids expensive blur compositing while scrolling). */
   blur?: boolean;
 };
 
@@ -49,19 +49,19 @@ export function ScrollReveal({
         reduce
           ? undefined
           : {
-              opacity: 0,
-              x,
-              y: y + extraY,
-            }
+            opacity: 0,
+            x,
+            y: y + extraY,
+          }
       }
       whileInView={
         reduce
           ? undefined
           : {
-              opacity: 1,
-              x: 0,
-              y: 0,
-            }
+            opacity: 1,
+            x: 0,
+            y: 0,
+          }
       }
       viewport={{ once: true, amount: 0.14, margin: "0px 0px -12% 0px" }}
       transition={{

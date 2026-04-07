@@ -178,7 +178,7 @@ export function WhyTelcoRepublicSection() {
               Unbiased insight for telecom strategy.
             </h2>
             <p className="mt-6 max-w-xl text-lg font-light leading-relaxed text-[var(--color-body)] sm:text-[1.05rem]">
-              Six reasons teams work with us — research-grade rigor with operator
+              Six reasons teams work with us - research-grade rigor with operator
               context.
             </p>
           </header>

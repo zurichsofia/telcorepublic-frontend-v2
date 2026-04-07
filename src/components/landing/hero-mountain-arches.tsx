@@ -4,7 +4,7 @@ import { useId } from "react";
 
 /**
  * Thin elliptical / quadratic arcs in normalized 0–100 space (stretched by preserveAspectRatio="none").
- * Tuned for hero-alps2 + objectPosition ~44% / 42% — reads as faint signal beams over the ridge.
+ * Tuned for hero-alps2 + objectPosition ~44% / 42% - reads as faint signal beams over the ridge.
  */
 const ARCHES: {
   d: string;

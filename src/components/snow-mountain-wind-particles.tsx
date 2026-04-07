@@ -19,7 +19,7 @@ type WindParticleFieldProps = {
   reduceMotion: boolean;
 };
 
-/** High-altitude ice crystals / airborne snow — reads as wind, not stars. */
+/** High-altitude ice crystals / airborne snow - reads as wind, not stars. */
 export function WindParticleField({ reduceMotion }: WindParticleFieldProps) {
   const pointsRef = useRef<THREE.Points>(null);
 

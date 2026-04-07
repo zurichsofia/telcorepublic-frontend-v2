@@ -4,7 +4,7 @@ import { useReducedMotion } from "motion/react";
 
 import Grainient from "./Grainient";
 
-/** Full-viewport React Bits Grainient — replaces the old CSS gradient on `html`. */
+/** Full-viewport React Bits Grainient - replaces the old CSS gradient on `html`. */
 export function GrainientPageBg() {
   const reduce = useReducedMotion();
 

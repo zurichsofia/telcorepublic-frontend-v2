@@ -6,7 +6,7 @@ import { GlobalTvGrainOverlay } from "@/components/global-tv-grain-overlay";
 import { PageLoader } from "@/components/page-loader";
 import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
 const inter = Inter({
   subsets: ["latin"],
@@ -23,7 +23,7 @@ const syne = Syne({
 export const metadata: Metadata = {
   title: "Telcorepublic Research | Networks, signals, insight",
   description:
-    "Independent telecom research — spectrum, infrastructure, and the systems that connect the world.",
+    "Independent telecom research - spectrum, infrastructure, and the systems that connect the world.",
 };
 
 export default function RootLayout({

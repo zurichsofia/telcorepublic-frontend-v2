@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-/** Ice white / precision palette — terrain & theme */
+/** Ice white / precision palette - terrain & theme */
 export const ICE = {
   50: "#F0F4FA",
   100: "#D8E2F0",
@@ -15,7 +15,7 @@ export const ICE = {
 export const T_RIDGE = ICE[400];
 /** Deep valley fill (mixed in shader) */
 export const T_DEEP = "#0B1220";
-/** Peak emissive — reads as signal / bloom tint on tallest geometry */
+/** Peak emissive - reads as signal / bloom tint on tallest geometry */
 export const T_BLOOM = "#F5A820";
 
 function patchTerrainMaterial(
@@ -100,11 +100,11 @@ export function applyTerrainIceStyle(root: THREE.Object3D) {
         m instanceof THREE.MeshPhysicalMaterial
       ) {
         const c = m.clone();
-        if ("fog" in c) (c as { fog: boolean }).fog = true;
+        if ("fog" in c) (c as { fog: boolean; }).fog = true;
         patchTerrainMaterial(obj, c);
         return c;
       }
-      if (m && "fog" in m) (m as { fog: boolean }).fog = true;
+      if (m && "fog" in m) (m as { fog: boolean; }).fog = true;
       return m;
     });
     obj.material = nextMats.length === 1 ? nextMats[0]! : nextMats;

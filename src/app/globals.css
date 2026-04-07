@@ -4,7 +4,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Frost page — #f2f9ff base, slate copy, cyan accents */
+/* Frost page - #f2f9ff base, slate copy, cyan accents */
 :root {
   --bg: #f2f9ff;
   --fg: #001538;
@@ -59,7 +59,7 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 
-  /* Ice — brighter frost + cyan for hero gradients */
+  /* Ice - brighter frost + cyan for hero gradients */
   --ice-50: #f4fdff;
   --ice-100: #c5f8ff;
   --ice-200: #7ce8f8;
@@ -89,7 +89,7 @@
 }
 
 /**
- * Light surface — dark copy for white / off-white section backgrounds.
+ * Light surface - dark copy for white / off-white section backgrounds.
  * Add `theme-light` on a wrapper (sections below hero, modals, etc.).
  */
 .theme-light {
@@ -131,8 +131,16 @@ html {
       rgba(255, 255, 255, 0.45) 11px,
       rgba(255, 255, 255, 0.45) 12px
     ),
-    radial-gradient(ellipse 100% 60% at 50% -15%, rgba(125, 211, 252, 0.35), transparent 55%),
-    radial-gradient(ellipse 70% 50% at 100% 0%, rgba(56, 189, 248, 0.12), transparent 50%),
+    radial-gradient(
+      ellipse 100% 60% at 50% -15%,
+      rgba(125, 211, 252, 0.35),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 70% 50% at 100% 0%,
+      rgba(56, 189, 248, 0.12),
+      transparent 50%
+    ),
     linear-gradient(180deg, #f2f9ff 0%, #e8f4fc 45%, #f2f9ff 100%);
   background-attachment: fixed;
 }
@@ -353,7 +361,7 @@ body {
   }
 }
 
-/* Snow mountain hero — bottom-only lift (full inset vignette was greying left/right sky edges) */
+/* Snow mountain hero - bottom-only lift (full inset vignette was greying left/right sky edges) */
 .snow-mountain-hero-film {
   position: absolute;
   inset: 0;
@@ -362,7 +370,7 @@ body {
   z-index: 10;
 }
 
-/* Grain only — soft-light was lifting bright sky pixels to flat white on one side */
+/* Grain only - soft-light was lifting bright sky pixels to flat white on one side */
 .snow-mountain-hero-film::before {
   content: '';
   position: absolute;

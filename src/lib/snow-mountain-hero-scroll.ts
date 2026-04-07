@@ -73,7 +73,7 @@ export function heroPrimaryParallaxY(progress: number): number {
   return -44 * ease;
 }
 
-/** Horizontal nudge (px) — mirrors light camera yaw so type moves with the frame. */
+/** Horizontal nudge (px) - mirrors light camera yaw so type moves with the frame. */
 export function heroPrimaryParallaxX(progress: number): number {
   if (progress <= 0) return 0;
   if (progress >= CROSSFADE_END) return 12;

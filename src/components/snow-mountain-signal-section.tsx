@@ -10,7 +10,7 @@ const pillars = [
   {
     icon: Radio,
     title: "Spectrum & policy",
-    body: "Auction dynamics, licensing, and cross-border frameworks—mapped to your risk horizon.",
+    body: "Auction dynamics, licensing, and cross-border frameworks-mapped to your risk horizon.",
   },
   {
     icon: Signal,
@@ -45,7 +45,7 @@ export function SnowMountainSignalSection() {
           </h2>
           <p className="mt-6 max-w-xl text-base font-light leading-[1.75] text-[var(--color-body)]">
             We combine proprietary models with on-the-ground context so operators,
-            investors, and policymakers can act—without sacrificing rigor.
+            investors, and policymakers can act-without sacrificing rigor.
           </p>
         </ScrollReveal>
 
@@ -79,7 +79,7 @@ export function SnowMountainSignalSection() {
         <ScrollReveal from="up" delayMs={120} className="mt-16 sm:mt-20">
           <div className="flex flex-col items-start justify-between gap-6 border-t border-[var(--border-tech)] pt-10 sm:flex-row sm:items-center">
             <p className="max-w-md text-sm font-light text-[var(--color-label)]">
-              This block is a sample handoff—your mountain hero should ease into
+              This block is a sample handoff-your mountain hero should ease into
               content with the same temperature and restraint.
             </p>
             <Link

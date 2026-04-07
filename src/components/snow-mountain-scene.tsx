@@ -19,7 +19,7 @@ import * as THREE from "three";
 import { SNOW_MOUNTAIN_FOG_COLOR } from "@/lib/snow-mountain-fog";
 import { heroSubtleMotionT } from "@/lib/snow-mountain-hero-scroll";
 
-/** Extra Y rotation (rad) during 100–200vh scroll — reads as camera orbiting slightly right. */
+/** Extra Y rotation (rad) during 100–200vh scroll - reads as camera orbiting slightly right. */
 const HERO_SCROLL_YAW_RAD = 0.11;
 import { applyTerrainIceStyle } from "@/lib/snow-mountain-terrain-ice";
 import { WindParticleField } from "@/components/snow-mountain-wind-particles";
@@ -31,10 +31,10 @@ import { cn } from "@/lib/utils";
 
 useGLTF.preload("/snow_mountain.glb");
 
-/** Y rotation π — show the opposite face of the terrain. */
+/** Y rotation π - show the opposite face of the terrain. */
 const ROT_Y_180 = 1;
 
-/** Slightly lighter than before — sky/clouds opt out of fog; terrain shaders still carry haze. */
+/** Slightly lighter than before - sky/clouds opt out of fog; terrain shaders still carry haze. */
 const FOG_EXP_BASE = 0.012;
 const FOG_EXP_BREATH = 0.002;
 
@@ -111,8 +111,8 @@ function ParallaxWorld({
   );
 }
 
-/** Soft point light along the camera ray through the cursor — reads as a handheld beam on the snow. */
-function CursorWorldLight({ reduceMotion }: { reduceMotion: boolean }) {
+/** Soft point light along the camera ray through the cursor - reads as a handheld beam on the snow. */
+function CursorWorldLight({ reduceMotion }: { reduceMotion: boolean; }) {
   const lightRef = useRef<THREE.PointLight>(null);
   const raw = useRef({ x: 0, y: 0 });
   const smooth = useRef({ x: 0, y: 0 });
@@ -220,7 +220,7 @@ function SnowMountainModel({
 }
 
 /**
- * Stage fits the camera; OrbitControls defaults allow infinite dolly-out — hero looks empty.
+ * Stage fits the camera; OrbitControls defaults allow infinite dolly-out - hero looks empty.
  * Lock zoom (and pan) so the framed shot stays; user can still orbit slightly.
  */
 function HeroOrbitControls() {

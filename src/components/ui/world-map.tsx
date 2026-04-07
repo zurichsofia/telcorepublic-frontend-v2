@@ -23,7 +23,7 @@ interface MapProps {
 
 const DOT_R = 1;
 const DOT_R_PULSE = 1.15;
-/** Expanding ring — viewBox height is ~100; keep ripple large enough to read on screen. */
+/** Expanding ring - viewBox height is ~100; keep ripple large enough to read on screen. */
 const PULSE_RING_MIN = 1.5;
 const PULSE_RING_MAX = 6;
 const PULSE_STROKE_W = 0.5;
@@ -87,7 +87,7 @@ export default function WorldMap({
   }, [map]);
 
   // Landmass dots: must contrast the page background. Pure white (#FFFFFF40)
-  // was tuned for dark UIs and disappears on the frost theme — use ink tint.
+  // was tuned for dark UIs and disappears on the frost theme - use ink tint.
   // Do not use useTheme() here: it is undefined on the server, which breaks
   // stable img data URLs + hydration.
   const svgMap = map.getSVG({

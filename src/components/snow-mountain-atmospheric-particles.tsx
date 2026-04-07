@@ -4,7 +4,7 @@ import { useFrame } from "@react-three/fiber";
 import { useMemo } from "react";
 import * as THREE from "three";
 
-/** Mid-distance field above the terrain — reads as precision data, not decoration. */
+/** Mid-distance field above the terrain - reads as precision data, not decoration. */
 const COUNT = 4200;
 
 const vertexShader = /* glsl */ `

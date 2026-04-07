@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import * as THREE from "three";
 import { Sky } from "three/examples/jsm/objects/Sky.js";
 
-/** Preetham-style sky — high sun, crisp cool blue (terrestrial daylight, not night). */
+/** Preetham-style sky - high sun, crisp cool blue (terrestrial daylight, not night). */
 export function SnowMountainSky() {
   const sky = useMemo(() => {
     const s = new Sky();

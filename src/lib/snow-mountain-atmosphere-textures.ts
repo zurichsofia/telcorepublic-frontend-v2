@@ -21,7 +21,7 @@ function valueNoise2D(x: number, y: number): number {
   return x1 + (x2 - x1) * uy;
 }
 
-/** Fractal brownian motion — used for cloud-wisp sprite maps. */
+/** Fractal brownian motion - used for cloud-wisp sprite maps. */
 export function fbm2D(x: number, y: number, octaves: number): number {
   let value = 0;
   let amplitude = 0.5;
@@ -34,7 +34,7 @@ export function fbm2D(x: number, y: number, octaves: number): number {
   return value;
 }
 
-/** Soft circular point — additive-friendly alpha falloff. */
+/** Soft circular point - additive-friendly alpha falloff. */
 export function createSoftCircleTexture(size = 64): THREE.CanvasTexture {
   const canvas = document.createElement("canvas");
   canvas.width = size;
@@ -77,7 +77,7 @@ export function createRadialNebulaTexture(size = 256): THREE.CanvasTexture {
   return tex;
 }
 
-/** Single 512×512 FBM grayscale — shared; clone per sprite for independent UV scroll. */
+/** Single 512×512 FBM grayscale - shared; clone per sprite for independent UV scroll. */
 export function createFbmNoiseTexture(resolution = 512): THREE.CanvasTexture {
   const canvas = document.createElement("canvas");
   canvas.width = resolution;

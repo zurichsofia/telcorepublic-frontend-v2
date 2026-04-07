@@ -62,7 +62,7 @@ export function SiteFooter() {
         transition={{ duration: 0.6, delay: 0.15, ease }}
       >
         © {new Date().getFullYear()} Telcore Research. Video: peaks and alpine
-        landscape — used for demonstration.
+        landscape - used for demonstration.
       </motion.p>
     </footer>
   );

@@ -12,7 +12,7 @@ import {
 import type { Sky as SkyMesh } from "three-stdlib";
 
 /**
- * Drei Clouds extend this class — `fog={false}` keeps Exp2 fog from washing billboards
+ * Drei Clouds extend this class - `fog={false}` keeps Exp2 fog from washing billboards
  * to the same color as the mountain haze (they sit far from the camera).
  */
 class CloudLambertNoFog extends THREE.MeshLambertMaterial {
@@ -24,7 +24,7 @@ class CloudLambertNoFog extends THREE.MeshLambertMaterial {
 
 /**
  * Sky shader otherwise picks up scene FogExp2 and reads as flat grey-blue mush.
- * Keep **inclination ~0.6** (drei default) so the sun stays high — lower values look like dusk/midnight.
+ * Keep **inclination ~0.6** (drei default) so the sun stays high - lower values look like dusk/midnight.
  * Only **azimuth** is nudged vs default 0.1 so the solar disk sits a bit more to the right in the dome.
  */
 function SkyWithoutSceneFog() {
@@ -38,7 +38,7 @@ function SkyWithoutSceneFog() {
     if (!mesh) return;
     const mat = mesh.material;
     if (mat && typeof mat === "object" && "fog" in mat) {
-      (mat as { fog: boolean }).fog = false;
+      (mat as { fog: boolean; }).fog = false;
     }
   }, []);
   return (
@@ -77,7 +77,7 @@ const CLOUD_PRESET = {
 /** World offset: back and above the GLB so instances sit in the sky, not in front of the peak. */
 const CLOUD_LAYER_POS: [number, number, number] = [0, 42, -120];
 
-/** Horizontal drift amplitude (world units) — back-and-forth, not spin. */
+/** Horizontal drift amplitude (world units) - back-and-forth, not spin. */
 const DRIFT_AMP_X = 22;
 const DRIFT_SPEED = 0.11;
 
@@ -101,7 +101,7 @@ export function SnowMountainDreiSkyClouds({
       return;
     }
     const t = state.clock.elapsedTime;
-    /* Oscillate along X (and a touch of Z) — reads as wind drift, not orbiting. */
+    /* Oscillate along X (and a touch of Z) - reads as wind drift, not orbiting. */
     g.position.x = Math.sin(t * DRIFT_SPEED) * DRIFT_AMP_X;
     g.position.z = Math.sin(t * DRIFT_SPEED * 0.65) * 5;
   });

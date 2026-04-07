@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Placeholder for the fiber-optic route — replace with a WebGL/Canvas scene when ready.
+ * Placeholder for the fiber-optic route - replace with a WebGL/Canvas scene when ready.
  */
 export function FiberOpticScene() {
   return (
