@@ -1,16 +1,13 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+/** R3F/Three.js patterns (mutable refs, scene graph, Math.random init) trip these React Compiler–oriented rules. */
+const reactHooksCompat = {
+  "react-hooks/purity": "off",
+  "react-hooks/immutability": "off",
+  "react-hooks/refs": "off",
+  "react-hooks/set-state-in-effect": "off",
+};
 
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
+const config = [...nextCoreWebVitals, { rules: reactHooksCompat }];
 
-const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
-];
-
-export default eslintConfig;
+export default config;
