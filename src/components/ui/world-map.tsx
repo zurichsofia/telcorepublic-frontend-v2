@@ -27,8 +27,6 @@ const DOT_R_PULSE = 1.15;
 const PULSE_RING_MIN = 1.5;
 const PULSE_RING_MAX = 6;
 const PULSE_STROKE_W = 0.5;
-/** Brighter than route lines so the pulse reads on dark backgrounds */
-const PULSE_RING_COLOR = "#5c81be";
 
 /** Matches dotted-map internals (Mercator + same bounds as the raster SVG). */
 type DottedMapLayout = {
@@ -214,7 +212,7 @@ export default function WorldMap({
                       cy={start.y}
                       r={PULSE_RING_MIN}
                       fill="none"
-                      stroke={PULSE_RING_COLOR}
+                      stroke={lineColor}
                       strokeWidth={PULSE_STROKE_W}
                       strokeLinecap="round"
                     >
@@ -248,7 +246,7 @@ export default function WorldMap({
                       cy={start.y}
                       r={PULSE_RING_MIN}
                       fill="none"
-                      stroke={PULSE_RING_COLOR}
+                      stroke={lineColor}
                       strokeWidth={PULSE_STROKE_W}
                       strokeLinecap="round"
                     >

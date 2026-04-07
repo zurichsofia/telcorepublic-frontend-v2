@@ -39,7 +39,7 @@ export function GlobalReachMapSection() {
         transition={{ duration: 0.95, ease }}
       >
         <WorldMap
-          lineColor="#5c81be"
+          lineColor="#9bb8ea"
           dots={[
             {
               start: { lat: 47.3769, lng: 8.5417, pulse: true },
