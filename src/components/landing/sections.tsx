@@ -76,7 +76,7 @@ export function ServicesSection() {
                 className="pointer-events-none absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/25 to-transparent opacity-0 transition group-hover:opacity-100"
                 aria-hidden
               />
-              <h3 className="relative font-display text-2xl font-normal tracking-tight text-[var(--color-heading)] transition-colors duration-300 group-hover:text-cyan-800">
+              <h3 className="relative font-display text-2xl font-normal tracking-tight text-[var(--color-heading)] transition-opacity duration-300 group-hover:opacity-85">
                 {s.title}
               </h3>
               <p className="relative mt-3 flex-1 text-sm font-light leading-relaxed text-[var(--color-body)]">

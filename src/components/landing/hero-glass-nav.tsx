@@ -6,6 +6,10 @@ import { useState } from "react";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
+/** Tailwind-style glass: translucent surface + `backdrop-blur-sm` (see Tailwind backdrop-blur docs). */
+const glassPanel = "";
+// "bg-white/20 shadow-xs backdrop-blur-md";
+
 const nav = [
   { href: "#home", label: "Home" },
   { href: "#blog", label: "Blog" },
@@ -34,14 +38,14 @@ export function HeroGlassNav() {
         </Link>
 
         <nav
-          className="absolute left-1/2 top-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 items-center rounded-full border border-[var(--border-tech)] bg-[var(--surface-glass)] px-1.5 py-1.5 shadow-[inset_0_1px_0_rgba(62,58,74,0.12)] backdrop-blur-xl md:flex"
+          className={`absolute left-1/2 top-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 items-center rounded-lg px-1.5 py-1.5 md:flex ${glassPanel}`}
           aria-label="Primary"
         >
           {nav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="rounded-full px-4 py-2 text-[11px] font-medium uppercase tracking-[0.15em] text-[rgba(242,240,245,0.92)] transition hover:text-[var(--accent-hover)]"
+              className="rounded-full px-4 py-2 text-[11px] font-medium uppercase tracking-[0.15em] hover:text-[#001538] transition text-white"
             >
               {item.label}
             </Link>
@@ -52,7 +56,7 @@ export function HeroGlassNav() {
 
           <button
             type="button"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-glass)] text-[var(--text-nav-muted)] backdrop-blur-md transition hover:border-[var(--border-tech)] hover:bg-[var(--surface-panel)] md:hidden"
+            className={`inline-flex h-10 w-10 items-center justify-center rounded-xl text-[var(--text-nav-muted)] transition hover:bg-white/15 md:hidden ${glassPanel}`}
             aria-expanded={open}
             aria-controls="hero-mobile-nav"
             onClick={() => setOpen((v) => !v)}
@@ -79,14 +83,14 @@ export function HeroGlassNav() {
       {open ? (
         <div
           id="hero-mobile-nav"
-          className="mt-4 rounded-2xl border border-[var(--border-subtle)] bg-black/70 p-4 backdrop-blur-xl md:hidden"
+          className={`mt-4 overflow-hidden rounded-2xl p-4 ${glassPanel} md:hidden`}
         >
           <nav className="flex flex-col gap-1" aria-label="Mobile">
             {nav.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="rounded-xl px-3 py-2.5 text-sm font-medium uppercase tracking-[0.12em] text-[var(--text-nav-muted)] transition hover:text-[var(--accent-hover)]"
+                className="rounded-xl px-3 py-2.5 text-sm font-medium uppercase tracking-[0.12em] text-[#001538] transition hover:text-[var(--accent-hover)]"
                 onClick={() => setOpen(false)}
               >
                 {item.label}

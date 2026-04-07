@@ -26,9 +26,9 @@ const DOT_R_PULSE = 1.15;
 /** Expanding ring — viewBox height is ~100; keep ripple large enough to read on screen. */
 const PULSE_RING_MIN = 1.5;
 const PULSE_RING_MAX = 6;
-const PULSE_STROKE_W = 0.2;
+const PULSE_STROKE_W = 0.5;
 /** Brighter than route lines so the pulse reads on dark backgrounds */
-const PULSE_RING_COLOR = "rgba(210, 205, 225, 0.92)";
+const PULSE_RING_COLOR = "#5c81be";
 
 /** Matches dotted-map internals (Mercator + same bounds as the raster SVG). */
 type DottedMapLayout = {
@@ -60,7 +60,7 @@ function projectLatLng(
 
 export default function WorldMap({
   dots = [],
-  lineColor = "#3a3444",
+  lineColor = "#7cadff",
 }: MapProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -86,13 +86,14 @@ export default function WorldMap({
     };
   }, [map]);
 
-  // Fixed dark styling — do not use useTheme() here: it is undefined on the
-  // server, which produced white maps + hydration mismatches on the img src.
+  // Landmass dots: must contrast the page background. Pure white (#FFFFFF40)
+  // was tuned for dark UIs and disappears on the frost theme — use ink tint.
+  // Do not use useTheme() here: it is undefined on the server, which breaks
+  // stable img data URLs + hydration.
   const svgMap = map.getSVG({
     radius: 0.22,
-    color: "#FFFFFF40",
+    color: "#6a94df",
     shape: "circle",
-    // backgroundColor: "#000000",
   });
 
   const createCurvedPath = (
@@ -116,7 +117,7 @@ export default function WorldMap({
     >
       <img
         src={`data:image/svg+xml;utf8,${encodeURIComponent(svgMap)}`}
-        className="h-full w-full [mask-image:linear-gradient(to_bottom,transparent,white_8%,white_90%,transparent)] pointer-events-none select-none"
+        className="h-full w-full pointer-events-none select-none"
         alt="world map"
         height="495"
         width="1056"

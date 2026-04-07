@@ -13,7 +13,7 @@ export function GlobalReachMapSection() {
   return (
     <section
       id="global-reach"
-      className="relative w-full overflow-hidden border-y border-[rgba(255,255,255,0.06)] py-24 sm:py-32"
+      className="relative w-full overflow-hidden border-y border-[#001438] py-24 sm:py-32"
       aria-labelledby="global-reach-heading"
     >
       <div className="relative mx-auto max-w-7xl px-5 text-center sm:px-8">
@@ -39,7 +39,7 @@ export function GlobalReachMapSection() {
         transition={{ duration: 0.95, ease }}
       >
         <WorldMap
-          lineColor="rgba(58, 52, 68, 0.97)"
+          lineColor="#5c81be"
           dots={[
             {
               start: { lat: 47.3769, lng: 8.5417, pulse: true },

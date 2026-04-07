@@ -55,7 +55,7 @@ export function SiteFooter() {
         </nav>
       </motion.div>
       <motion.p
-        className="relative mx-auto mt-14 max-w-6xl border-t border-[rgba(255,255,255,0.06)] pt-6 text-[11px] font-light text-[rgba(113,113,122,0.55)]"
+        className="relative mx-auto mt-14 max-w-6xl border-t border-[rgba(255,255,255,0.06)] pt-6 text-[11px] font-light text-[#001538]"
         initial={reduce ? undefined : { opacity: 0 }}
         whileInView={reduce ? undefined : { opacity: 1 }}
         viewport={{ once: true }}
