@@ -29,10 +29,10 @@ export function heroScrollZoomT(progress: number): number {
   return smoothstep(0, 1, progress);
 }
 
-/** Primary headline visible for the first ~⅓ of hero scroll; crossfade overlaps motion ramp. */
-const PHASE_A = 1 / 3;
+/** Primary headline visible for the first ~¼ of hero scroll; crossfade overlaps motion ramp. */
+const PHASE_A = 0.25;
 /** End of primary → mid crossfade (middle of motion ramp). */
-const CROSSFADE_END = 0.42;
+const CROSSFADE_END = 0.36;
 const MID_HOLD_END = 2 / 3;
 /** Mid copy out before full handoff overlay. */
 const MID_FADE_END = 0.72;

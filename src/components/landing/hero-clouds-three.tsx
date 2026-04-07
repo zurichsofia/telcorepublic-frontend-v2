@@ -109,7 +109,7 @@ function HeroCloudScene({
       {/* Symmetric fill so Lambert billboards don’t read heavier on one side */}
       <spotLight
         position={[-22, -8, 12]}
-        color="red"
+        color="#ffffff"
         angle={0.17}
         decay={0}
         penumbra={-1}
@@ -117,7 +117,7 @@ function HeroCloudScene({
       />
       <spotLight
         position={[22, -8, 12]}
-        color="red"
+        color="#ffffff"
         angle={0.17}
         decay={0}
         penumbra={-1}
@@ -143,7 +143,7 @@ function HeroCloudScene({
             {...CLOUD_PRESET}
             seed={2}
             speed={0}
-            color="#d0dce8"
+            color="white"
             position={CLOUD_BASE[1]}
           />
           <Cloud
@@ -151,7 +151,7 @@ function HeroCloudScene({
             {...CLOUD_PRESET}
             seed={3}
             speed={0}
-            color="#c8d8e8"
+            color="white"
             position={CLOUD_BASE[2]}
           />
           <Cloud
@@ -159,7 +159,7 @@ function HeroCloudScene({
             {...CLOUD_PRESET}
             seed={4}
             speed={0}
-            color="#90a8c8"
+            color="white"
             position={CLOUD_BASE[3]}
           />
           <Cloud
@@ -167,7 +167,7 @@ function HeroCloudScene({
             {...CLOUD_PRESET}
             seed={5}
             speed={0}
-            color="#b8c8e0"
+            color="white"
             position={CLOUD_BASE[4]}
           />
         </Clouds>

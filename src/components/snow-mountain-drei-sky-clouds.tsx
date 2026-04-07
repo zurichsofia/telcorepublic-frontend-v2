@@ -24,13 +24,14 @@ class CloudLambertNoFog extends THREE.MeshLambertMaterial {
 
 /**
  * Sky shader otherwise picks up scene FogExp2 and reads as flat grey-blue mush.
- * Keep **inclination ~0.6** (drei default) so the sun stays high - lower values look like dusk/midnight.
+ * Keep inclination fairly high so the sun stays up — lower values read as dusk (warm rim).
  * Only **azimuth** is nudged vs default 0.1 so the solar disk sits a bit more to the right in the dome.
  */
 function SkyWithoutSceneFog() {
   const ref = useRef<SkyMesh | null>(null);
+  /* Higher inclination + lower turbidity = less orange/pink at the horizon (overcast-cool read). */
   const sunPosition = useMemo(
-    () => calcPosFromAngles(0.6, 0.52),
+    () => calcPosFromAngles(0.66, 0.52),
     [],
   );
   useLayoutEffect(() => {
@@ -46,9 +47,9 @@ function SkyWithoutSceneFog() {
       ref={ref}
       distance={6000}
       sunPosition={sunPosition}
-      turbidity={8}
-      rayleigh={0.5}
-      mieCoefficient={0.005}
+      turbidity={7}
+      rayleigh={0.45}
+      mieCoefficient={0.003}
       mieDirectionalG={0.8}
     />
   );
@@ -70,9 +71,26 @@ const CLOUD_PRESET = {
   x: 6,
   y: 1,
   z: 1,
-  /** Darker desaturated purples (read as storm / dusk against blue sky). */
-  color: "#6b5a7a" as const,
 };
+
+/** Off-white billboards read as sunlit tops; slightly softer opacity so they layer over grey. */
+const WHITE_CLOUD = {
+  ...CLOUD_PRESET,
+  opacity: 0.5,
+};
+
+/** Darker body / shadow mass — cumulus depth. */
+const GREY_CLOUD = {
+  ...CLOUD_PRESET,
+  opacity: 0.56,
+};
+
+/** Shared bounds shorthand */
+const BOUNDS_MAIN: [number, number, number] = [
+  CLOUD_PRESET.x,
+  CLOUD_PRESET.y,
+  CLOUD_PRESET.z,
+];
 
 /** World offset: back and above the GLB so instances sit in the sky, not in front of the peak. */
 const CLOUD_LAYER_POS: [number, number, number] = [0, 42, -120];
@@ -89,8 +107,6 @@ export function SnowMountainDreiSkyClouds({
   reduceMotion,
 }: SnowMountainDreiSkyCloudsProps) {
   const groupRef = useRef<THREE.Group>(null);
-
-  const { x, y, z, color, ...config } = CLOUD_PRESET;
 
   useFrame((state) => {
     const g = groupRef.current;
@@ -111,41 +127,88 @@ export function SnowMountainDreiSkyClouds({
       <SkyWithoutSceneFog />
       <group position={CLOUD_LAYER_POS}>
         <group ref={groupRef}>
-          <Clouds material={CloudLambertNoFog} limit={400}>
-            <Cloud {...config} bounds={[x, y, z]} color={color} />
+          <Clouds material={CloudLambertNoFog} limit={480}>
+            {/* Grey — volume and shadow */}
             <Cloud
-              {...config}
-              bounds={[x, y, z]}
-              color="#5a4a68"
+              {...GREY_CLOUD}
+              bounds={BOUNDS_MAIN}
+              color="#5c6067"
+            />
+            <Cloud
+              {...GREY_CLOUD}
+              bounds={BOUNDS_MAIN}
+              color="#4f535a"
               seed={2}
               position={[15, 0, 0]}
             />
             <Cloud
-              {...config}
-              bounds={[x, y, z]}
-              color="#4d3f5c"
+              {...GREY_CLOUD}
+              bounds={BOUNDS_MAIN}
+              color="#4a4e55"
               seed={3}
               position={[-15, 0, 0]}
             />
             <Cloud
-              {...config}
-              bounds={[x, y, z]}
-              color="#554466"
+              {...GREY_CLOUD}
+              bounds={BOUNDS_MAIN}
+              color="#565b62"
               seed={4}
               position={[0, 0, -12]}
             />
             <Cloud
-              {...config}
-              bounds={[x, y, z]}
-              color="#5c4a6e"
+              {...GREY_CLOUD}
+              bounds={BOUNDS_MAIN}
+              color="#5e636a"
               seed={5}
               position={[0, 0, 12]}
+            />
+            {/* White / off-white — lit tops and thin wisps (offset +Y / +Z toward sun) */}
+            <Cloud
+              {...WHITE_CLOUD}
+              bounds={[5.2, 0.85, 4.2]}
+              color="#f4f6f8"
+              seed={11}
+              position={[2, 3.5, 8]}
+            />
+            <Cloud
+              {...WHITE_CLOUD}
+              bounds={[4.8, 0.75, 3.8]}
+              color="#e8ecf0"
+              seed={12}
+              position={[14, 2.5, 4]}
+            />
+            <Cloud
+              {...WHITE_CLOUD}
+              opacity={0.46}
+              bounds={[4.5, 0.7, 3.5]}
+              color="#eef1f4"
+              seed={13}
+              position={[-12, 3, 5]}
+            />
+            <Cloud
+              {...WHITE_CLOUD}
+              opacity={0.42}
+              bounds={[6, 1, 5]}
+              color="#fafcfd"
+              seed={14}
+              position={[0, 4, 10]}
+            />
+            <Cloud
+              {...GREY_CLOUD}
+              opacity={0.4}
+              bounds={[38, 38, 38]}
+              color="#b8bdc4"
+              seed={0.25}
+              volume={36}
+              growth={32}
+              concentrate="outside"
+              position={[0, 4, -14]}
             />
             <Cloud
               concentrate="outside"
               growth={36}
-              color="#3d2f4a"
-              opacity={0.38}
+              color="#3a3f45"
+              opacity={0.36}
               seed={0.3}
               bounds={[48, 48, 48]}
               volume={42}

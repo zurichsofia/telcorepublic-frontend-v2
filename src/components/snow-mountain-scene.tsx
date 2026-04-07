@@ -83,9 +83,9 @@ const CAMERA_LOOK_AT_X_END = 0.42;
 /** Extra perspective FOV (deg) at end of hero vs. top — pull back a bit more for handoff. */
 const HERO_SCROLL_ZOOM_FOV_DELTA = 5.15;
 
-/** Slightly lighter than before - sky/clouds opt out of fog; terrain shaders still carry haze. */
-const FOG_EXP_BASE = 0.012;
-const FOG_EXP_BREATH = 0.002;
+/** Sky/clouds opt out of fog; terrain shaders still carry haze — a touch more = softer horizon blend. */
+const FOG_EXP_BASE = 0.026;
+const FOG_EXP_BREATH = 0.0028;
 
 function BreathingFogExp2({ reduceMotion }: { reduceMotion: boolean; }) {
   const scene = useThree((s) => s.scene);
@@ -240,14 +240,14 @@ function CursorWorldLight({ reduceMotion }: { reduceMotion: boolean; }) {
     /* Sit between camera and terrain so the beam grazes the landscape. */
     const dist = 26;
     light.position.copy(camera.position).add(dir.multiplyScalar(dist));
-    /* Strong enough to read over Stage env + fill lights. */
-    light.intensity = 1.65;
+    /* Grazing highlight — keep below key sun so snow doesn’t stack into overexposure. */
+    light.intensity = 0.22;
   }, 55);
 
   return (
     <pointLight
       ref={lightRef}
-      color="#FFF8F0"
+      color="#E4EAEE"
       intensity={0}
       distance={110}
       decay={1.85}
@@ -296,9 +296,9 @@ function PostFx({ enabled }: { enabled: boolean; }) {
   return (
     <EffectComposer multisampling={4} enableNormalPass={false}>
       <Bloom
-        luminanceThreshold={0.9}
-        luminanceSmoothing={0.26}
-        intensity={0.065}
+        luminanceThreshold={0.985}
+        luminanceSmoothing={0.14}
+        intensity={0.004}
         mipmapBlur
       />
     </EffectComposer>
@@ -335,7 +335,8 @@ export function SnowMountainScene({
       onCreated={({ gl }) => {
         gl.setClearColor(new THREE.Color(SNOW_MOUNTAIN_FOG_COLOR), 1);
         gl.toneMapping = THREE.ACESFilmicToneMapping;
-        gl.toneMappingExposure = 1.02;
+        /* Exposure after fixing drei Stage stacking its own spot (2× intensity) on top of scene lights. */
+        gl.toneMappingExposure = 0.62;
       }}
     >
       <SmoothHeroScrollProvider
@@ -345,17 +346,17 @@ export function SnowMountainScene({
         <BreathingFogExp2 reduceMotion={reduceMotion} />
         <SnowMountainDreiSkyClouds reduceMotion={reduceMotion} />
         <WindParticleField reduceMotion={reduceMotion} />
-        <hemisphereLight args={["#F5FAFF", "#6FA0D4", 0.85]} />
-        <ambientLight intensity={0.38} color="#D0E4F8" />
+        <hemisphereLight args={["#A8B4BE", "#3A4248", 0.52]} />
+        <ambientLight intensity={0.16} color="#7E8E98" />
         <directionalLight
           position={[22, 38, 18]}
-          intensity={1.12}
-          color="#FAFCFF"
+          intensity={0.38}
+          color="#B8C4D0"
         />
         <directionalLight
           position={[-16, 8, -22]}
-          intensity={0.52}
-          color="#A8C8EC"
+          intensity={0.22}
+          color="#6B7A88"
         />
 
         <HeroScrollCameraFraming
@@ -376,10 +377,18 @@ export function SnowMountainScene({
               which retriggers reset().fit() and reads as an abrupt zoom-out.
               Stage still refits when the model radius is known (Refit on radius).
             */}
+            {/*
+              drei Stage always adds ambient + spot (2× intensity) + point — on top of our lights.
+              intensity={0} turns those off; we only want Bounds/Center + IBL from Environment.
+            */}
             <Stage
               adjustCamera={0.36}
-              intensity={0.58}
-              environment="dawn"
+              intensity={0}
+              environment={{
+                preset: "studio",
+                background: false,
+                environmentIntensity: 0.22,
+              }}
               preset="soft"
               shadows={false}
               // Forwarded to Bounds via Stage ...props (drei merge); not on StageProps.

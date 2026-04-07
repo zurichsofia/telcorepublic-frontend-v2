@@ -15,8 +15,8 @@ export const ICE = {
 export const T_RIDGE = ICE[400];
 /** Deep valley fill (mixed in shader) */
 export const T_DEEP = "#0B1220";
-/** Peak emissive - reads as signal / bloom tint on tallest geometry */
-export const T_BLOOM = "#F5A820";
+/** Subtle cool rim on peaks — kept low so snow reads photographic, not emissive CG. */
+export const T_BLOOM = "#C8D4E0";
 
 function patchTerrainMaterial(
   mesh: THREE.Mesh,
@@ -61,9 +61,9 @@ uniform float uRange;`,
 
     const iceMix = `{
   float valley = 1.0 - smoothstep(uMinY, uMinY + uRange * 0.48, vWorldY);
-  gl_FragColor.rgb = mix(gl_FragColor.rgb, uDeep, valley * 0.58);
+  gl_FragColor.rgb = mix(gl_FragColor.rgb, uDeep, valley * 0.48);
   float peak = smoothstep(uMinY + uRange * 0.72, uMinY + uRange, vWorldY);
-  gl_FragColor.rgb += uAmber * peak * 0.14;
+  gl_FragColor.rgb += uAmber * peak * 0.018;
 }`;
     if (shader.fragmentShader.includes("#include <dithering_fragment>")) {
       shader.fragmentShader = shader.fragmentShader.replace(
@@ -101,6 +101,17 @@ export function applyTerrainIceStyle(root: THREE.Object3D) {
       ) {
         const c = m.clone();
         if ("fog" in c) (c as { fog: boolean; }).fog = true;
+        /* Powder snow: diffuse, low spec — avoids mirror-like HDRI hotspots on peaks. */
+        c.metalness = 0;
+        c.roughness = THREE.MathUtils.clamp(
+          (c.roughness ?? 0.5) + 0.28,
+          0.82,
+          1,
+        );
+        c.envMapIntensity = 0.14;
+        if (c instanceof THREE.MeshPhysicalMaterial) {
+          c.clearcoat = 0;
+        }
         patchTerrainMaterial(obj, c);
         return c;
       }
@@ -117,7 +128,7 @@ export function applyTerrainIceStyle(root: THREE.Object3D) {
       new THREE.LineBasicMaterial({
         color: ridgeColor,
         transparent: true,
-        opacity: 0.26,
+        opacity: 0.12,
         depthWrite: false,
       }),
     );
