@@ -1,6 +1,12 @@
 "use client";
 
-import { useLayoutEffect, useRef, type CSSProperties } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 import Link from "next/link";
 import {
   motion,
@@ -142,7 +148,36 @@ function SnowMountainNav() {
 export function SnowMountainLanding() {
   const reduce = useReducedMotion();
   const heroRef = useRef<HTMLElement | null>(null);
+  const heroCanvasRef = useRef<HTMLDivElement | null>(null);
   const scrollProgressRef = useRef(0);
+  /** Viewport coordinates — `fixed` glow so it paints above the z-20 copy layer. */
+  const [heroCursor, setHeroCursor] = useState<{ x: number; y: number } | null>(
+    null,
+  );
+
+  useEffect(() => {
+    if (reduce) {
+      setHeroCursor(null);
+      return;
+    }
+    const onMove = (e: MouseEvent) => {
+      const el = heroCanvasRef.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      if (
+        e.clientX < r.left ||
+        e.clientX > r.right ||
+        e.clientY < r.top ||
+        e.clientY > r.bottom
+      ) {
+        setHeroCursor(null);
+        return;
+      }
+      setHeroCursor({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => window.removeEventListener("mousemove", onMove);
+  }, [reduce]);
 
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -176,8 +211,17 @@ export function SnowMountainLanding() {
         }}
       >
         <div className="sticky top-0 z-0 h-dvh min-h-dvh w-full overflow-hidden">
-          <div className="absolute inset-0 min-h-dvh">
-            <SnowMountainScene scrollProgressRef={scrollProgressRef} />
+          <div
+            ref={heroCanvasRef}
+            className={cn(
+              "absolute inset-0 min-h-dvh",
+              !reduce && "cursor-none",
+            )}
+          >
+            <SnowMountainScene
+              scrollProgressRef={scrollProgressRef}
+              className={!reduce ? "cursor-none" : undefined}
+            />
           </div>
 
           <div
@@ -198,7 +242,12 @@ export function SnowMountainLanding() {
           /> */}
         </div>
 
-        <div className="pointer-events-none absolute inset-0 z-20 flex flex-col">
+        <div
+          className={cn(
+            "pointer-events-none absolute inset-0 z-20 flex flex-col",
+            !reduce && "cursor-none [&_a]:cursor-pointer",
+          )}
+        >
           <div className="pointer-events-auto">
             <SnowMountainNav />
           </div>
@@ -337,6 +386,24 @@ export function SnowMountainLanding() {
             aria-hidden
           />
         </div>
+
+        {!reduce && heroCursor != null ? (
+          <div
+            className="pointer-events-none fixed z-[25] size-[min(22vw,9.5rem)] -translate-x-1/2 -translate-y-1/2 rounded-full"
+            style={
+              {
+                left: heroCursor.x,
+                top: heroCursor.y,
+                background:
+                  "radial-gradient(circle, rgba(255,250,240,0.78) 0%, rgba(210,235,255,0.28) 38%, transparent 72%)",
+                mixBlendMode: "screen",
+                boxShadow:
+                  "0 0 34px 15px rgba(255,252,248,0.24), inset 0 0 20px rgba(255,255,255,0.38)",
+              } as CSSProperties
+            }
+            aria-hidden
+          />
+        ) : null}
 
         <div className="pointer-events-none absolute inset-0 z-[24] flex justify-center">
           <div className="sticky top-0 flex h-dvh w-full flex-col items-center justify-end pb-10 sm:pb-14">

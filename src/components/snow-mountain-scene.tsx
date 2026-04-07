@@ -3,6 +3,7 @@
 import {
   Suspense,
   useLayoutEffect,
+  useMemo,
   useRef,
   useEffect,
   type MutableRefObject,
@@ -25,6 +26,8 @@ import { WindParticleField } from "@/components/snow-mountain-wind-particles";
 import { SnowMountainDreiSkyClouds } from "@/components/snow-mountain-drei-sky-clouds";
 import { AtmosphericParticles } from "@/components/snow-mountain-atmospheric-particles";
 import { OrbitControls as ThreeOrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+
+import { cn } from "@/lib/utils";
 
 useGLTF.preload("/snow_mountain.glb");
 
@@ -105,6 +108,65 @@ function ParallaxWorld({
     <group ref={groupRef}>
       <group ref={scrollYawRef}>{children}</group>
     </group>
+  );
+}
+
+/** Soft point light along the camera ray through the cursor — reads as a handheld beam on the snow. */
+function CursorWorldLight({ reduceMotion }: { reduceMotion: boolean }) {
+  const lightRef = useRef<THREE.PointLight>(null);
+  const raw = useRef({ x: 0, y: 0 });
+  const smooth = useRef({ x: 0, y: 0 });
+  const scratch = useMemo(
+    () => ({
+      v: new THREE.Vector3(),
+      dir: new THREE.Vector3(),
+    }),
+    [],
+  );
+
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      raw.current.x = (e.clientX / w) * 2 - 1;
+      raw.current.y = -(e.clientY / h) * 2 + 1;
+    };
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => window.removeEventListener("mousemove", onMove);
+  }, []);
+
+  const camera = useThree((s) => s.camera);
+
+  useFrame((_, delta) => {
+    const light = lightRef.current;
+    if (!light) return;
+    if (reduceMotion) {
+      light.intensity = 0;
+      return;
+    }
+    const lerp = 1 - Math.pow(0.9, delta * 60);
+    smooth.current.x += (raw.current.x - smooth.current.x) * lerp;
+    smooth.current.y += (raw.current.y - smooth.current.y) * lerp;
+
+    const { v, dir } = scratch;
+    v.set(smooth.current.x, smooth.current.y, 0.5);
+    v.unproject(camera);
+    dir.copy(v).sub(camera.position).normalize();
+    /* Sit between camera and terrain so the beam grazes the landscape. */
+    const dist = 26;
+    light.position.copy(camera.position).add(dir.multiplyScalar(dist));
+    /* Strong enough to read over Stage env + fill lights. */
+    light.intensity = 1.65;
+  });
+
+  return (
+    <pointLight
+      ref={lightRef}
+      color="#FFF8F0"
+      intensity={0}
+      distance={110}
+      decay={1.85}
+    />
   );
 }
 
@@ -190,14 +252,19 @@ function PostFx({ enabled }: { enabled: boolean; }) {
 export type SnowMountainSceneProps = {
   /** 0 = hero top, 1 = hero end. Drives `heroSubtleMotionT` (immediate ramp, hold last third). */
   scrollProgressRef?: MutableRefObject<number>;
+  /** Merged onto the R3F canvas (e.g. `cursor-none` with a custom cursor overlay). */
+  className?: string;
 };
 
-export function SnowMountainScene({ scrollProgressRef }: SnowMountainSceneProps) {
+export function SnowMountainScene({
+  scrollProgressRef,
+  className,
+}: SnowMountainSceneProps) {
   const reduceMotion = useReducedMotion() ?? false;
 
   return (
     <Canvas
-      className="h-full min-h-dvh w-full touch-none"
+      className={cn("h-full min-h-dvh w-full touch-none", className)}
       camera={{ fov: 28, near: 0.1, far: 500 }}
       dpr={[1, 2]}
       resize={{ debounce: { scroll: 0, resize: 0 } }}
@@ -226,6 +293,8 @@ export function SnowMountainScene({ scrollProgressRef }: SnowMountainSceneProps)
         intensity={0.52}
         color="#A8C8EC"
       />
+
+      <CursorWorldLight reduceMotion={reduceMotion} />
 
       <ParallaxWorld
         scrollProgressRef={scrollProgressRef}
