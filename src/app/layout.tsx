@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Syne, Geist } from "next/font/google";
 import "./globals.css";
-import { GrainientPageBg } from "@/components/grainient-page-bg";
-import { GlobalTvGrainOverlay } from "@/components/global-tv-grain-overlay";
 import { PageLoader } from "@/components/page-loader";
 import { cn } from "@/lib/utils";
 
@@ -39,10 +37,8 @@ export default function RootLayout({
       <body
         className={`${inter.className} relative min-h-screen font-light text-[var(--fg)] antialiased`}
       >
-        <GrainientPageBg />
         <PageLoader />
         {children}
-        <GlobalTvGrainOverlay />
       </body>
     </html>
   );

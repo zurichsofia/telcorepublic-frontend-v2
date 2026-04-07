@@ -2,7 +2,6 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 
 import { ScrollReveal } from "@/components/landing/scroll-reveal";
-import { ServicesAuroraBackground } from "@/components/landing/services-aurora-bg";
 
 const services = [
   {

@@ -21,7 +21,6 @@ import * as THREE from "three";
 import { SNOW_MOUNTAIN_FOG_COLOR } from "@/lib/snow-mountain-fog";
 import { heroScrollZoomT, heroSubtleMotionT } from "@/lib/snow-mountain-hero-scroll";
 import { applyTerrainIceStyle } from "@/lib/snow-mountain-terrain-ice";
-import { WindParticleField } from "@/components/snow-mountain-wind-particles";
 import { SnowMountainDreiSkyClouds } from "@/components/snow-mountain-drei-sky-clouds";
 import { AtmosphericParticles } from "@/components/snow-mountain-atmospheric-particles";
 
@@ -345,7 +344,7 @@ export function SnowMountainScene({
       >
         <BreathingFogExp2 reduceMotion={reduceMotion} />
         <SnowMountainDreiSkyClouds reduceMotion={reduceMotion} />
-        <WindParticleField reduceMotion={reduceMotion} />
+        {/* <WindParticleField reduceMotion={reduceMotion} /> */}
         <hemisphereLight args={["#A8B4BE", "#3A4248", 0.52]} />
         <ambientLight intensity={0.16} color="#7E8E98" />
         <directionalLight
