@@ -12,7 +12,7 @@ import {
   type ReactNode,
 } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls, Stage, useGLTF } from "@react-three/drei";
+import { Stage, useGLTF } from "@react-three/drei";
 import { useReducedMotion } from "motion/react";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 
@@ -21,15 +21,14 @@ import * as THREE from "three";
 import { SNOW_MOUNTAIN_FOG_COLOR } from "@/lib/snow-mountain-fog";
 import { heroSubtleMotionT } from "@/lib/snow-mountain-hero-scroll";
 import { applyTerrainIceStyle } from "@/lib/snow-mountain-terrain-ice";
-
-/** Extra Y rotation (rad) during 100–200vh scroll - reads as camera orbiting slightly right. */
-const HERO_SCROLL_YAW_RAD = 0.11;
 import { WindParticleField } from "@/components/snow-mountain-wind-particles";
 import { SnowMountainDreiSkyClouds } from "@/components/snow-mountain-drei-sky-clouds";
 import { AtmosphericParticles } from "@/components/snow-mountain-atmospheric-particles";
-import { OrbitControls as ThreeOrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 import { cn } from "@/lib/utils";
+
+/** Extra Y rotation (rad) as the user scrolls through the hero — subtle orbit. */
+const HERO_SCROLL_YAW_RAD = 0.11;
 
 useGLTF.preload("/snow_mountain.glb");
 
@@ -123,7 +122,7 @@ function ParallaxWorld({
     const g = groupRef.current;
     const yaw = scrollYawRef.current;
     if (!g || !yaw) return;
-    const lerp = 1 - Math.pow(0.9, delta * 60);
+    const lerp = 1 - Math.pow(0.945, delta * 60);
     const p =
       smoothScrollRef?.current ?? scrollProgressRef?.current ?? 0;
     const subtleT = reduceMotion ? 0 : heroSubtleMotionT(p);
@@ -137,10 +136,8 @@ function ParallaxWorld({
     }
     smooth.current.x += (mouse.current.x - smooth.current.x) * lerp;
     smooth.current.y += (mouse.current.y - smooth.current.y) * lerp;
-    /* Scroll-driven tilt scales with subtleT from first scroll; keep amplitudes small. */
-    g.rotation.x = subtleT * 0.028 + smooth.current.y * -0.038;
-    g.rotation.y = subtleT * 0.018 + smooth.current.x * 0.042;
-    /* Orbit camera slightly right as subtleT ramps. */
+    g.rotation.x = subtleT * 0.028 + smooth.current.y * -0.017;
+    g.rotation.y = subtleT * 0.018 + smooth.current.x * 0.018;
     yaw.rotation.y = subtleT * HERO_SCROLL_YAW_RAD;
   });
 
@@ -221,15 +218,13 @@ function SnowMountainModel({
 }: SnowMountainModelProps) {
   const gltf = useGLTF("/snow_mountain.glb");
   const rigRef = useRef<THREE.Group>(null);
-  const controls = useThree((s) => s.controls);
-  const applied = useRef(false);
   const smoothScrollRef = useContext(HeroScrollSmoothContext);
 
   useLayoutEffect(() => {
     applyTerrainIceStyle(gltf.scene);
   }, [gltf]);
 
-  useFrame((state) => {
+  useFrame(() => {
     const p = smoothScrollRef?.current ?? scrollProgressRef?.current ?? 0;
     const subtleT = reduceMotion ? 0 : heroSubtleMotionT(p);
     if (rigRef.current) {
@@ -239,40 +234,12 @@ function SnowMountainModel({
         subtleT * -0.005,
       );
     }
-
-    if (applied.current || !controls || !rigRef.current) return;
-    if (state.clock.elapsedTime < 0.45) return;
-    const box = new THREE.Box3().setFromObject(rigRef.current);
-    if (box.isEmpty()) return;
-    const size = box.getSize(new THREE.Vector3());
-    if (Math.max(size.x, size.y, size.z) < 1e-4) return;
-    const center = box.getCenter(new THREE.Vector3());
-    const oc = controls as ThreeOrbitControls;
-    oc.target.set(center.x, center.y + size.y * 0.3, center.z);
-    oc.update();
-    applied.current = true;
   });
 
   return (
     <group ref={rigRef}>
       <primitive object={gltf.scene} />
     </group>
-  );
-}
-
-/**
- * Stage fits the camera; OrbitControls defaults allow infinite dolly-out - hero looks empty.
- * Lock zoom (and pan) so the framed shot stays; user can still orbit slightly.
- */
-function HeroOrbitControls() {
-  return (
-    <OrbitControls
-      makeDefault
-      enableDamping
-      dampingFactor={0.08}
-      enableZoom={false}
-      enablePan={false}
-    />
   );
 }
 
@@ -351,12 +318,21 @@ export function SnowMountainScene({
         >
           <AtmosphericParticles reduceMotion={reduceMotion} />
           <Suspense fallback={null}>
+            {/*
+              observe={false}: default Bounds observe refits whenever R3F `size` changes.
+              First pointer move / cursor UI can change viewport (scrollbar) or layout,
+              which retriggers reset().fit() and reads as an abrupt zoom-out.
+              Stage still refits when the model radius is known (Refit on radius).
+            */}
             <Stage
               adjustCamera={0.36}
               intensity={0.58}
               environment="dawn"
               preset="soft"
               shadows={false}
+              // Forwarded to Bounds via Stage ...props (drei merge); not on StageProps.
+              // @ts-expect-error Bounds observe
+              observe={false}
             >
               <SnowMountainModel
                 scrollProgressRef={scrollProgressRef}
@@ -366,7 +342,6 @@ export function SnowMountainScene({
           </Suspense>
         </ParallaxWorld>
 
-        <HeroOrbitControls />
         <PostFx enabled={!reduceMotion} />
       </SmoothHeroScrollProvider>
     </Canvas>
