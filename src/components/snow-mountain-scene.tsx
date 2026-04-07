@@ -22,9 +22,7 @@ import { heroSubtleMotionT } from "@/lib/snow-mountain-hero-scroll";
 const HERO_SCROLL_YAW_RAD = 0.11;
 import { applyTerrainIceStyle } from "@/lib/snow-mountain-terrain-ice";
 import { WindParticleField } from "@/components/snow-mountain-wind-particles";
-import { SnowMountainSky } from "@/components/snow-mountain-sky";
-import { SnowMountainNebula } from "@/components/snow-mountain-nebula";
-import { SnowMountainCloudWisps } from "@/components/snow-mountain-cloud-wisps";
+import { SnowMountainDreiSkyClouds } from "@/components/snow-mountain-drei-sky-clouds";
 import { AtmosphericParticles } from "@/components/snow-mountain-atmospheric-particles";
 import { OrbitControls as ThreeOrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
@@ -33,8 +31,9 @@ useGLTF.preload("/snow_mountain.glb");
 /** Y rotation π — show the opposite face of the terrain. */
 const ROT_Y_180 = 1;
 
-const FOG_EXP_BASE = 0.02;
-const FOG_EXP_BREATH = 0.003;
+/** Slightly lighter than before — sky/clouds opt out of fog; terrain shaders still carry haze. */
+const FOG_EXP_BASE = 0.012;
+const FOG_EXP_BREATH = 0.002;
 
 function BreathingFogExp2({ reduceMotion }: { reduceMotion: boolean; }) {
   const scene = useThree((s) => s.scene);
@@ -179,9 +178,9 @@ function PostFx({ enabled }: { enabled: boolean; }) {
   return (
     <EffectComposer multisampling={4} enableNormalPass={false}>
       <Bloom
-        luminanceThreshold={0.88}
-        luminanceSmoothing={0.28}
-        intensity={0.09}
+        luminanceThreshold={0.9}
+        luminanceSmoothing={0.26}
+        intensity={0.065}
         mipmapBlur
       />
     </EffectComposer>
@@ -208,12 +207,12 @@ export function SnowMountainScene({ scrollProgressRef }: SnowMountainSceneProps)
       }}
       onCreated={({ gl }) => {
         gl.setClearColor(new THREE.Color(SNOW_MOUNTAIN_FOG_COLOR), 1);
+        gl.toneMapping = THREE.ACESFilmicToneMapping;
+        gl.toneMappingExposure = 1.02;
       }}
     >
       <BreathingFogExp2 reduceMotion={reduceMotion} />
-      <SnowMountainSky />
-      <SnowMountainNebula />
-      <SnowMountainCloudWisps reduceMotion={reduceMotion} />
+      <SnowMountainDreiSkyClouds reduceMotion={reduceMotion} />
       <WindParticleField reduceMotion={reduceMotion} />
       <hemisphereLight args={["#F5FAFF", "#6FA0D4", 0.85]} />
       <ambientLight intensity={0.38} color="#D0E4F8" />
@@ -235,7 +234,7 @@ export function SnowMountainScene({ scrollProgressRef }: SnowMountainSceneProps)
         <AtmosphericParticles reduceMotion={reduceMotion} />
         <Suspense fallback={null}>
           <Stage
-            adjustCamera={0.35}
+            adjustCamera={0.36}
             intensity={0.58}
             environment="dawn"
             preset="soft"

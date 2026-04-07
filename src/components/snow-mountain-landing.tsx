@@ -180,20 +180,6 @@ export function SnowMountainLanding() {
             <SnowMountainScene scrollProgressRef={scrollProgressRef} />
           </div>
 
-          {/* Readability: cool storm side + depth */}
-          <div
-            className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-r from-[#0c2840]/[0.38] via-[#0a2034]/18 to-transparent sm:from-[#0c2840]/32 sm:via-[#081c2c]/14"
-            aria-hidden
-          />
-          <div
-            className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-[#0a1c2e]/22 via-transparent to-transparent"
-            aria-hidden
-          />
-          <div
-            className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(ellipse_80%_60%_at_70%_45%,transparent_40%,rgba(12,40,64,0.14)_100%)]"
-            aria-hidden
-          />
-
           <div
             className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-[min(42vh,28rem)] bg-gradient-to-t from-[#0c1828] via-[#0a1420]/88 to-transparent"
             aria-hidden

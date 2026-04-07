@@ -353,26 +353,25 @@ body {
   }
 }
 
-/* Snow mountain hero — light edge vignette; grain kept subtle (no post Noise) */
+/* Snow mountain hero — bottom-only lift (full inset vignette was greying left/right sky edges) */
 .snow-mountain-hero-film {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  box-shadow:
-    inset 0 0 140px rgba(8, 28, 48, 0.14),
-    inset 0 0 72px rgba(12, 36, 56, 0.08);
+  box-shadow: inset 0 -72px 120px rgba(8, 22, 38, 0.1);
   z-index: 10;
 }
 
+/* Grain only — soft-light was lifting bright sky pixels to flat white on one side */
 .snow-mountain-hero-film::before {
   content: '';
   position: absolute;
   inset: 0;
-  opacity: 0.018;
+  opacity: 0.014;
   border-radius: inherit;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 220px 220px;
-  mix-blend-mode: soft-light;
+  mix-blend-mode: multiply;
 }
 
 @keyframes snow-mountain-hero-clip {
