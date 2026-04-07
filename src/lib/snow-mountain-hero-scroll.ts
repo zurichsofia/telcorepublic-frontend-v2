@@ -19,6 +19,16 @@ export function heroSubtleMotionT(progress: number): number {
   return 1 - (1 - u) * (1 - u);
 }
 
+/**
+ * Full hero scroll (0 → 1) mapped to 0 → 1 with smooth ends — used for camera zoom-out
+ * so the effect is felt across the whole section, not only the first ~⅔ like `heroSubtleMotionT`.
+ */
+export function heroScrollZoomT(progress: number): number {
+  if (progress <= 0) return 0;
+  if (progress >= 1) return 1;
+  return smoothstep(0, 1, progress);
+}
+
 /** Primary headline visible for the first ~⅓ of hero scroll; crossfade overlaps motion ramp. */
 const PHASE_A = 1 / 3;
 /** End of primary → mid crossfade (middle of motion ramp). */

@@ -19,7 +19,7 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 
 import { SNOW_MOUNTAIN_FOG_COLOR } from "@/lib/snow-mountain-fog";
-import { heroSubtleMotionT } from "@/lib/snow-mountain-hero-scroll";
+import { heroScrollZoomT, heroSubtleMotionT } from "@/lib/snow-mountain-hero-scroll";
 import { applyTerrainIceStyle } from "@/lib/snow-mountain-terrain-ice";
 import { WindParticleField } from "@/components/snow-mountain-wind-particles";
 import { SnowMountainDreiSkyClouds } from "@/components/snow-mountain-drei-sky-clouds";
@@ -71,6 +71,18 @@ function SmoothHeroScrollProvider({
 /** Y rotation π - show the opposite face of the terrain. */
 const ROT_Y_180 = 1;
 
+/**
+ * World-space X of the look-at target (mountain is centered near origin after Stage/Center).
+ * START must be 0 so the first frame matches Bounds’ look-at at the bbox center; a non-zero START
+ * fights the fit animation and reads as a snap (left) then our offset (right).
+ * END eases in with scroll so framing shifts right by the end of the hero.
+ */
+const CAMERA_LOOK_AT_X_START = 0;
+const CAMERA_LOOK_AT_X_END = 0.42;
+
+/** Extra perspective FOV (deg) at end of hero vs. top — pull back a bit more for handoff. */
+const HERO_SCROLL_ZOOM_FOV_DELTA = 5.15;
+
 /** Slightly lighter than before - sky/clouds opt out of fog; terrain shaders still carry haze. */
 const FOG_EXP_BASE = 0.012;
 const FOG_EXP_BREATH = 0.002;
@@ -92,6 +104,42 @@ function BreathingFogExp2({ reduceMotion }: { reduceMotion: boolean; }) {
   return (
     <fogExp2 attach="fog" args={[new THREE.Color(SNOW_MOUNTAIN_FOG_COLOR), FOG_EXP_BASE]} />
   );
+}
+
+/**
+ * After Bounds fit: widen FOV and ease look-at X toward the right as scroll progresses
+ * (same `heroScrollZoomT` curve). Priority above Bounds default.
+ */
+function HeroScrollCameraFraming({
+  scrollProgressRef,
+  reduceMotion,
+}: {
+  scrollProgressRef?: MutableRefObject<number>;
+  reduceMotion: boolean;
+}) {
+  const camera = useThree((s) => s.camera);
+  const smoothScrollRef = useContext(HeroScrollSmoothContext);
+  const baseFovRef = useRef<number | null>(null);
+  const lookAt = useMemo(() => new THREE.Vector3(), []);
+
+  useFrame(() => {
+    if (!(camera instanceof THREE.PerspectiveCamera)) return;
+    if (baseFovRef.current === null) baseFovRef.current = camera.fov;
+    const base = baseFovRef.current;
+    const p =
+      smoothScrollRef?.current ?? scrollProgressRef?.current ?? 0;
+    const t = reduceMotion ? 0 : heroScrollZoomT(p);
+    camera.fov = base + t * HERO_SCROLL_ZOOM_FOV_DELTA;
+    camera.updateProjectionMatrix();
+    const x = THREE.MathUtils.lerp(
+      CAMERA_LOOK_AT_X_START,
+      CAMERA_LOOK_AT_X_END,
+      t,
+    );
+    lookAt.set(x, 0, 0);
+    camera.lookAt(lookAt);
+  }, 50);
+  return null;
 }
 
 function ParallaxWorld({
@@ -194,7 +242,7 @@ function CursorWorldLight({ reduceMotion }: { reduceMotion: boolean; }) {
     light.position.copy(camera.position).add(dir.multiplyScalar(dist));
     /* Strong enough to read over Stage env + fill lights. */
     light.intensity = 1.65;
-  });
+  }, 55);
 
   return (
     <pointLight
@@ -310,6 +358,10 @@ export function SnowMountainScene({
           color="#A8C8EC"
         />
 
+        <HeroScrollCameraFraming
+          scrollProgressRef={scrollProgressRef}
+          reduceMotion={reduceMotion}
+        />
         <CursorWorldLight reduceMotion={reduceMotion} />
 
         <ParallaxWorld
