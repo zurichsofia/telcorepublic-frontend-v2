@@ -3,6 +3,8 @@
 import { motion, useReducedMotion } from "motion/react";
 import { useEffect, useState } from "react";
 
+import { BrandLogoSignal } from "@/components/brand-logo-signal";
+
 const ease = [0.22, 1, 0.36, 1] as const;
 
 /** Minimum time the loader stays visible so it does not feel like a glitch. */
@@ -71,7 +73,7 @@ export function PageLoader() {
     <motion.div
       className="fixed inset-0 z-100 flex flex-col items-center justify-center px-6"
       style={{
-        backgroundColor: "var(--bg)",
+        backgroundColor: "#b6bfc7",
       }}
       initial={{ opacity: 1 }}
       animate={{ opacity: phase === "exit" ? 0 : 1 }}
@@ -85,14 +87,12 @@ export function PageLoader() {
       aria-label="Loading"
     >
       <div className="flex flex-col items-center text-center">
-        <span className="font-display text-[clamp(1.5rem,5vw,2rem)] font-normal tracking-[0.04em] text-(--color-heading)">
-          Telcorepublic
-        </span>
+        <BrandLogoSignal priority />
 
-        <div className="relative mt-10 h-[2px] w-[min(12rem,70vw)] overflow-hidden rounded-full bg-[var(--border-subtle)]">
+        <div className="relative mt-10 h-[2px] w-[min(12rem,70vw)] overflow-hidden rounded-full">
           {!reduce && (
             <motion.span
-              className="absolute inset-y-0 w-1/3 rounded-full bg-linear-to-r from-transparent via-[rgba(58,52,68,0.65)] to-transparent"
+              className="absolute inset-y-0 w-1/3 rounded-full"
               animate={{ left: ["-33%", "100%"] }}
               transition={{ duration: 1.35, repeat: Infinity, ease: "linear" }}
             />

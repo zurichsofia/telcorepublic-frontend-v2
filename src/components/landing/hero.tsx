@@ -2,7 +2,7 @@
 
 import { motion, useReducedMotion } from "motion/react";
 
-import { HeroGlassNav } from "./hero-glass-nav";
+import { HeroNav } from "../snow-mountain-landing/hero-nav";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -16,7 +16,7 @@ export function Hero() {
     >
       <div className="relative mx-auto w-full max-w-[min(100%,1400px)] border-0 shadow-none ring-0 outline-none">
         <div className="relative min-h-[90svh] w-full">
-          <HeroGlassNav />
+          <HeroNav />
 
           <div className="relative z-10 flex min-h-[100vh] flex-col items-center justify-center px-6 pb-16 pt-28 text-center sm:px-12 sm:pb-20 sm:pt-32 lg:px-16">
             <div className="max-w-5xl">

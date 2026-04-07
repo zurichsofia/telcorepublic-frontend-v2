@@ -405,3 +405,32 @@ body {
     clip-path: inset(0 0% 0 0);
   }
 }
+
+/* Hero nav — signal-strength dots under logo */
+@keyframes hero-nav-signal-dot {
+  0%,
+  100% {
+    opacity: var(--dot-base, 0.35);
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.hero-nav-signal-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+  background-color: var(--signal-dot-color, #fff);
+  animation: hero-nav-signal-dot 3s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-nav-signal-dot {
+    animation: none;
+    opacity: var(--dot-base, 0.35);
+    transform: none;
+  }
+}
