@@ -66,6 +66,11 @@ function clamp01(p: number): number {
   return p;
 }
 
+/** Keeps exponential smoothers stable after visibility/background throttling (large `delta`). */
+function clampFrameDelta(delta: number): number {
+  return Math.min(delta, 1 / 24);
+}
+
 /** Base Y rotation (rad) for the terrain rig; scroll adds a small delta on top. */
 const BASE_TERRAIN_YAW_RAD = 1;
 
@@ -116,7 +121,7 @@ function BreathingFogExp2({ reduceMotion }: { reduceMotion: boolean; }) {
 
 /**
  * After Bounds fit: FOV + look-at + world position offset → scroll toward a higher, more top-down read.
- * Base position/FOV are captured once per layout (reset when canvas size changes).
+ * Baseline FOV/position are re-derived when the canvas size changes (see `observe={false}` note inside).
  */
 function HeroScrollCameraFraming({ reduceMotion }: { reduceMotion: boolean; }) {
   const camera = useThree((s) => s.camera);
@@ -138,12 +143,27 @@ function HeroScrollCameraFraming({ reduceMotion }: { reduceMotion: boolean; }) {
       basePosRef.current = null;
     }
 
-    if (baseFovRef.current === null) baseFovRef.current = camera.fov;
-    if (basePosRef.current === null) basePosRef.current = camera.position.clone();
-
-    const base = baseFovRef.current;
     const p = scrollRead?.getRawProgress() ?? 0;
     const t = reduceMotion ? 0 : clamp01(p);
+
+    /*
+     * Bounds uses `observe={false}`, so the fitted camera is not reset when the canvas resizes.
+     * This component already bakes scroll into `camera` each frame; naïvely cloning position/FOV
+     * after a resize would treat “scrolled” state as the new base and double-apply offsets.
+     * Recover the Stage baseline by reversing the scroll-driven deltas.
+     */
+    if (baseFovRef.current === null) {
+      baseFovRef.current = camera.fov - t * HERO_SCROLL_ZOOM_FOV_DELTA;
+    }
+    if (basePosRef.current === null) {
+      basePosRef.current = new THREE.Vector3(
+        camera.position.x - t * CAMERA_SCROLL_OFFSET_X,
+        camera.position.y - t * CAMERA_SCROLL_OFFSET_Y,
+        camera.position.z - t * CAMERA_SCROLL_OFFSET_Z,
+      );
+    }
+
+    const base = baseFovRef.current;
 
     const { x: bx, y: by, z: bz } = basePosRef.current;
     posScratch.set(bx, by, bz);
@@ -212,6 +232,7 @@ function ParallaxWorld({
 
     const p = scrollRead?.getRawProgress() ?? 0;
     const t = reduceMotion ? 0 : clamp01(p);
+    const dt = clampFrameDelta(delta);
 
     if (reduceMotion) {
       scrollRig.rotation.set(0, 0, 0);
@@ -226,7 +247,7 @@ function ParallaxWorld({
 
     // Mouse parallax — independent lerp, faster for a more direct feel.
     // This adds a subtle offset on top of the scroll position without disturbing it.
-    const mouseLerp = 1 - Math.pow(0.88, delta * 60);
+    const mouseLerp = 1 - Math.pow(0.88, dt * 60);
     smoothMouse.current.x += (mouse.current.x - smoothMouse.current.x) * mouseLerp;
     smoothMouse.current.y += (mouse.current.y - smoothMouse.current.y) * mouseLerp;
     mouseRig.rotation.x = smoothMouse.current.y * -0.038;
@@ -275,7 +296,8 @@ function CursorWorldLight({ reduceMotion }: { reduceMotion: boolean; }) {
       light.intensity = 0;
       return;
     }
-    const lerp = 1 - Math.pow(0.9, delta * 60);
+    const dt = clampFrameDelta(delta);
+    const lerp = 1 - Math.pow(0.9, dt * 60);
     smooth.current.x += (raw.current.x - smooth.current.x) * lerp;
     smooth.current.y += (raw.current.y - smooth.current.y) * lerp;
 
