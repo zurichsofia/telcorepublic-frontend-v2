@@ -4,13 +4,14 @@ import { motion, useReducedMotion } from "motion/react";
 import { useEffect, useState } from "react";
 
 import { BrandLogoSignal } from "@/components/brand-logo-signal";
+import { isSceneRegistered, waitForScene } from "@/lib/scene-ready";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 /** Minimum time the loader stays visible so it does not feel like a glitch. */
 const MIN_MS = 720;
 /** Safety cap if load/fonts hang. */
-const MAX_MS = 14000;
+const MAX_MS = 8000;
 
 export function PageLoader() {
   const [phase, setPhase] = useState<"loading" | "exit" | "gone">("loading");
@@ -31,13 +32,20 @@ export function PageLoader() {
 
     const waitForReady = async () => {
       try {
-        await Promise.all([
+        const deps: Promise<unknown>[] = [
           document.fonts.ready,
           new Promise<void>((resolve) => {
             if (document.readyState === "complete") resolve();
             else window.addEventListener("load", () => resolve(), { once: true });
           }),
-        ]);
+        ];
+        // If a Three.js scene registered itself, wait until its GLB is loaded
+        // and the model has mounted — otherwise the loader dismisses before the
+        // scene is visible.
+        if (isSceneRegistered()) {
+          deps.push(waitForScene());
+        }
+        await Promise.all(deps);
       } catch {
         /* ignore */
       }

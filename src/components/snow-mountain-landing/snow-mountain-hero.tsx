@@ -115,6 +115,7 @@ export function SnowMountainHero() {
       // className="relative isolate z-20 [--color-heading:#001538] [--accent-hover:#0891b2]"
       style={{
         // backgroundColor: SNOW_MOUNTAIN_FOG_COLOR,
+        position: "relative",
         height: `${HERO_SECTION_VH}vh`,
         minHeight: `${HERO_SECTION_VH}vh`,
         ...HERO_SCROLL_VARS_INITIAL,

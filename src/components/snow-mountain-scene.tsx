@@ -17,12 +17,24 @@ import { useReducedMotion } from "motion/react";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 
 import * as THREE from "three";
+import { setConsoleFunction } from "three";
+
+// @react-three/fiber 9.x creates `new THREE.Clock()` internally and hasn't yet
+// migrated to THREE.Timer. Suppress that one deprecation so the console stays clean
+// while keeping all other Three.js warnings/errors visible.
+setConsoleFunction((type, message, ...params) => {
+  if (type === "warn" && typeof message === "string" && message.includes("THREE.Clock")) return;
+  if (type === "warn") console.warn(message, ...params);
+  else if (type === "error") console.error(message, ...params);
+  else console.log(message, ...params);
+});
 
 import { SNOW_MOUNTAIN_FOG_COLOR } from "@/lib/snow-mountain-fog";
 import { heroScrollZoomT, heroSubtleMotionT } from "@/lib/snow-mountain-hero-scroll";
 import { applyTerrainIceStyle } from "@/lib/snow-mountain-terrain-ice";
 // import { SnowMountainDreiSkyClouds } from "@/components/snow-mountain-drei-sky-clouds";
 import { AtmosphericParticles } from "@/components/snow-mountain-atmospheric-particles";
+import { markSceneReady, registerScene } from "@/lib/scene-ready";
 
 import { cn } from "@/lib/utils";
 import {
@@ -34,6 +46,8 @@ import {
 const HERO_SCROLL_YAW_RAD = 0.15;
 
 useGLTF.preload("/scene/snow_mountain.glb");
+// Tell the PageLoader it must wait for this scene before dismissing.
+registerScene();
 
 const HeroScrollSmoothContext = createContext<MutableRefObject<number> | null>(
   null,
@@ -256,6 +270,11 @@ function SnowMountainModel({ reduceMotion }: { reduceMotion: boolean; }) {
   useLayoutEffect(() => {
     applyTerrainIceStyle(gltf.scene);
   }, [gltf]);
+
+  // Signal the PageLoader that the GLB has loaded and the model is mounted.
+  useEffect(() => {
+    markSceneReady();
+  }, []);
 
   useFrame(() => {
     const p = smoothScrollRef?.current ?? 0;
