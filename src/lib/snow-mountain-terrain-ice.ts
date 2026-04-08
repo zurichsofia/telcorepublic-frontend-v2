@@ -12,11 +12,11 @@ export const ICE = {
 } as const;
 
 /** Wireframe / edge highlight */
-export const T_RIDGE = ICE[400];
+export const T_RIDGE = "#8A8882";
 /** Deep valley fill (mixed in shader) */
-export const T_DEEP = "#0B1220";
-/** Subtle cool rim on peaks — kept low so snow reads photographic, not emissive CG. */
-export const T_BLOOM = "#C8D4E0";
+export const T_DEEP = "#0C0D0B";
+/** Subtle warm rim on peaks — kept low so snow reads photographic, not emissive CG. */
+export const T_BLOOM = "#D4CEC8";
 
 function patchTerrainMaterial(
   mesh: THREE.Mesh,
@@ -128,7 +128,7 @@ export function applyTerrainIceStyle(root: THREE.Object3D) {
       new THREE.LineBasicMaterial({
         color: ridgeColor,
         transparent: true,
-        opacity: 0.12,
+        opacity: 0.4,
         depthWrite: false,
       }),
     );

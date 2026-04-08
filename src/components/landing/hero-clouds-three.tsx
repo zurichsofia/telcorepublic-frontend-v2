@@ -41,7 +41,7 @@ const CLOUD_NEAR: CloudPreset = {
   fade: 8,
   growth: 6,
   speed: 0.5,
-  bounds: [10, 1, 1],
+  bounds: [12, 1, 1],
 };
 
 /** Mid layer (z ≈ 0): the primary visible band — balanced puffiness. */
@@ -80,8 +80,8 @@ type CloudConfig = {
 };
 
 const CLOUD_CONFIGS: CloudConfig[] = [
-  { base: [-12, 0, 0], preset: CLOUD_NEAR, seed: 1, color: "white", dir: 1 },
-  { base: [12, 0, 0], preset: CLOUD_NEAR, seed: 1, color: "white", dir: 1 },
+  { base: [-12, -1, 0], preset: CLOUD_NEAR, seed: 1, color: "white", dir: 1 },
+  { base: [12, -1, 0], preset: CLOUD_NEAR, seed: 1, color: "white", dir: 1 },
   // { base: [15, 0, 0], preset: CLOUD_MID, seed: 2, color: "#eed0d0", dir: -1 },
   // { base: [-15, 0, 0], preset: CLOUD_MID, seed: 3, color: "#d0e0d0", dir: 1 },
   // { base: [0, 0, -12], preset: CLOUD_FAR, seed: 4, color: "#a0b0d0", dir: -1 },

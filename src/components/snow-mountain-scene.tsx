@@ -331,7 +331,7 @@ export function SnowMountainScene({
           gl.setClearColor(new THREE.Color(SNOW_MOUNTAIN_FOG_COLOR), 1);
           gl.toneMapping = THREE.ACESFilmicToneMapping;
           /* Exposure after fixing drei Stage stacking its own spot (2× intensity) on top of scene lights. */
-          gl.toneMappingExposure = 0.62;
+          gl.toneMappingExposure = 0.68;
         }}
       >
         <SmoothHeroScrollProvider
@@ -341,17 +341,18 @@ export function SnowMountainScene({
           <BreathingFogExp2 reduceMotion={reduceMotion} />
           {/* <SnowMountainDreiSkyClouds reduceMotion={
         reduceMotion} /> */}
-          <hemisphereLight args={["#A8B4BE", "#3A4248", 0.52]} />
-          <ambientLight intensity={0.16} color="#7E8E98" />
+          <hemisphereLight args={["#a2acb5", "#3A3830", 0.6]} />
+          {/* Warm daylight fill — brightens shadowed faces without adding hue */}
+          <ambientLight intensity={0.38} color="#FFF8F0" />
           <directionalLight
             position={[22, 38, 18]}
-            intensity={0.38}
-            color="#B8C4D0"
+            intensity={0.46}
+            color="#FFE8C8"
           />
           <directionalLight
             position={[-16, 8, -22]}
-            intensity={0.22}
-            color="#6B7A88"
+            intensity={0.18}
+            color="#C8C0B0"
           />
 
           <HeroScrollCameraFraming reduceMotion={reduceMotion} />
@@ -374,9 +375,9 @@ export function SnowMountainScene({
                 adjustCamera={0.36}
                 intensity={0}
                 environment={{
-                  preset: "studio",
+                  preset: "apartment",
                   background: false,
-                  environmentIntensity: 0.22,
+                  environmentIntensity: 0.32,
                 }}
                 preset="soft"
                 shadows={false}
