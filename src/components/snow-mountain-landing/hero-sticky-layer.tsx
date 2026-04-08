@@ -9,6 +9,8 @@ import { cn } from "@/lib/utils";
 type HeroStickyLayerProps = {
   reduceMotion: boolean;
   heroCanvasRef: RefObject<HTMLDivElement | null>;
+  /** Same element as `<section ref={…}>` — WebGL reads progress from its layout each frame. */
+  heroSectionRef: RefObject<HTMLElement | null>;
   scrollProgressRef: MutableRefObject<number>;
   motionRef: MutableRefObject<HeroParallaxMotion>;
 };
@@ -16,6 +18,7 @@ type HeroStickyLayerProps = {
 export function HeroStickyLayer({
   reduceMotion,
   heroCanvasRef,
+  heroSectionRef,
   scrollProgressRef,
   motionRef,
 }: HeroStickyLayerProps) {
@@ -29,6 +32,7 @@ export function HeroStickyLayer({
         )}
       >
         <SnowMountainScene
+          heroSectionRef={heroSectionRef}
           scrollProgressRef={scrollProgressRef}
           motionRef={motionRef}
           className={!reduceMotion ? "cursor-none" : undefined}

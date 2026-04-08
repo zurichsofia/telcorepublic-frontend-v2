@@ -6,11 +6,7 @@ import {
   useRef,
   useState,
 } from "react";
-import {
-  useMotionValueEvent,
-  useReducedMotion,
-  useScroll,
-} from "motion/react";
+import { useReducedMotion } from "motion/react";
 
 import { SNOW_MOUNTAIN_FOG_COLOR } from "@/lib/snow-mountain-fog";
 import { cn } from "@/lib/utils";
@@ -19,6 +15,7 @@ import type { HeroParallaxMotion } from "@/components/landing/hero-clouds-three"
 import {
   heroPrimaryParallaxX,
   heroPrimaryParallaxY,
+  readHeroScrollProgress,
 } from "@/lib/snow-mountain-hero-scroll";
 import {
   applyHeroScrollVars,
@@ -72,41 +69,42 @@ export function SnowMountainHero() {
     return () => window.removeEventListener("mousemove", onMove);
   }, [reduce]);
 
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
-
-  useMotionValueEvent(scrollYProgress, "change", (p) => {
-    scrollProgressRef.current = reduce ? 0 : p;
-    const el = heroRef.current;
-    if (el) applyHeroScrollVars(el, p, reduce);
-    if (reduce) {
-      heroParallaxMotionRef.current = { x: 0, y: 0, scale: 1 };
-    } else {
-      heroParallaxMotionRef.current = {
-        x: heroPrimaryParallaxX(p),
-        y: heroPrimaryParallaxY(p),
-        scale: 1,
-      };
-    }
-  });
-
+  /**
+   * Same progress as WebGL: `readHeroScrollProgress` from layout every frame (RAF), not
+   * Motion’s scroll pipeline (different phase than R3F → felt laggy / non‑continuous).
+   * Scroll/resize listeners kick an extra flush so the first paint after layout jumps is right.
+   */
   useLayoutEffect(() => {
-    const p = scrollYProgress.get();
-    scrollProgressRef.current = reduce ? 0 : p;
-    const el = heroRef.current;
-    if (el) applyHeroScrollVars(el, p, reduce);
-    if (reduce) {
-      heroParallaxMotionRef.current = { x: 0, y: 0, scale: 1 };
-    } else {
-      heroParallaxMotionRef.current = {
-        x: heroPrimaryParallaxX(p),
-        y: heroPrimaryParallaxY(p),
-        scale: 1,
-      };
-    }
-  }, [reduce, scrollYProgress]);
+    const flush = () => {
+      const el = heroRef.current;
+      const p = readHeroScrollProgress(el);
+      scrollProgressRef.current = reduce ? 0 : p;
+      if (el) applyHeroScrollVars(el, p, reduce);
+      if (reduce) {
+        heroParallaxMotionRef.current = { x: 0, y: 0, scale: 1 };
+      } else {
+        heroParallaxMotionRef.current = {
+          x: heroPrimaryParallaxX(p),
+          y: heroPrimaryParallaxY(p),
+          scale: 1,
+        };
+      }
+    };
+    let raf = 0;
+    const tick = () => {
+      flush();
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    const onScrollOrResize = () => flush();
+    window.addEventListener("scroll", onScrollOrResize, { passive: true });
+    window.addEventListener("resize", onScrollOrResize, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScrollOrResize);
+      window.removeEventListener("resize", onScrollOrResize);
+    };
+  }, [reduce]);
 
   return (
     <section
@@ -124,6 +122,7 @@ export function SnowMountainHero() {
       <HeroStickyLayer
         reduceMotion={!!reduce}
         heroCanvasRef={heroCanvasRef}
+        heroSectionRef={heroRef}
         scrollProgressRef={scrollProgressRef}
         motionRef={heroParallaxMotionRef}
       />

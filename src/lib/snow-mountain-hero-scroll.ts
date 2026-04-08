@@ -6,6 +6,22 @@ function smoothstep(edge0: number, edge1: number, x: number): number {
 }
 
 /**
+ * Progress for a full-height hero section with the same semantics as Motion
+ * `useScroll({ offset: ["start start", "end start"] })` on that element:
+ * 0 when the section’s top aligns with the viewport top, 1 when its bottom does.
+ *
+ * Uses `getBoundingClientRect()` so values match what is actually painted — avoids
+ * desync from Motion’s internal `frame.read` / scroll-timeline pipeline vs R3F’s RAF.
+ */
+export function readHeroScrollProgress(section: HTMLElement | null): number {
+  if (!section) return 0;
+  const rect = section.getBoundingClientRect();
+  const h = rect.height;
+  if (h <= 0) return 0;
+  return Math.min(1, Math.max(0, -rect.top / h));
+}
+
+/**
  * Maps overall hero scroll progress (0 = top, 1 = hero ends) to a 0–1 curve for
  * subtle 3D motion. Ramps from the first pixel of scroll (non-zero slope at 0 so
  * it never feels “stuck”); reaches full strength by ~⅔, then holds for handoff.
@@ -29,10 +45,10 @@ export function heroScrollZoomT(progress: number): number {
   return smoothstep(0, 1, progress);
 }
 
-/** Primary headline visible for the first ~¼ of hero scroll; crossfade overlaps motion ramp. */
-const PHASE_A = 0.25;
+/** Primary headline visible for the first stretch of hero scroll; crossfade overlaps motion ramp. */
+const PHASE_A = 0.18;
 /** End of primary → mid crossfade (middle of motion ramp). */
-const CROSSFADE_END = 0.36;
+const CROSSFADE_END = 0.32;
 const MID_HOLD_END = 2 / 3;
 /** Mid copy out before full handoff overlay. */
 const MID_FADE_END = 0.72;

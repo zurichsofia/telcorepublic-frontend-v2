@@ -12,7 +12,7 @@ import {
 } from "@/lib/snow-mountain-hero-scroll";
 
 /** 200vh scroll while mountain is pinned + 100vh sticky layer = 300vh hero. */
-export const HERO_STICKY_SCROLL_VH = 200;
+export const HERO_STICKY_SCROLL_VH = 400;
 export const HERO_SECTION_VH = HERO_STICKY_SCROLL_VH + 100;
 
 /** Initial custom props for p=0 (avoids unset vars before layout sync). */
