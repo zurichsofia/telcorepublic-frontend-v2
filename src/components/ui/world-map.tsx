@@ -26,8 +26,8 @@ interface MapProps {
   accentColor?: string;
 }
 
-/** Landmass grid: black dots on white for contrast. */
-const LAND_DOT_COLOR = "#00000055";
+/** Landmass grid: grey dots on white. */
+const LAND_DOT_COLOR = "#6b7379";
 
 const DOT_R = 1;
 const DOT_R_PULSE = 1.15;
@@ -66,8 +66,8 @@ function projectLatLng(
 
 export default function WorldMap({
   dots = [],
-  lineColor = "#b5bec7",
-  markerColor = "#000000",
+  lineColor = "#eb1e25",
+  markerColor = "#eb1e25",
   accentColor = "#eb1e25",
 }: MapProps) {
   const svgRef = useRef<SVGSVGElement>(null);
