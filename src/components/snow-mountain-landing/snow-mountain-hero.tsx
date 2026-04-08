@@ -15,6 +15,11 @@ import {
 import { SNOW_MOUNTAIN_FOG_COLOR } from "@/lib/snow-mountain-fog";
 import { cn } from "@/lib/utils";
 
+import type { HeroParallaxMotion } from "@/components/landing/hero-clouds-three";
+import {
+  heroPrimaryParallaxX,
+  heroPrimaryParallaxY,
+} from "@/lib/snow-mountain-hero-scroll";
 import {
   applyHeroScrollVars,
   HERO_SCROLL_VARS_INITIAL,
@@ -33,6 +38,11 @@ export function SnowMountainHero() {
   const heroRef = useRef<HTMLElement | null>(null);
   const heroCanvasRef = useRef<HTMLDivElement | null>(null);
   const scrollProgressRef = useRef(0);
+  const heroParallaxMotionRef = useRef<HeroParallaxMotion>({
+    x: 0,
+    y: 0,
+    scale: 1,
+  });
   const [heroCursor, setHeroCursor] = useState<{
     x: number;
     y: number;
@@ -71,6 +81,15 @@ export function SnowMountainHero() {
     scrollProgressRef.current = reduce ? 0 : p;
     const el = heroRef.current;
     if (el) applyHeroScrollVars(el, p, reduce);
+    if (reduce) {
+      heroParallaxMotionRef.current = { x: 0, y: 0, scale: 1 };
+    } else {
+      heroParallaxMotionRef.current = {
+        x: heroPrimaryParallaxX(p),
+        y: heroPrimaryParallaxY(p),
+        scale: 1,
+      };
+    }
   });
 
   useLayoutEffect(() => {
@@ -78,15 +97,24 @@ export function SnowMountainHero() {
     scrollProgressRef.current = reduce ? 0 : p;
     const el = heroRef.current;
     if (el) applyHeroScrollVars(el, p, reduce);
+    if (reduce) {
+      heroParallaxMotionRef.current = { x: 0, y: 0, scale: 1 };
+    } else {
+      heroParallaxMotionRef.current = {
+        x: heroPrimaryParallaxX(p),
+        y: heroPrimaryParallaxY(p),
+        scale: 1,
+      };
+    }
   }, [reduce, scrollYProgress]);
 
   return (
     <section
       ref={heroRef}
       id="summit"
-      className="relative isolate z-20 [--color-heading:#001538] [--accent-hover:#0891b2]"
+      // className="relative isolate z-20 [--color-heading:#001538] [--accent-hover:#0891b2]"
       style={{
-        backgroundColor: SNOW_MOUNTAIN_FOG_COLOR,
+        // backgroundColor: SNOW_MOUNTAIN_FOG_COLOR,
         height: `${HERO_SECTION_VH}vh`,
         minHeight: `${HERO_SECTION_VH}vh`,
         ...HERO_SCROLL_VARS_INITIAL,
@@ -96,6 +124,7 @@ export function SnowMountainHero() {
         reduceMotion={!!reduce}
         heroCanvasRef={heroCanvasRef}
         scrollProgressRef={scrollProgressRef}
+        motionRef={heroParallaxMotionRef}
       />
 
       <div

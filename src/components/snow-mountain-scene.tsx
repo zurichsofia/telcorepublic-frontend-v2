@@ -21,13 +21,17 @@ import * as THREE from "three";
 import { SNOW_MOUNTAIN_FOG_COLOR } from "@/lib/snow-mountain-fog";
 import { heroScrollZoomT, heroSubtleMotionT } from "@/lib/snow-mountain-hero-scroll";
 import { applyTerrainIceStyle } from "@/lib/snow-mountain-terrain-ice";
-import { SnowMountainDreiSkyClouds } from "@/components/snow-mountain-drei-sky-clouds";
+// import { SnowMountainDreiSkyClouds } from "@/components/snow-mountain-drei-sky-clouds";
 import { AtmosphericParticles } from "@/components/snow-mountain-atmospheric-particles";
 
 import { cn } from "@/lib/utils";
+import {
+  HeroCloudsThree,
+  type HeroParallaxMotion,
+} from "./landing/hero-clouds-three";
 
 /** Extra Y rotation (rad) as the user scrolls through the hero — subtle orbit. */
-const HERO_SCROLL_YAW_RAD = 0.11;
+const HERO_SCROLL_YAW_RAD = 0.15;
 
 useGLTF.preload("/scene/snow_mountain.glb");
 
@@ -67,8 +71,8 @@ function SmoothHeroScrollProvider({
   );
 }
 
-/** Y rotation π - show the opposite face of the terrain. */
-const ROT_Y_180 = 1;
+/** Base Y rotation (rad) for the terrain rig; scroll adds a small delta on top. */
+const BASE_TERRAIN_YAW_RAD = 1;
 
 /**
  * World-space X of the look-at target (mountain is centered near origin after Stage/Center).
@@ -109,13 +113,7 @@ function BreathingFogExp2({ reduceMotion }: { reduceMotion: boolean; }) {
  * After Bounds fit: widen FOV and ease look-at X toward the right as scroll progresses
  * (same `heroScrollZoomT` curve). Priority above Bounds default.
  */
-function HeroScrollCameraFraming({
-  scrollProgressRef,
-  reduceMotion,
-}: {
-  scrollProgressRef?: MutableRefObject<number>;
-  reduceMotion: boolean;
-}) {
+function HeroScrollCameraFraming({ reduceMotion }: { reduceMotion: boolean; }) {
   const camera = useThree((s) => s.camera);
   const smoothScrollRef = useContext(HeroScrollSmoothContext);
   const baseFovRef = useRef<number | null>(null);
@@ -125,8 +123,7 @@ function HeroScrollCameraFraming({
     if (!(camera instanceof THREE.PerspectiveCamera)) return;
     if (baseFovRef.current === null) baseFovRef.current = camera.fov;
     const base = baseFovRef.current;
-    const p =
-      smoothScrollRef?.current ?? scrollProgressRef?.current ?? 0;
+    const p = smoothScrollRef?.current ?? 0;
     const t = reduceMotion ? 0 : heroScrollZoomT(p);
     camera.fov = base + t * HERO_SCROLL_ZOOM_FOV_DELTA;
     camera.updateProjectionMatrix();
@@ -142,11 +139,9 @@ function HeroScrollCameraFraming({
 }
 
 function ParallaxWorld({
-  scrollProgressRef,
   reduceMotion,
   children,
 }: {
-  scrollProgressRef?: MutableRefObject<number>;
   reduceMotion: boolean;
   children: ReactNode;
 }) {
@@ -170,8 +165,7 @@ function ParallaxWorld({
     const yaw = scrollYawRef.current;
     if (!g || !yaw) return;
     const lerp = 1 - Math.pow(0.945, delta * 60);
-    const p =
-      smoothScrollRef?.current ?? scrollProgressRef?.current ?? 0;
+    const p = smoothScrollRef?.current ?? 0;
     const subtleT = reduceMotion ? 0 : heroSubtleMotionT(p);
     if (reduceMotion) {
       smooth.current.x = 0;
@@ -254,15 +248,7 @@ function CursorWorldLight({ reduceMotion }: { reduceMotion: boolean; }) {
   );
 }
 
-type SnowMountainModelProps = {
-  scrollProgressRef?: MutableRefObject<number>;
-  reduceMotion: boolean;
-};
-
-function SnowMountainModel({
-  scrollProgressRef,
-  reduceMotion,
-}: SnowMountainModelProps) {
+function SnowMountainModel({ reduceMotion }: { reduceMotion: boolean; }) {
   const gltf = useGLTF("/scene/snow_mountain.glb");
   const rigRef = useRef<THREE.Group>(null);
   const smoothScrollRef = useContext(HeroScrollSmoothContext);
@@ -272,12 +258,12 @@ function SnowMountainModel({
   }, [gltf]);
 
   useFrame(() => {
-    const p = smoothScrollRef?.current ?? scrollProgressRef?.current ?? 0;
+    const p = smoothScrollRef?.current ?? 0;
     const subtleT = reduceMotion ? 0 : heroSubtleMotionT(p);
     if (rigRef.current) {
       rigRef.current.rotation.set(
         subtleT * 0.012,
-        ROT_Y_180 + subtleT * 0.052,
+        BASE_TERRAIN_YAW_RAD + subtleT * 0.052,
         subtleT * -0.005,
       );
     }
@@ -304,106 +290,112 @@ function PostFx({ enabled }: { enabled: boolean; }) {
   );
 }
 
+const FALLBACK_PARALLAX_MOTION: MutableRefObject<HeroParallaxMotion> = {
+  current: { x: 0, y: 0, scale: 1 },
+};
+
 export type SnowMountainSceneProps = {
   /** 0 = hero top, 1 = hero end. Drives `heroSubtleMotionT` (immediate ramp, hold last third). */
   scrollProgressRef?: MutableRefObject<number>;
+  /** Shared with CSS `--sm-primary-x` / `--sm-primary-y` so WebGL clouds track the same parallax. */
+  motionRef?: MutableRefObject<HeroParallaxMotion>;
   /** Merged onto the R3F canvas (e.g. `cursor-none` with a custom cursor overlay). */
   className?: string;
 };
 
 export function SnowMountainScene({
   scrollProgressRef,
+  motionRef,
   className,
 }: SnowMountainSceneProps) {
   const reduceMotion = useReducedMotion() ?? false;
   const rawScrollRef = scrollProgressRef ?? FALLBACK_SCROLL_PROGRESS;
+  const parallaxMotionRef = motionRef ?? FALLBACK_PARALLAX_MOTION;
 
+  /* `HeroCloudsThree` uses its own `<Canvas>` — must not nest inside this Canvas (R3F rejects it). */
   return (
-    <Canvas
-      className={cn("h-full min-h-dvh w-full touch-none", className)}
-      camera={{ fov: 28, near: 0.1, far: 500 }}
-      dpr={[1, 2]}
-      resize={{
-        scroll: false,
-        debounce: { scroll: 0, resize: 0 },
-      }}
-      gl={{
-        antialias: true,
-        powerPreference: "high-performance",
-      }}
-      onCreated={({ gl }) => {
-        gl.setClearColor(new THREE.Color(SNOW_MOUNTAIN_FOG_COLOR), 1);
-        gl.toneMapping = THREE.ACESFilmicToneMapping;
-        /* Exposure after fixing drei Stage stacking its own spot (2× intensity) on top of scene lights. */
-        gl.toneMappingExposure = 0.62;
-      }}
-    >
-      <SmoothHeroScrollProvider
-        rawRef={rawScrollRef}
-        reduceMotion={reduceMotion}
+    <div className={cn("relative h-full min-h-dvh w-full", className)}>
+      <Canvas
+        className="absolute inset-0 h-full w-full touch-none"
+        camera={{ fov: 28, near: 0.1, far: 500 }}
+        dpr={[1, 2]}
+        resize={{
+          scroll: false,
+          debounce: { scroll: 0, resize: 0 },
+        }}
+        gl={{
+          antialias: true,
+          powerPreference: "high-performance",
+        }}
+        onCreated={({ gl }) => {
+          gl.setClearColor(new THREE.Color(SNOW_MOUNTAIN_FOG_COLOR), 1);
+          gl.toneMapping = THREE.ACESFilmicToneMapping;
+          /* Exposure after fixing drei Stage stacking its own spot (2× intensity) on top of scene lights. */
+          gl.toneMappingExposure = 0.62;
+        }}
       >
-        <BreathingFogExp2 reduceMotion={reduceMotion} />
-        <SnowMountainDreiSkyClouds reduceMotion={reduceMotion} />
-        {/* <WindParticleField reduceMotion={reduceMotion} /> */}
-        <hemisphereLight args={["#A8B4BE", "#3A4248", 0.52]} />
-        <ambientLight intensity={0.16} color="#7E8E98" />
-        <directionalLight
-          position={[22, 38, 18]}
-          intensity={0.38}
-          color="#B8C4D0"
-        />
-        <directionalLight
-          position={[-16, 8, -22]}
-          intensity={0.22}
-          color="#6B7A88"
-        />
-
-        <HeroScrollCameraFraming
-          scrollProgressRef={scrollProgressRef}
-          reduceMotion={reduceMotion}
-        />
-        <CursorWorldLight reduceMotion={reduceMotion} />
-
-        <ParallaxWorld
-          scrollProgressRef={scrollProgressRef}
+        <SmoothHeroScrollProvider
+          rawRef={rawScrollRef}
           reduceMotion={reduceMotion}
         >
-          <AtmosphericParticles reduceMotion={reduceMotion} />
-          <Suspense fallback={null}>
-            {/*
+          <BreathingFogExp2 reduceMotion={reduceMotion} />
+          {/* <SnowMountainDreiSkyClouds reduceMotion={
+        reduceMotion} /> */}
+          <hemisphereLight args={["#A8B4BE", "#3A4248", 0.52]} />
+          <ambientLight intensity={0.16} color="#7E8E98" />
+          <directionalLight
+            position={[22, 38, 18]}
+            intensity={0.38}
+            color="#B8C4D0"
+          />
+          <directionalLight
+            position={[-16, 8, -22]}
+            intensity={0.22}
+            color="#6B7A88"
+          />
+
+          <HeroScrollCameraFraming reduceMotion={reduceMotion} />
+          <CursorWorldLight reduceMotion={reduceMotion} />
+
+          <ParallaxWorld reduceMotion={reduceMotion}>
+            <AtmosphericParticles reduceMotion={reduceMotion} />
+            <Suspense fallback={null}>
+              {/*
               observe={false}: default Bounds observe refits whenever R3F `size` changes.
               First pointer move / cursor UI can change viewport (scrollbar) or layout,
               which retriggers reset().fit() and reads as an abrupt zoom-out.
               Stage still refits when the model radius is known (Refit on radius).
             */}
-            {/*
+              {/*
               drei Stage always adds ambient + spot (2× intensity) + point — on top of our lights.
               intensity={0} turns those off; we only want Bounds/Center + IBL from Environment.
             */}
-            <Stage
-              adjustCamera={0.36}
-              intensity={0}
-              environment={{
-                preset: "studio",
-                background: false,
-                environmentIntensity: 0.22,
-              }}
-              preset="soft"
-              shadows={false}
-              // Forwarded to Bounds via Stage ...props (drei merge); not on StageProps.
-              // @ts-expect-error Bounds observe
-              observe={false}
-            >
-              <SnowMountainModel
-                scrollProgressRef={scrollProgressRef}
-                reduceMotion={reduceMotion}
-              />
-            </Stage>
-          </Suspense>
-        </ParallaxWorld>
+              <Stage
+                adjustCamera={0.36}
+                intensity={0}
+                environment={{
+                  preset: "studio",
+                  background: false,
+                  environmentIntensity: 0.22,
+                }}
+                preset="soft"
+                shadows={false}
+                // Forwarded to Bounds via Stage ...props (drei merge); not on StageProps.
+                // @ts-expect-error Bounds observe
+                observe={false}
+              >
+                <SnowMountainModel reduceMotion={reduceMotion} />
+              </Stage>
+            </Suspense>
+          </ParallaxWorld>
 
-        <PostFx enabled={!reduceMotion} />
-      </SmoothHeroScrollProvider>
-    </Canvas>
+          <PostFx enabled={!reduceMotion} />
+        </SmoothHeroScrollProvider>
+      </Canvas>
+      <HeroCloudsThree
+        motionRef={parallaxMotionRef}
+        reducedMotion={reduceMotion}
+      />
+    </div>
   );
 }

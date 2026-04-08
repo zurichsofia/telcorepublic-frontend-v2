@@ -7,7 +7,7 @@ export function HeroScrollHint() {
         <div className="flex flex-col items-center">
           <a
             href="#signal"
-            className="pointer-events-auto flex items-center gap-3 rounded-full text-[10px] font-medium uppercase tracking-[0.28em] text-[#001538] animate-pulse duration-900"
+            className="pointer-events-auto flex items-center gap-3 rounded-full text-[10px] font-medium uppercase tracking-[0.28em] text-white animate-pulse duration-900"
             aria-label="Scroll to Signal intelligence"
           >
             <span

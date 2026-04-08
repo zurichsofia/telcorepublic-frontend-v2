@@ -52,7 +52,9 @@ export function HeroPrimaryContent({ reduceMotion }: HeroPrimaryContentProps) {
           </span>
         </h1>
 
-        <div style={{ transform: "translateY(var(--sm-subcopy-y))" }}>
+
+        {/* TODO: This is hidden w opacity-0 */}
+        <div style={{ transform: "translateY(var(--sm-subcopy-y))" }} className="opacity-0">
           <p className="mt-7 mb-32 max-w-md text-base font-light leading-[1.75] text-white sm:text-[1.05rem]">
             Leading the Techco Revolution
             <br />
