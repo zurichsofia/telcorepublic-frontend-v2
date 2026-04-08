@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { SnowMountainLanding } from "@/components/snow-mountain-landing";
 
 export const metadata: Metadata = {
-  title: "Summit | Telcorepublic Research",
+  title: "Telcorepublic Research",
   description:
     "Premium telecom research-spectrum, infrastructure, and intelligence with clarity.",
 };
