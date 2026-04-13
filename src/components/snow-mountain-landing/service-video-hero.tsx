@@ -139,14 +139,14 @@ export function ServiceVideoHero() {
       aria-label="Featured services"
       className="relative isolate h-dvh min-h-[520px] max-h-[1200px] overflow-hidden bg-black text-white"
     >
-      <div
+      {/* <div
         className="pointer-events-none absolute inset-x-0 top-0 z-20 h-44 bg-linear-to-b from-black/80 via-black/40 to-transparent"
         aria-hidden
-      />
-      <div
+      /> */}
+      {/* <div
         className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-[55%] bg-linear-to-t from-black/85 via-black/45 to-transparent"
         aria-hidden
-      />
+      /> */}
 
       <HeroNav tone="onDark" />
 
@@ -247,7 +247,7 @@ function ServiceVideoSlide({
     }
 
     if (isActive) {
-      void v.play().catch(() => {});
+      void v.play().catch(() => { });
     } else {
       v.pause();
     }
