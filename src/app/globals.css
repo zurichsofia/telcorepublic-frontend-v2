@@ -392,3 +392,64 @@ body {
     transform: none;
   }
 }
+
+/* Service video hero — drag hint motion (transform-based panorama) */
+@keyframes service-axis-hint-left {
+  0%,
+  100% {
+    transform: translateX(0);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translateX(-5px);
+    opacity: 1;
+  }
+}
+
+@keyframes service-axis-hint-right {
+  0%,
+  100% {
+    transform: translateX(0);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translateX(5px);
+    opacity: 1;
+  }
+}
+
+@keyframes service-axis-hint-fade {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-service-axis-hint-left {
+  animation: service-axis-hint-left 2s ease-in-out infinite;
+}
+
+.animate-service-axis-hint-right {
+  animation: service-axis-hint-right 2s ease-in-out infinite;
+}
+
+.animate-service-axis-hint-fade {
+  animation: service-axis-hint-fade 2.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-service-axis-hint-left,
+  .animate-service-axis-hint-right,
+  .animate-service-axis-hint-fade {
+    animation: none;
+    opacity: 0.55;
+  }
+
+  .animate-service-axis-hint-left,
+  .animate-service-axis-hint-right {
+    transform: none;
+  }
+}
