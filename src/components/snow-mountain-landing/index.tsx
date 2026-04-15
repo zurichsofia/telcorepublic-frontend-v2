@@ -2,7 +2,7 @@
 
 import { ContactSection, ServicesSection } from "@/components/landing/sections";
 
-import { ServiceVideoHero } from "./service-video-hero";
+import { ServiceVideoHero } from "./service-video-hero/service-video-hero";
 import { GlobalReachMapSection } from '../landing/global-reach-map';
 
 export function SnowMountainLanding() {
