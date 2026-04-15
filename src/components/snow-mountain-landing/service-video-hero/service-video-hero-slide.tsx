@@ -48,7 +48,7 @@ export function ServiceVideoSlide({
 
   return (
     <article
-      className="relative h-full w-screen shrink-0 overflow-hidden"
+      className="relative h-full w-[var(--service-hero-slide-px,100%)] shrink-0 overflow-hidden"
       aria-label={title}
     >
       <video

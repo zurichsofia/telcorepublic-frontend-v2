@@ -63,6 +63,11 @@ export function useServiceVideoHero({
     viewportWRef.current = w;
     maxScrollRef.current = Math.max(0, (sectionCount - 1) * w);
     setViewportW(w);
+    if (w > 0) {
+      el.style.setProperty("--service-hero-slide-px", `${w}px`);
+    } else {
+      el.style.removeProperty("--service-hero-slide-px");
+    }
     targetXRef.current = clamp(
       targetXRef.current,
       0,
