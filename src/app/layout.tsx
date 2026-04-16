@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+
+import "swiper/css";
+
 import "./globals.css";
 import { PageLoader } from "@/components/page-loader";
 import { cn } from "@/lib/utils";

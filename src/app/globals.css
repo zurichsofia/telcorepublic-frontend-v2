@@ -453,3 +453,23 @@ body {
     transform: none;
   }
 }
+
+/* Service video hero (Swiper v2): full-bleed row; avoid auto margins shrinking below parent */
+#hero .service-hero-swiper {
+  width: 100%;
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+}
+#hero .service-hero-swiper .swiper-wrapper {
+  display: flex;
+  box-sizing: border-box;
+}
+#hero .service-hero-swiper .swiper-slide {
+  flex-shrink: 0;
+  height: 100%;
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+  overflow: hidden;
+}

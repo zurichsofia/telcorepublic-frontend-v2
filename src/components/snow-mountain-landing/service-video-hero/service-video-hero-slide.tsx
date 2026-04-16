@@ -2,14 +2,9 @@
 
 import { useEffect, useRef } from "react";
 
-//TODO: Add video for each service
+import { cn } from "@/lib/utils";
 
-const VIDEO_WINTER = "/videos/winter-rysy.mp4";
-const VIDEO_MANTA = "/videos/ninho-manta.mp4";
-
-export function videoForIndex(index: number) {
-  return index % 2 === 0 ? VIDEO_WINTER : VIDEO_MANTA;
-}
+export { videoForServiceIndex as videoForIndex } from "@/lib/service-hero-videos";
 
 export function ServiceVideoSlide({
   index,
@@ -18,6 +13,8 @@ export function ServiceVideoSlide({
   videoSrc,
   isActive,
   reduceMotion,
+  /** Swiper slides already define width; use full width to avoid gaps vs `bg-black` hero */
+  slideSizing = "cssVar",
 }: {
   index: number;
   title: string;
@@ -25,6 +22,7 @@ export function ServiceVideoSlide({
   videoSrc: string;
   isActive: boolean;
   reduceMotion: boolean;
+  slideSizing?: "cssVar" | "fill";
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -48,20 +46,28 @@ export function ServiceVideoSlide({
 
   return (
     <article
-      className="relative h-full w-[var(--service-hero-slide-px,100%)] shrink-0 overflow-hidden"
+      className={cn(
+        "relative h-full shrink-0 overflow-hidden",
+        slideSizing === "fill"
+          ? "w-full min-w-full"
+          : "w-[var(--service-hero-slide-px,100%)]",
+      )}
       aria-label={title}
     >
-      <video
-        ref={videoRef}
-        data-parallax-video
-        className="pointer-events-none absolute inset-0 h-full w-full object-cover will-change-transform"
-        src={videoSrc}
+      <div className="pointer-events-none absolute inset-0 origin-center scale-[1.12] overflow-hidden">
+        <video
+          ref={videoRef}
+          data-parallax-video
+          data-swiper-parallax-x="0"
+          className="pointer-events-none absolute inset-0 h-full w-full origin-center object-cover will-change-transform"
+          src={videoSrc}
         muted
         playsInline
         loop={!reduceMotion}
         preload="metadata"
-        autoPlay={false}
-      />
+          autoPlay={false}
+        />
+      </div>
 
       <div className="relative z-10 flex h-full flex-col justify-end px-5 pb-28 pt-28 sm:px-10 sm:pb-32 sm:pt-32 lg:px-14">
         <p className="font-display text-[11px] font-medium uppercase tracking-[0.38em] text-[#eb1e25]">
