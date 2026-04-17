@@ -47,11 +47,13 @@ export function ServiceVideoHero({ initialSlug }: ServiceVideoHeroProps) {
   const syncUrl = useCallback((index: number) => {
     const slug = services[index]?.slug;
     if (!slug) return;
-    const next = `/service/${slug}`;
     if (typeof window === "undefined") return;
-    const path = window.location.pathname;
-    if (path === "/" && index === 0) return;
-    if (path === next) return;
+    const { pathname, search } = window.location;
+    /* Keep bare `/` when the first slide is active on the home document (same as old `/` + slide 0). */
+    if (pathname === "/" && index === 0 && !search) return;
+    const next = `/?slug=${encodeURIComponent(slug)}`;
+    const current = `${pathname}${search}`;
+    if (current === next) return;
     /* Do not use router.replace — it runs an App Router navigation and remounts the page (flash). */
     window.history.replaceState(window.history.state, "", next);
   }, []);
