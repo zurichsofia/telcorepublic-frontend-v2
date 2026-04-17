@@ -20,7 +20,7 @@ export function HeroPrimaryContent({ reduceMotion }: HeroPrimaryContentProps) {
       }}
     >
       <div className="max-w-2xl">
-        <p className="font-display text-[11px] font-medium uppercase tracking-[0.38em] text-[#eb1e25]">
+        <p className="font-display text-xs font-medium uppercase tracking-widest text-[var(--color-telco-red)]">
           {labelWords.map((word, i) => (
             <span
               key={word}
@@ -37,7 +37,7 @@ export function HeroPrimaryContent({ reduceMotion }: HeroPrimaryContentProps) {
           ))}
         </p>
 
-        <h1 className="mt-5 font-display text-6xl font-normal leading-[1.12] tracking-[-0.02em] text-white">
+        <h1 className="mt-5 font-display text-6xl font-normal tracking-tight text-white leading-tight">
           <span
             className="block"
             style={{ transform: "translateY(var(--sm-h1-0-y))" }}
@@ -55,7 +55,7 @@ export function HeroPrimaryContent({ reduceMotion }: HeroPrimaryContentProps) {
 
         {/* TODO: This is hidden w opacity-0 */}
         <div style={{ transform: "translateY(var(--sm-subcopy-y))" }} className="opacity-0">
-          <p className="mt-7 mb-32 max-w-md text-base font-light leading-[1.75] text-white sm:text-[1.05rem]">
+          <p className="mt-7 mb-32 max-w-md text-base font-light leading-relaxed text-white sm:text-lg">
             Leading the Techco Revolution
             <br />
             Fact-Based Research.

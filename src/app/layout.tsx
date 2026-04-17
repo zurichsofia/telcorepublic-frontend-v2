@@ -30,7 +30,7 @@ export default function RootLayout({
       className={cn(helveticaNeue.variable, "font-sans")}
     >
       <body
-        className={`${helveticaNeue.className} relative min-h-screen font-light text-[var(--color-black)] antialiased`}
+        className={`${helveticaNeue.className} relative min-h-screen font-light text-black antialiased`}
       >
         <PageLoader />
         {children}

@@ -70,12 +70,12 @@ export function ServiceVideoSlide({
       </div>
 
       <div className="relative z-10 flex h-full flex-col justify-end px-5 pb-28 pt-28 sm:px-10 sm:pb-32 sm:pt-32 lg:px-14">
-        <p className="font-display text-[11px] font-medium uppercase tracking-[0.38em] text-[#eb1e25]">
+        <p className="font-display text-xs font-medium uppercase tracking-widest text-[var(--color-telco-red)]">
           {n}
           {" · "}
           Services
         </p>
-        <p className="mt-4 max-w-xl text-left text-[14px] font-light leading-[1.65] text-white/82 sm:text-[15px]">
+        <p className="mt-4 max-w-xl text-left text-sm font-light leading-relaxed text-white/82 sm:text-base">
           {description}
         </p>
       </div>

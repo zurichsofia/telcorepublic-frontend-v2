@@ -27,10 +27,10 @@ export function SiteFooter() {
         transition={{ duration: 0.75, ease }}
       >
         <div>
-          <p className="font-display text-[1.25rem] font-semibold tracking-[-0.03em] text-[var(--color-heading)]">
+          <p className="font-display text-xl font-semibold tracking-tight text-black">
             Telcorepublic
           </p>
-          <p className="mt-2 max-w-xs text-xs font-light leading-[1.7] text-[var(--color-label)]">
+          <p className="mt-2 max-w-xs text-xs font-light leading-relaxed text-[var(--color-clouds)]">
             Independent research for the people who design, regulate, and invest in
             connectivity.
           </p>
@@ -46,7 +46,7 @@ export function SiteFooter() {
             >
               <Link
                 href={item.href}
-                className="text-xs font-light text-[var(--color-label)] transition hover:text-[var(--color-heading)]"
+                className="text-xs font-light text-[var(--color-clouds)] transition hover:text-black"
               >
                 {item.label}
               </Link>
@@ -55,7 +55,7 @@ export function SiteFooter() {
         </nav>
       </motion.div>
       <motion.p
-        className="relative mx-auto mt-14 max-w-6xl border-t border-[rgba(255,255,255,0.06)] pt-6 text-[11px] font-light text-[#001538]"
+        className="relative mx-auto mt-14 max-w-6xl border-t border-[rgba(255,255,255,0.06)] pt-6 text-xs font-light text-slate-900"
         initial={reduce ? undefined : { opacity: 0 }}
         whileInView={reduce ? undefined : { opacity: 1 }}
         viewport={{ once: true }}

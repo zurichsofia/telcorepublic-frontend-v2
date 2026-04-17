@@ -13,12 +13,12 @@ export function GlobalReachMapSection() {
   return (
     <section
       id="global-reach"
-      className="relative w-full overflow-hidden bg-[#ffffff] py-24 sm:py-32"
+      className="relative w-full overflow-hidden bg-white py-24 sm:py-32"
       aria-labelledby="global-reach-heading"
     >
       <div className="relative mx-auto max-w-7xl px-5 text-center sm:px-8">
         <ScrollReveal from="up">
-          <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-[var(--color-telco-red)]">
+          <p className="text-xs font-medium uppercase tracking-widest text-[var(--color-telco-red)]">
             International footprint
           </p>
         </ScrollReveal>

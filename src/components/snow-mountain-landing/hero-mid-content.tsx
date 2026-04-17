@@ -16,19 +16,19 @@ export function HeroMidContent({ reduceMotion }: HeroMidContentProps) {
     >
       <div className="max-w-md text-right">
         <p
-          className="font-display text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-telco-red)] text-left"
+          className="font-display text-left text-xs font-medium uppercase tracking-widest text-[var(--color-telco-red)]"
           style={{ transform: "translateY(var(--sm-mid-label-y))" }}
         >
           Telcorepublic
         </p>
         <p
-          className="mt-6 font-display text-[clamp(1.75rem,4.5vw,2.35rem)] font-normal leading-[1.12] tracking-[-0.02em] text-white text-left"
+          className="mt-6 text-left font-display text-3xl font-normal tracking-tight text-white leading-tight sm:text-4xl lg:text-5xl"
           style={{ transform: "translateY(var(--sm-mid-title-y))" }}
         >
           Crossing the Telco Chasm
         </p>
         <p
-          className="mt-6 ml-auto max-w-md text-base font-light leading-[1.75] text-white sm:text-[1.05rem] text-left"
+          className="mt-6 ml-auto max-w-md text-left text-base font-light leading-relaxed text-white sm:text-lg"
           style={{ transform: "translateY(var(--sm-mid-body-y))" }}
         >
           We are the go-to, thought-provoking market research and advisory firm

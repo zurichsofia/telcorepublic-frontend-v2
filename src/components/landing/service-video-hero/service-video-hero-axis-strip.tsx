@@ -47,7 +47,7 @@ export function ServiceVideoHeroAxisStrip({
                 className="absolute inset-0 flex items-center will-change-[transform,opacity]"
                 aria-hidden={i !== activeIndex}
               >
-                <h2 className="font-display w-full text-left text-[clamp(1.65rem,4.2vw,2.75rem)] font-normal uppercase leading-none tracking-[0.08em] text-[var(--color-telco-red)] px-10">
+                <h2 className="font-display w-full px-10 text-left text-3xl font-normal uppercase leading-none tracking-wide text-[var(--color-telco-red)] sm:text-4xl lg:text-5xl">
                   {service.title}
                 </h2>
               </div>
@@ -56,7 +56,7 @@ export function ServiceVideoHeroAxisStrip({
 
           <div
             ref={axisLineRef}
-            className="pointer-events-none absolute inset-x-0 top-0 bottom-0 z-30 flex items-center font-display text-[clamp(1.65rem,4.2vw,2.75rem)] leading-none"
+            className="pointer-events-none absolute inset-x-0 top-0 bottom-0 z-30 flex items-center font-display text-3xl leading-none sm:text-4xl lg:text-5xl"
           >
             <div className="pointer-events-none relative h-px w-full -translate-y-[0.1em]">
               <div className="absolute inset-0 bg-[var(--color-telco-red)]/50" />
@@ -75,7 +75,7 @@ export function ServiceVideoHeroAxisStrip({
           </div>
         </div>
 
-        <p className="pointer-events-none mx-auto mt-6 max-w-2xl px-5 text-left font-sans text-[10px] font-normal uppercase leading-relaxed tracking-[0.22em] text-white/40 sm:mt-7 sm:px-10 sm:text-[11px] sm:tracking-[0.28em] lg:px-14">
+        <p className="pointer-events-none mx-auto mt-6 max-w-2xl px-5 text-left font-sans text-xs font-normal uppercase leading-relaxed tracking-widest text-white/40 sm:mt-7 sm:px-10 lg:px-14">
           {subtitleFromDesc(services[activeIndex]?.desc ?? "")}
         </p>
       </div>
