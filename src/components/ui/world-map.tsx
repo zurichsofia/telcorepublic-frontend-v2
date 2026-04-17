@@ -94,8 +94,7 @@ export default function WorldMap({
     };
   }, [map]);
 
-  // Landmass dots: black on white. Do not use useTheme() here: it is undefined
-  // on the server, which breaks stable img data URLs + hydration.
+  // Fixed colors so SVG → data URL is identical on server and client (hydration-safe).
   const svgMap = map.getSVG({
     radius: 0.24,
     color: LAND_DOT_COLOR,

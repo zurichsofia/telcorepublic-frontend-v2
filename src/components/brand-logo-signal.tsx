@@ -10,35 +10,20 @@ const SIGNAL_DOT_COUNT = 12;
 export type BrandLogoSignalProps = {
   className?: string;
   priority?: boolean;
-  /** `onLight`: white asset inverted for light backgrounds. Default matches the snow hero. */
-  tone?: "onDark" | "onLight";
 };
 
 export function BrandLogoSignal({
   className,
   priority,
-  tone = "onDark",
 }: BrandLogoSignalProps) {
-  const onLight = tone === "onLight";
-
   return (
-    <div
-      className={cn("inline-flex flex-col items-stretch gap-1.5", className)}
-      style={
-        onLight
-          ? ({ "--signal-dot-color": "var(--color-heading)" } as CSSProperties)
-          : undefined
-      }
-    >
+    <div className={cn("inline-flex flex-col items-stretch gap-1.5", className)}>
       <Image
         src="/logo/TelcoRepublic_Logo_white.png"
         alt="Telco Republic"
         width={200}
         height={40}
-        className={cn(
-          "h-8 w-auto object-contain",
-          onLight && "brightness-0",
-        )}
+        className="h-8 w-auto object-contain"
         priority={priority}
       />
       <div className="flex w-full justify-between gap-0.5 px-px" aria-hidden>

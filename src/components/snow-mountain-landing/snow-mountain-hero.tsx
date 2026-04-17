@@ -25,7 +25,7 @@ import {
 } from "./hero-scroll";
 import { HeroCursorGlow } from "./hero-cursor-glow";
 import { HeroMidContent } from "./hero-mid-content";
-import { HeroNav } from "./hero-nav";
+import { Navitation } from "../landing/navigation";
 import { HeroPrimaryContent } from "./hero-primary-content";
 import { HeroScrollHint } from "./hero-scroll-hint";
 import { HeroStickyLayer } from "./hero-sticky-layer";
@@ -134,7 +134,7 @@ export function SnowMountainHero() {
         )}
       >
         <div className="pointer-events-auto">
-          <HeroNav />
+          <Navitation />
         </div>
 
         <HeroPrimaryContent reduceMotion={!!reduce} />

@@ -10,10 +10,10 @@ import { services, serviceIndexFromSlug } from "@/data/services";
 import { videoForServiceIndex } from "@/lib/service-hero-videos";
 import { cn } from "@/lib/utils";
 
-import { HeroNav } from "../hero-nav";
 import { ServiceVideoHeroAxisStrip } from "./service-video-hero-axis-strip";
 import { ServiceVideoSlide } from "./service-video-hero-slide";
 import { useServiceVideoHero } from "./use-service-video-hero";
+import { Navitation } from '@/components/landing/navigation';
 
 export type ServiceVideoHeroProps = {
   initialSlug?: string;
@@ -71,7 +71,7 @@ export function ServiceVideoHero({ initialSlug }: ServiceVideoHeroProps) {
       aria-label="Featured services"
       className="relative isolate h-dvh min-h-[520px] max-h-[1200px] w-full min-w-0 overflow-hidden bg-white text-white"
     >
-      <HeroNav tone="onDark" />
+      <Navitation />
 
       <div
         role="region"
