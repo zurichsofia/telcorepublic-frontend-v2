@@ -10,10 +10,10 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  /* Native scroll + no `background-attachment: fixed` — both reduce scroll jank. */
+  scroll-behavior: auto;
   min-height: 100%;
   background-color: #ffffff;
-  background-attachment: fixed;
 }
 
 body {
@@ -101,7 +101,8 @@ body {
 /* Service video hero (Swiper v2): full-bleed row; avoid auto margins shrinking below parent */
 #hero .service-hero-swiper {
   width: 100%;
-  max-width: none;
+  min-width: 0;
+  max-width: 100%;
   margin-left: 0;
   margin-right: 0;
 }

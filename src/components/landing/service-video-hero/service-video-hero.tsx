@@ -17,13 +17,18 @@ import { Navitation } from '@/components/landing/navigation';
 
 export type ServiceVideoHeroProps = {
   initialSlug?: string;
+  /** When the hero finishes a slide, URL is synced with `replaceState` and this runs so the page body can update without `router.replace` (avoids flash). */
+  onActiveServiceChange?: (slug: string) => void;
 };
 
-export function ServiceVideoHero({ initialSlug }: ServiceVideoHeroProps) {
+export function ServiceVideoHero({
+  initialSlug,
+  onActiveServiceChange,
+}: ServiceVideoHeroProps) {
   const reduceMotion = useReducedMotion();
   const sectionCount = services.length;
 
-  /* Server prop only — avoids coupling to client pathname and remounting Swiper on URL sync */
+  /* Slug from props only (shell-owned state) — hero does not read pathname; avoids remounting Swiper while still following slug changes from the parent. */
   const initialSlide = useMemo(() => {
     if (!initialSlug) return 0;
     const i = serviceIndexFromSlug(initialSlug);
@@ -44,17 +49,20 @@ export function ServiceVideoHero({ initialSlug }: ServiceVideoHeroProps) {
     initialSlide,
   });
 
-  const syncUrl = useCallback((index: number) => {
-    const slug = services[index]?.slug;
-    if (!slug) return;
-    if (typeof window === "undefined") return;
-    const { pathname, search } = window.location;
-    const next = `/services/${encodeURIComponent(slug)}`;
-    const current = `${pathname}${search}`;
-    if (current === next) return;
-    /* Do not use router.replace — it runs an App Router navigation and remounts the page (flash). */
-    window.history.replaceState(window.history.state, "", next);
-  }, []);
+  const syncUrl = useCallback(
+    (index: number) => {
+      const slug = services[index]?.slug;
+      if (!slug) return;
+      if (typeof window === "undefined") return;
+      const next = `/services/${encodeURIComponent(slug)}`;
+      const current = `${window.location.pathname}${window.location.search}`;
+      if (current !== next) {
+        window.history.replaceState(window.history.state, "", next);
+      }
+      onActiveServiceChange?.(slug);
+    },
+    [onActiveServiceChange],
+  );
 
   const onSwiper = useCallback(
     (swiper: SwiperType) => {
@@ -69,7 +77,7 @@ export function ServiceVideoHero({ initialSlug }: ServiceVideoHeroProps) {
     <section
       id="hero"
       aria-label="Featured services"
-      className="relative isolate h-dvh min-h-[520px] max-h-[1200px] w-full min-w-0 overflow-hidden bg-white text-white"
+      className="relative isolate h-dvh min-h-[520px] max-h-[1200px] w-full min-w-0 max-w-full overflow-x-clip overflow-y-hidden bg-white text-white"
     >
       <Navitation />
 
@@ -77,14 +85,13 @@ export function ServiceVideoHero({ initialSlug }: ServiceVideoHeroProps) {
         role="region"
         aria-label={`Service highlights: slide ${chromeIndex + 1} of ${sectionCount}, ${activeTitle}`}
         className={cn(
-          "relative z-10 h-full w-full overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-white/40",
+          "relative z-10 h-full w-full min-w-0 max-w-full overflow-x-clip overflow-y-hidden outline-none focus-visible:ring-2 focus-visible:ring-white/40",
           isDragging ? "cursor-grabbing select-none" : "cursor-grab",
         )}
         tabIndex={0}
       >
         <Swiper
-          key={initialSlug ?? "hero-root"}
-          className="service-hero-swiper h-full w-full"
+          className="service-hero-swiper h-full w-full min-w-0 max-w-full"
           modules={[Mousewheel, Keyboard, Parallax]}
           direction="horizontal"
           slidesPerView={1}

@@ -2,9 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { getServiceBySlug } from "@/data/services";
-import { GlobalReachMapSection } from "@/components/landing/global-reach-map";
-import { ServicesSection } from "@/components/landing/services-section";
-import { ServiceVideoHero } from "@/components/landing/service-video-hero/service-video-hero";
+import { ServiceSlugShell } from "@/components/landing/service-slug-shell";
 
 const defaultMetadata: Metadata = {
   title: "Telcorepublic Research",
@@ -13,7 +11,7 @@ const defaultMetadata: Metadata = {
 };
 
 type ServiceLandingProps = {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string; }>;
 };
 
 export async function generateMetadata({
@@ -34,9 +32,7 @@ export default async function ServiceLanding({ params }: ServiceLandingProps) {
 
   return (
     <main id="home" className="relative z-10 isolate">
-      <ServiceVideoHero initialSlug={slug} />
-      <ServicesSection />
-      <GlobalReachMapSection />
+      <ServiceSlugShell initialSlug={slug} />
     </main>
   );
 }

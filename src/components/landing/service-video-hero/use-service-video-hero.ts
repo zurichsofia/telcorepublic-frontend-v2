@@ -57,6 +57,15 @@ export function useServiceVideoHero({
     setChromeIndex(initialSlide);
   }, [initialSlide]);
 
+  useEffect(() => {
+    const swiper = swiperRef.current;
+    if (!swiper || swiper.destroyed) return;
+    const target = clamp(initialSlide, 0, Math.max(0, sectionCount - 1));
+    if (swiper.activeIndex !== target) {
+      swiper.slideTo(target, reduceMotionRef.current ? 0 : 0);
+    }
+  }, [initialSlide, sectionCount]);
+
   const paint = useCallback(
     (swiper: SwiperType) => {
       const w = heroSlideWidth(swiper);

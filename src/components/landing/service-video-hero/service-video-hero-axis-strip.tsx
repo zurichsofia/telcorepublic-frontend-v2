@@ -33,11 +33,11 @@ export function ServiceVideoHeroAxisStrip({
   return (
     <div
       data-axis-strip
-      className="pointer-events-none absolute inset-x-0 top-[calc(50%+clamp(1.25rem,3.5vh,2.75rem))] z-40 flex -translate-y-1/2 flex-col justify-center"
+      className="pointer-events-none absolute inset-x-0 top-[calc(50%+clamp(1.25rem,3.5vh,2.75rem))] z-40 flex max-w-full -translate-y-1/2 flex-col justify-center overflow-x-clip"
     >
-      <div className="relative w-full">
-        <div className="relative mb-3 min-h-[3.25rem] w-full sm:mb-4 sm:min-h-[3.75rem]">
-          <div className="pointer-events-none relative z-20 flex w-full min-h-[3.25rem] items-center overflow-x-visible overflow-y-hidden sm:min-h-[3.75rem]">
+      <div className="relative w-full min-w-0 max-w-full">
+        <div className="relative mb-3 min-h-[3.25rem] w-full min-w-0 max-w-full sm:mb-4 sm:min-h-[3.75rem]">
+          <div className="pointer-events-none relative z-20 flex w-full min-w-0 max-w-full min-h-[3.25rem] items-center overflow-x-hidden overflow-y-hidden sm:min-h-[3.75rem]">
             {services.map((service, i) => (
               <div
                 key={service.title}
