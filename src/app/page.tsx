@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 
 import { getServiceBySlug } from "@/data/services";
-import { ServiceVideoHero } from '@/components/landing/service-video-hero/service-video-hero';
 import { GlobalReachMapSection } from '@/components/landing/global-reach-map';
+import { ServicesSection } from "@/components/landing/services-section";
+import { ServiceVideoHero } from '@/components/landing/service-video-hero/service-video-hero';
 
 const defaultMetadata: Metadata = {
   title: "Telcorepublic Research",
@@ -35,6 +36,7 @@ export default async function Home({ searchParams }: HomePageProps) {
   return (
     <main id="home" className="relative z-10 isolate">
       <ServiceVideoHero initialSlug={heroInitialSlug} />
+      <ServicesSection />
       <GlobalReachMapSection />
     </main>
   );

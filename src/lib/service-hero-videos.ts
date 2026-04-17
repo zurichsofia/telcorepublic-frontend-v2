@@ -5,7 +5,7 @@ import { services } from "@/data/services";
  * If `services` gains a slug, TypeScript will require a new key here (`satisfies Record<…>`).
  */
 export const SERVICE_HERO_VIDEOS = {
-  "disrupter-quadrants": "/videos/winter-rysy.mp4",
+  "disrupter-quintants": "/videos/winter-rysy.mp4",
   "competitive-positioning": "/videos/ninho-manta.mp4",
   "go-to-market": "/videos/winter-rysy.mp4",
   "market-assessment": "/videos/ninho-manta.mp4",

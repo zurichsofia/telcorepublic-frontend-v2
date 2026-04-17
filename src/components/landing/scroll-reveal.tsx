@@ -49,7 +49,7 @@ export function ScrollReveal({
         reduce
           ? undefined
           : {
-            opacity: 0,
+            /* Avoid opacity: 0 — if whileInView never fires (viewport quirks), content stays visible. */
             x,
             y: y + extraY,
           }
@@ -58,12 +58,15 @@ export function ScrollReveal({
         reduce
           ? undefined
           : {
-            opacity: 1,
             x: 0,
             y: 0,
           }
       }
-      viewport={{ once: true, amount: 0.14, margin: "0px 0px -12% 0px" }}
+      viewport={{
+        once: true,
+        amount: 0.01,
+        margin: "120px 0px 160px 0px",
+      }}
       transition={{
         duration: 0.75,
         delay: delayMs / 1000,
