@@ -11,6 +11,7 @@ import { videoForServiceIndex } from "@/lib/service-hero-videos";
 import { cn } from "@/lib/utils";
 
 import { ServiceVideoHeroAxisStrip } from "./service-video-hero-axis-strip";
+import { ServiceVideoHeroScrollHint } from "./service-video-hero-scroll-hint";
 import { ServiceVideoSlide } from "./service-video-hero-slide";
 import { useServiceVideoHero } from "./use-service-video-hero";
 import { Navitation } from '@/components/landing/navigation';
@@ -27,6 +28,10 @@ export function ServiceVideoHero({
 }: ServiceVideoHeroProps) {
   const reduceMotion = usePrefersReducedMotion();
   const sectionCount = services.length;
+  // const [scrollHintDismissed, setScrollHintDismissed] = useState(false);
+  // const dismissScrollHint = useCallback(() => {
+  //   setScrollHintDismissed(true);
+  // }, []);
 
   /* Slug from props only (shell-owned state) — hero does not read pathname; avoids remounting Swiper while still following slug changes from the parent. */
   const initialSlide = useMemo(() => {
@@ -43,6 +48,7 @@ export function ServiceVideoHero({
     onSwiper: bindContinuousSwiper,
     onAxisPointerDown,
     onAxisKeyDown,
+    slideToIndex,
   } = useServiceVideoHero({
     sectionCount,
     reduceMotion,
@@ -71,6 +77,29 @@ export function ServiceVideoHero({
     [bindContinuousSwiper],
   );
 
+  // const onAxisPointerDownWrapped = useCallback(
+  //   (e: PointerEvent<HTMLDivElement>) => {
+  //     dismissScrollHint();
+  //     onAxisPointerDown(e);
+  //   },
+  //   [dismissScrollHint, onAxisPointerDown],
+  // );
+
+  // const onAxisKeyDownWrapped = useCallback(
+  //   (e: KeyboardEvent<HTMLDivElement>) => {
+  //     if (
+  //       e.key === "ArrowRight" ||
+  //       e.key === "ArrowDown" ||
+  //       e.key === "ArrowLeft" ||
+  //       e.key === "ArrowUp"
+  //     ) {
+  //       dismissScrollHint();
+  //     }
+  //     onAxisKeyDown(e);
+  //   },
+  //   [dismissScrollHint, onAxisKeyDown],
+  // );
+
   const activeTitle = services[chromeIndex]?.title ?? "";
 
   return (
@@ -89,7 +118,20 @@ export function ServiceVideoHero({
           isDragging ? "cursor-grabbing select-none" : "cursor-grab",
         )}
         tabIndex={0}
+      // onPointerDown={dismissScrollHint}
+      // onWheel={dismissScrollHint}
+      // onKeyDown={(e) => {
+      //   if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+      //     dismissScrollHint();
+      //   }
+      // }}
       >
+        <span className="sr-only">
+          {sectionCount > 1
+            ? "Several services are shown here. Switch slides with horizontal scroll, drag, the line under the title, or the left and right arrow keys. "
+            : null}
+          Scroll down the page to continue past this section.
+        </span>
         <Swiper
           className="service-hero-swiper h-full w-full min-w-0 max-w-full"
           modules={[Mousewheel, Keyboard, Parallax]}
@@ -126,6 +168,11 @@ export function ServiceVideoHero({
           ))}
         </Swiper>
       </div>
+
+      <ServiceVideoHeroScrollHint
+        // dismissed={scrollHintDismissed}
+        showHorizontalNav={sectionCount > 1}
+      />
 
       <ServiceVideoHeroAxisStrip
         services={services}

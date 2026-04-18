@@ -61,10 +61,10 @@ export function ServiceVideoSlide({
           data-swiper-parallax-x="0"
           className="pointer-events-none absolute inset-0 h-full w-full origin-center object-cover will-change-transform"
           src={videoSrc}
-        muted
-        playsInline
-        loop={!reduceMotion}
-        preload="metadata"
+          muted
+          playsInline
+          loop={!reduceMotion}
+          preload="metadata"
           autoPlay={false}
         />
       </div>

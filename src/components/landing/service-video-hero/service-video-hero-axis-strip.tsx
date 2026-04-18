@@ -75,9 +75,6 @@ export function ServiceVideoHeroAxisStrip({
           </div>
         </div>
 
-        <p className="pointer-events-none mx-auto mt-6 max-w-2xl px-5 text-left font-sans text-xs font-normal uppercase leading-relaxed tracking-widest text-white/40 sm:mt-7 sm:px-10 lg:px-14">
-          {subtitleFromDesc(services[activeIndex]?.desc ?? "")}
-        </p>
       </div>
     </div>
   );
