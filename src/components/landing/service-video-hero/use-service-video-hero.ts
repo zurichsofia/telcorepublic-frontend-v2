@@ -41,6 +41,8 @@ export function useServiceVideoHero({
   const lastRoundedRef = useRef(initialSlide);
   const reduceMotionRef = useRef(!!reduceMotion);
   const isDraggingAxisRef = useRef(false);
+  /** True after first `sliderMove` until `touchEnd` — carousel drag (ignored while axis drives translate). */
+  const swiperDraggingRef = useRef(false);
   const targetXRef = useRef(0);
   const dragCleanupRef = useRef<null | (() => void)>(null);
   const lastParallaxAttrKeyRef = useRef("");
@@ -94,8 +96,8 @@ export function useServiceVideoHero({
       titleSlideRefs.current.forEach((slide, i) => {
         if (!slide) return;
         const offset = i - continuousIdx;
-        slide.style.transform = `translate3d(${offset * 120}%, 0, 0) scale(${clamp(1 - Math.abs(offset) * 0.15, 0.72, 1)})`;
-        slide.style.opacity = String(clamp(1 - Math.abs(offset) * 1.2, 0, 1));
+        slide.style.transform = `translate3d(${offset * 95}%, 0, 0) scale(${clamp(1 - Math.abs(offset) * 0.15, 0.72, 1)})`;
+        // slide.style.opacity = String(clamp(1 - Math.abs(offset) * 1.2, 0, 1));
       });
       const rounded = clamp(
         Math.round(scrollX / (w || 1)),
@@ -127,7 +129,7 @@ export function useServiceVideoHero({
   const endAxisDrag = useCallback(() => {
     if (!isDraggingAxisRef.current) return;
     isDraggingAxisRef.current = false;
-    setIsDragging(false);
+    setIsDragging(swiperDraggingRef.current);
 
     const swiper = swiperRef.current;
     if (!swiper) return;
@@ -215,6 +217,22 @@ export function useServiceVideoHero({
       swiper.on("setTranslate", run);
       swiper.on("resize", run);
 
+      const onSliderMove = () => {
+        if (isDraggingAxisRef.current) return;
+        if (!swiperDraggingRef.current) {
+          swiperDraggingRef.current = true;
+          setIsDragging(true);
+        }
+      };
+
+      const onTouchEnd = () => {
+        swiperDraggingRef.current = false;
+        setIsDragging(isDraggingAxisRef.current);
+      };
+
+      swiper.on("sliderMove", onSliderMove);
+      swiper.on("touchEnd", onTouchEnd);
+
       const onWinResize = () => {
         swiper.update();
         run();
@@ -222,8 +240,11 @@ export function useServiceVideoHero({
       window.addEventListener("resize", onWinResize);
 
       swiper.on("destroy", () => {
+        swiperDraggingRef.current = false;
         swiper.off("setTranslate", run);
         swiper.off("resize", run);
+        swiper.off("sliderMove", onSliderMove);
+        swiper.off("touchEnd", onTouchEnd);
         window.removeEventListener("resize", onWinResize);
       });
 

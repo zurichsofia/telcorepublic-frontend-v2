@@ -4,17 +4,14 @@ import type { MutableRefObject } from "react";
 import type { PointerEvent as ReactPointerEvent, KeyboardEvent as ReactKeyboardEvent } from "react";
 
 import type { services } from "@/data/services";
-
-function subtitleFromDesc(desc: string, maxLen = 72) {
-  const t = desc.trim();
-  if (t.length <= maxLen) return t;
-  return `${t.slice(0, maxLen - 1).trimEnd()}…`;
-}
+import { cn } from "@/lib/utils";
 
 type ServiceVideoHeroAxisStripProps = {
   services: typeof services;
   activeIndex: number;
   sectionCount: number;
+  /** Fades the horizontal line + scrub hit area while idle; titles stay visible. */
+  visible: boolean;
   titleSlideRefs: MutableRefObject<(HTMLDivElement | null)[]>;
   axisLineRef: React.RefObject<HTMLDivElement | null>;
   onAxisPointerDown: (e: ReactPointerEvent<HTMLDivElement>) => void;
@@ -25,6 +22,7 @@ export function ServiceVideoHeroAxisStrip({
   services,
   activeIndex,
   sectionCount,
+  visible,
   titleSlideRefs,
   axisLineRef,
   onAxisPointerDown,
@@ -56,7 +54,11 @@ export function ServiceVideoHeroAxisStrip({
 
           <div
             ref={axisLineRef}
-            className="pointer-events-none absolute inset-x-0 top-0 bottom-0 z-30 flex items-center font-display text-3xl leading-none sm:text-4xl lg:text-5xl"
+            aria-hidden={!visible}
+            className={cn(
+              "pointer-events-none absolute inset-x-0 top-0 bottom-0 z-30 flex items-center font-display text-3xl leading-none transition-opacity duration-200 sm:text-4xl lg:text-5xl",
+              visible ? "opacity-100" : "opacity-0",
+            )}
           >
             <div className="pointer-events-none relative h-px w-full -translate-y-[0.1em]">
               <div className="absolute inset-0 bg-[var(--color-telco-red)]/50" />
@@ -67,10 +69,15 @@ export function ServiceVideoHeroAxisStrip({
               aria-valuemax={sectionCount - 1}
               aria-valuenow={activeIndex}
               aria-label="Service position"
-              tabIndex={0}
+              tabIndex={visible ? 0 : -1}
               onKeyDown={onAxisKeyDown}
               onPointerDown={onAxisPointerDown}
-              className="pointer-events-auto absolute inset-x-0 -top-6 -bottom-6 z-10 cursor-grab touch-none active:cursor-grabbing"
+              className={cn(
+                "absolute inset-x-0 -top-6 -bottom-6 z-10 touch-none",
+                sectionCount > 1
+                  ? "pointer-events-auto cursor-grab active:cursor-grabbing"
+                  : "pointer-events-none cursor-default",
+              )}
             />
           </div>
         </div>

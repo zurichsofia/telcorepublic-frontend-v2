@@ -48,7 +48,6 @@ export function ServiceVideoHero({
     onSwiper: bindContinuousSwiper,
     onAxisPointerDown,
     onAxisKeyDown,
-    slideToIndex,
   } = useServiceVideoHero({
     sectionCount,
     reduceMotion,
@@ -167,6 +166,17 @@ export function ServiceVideoHero({
             </SwiperSlide>
           ))}
         </Swiper>
+
+        {sectionCount > 1 ? (
+          <div
+            className="pointer-events-none absolute inset-0 z-12 flex"
+            aria-hidden
+          >
+            <div className="w-[20%]" />
+            <div className="pointer-events-auto w-1/2 cursor-default touch-pan-y" />
+            <div className="w-[20%]" />
+          </div>
+        ) : null}
       </div>
 
       <ServiceVideoHeroScrollHint
@@ -178,6 +188,7 @@ export function ServiceVideoHero({
         services={services}
         activeIndex={chromeIndex}
         sectionCount={sectionCount}
+        visible={sectionCount > 1 && isDragging}
         titleSlideRefs={titleSlideRefs}
         axisLineRef={axisLineRef}
         onAxisPointerDown={onAxisPointerDown}
