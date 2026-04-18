@@ -1,9 +1,14 @@
 "use client";
 
-import { useId, useMemo, useRef } from "react";
-import { motion, useInView } from "motion/react";
+import { useEffect, useId, useMemo, useRef } from "react";
 import DottedMap from "dotted-map";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import proj4 from "proj4";
+
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
+
+gsap.registerPlugin(ScrollTrigger);
 
 type MapEndpoint = {
   lat: number;
@@ -14,7 +19,7 @@ type MapEndpoint = {
 };
 
 interface MapProps {
-  dots?: Array<{
+  dots?: ReadonlyArray<{
     start: MapEndpoint;
     end: MapEndpoint;
   }>;
@@ -51,7 +56,7 @@ function projectLatLng(
   lat: number,
   lng: number,
   layout: DottedMapLayout
-): { x: number; y: number; } {
+): { x: number; y: number } {
   const [projX, projY] = proj4(layout.proj4String, [lng, lat]) as [
     number,
     number,
@@ -72,7 +77,8 @@ export default function WorldMap({
 }: MapProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(containerRef, { once: true, amount: 0.35 });
+  const pathRefs = useRef<(SVGPathElement | null)[]>([]);
+  const reduceMotion = usePrefersReducedMotion();
   const gradientId = `wm-${useId().replace(/:/g, "")}`;
   const arcGlowFilterId = `wm-arc-glow-${useId().replace(/:/g, "")}`;
 
@@ -103,8 +109,8 @@ export default function WorldMap({
   });
 
   const createCurvedPath = (
-    start: { x: number; y: number; },
-    end: { x: number; y: number; },
+    start: { x: number; y: number },
+    end: { x: number; y: number },
     mapHeight: number
   ) => {
     const midX = (start.x + end.x) / 2;
@@ -115,6 +121,51 @@ export default function WorldMap({
     const midY = Math.min(start.y, end.y) - arcLift;
     return `M ${start.x} ${start.y} Q ${midX} ${midY} ${end.x} ${end.y}`;
   };
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container || dots.length === 0) return;
+
+    const paths = pathRefs.current.filter(Boolean) as SVGPathElement[];
+    if (paths.length === 0) return;
+
+    const preparePath = (path: SVGPathElement) => {
+      const len = path.getTotalLength();
+      gsap.killTweensOf(path);
+      gsap.set(path, { strokeDasharray: len, strokeDashoffset: len });
+    };
+
+    paths.forEach((path) => {
+      preparePath(path);
+      if (reduceMotion) {
+        gsap.set(path, { strokeDashoffset: 0 });
+      }
+    });
+
+    if (reduceMotion) return;
+
+    const st = ScrollTrigger.create({
+      trigger: container,
+      start: "top 65%",
+      once: true,
+      onEnter: () => {
+        paths.forEach((path, index) => {
+          const i = Math.floor(index / 2);
+          gsap.to(path, {
+            strokeDashoffset: 0,
+            duration: 1,
+            delay: 0.45 * i,
+            ease: "power2.out",
+          });
+        });
+      },
+    });
+
+    return () => {
+      st.kill();
+      paths.forEach((p) => gsap.killTweensOf(p));
+    };
+  }, [dots, reduceMotion]);
 
   return (
     <div
@@ -166,14 +217,12 @@ export default function WorldMap({
           );
           const endPoint = projectLatLng(dot.end.lat, dot.end.lng, layout);
           const d = createCurvedPath(startPoint, endPoint, layout.height);
-          const transition = {
-            duration: 1,
-            delay: 0.45 * i,
-            ease: "easeOut" as const,
-          };
           return (
             <g key={`path-group-${i}`}>
-              <motion.path
+              <path
+                ref={(el) => {
+                  pathRefs.current[i * 2] = el;
+                }}
                 d={d}
                 fill="none"
                 stroke={`url(#${gradientId})`}
@@ -182,20 +231,17 @@ export default function WorldMap({
                 strokeLinejoin="round"
                 opacity={0.38}
                 filter={`url(#${arcGlowFilterId})`}
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: isInView ? 1 : 0 }}
-                transition={transition}
               />
-              <motion.path
+              <path
+                ref={(el) => {
+                  pathRefs.current[i * 2 + 1] = el;
+                }}
                 d={d}
                 fill="none"
                 stroke={`url(#${gradientId})`}
                 strokeWidth="0.38"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: isInView ? 1 : 0 }}
-                transition={transition}
               />
             </g>
           );

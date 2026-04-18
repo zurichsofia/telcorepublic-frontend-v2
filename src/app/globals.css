@@ -118,3 +118,23 @@ body {
   box-sizing: border-box;
   overflow: hidden;
 }
+
+@keyframes page-loader-shimmer {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(350%);
+  }
+}
+
+.page-loader-shimmer {
+  animation: page-loader-shimmer 1.35s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-loader-shimmer {
+    animation: none;
+    transform: none;
+  }
+}

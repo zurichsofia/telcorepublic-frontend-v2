@@ -16,7 +16,6 @@ export function EditorialOfferMoment({
   const isA = variant === "a";
   return (
     <StickyChapter
-      scrollVh={80}
       stickyClassName={
         isA
           ? "justify-center items-start pl-5 pr-4 sm:pl-8 sm:pr-8 md:pl-12 md:pr-8 lg:pl-24 lg:pr-12"

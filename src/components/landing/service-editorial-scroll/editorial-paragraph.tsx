@@ -14,7 +14,6 @@ export function EditorialParagraph({
   const isA = variant === "a";
   return (
     <StickyChapter
-      scrollVh={92}
       stickyClassName={
         isA
           ? "pt-16 pl-5 pr-4 md:pt-28 md:pl-12 md:pr-8 lg:pt-40 lg:pl-24 lg:pr-12"

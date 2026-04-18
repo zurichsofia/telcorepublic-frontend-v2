@@ -6,7 +6,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { useReducedMotion } from "motion/react";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 
 import { SNOW_MOUNTAIN_FOG_COLOR } from "@/lib/snow-mountain-fog";
 import { cn } from "@/lib/utils";
@@ -31,7 +31,7 @@ import { HeroScrollHint } from "./hero-scroll-hint";
 import { HeroStickyLayer } from "./hero-sticky-layer";
 
 export function SnowMountainHero() {
-  const reduce = useReducedMotion();
+  const reduce = usePrefersReducedMotion();
   const heroRef = useRef<HTMLElement | null>(null);
   const heroCanvasRef = useRef<HTMLDivElement | null>(null);
   const scrollProgressRef = useRef(0);

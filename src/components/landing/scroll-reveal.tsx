@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
+import AnimatedContent from "@/components/AnimatedContent";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import type { ReactNode } from "react";
 
 export type ScrollRevealFrom = "left" | "right" | "up" | "down";
@@ -14,8 +15,6 @@ type ScrollRevealProps = {
   /** Slightly softer entrance (no CSS filter - avoids expensive blur compositing while scrolling). */
   blur?: boolean;
 };
-
-const ease = [0.22, 1, 0.36, 1] as const;
 
 function offsetFor(from: ScrollRevealFrom) {
   switch (from) {
@@ -38,42 +37,25 @@ export function ScrollReveal({
   delayMs = 0,
   blur = false,
 }: ScrollRevealProps) {
-  const reduce = useReducedMotion();
+  const reduce = usePrefersReducedMotion();
   const { x, y } = offsetFor(from);
   const extraY = blur ? 10 : 0;
 
+  if (reduce) {
+    return <div className={className}>{children}</div>;
+  }
+
   return (
-    <motion.div
+    <AnimatedContent
       className={className}
-      initial={
-        reduce
-          ? undefined
-          : {
-            /* Avoid opacity: 0 — if whileInView never fires (viewport quirks), content stays visible. */
-            x,
-            y: y + extraY,
-          }
-      }
-      whileInView={
-        reduce
-          ? undefined
-          : {
-            x: 0,
-            y: 0,
-          }
-      }
-      viewport={{
-        once: true,
-        amount: 0.01,
-        margin: "120px 0px 160px 0px",
-      }}
-      transition={{
-        duration: 0.75,
-        delay: delayMs / 1000,
-        ease,
-      }}
+      translateFrom={{ x, y: y + extraY }}
+      animateOpacity={false}
+      duration={0.75}
+      delay={delayMs / 1000}
+      ease="power3.out"
+      start="top 92%"
     >
       {children}
-    </motion.div>
+    </AnimatedContent>
   );
 }

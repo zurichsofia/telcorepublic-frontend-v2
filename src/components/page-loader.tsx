@@ -1,12 +1,11 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
-import { useEffect, useState } from "react";
+import { gsap } from "gsap";
+import { useEffect, useRef, useState } from "react";
 
 import { BrandLogoSignal } from "@/components/brand-logo-signal";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { isSceneRegistered, waitForScene } from "@/lib/scene-ready";
-
-const ease = [0.22, 1, 0.36, 1] as const;
 
 /** Minimum time the loader stays visible so it does not feel like a glitch. */
 const MIN_MS = 720;
@@ -15,7 +14,9 @@ const MAX_MS = 8000;
 
 export function PageLoader() {
   const [phase, setPhase] = useState<"loading" | "exit" | "gone">("loading");
-  const reduce = useReducedMotion();
+  const reduce = usePrefersReducedMotion();
+  const rootRef = useRef<HTMLDivElement>(null);
+  const exitTweenRef = useRef<gsap.core.Tween | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -39,9 +40,6 @@ export function PageLoader() {
             else window.addEventListener("load", () => resolve(), { once: true });
           }),
         ];
-        // If a Three.js scene registered itself, wait until its GLB is loaded
-        // and the model has mounted — otherwise the loader dismisses before the
-        // scene is visible.
         if (isSceneRegistered()) {
           deps.push(waitForScene());
         }
@@ -73,22 +71,40 @@ export function PageLoader() {
     };
   }, [phase]);
 
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el || phase !== "exit") return;
+
+    exitTweenRef.current?.kill();
+
+    let finished = false;
+    const exitDuration = reduce ? 0.2 : 0.75;
+    exitTweenRef.current = gsap.to(el, {
+      opacity: 0,
+      duration: exitDuration,
+      ease: "power3.out",
+      onComplete: () => {
+        if (!finished) {
+          finished = true;
+          setPhase("gone");
+        }
+      },
+    });
+
+    return () => {
+      finished = true;
+      exitTweenRef.current?.kill();
+      exitTweenRef.current = null;
+    };
+  }, [phase, reduce]);
+
   if (phase === "gone") return null;
 
-  const exitDuration = reduce ? 0.2 : 0.75;
-
   return (
-    <motion.div
+    <div
+      ref={rootRef}
       className="fixed inset-0 z-100 flex flex-col items-center justify-center px-6"
-      style={{
-        backgroundColor: "#b6bfc7",
-      }}
-      initial={{ opacity: 1 }}
-      animate={{ opacity: phase === "exit" ? 0 : 1 }}
-      transition={{ duration: exitDuration, ease }}
-      onAnimationComplete={() => {
-        if (phase === "exit") setPhase("gone");
-      }}
+      style={{ backgroundColor: "#b6bfc7" }}
       role="status"
       aria-live="polite"
       aria-busy={phase === "loading"}
@@ -99,10 +115,9 @@ export function PageLoader() {
 
         <div className="relative mt-10 h-[2px] w-[min(12rem,70vw)] overflow-hidden rounded-full">
           {!reduce && (
-            <motion.span
-              className="absolute inset-y-0 w-1/3 rounded-full"
-              animate={{ left: ["-33%", "100%"] }}
-              transition={{ duration: 1.35, repeat: Infinity, ease: "linear" }}
+            <span
+              className="page-loader-shimmer absolute inset-y-0 w-1/3 rounded-full bg-linear-to-r from-transparent via-[rgba(58,52,68,0.42)] to-transparent"
+              aria-hidden
             />
           )}
           {reduce && (
@@ -113,6 +128,6 @@ export function PageLoader() {
           )}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

@@ -9,10 +9,8 @@ export function EditorialSimpleList({
   heading?: string;
   items: readonly string[];
 }) {
-  const scrollVh = Math.min(138, 64 + items.length * 4);
   return (
     <StickyChapter
-      scrollVh={scrollVh}
       stickyClassName="justify-center px-5 py-12 sm:px-8 md:py-20 md:pl-12 lg:px-28 lg:py-32"
     >
       {heading ? (

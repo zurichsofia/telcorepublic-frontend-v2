@@ -14,7 +14,7 @@ import {
 } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Stage, useGLTF } from "@react-three/drei";
-import { useReducedMotion } from "motion/react";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 
 import * as THREE from "three";
@@ -390,7 +390,7 @@ export function SnowMountainScene({
   motionRef,
   className,
 }: SnowMountainSceneProps) {
-  const reduceMotion = useReducedMotion() ?? false;
+  const reduceMotion = usePrefersReducedMotion();
   const rawScrollRef = scrollProgressRef ?? FALLBACK_SCROLL_PROGRESS;
   const parallaxMotionRef = motionRef ?? FALLBACK_PARALLAX_MOTION;
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useMemo } from "react";
-import { useReducedMotion } from "motion/react";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import type { Swiper as SwiperType } from "swiper";
 import { Keyboard, Mousewheel, Parallax } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -25,7 +25,7 @@ export function ServiceVideoHero({
   initialSlug,
   onActiveServiceChange,
 }: ServiceVideoHeroProps) {
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = usePrefersReducedMotion();
   const sectionCount = services.length;
 
   /* Slug from props only (shell-owned state) — hero does not read pathname; avoids remounting Swiper while still following slug changes from the parent. */
