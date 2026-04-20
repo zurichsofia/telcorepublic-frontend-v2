@@ -46,7 +46,7 @@ export function EditorialOffersGroup({
   return (
     <div className="w-full">
       {heading ? (
-        <div className="bg-white px-5 pb-12 pt-16 sm:px-8 md:pb-24 md:pt-24 lg:px-20 lg:pb-28 lg:pt-36">
+        <div className="px-5 pb-12 pt-16 sm:px-8 md:pb-24 md:pt-24 lg:px-20 lg:pb-28 lg:pt-36">
           <p className="max-w-xl font-sans text-xs font-medium uppercase tracking-widest text-black/40 sm:max-w-2xl">
             {heading}
           </p>

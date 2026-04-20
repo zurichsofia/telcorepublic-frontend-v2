@@ -63,11 +63,11 @@ export function StickyChapter({
   return (
     <div
       ref={trackRef}
-      className="relative min-h-[82svh] w-full overflow-x-clip overflow-y-visible bg-white"
+      className="relative min-h-[82svh] w-full overflow-x-clip overflow-y-visible"
     >
       <div
         className={cn(
-          "sticky top-0 z-0 flex min-h-[76svh] w-full max-w-full flex-col overflow-visible bg-white text-black",
+          "sticky top-0 z-0 flex min-h-[76svh] w-full max-w-full flex-col overflow-visible text-black",
           stickyClassName,
         )}
       >

@@ -113,7 +113,7 @@ export function ServiceVideoHero({
         role="region"
         aria-label={`Service highlights: slide ${chromeIndex + 1} of ${sectionCount}, ${activeTitle}`}
         className={cn(
-          "relative z-10 h-full w-full min-w-0 max-w-full overflow-x-clip overflow-y-hidden outline-none focus-visible:ring-2 focus-visible:ring-white/40",
+          "relative z-10 h-full w-full min-w-0 max-w-full overflow-x-clip overflow-y-hidden outline-none focus-visible:ring-2 focus-visible:ring-white/40 bg-white",
           isDragging ? "cursor-grabbing select-none" : "cursor-grab",
         )}
         tabIndex={0}

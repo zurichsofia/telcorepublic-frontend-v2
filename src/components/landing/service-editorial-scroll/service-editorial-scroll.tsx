@@ -19,7 +19,7 @@ export function ServiceEditorialScroll({
   storyKey,
 }: ServiceEditorialScrollProps) {
   return (
-    <div className="relative w-full bg-white" aria-label="Service narrative">
+    <div className="relative w-full" aria-label="Service narrative">
       {blocks.map((block, i) => {
         const key = `${storyKey}-${block.type}-${i}`;
         switch (block.type) {

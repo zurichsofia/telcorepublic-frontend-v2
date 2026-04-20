@@ -253,6 +253,11 @@ type FloatingLinesProps = {
   mouseDamping?: number;
   parallax?: boolean;
   parallaxStrength?: number;
+  /**
+   * When > 0, maps page scroll to `parallaxOffset` so the field drifts with scroll
+   * (useful with `interactive={false}` for a site backdrop).
+   */
+  scrollParallaxStrength?: number;
   mixBlendMode?: React.CSSProperties['mixBlendMode'];
   /** Map the shader’s additive strokes onto a white field (avoids graying the whole canvas). */
   lightBackground?: boolean;
@@ -297,6 +302,7 @@ export default function FloatingLines({
   mouseDamping = 0.05,
   parallax = true,
   parallaxStrength = 0.2,
+  scrollParallaxStrength = 0,
   mixBlendMode = 'screen',
   lightBackground = false
 }: FloatingLinesProps) {
@@ -488,8 +494,25 @@ export default function FloatingLines({
       }
 
       if (parallax) {
-        currentParallaxRef.current.lerp(targetParallaxRef.current, mouseDamping);
-        uniforms.parallaxOffset.value.copy(currentParallaxRef.current);
+        const s = scrollParallaxStrength;
+        let scrollPx = 0;
+        let scrollPy = 0;
+        if (s > 0 && typeof window !== "undefined") {
+          const vh = Math.max(window.innerHeight, 1);
+          const vy = window.scrollY / vh;
+          scrollPx = vy * s * 0.042;
+          scrollPy = vy * s * 0.068;
+        }
+
+        if (interactive) {
+          currentParallaxRef.current.lerp(targetParallaxRef.current, mouseDamping);
+          uniforms.parallaxOffset.value.set(
+            currentParallaxRef.current.x + scrollPx,
+            currentParallaxRef.current.y + scrollPy,
+          );
+        } else {
+          uniforms.parallaxOffset.value.set(scrollPx, scrollPy);
+        }
       }
 
       renderer.render(scene, camera);
@@ -533,6 +556,7 @@ export default function FloatingLines({
     mouseDamping,
     parallax,
     parallaxStrength,
+    scrollParallaxStrength,
     lightBackground
   ]);
 
