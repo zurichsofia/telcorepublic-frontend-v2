@@ -58,6 +58,10 @@ uniform vec3 lineGradient[8];
 uniform int lineGradientCount;
 
 uniform float uLightBackground;
+uniform float uAlphaTop;
+uniform float uAlphaMiddle;
+uniform float uAlphaBottom;
+uniform vec2 uLayoutBias;
 
 const vec3 BLACK = vec3(0.0);
 const vec3 PINK  = vec3(233.0, 71.0, 245.0) / 255.0;
@@ -134,6 +138,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
   if (parallax) {
     baseUv += parallaxOffset;
   }
+  /* Scroll-driven framing: bias shifts where ribbons read on screen (e.g. right → mid / lower-right). */
+  baseUv += uLayoutBias;
 
   vec3 col = vec3(0.0);
 
@@ -160,7 +166,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         baseUv,
         mouseUv,
         interactive
-      ) * bottomGain;
+      ) * bottomGain * uAlphaBottom;
     }
   }
 
@@ -180,7 +186,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         baseUv,
         mouseUv,
         interactive
-      ) * middleGain;
+      ) * middleGain * uAlphaMiddle;
     }
   }
 
@@ -200,7 +206,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         baseUv,
         mouseUv,
         interactive
-      ) * topGain;
+      ) * topGain * uAlphaTop;
     }
   }
 
@@ -208,8 +214,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
   if (uLightBackground > 0.5) {
     float energy = length(col);
     float lum = dot(col, vec3(0.2126, 0.7152, 0.0722));
-    float floorEnergy = 0.084;
-    if (energy < floorEnergy && lum < 0.036) {
+    /* Keep very light gradient stops (e.g. first line) visible after UV scroll-shift. */
+    float floorEnergy = 0.058;
+    if (energy < floorEnergy && lum < 0.028) {
       fragColor = vec4(1.0, 1.0, 1.0, 1.0);
     } else {
       float n = clamp((energy - floorEnergy) * 1.18, 0.0, 1.0);
@@ -261,6 +268,16 @@ type FloatingLinesProps = {
   mixBlendMode?: React.CSSProperties['mixBlendMode'];
   /** Map the shader’s additive strokes onto a white field (avoids graying the whole canvas). */
   lightBackground?: boolean;
+  /**
+   * After `#hero`’s fold, fade top/middle so only the bottom wave remains for long editorial
+   * scroll (parallax still applies to the surviving field).
+   */
+  consolidateWavesOnEditorialScroll?: boolean;
+  /**
+   * Nudges the field toward the **right** when scroll is low, then eases toward **center + lower-right**
+   * as `scrollY` increases (pairs well with `consolidateWavesOnEditorialScroll`).
+   */
+  scrollBiasedFieldLayout?: boolean;
 };
 
 function hexToVec3(hex: string): Vector3 {
@@ -304,7 +321,9 @@ export default function FloatingLines({
   parallaxStrength = 0.2,
   scrollParallaxStrength = 0,
   mixBlendMode = 'screen',
-  lightBackground = false
+  lightBackground = false,
+  consolidateWavesOnEditorialScroll = false,
+  scrollBiasedFieldLayout = false
 }: FloatingLinesProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const targetMouseRef = useRef<Vector2>(new Vector2(-1000, -1000));
@@ -313,6 +332,8 @@ export default function FloatingLines({
   const currentInfluenceRef = useRef<number>(0);
   const targetParallaxRef = useRef<Vector2>(new Vector2(0, 0));
   const currentParallaxRef = useRef<Vector2>(new Vector2(0, 0));
+  const waveAlphaSmoothedRef = useRef({ top: 1, middle: 1, bottom: 1 });
+  const layoutBiasSmoothedRef = useRef(new Vector2(-0.38, -0.05));
 
   const getLineCount = (waveType: 'top' | 'middle' | 'bottom'): number => {
     if (typeof lineCount === 'number') return lineCount;
@@ -403,7 +424,13 @@ export default function FloatingLines({
       },
       lineGradientCount: { value: 0 },
 
-      uLightBackground: { value: lightBackground ? 1 : 0 }
+      uLightBackground: { value: lightBackground ? 1 : 0 },
+
+      uAlphaTop: { value: 1 },
+      uAlphaMiddle: { value: 1 },
+      uAlphaBottom: { value: 1 },
+
+      uLayoutBias: { value: new Vector2(0, 0) }
     };
 
     if (linesGradient && linesGradient.length > 0) {
@@ -445,9 +472,9 @@ export default function FloatingLines({
     const ro =
       typeof ResizeObserver !== 'undefined'
         ? new ResizeObserver(() => {
-            if (!active) return;
-            setSize();
-          })
+          if (!active) return;
+          setSize();
+        })
         : null;
 
     if (ro) ro.observe(container);
@@ -499,8 +526,10 @@ export default function FloatingLines({
         let scrollPy = 0;
         if (s > 0 && typeof window !== "undefined") {
           const vh = Math.max(window.innerHeight, 1);
-          const vy = window.scrollY / vh;
-          scrollPx = vy * s * 0.042;
+          const rawVy = window.scrollY / vh;
+          /* Cap drift so strokes do not shear out of frame or collapse under the light-mode gate. */
+          const vy = Math.tanh(rawVy / 2.6) * 4.2;
+          scrollPx = vy * s * 0.018;
           scrollPy = vy * s * 0.068;
         }
 
@@ -513,6 +542,54 @@ export default function FloatingLines({
         } else {
           uniforms.parallaxOffset.value.set(scrollPx, scrollPy);
         }
+      }
+
+      if (consolidateWavesOnEditorialScroll && typeof document !== "undefined") {
+        const hero = document.getElementById("hero");
+        const vh = Math.max(window.innerHeight, 1);
+        let t = 0;
+        if (hero) {
+          const foldY = hero.offsetTop + hero.offsetHeight;
+          const rel = window.scrollY - foldY + vh * 0.06;
+          t = Math.min(1, Math.max(0, rel / (vh * 2.15)));
+        }
+        const smoothstep = (e0: number, e1: number, x: number) => {
+          const u = Math.min(1, Math.max(0, (x - e0) / Math.max(1e-6, e1 - e0)));
+          return u * u * (3 - 2 * u);
+        };
+        const targetTop = 1 - smoothstep(0, 0.5, t);
+        const targetMiddle = 1 - smoothstep(0.08, 0.58, t);
+        const w = waveAlphaSmoothedRef.current;
+        const k = 0.11;
+        w.top += (targetTop - w.top) * k;
+        w.middle += (targetMiddle - w.middle) * k;
+        w.bottom = 1;
+        uniforms.uAlphaTop.value = w.top;
+        uniforms.uAlphaMiddle.value = w.middle;
+        uniforms.uAlphaBottom.value = w.bottom;
+      } else {
+        uniforms.uAlphaTop.value = 1;
+        uniforms.uAlphaMiddle.value = 1;
+        uniforms.uAlphaBottom.value = 1;
+        waveAlphaSmoothedRef.current.top = 1;
+        waveAlphaSmoothedRef.current.middle = 1;
+        waveAlphaSmoothedRef.current.bottom = 1;
+      }
+
+      if (scrollBiasedFieldLayout && typeof window !== "undefined") {
+        const vh = Math.max(window.innerHeight, 1);
+        const raw = window.scrollY / vh;
+        const t = Math.min(1, Math.tanh(raw / 1.72));
+        /* Negative x pulls dominant ribbons to the viewport right early; ease toward center + down for lower-right read. */
+        const targetX = -0.44 * (1.0 - t) + 0.06 * t;
+        const targetY = -0.05 * (1.0 - t) + 0.24 * t;
+        const lb = layoutBiasSmoothedRef.current;
+        lb.x += (targetX - lb.x) * 0.1;
+        lb.y += (targetY - lb.y) * 0.1;
+        uniforms.uLayoutBias.value.copy(lb);
+      } else {
+        uniforms.uLayoutBias.value.set(0, 0);
+        layoutBiasSmoothedRef.current.set(0, 0);
       }
 
       renderer.render(scene, camera);
@@ -540,7 +617,7 @@ export default function FloatingLines({
         renderer.domElement.parentElement.removeChild(renderer.domElement);
       }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- React Bits vendor effect
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- React Bits vendor effect
   }, [
     linesGradient,
     enabledWaves,
@@ -557,7 +634,9 @@ export default function FloatingLines({
     parallax,
     parallaxStrength,
     scrollParallaxStrength,
-    lightBackground
+    lightBackground,
+    consolidateWavesOnEditorialScroll,
+    scrollBiasedFieldLayout
   ]);
 
   return (

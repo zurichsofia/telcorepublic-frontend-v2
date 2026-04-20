@@ -101,14 +101,17 @@ export function AppFloatingLinesBackground() {
         lightBackground
         interactive={false}
         parallax
-        scrollParallaxStrength={2}
-        animationSpeed={0.7}
-        linesGradient={["#cfd6dd", "#9aa5ad", "#eb1e25", "#6e7680"]}
-        enabledWaves={["top", "bottom"]}
-        lineCount={[8, 10]}
-        lineDistance={[9, 9]}
-        topWavePosition={{ x: 10, y: 0.72, rotate: -0.38 }}
-        bottomWavePosition={{ x: 1.9, y: -0.92, rotate: -0.95 }}
+        consolidateWavesOnEditorialScroll
+        scrollBiasedFieldLayout
+        scrollParallaxStrength={8}
+        animationSpeed={0.42}
+        linesGradient={["#e8ecf0", "#eb1e25", "#c8d0d8", "#c4b4b8", "#9aa3ad"]}
+        enabledWaves={["middle", "bottom"]}
+        lineCount={[10, 10]}
+        lineDistance={[10, 10]}
+        // topWavePosition={{ x: -4.4, y: -0.2, rotate: -0.65 }}
+        middleWavePosition={{ x: -0.8, y: -0.2, rotate: -0.40 }}
+        bottomWavePosition={{ x: 4.4, y: -0.88, rotate: -0.65 }}
       />
     </div>
   );
