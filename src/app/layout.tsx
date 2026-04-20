@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import "swiper/css";
 
 import "./globals.css";
+import { AppFloatingLinesBackground } from "@/components/app-floating-lines-background";
 import { PageLoader } from "@/components/page-loader";
 import { cn } from "@/lib/utils";
 
@@ -32,6 +33,7 @@ export default function RootLayout({
       <body
         className={`${helveticaNeue.className} relative min-h-screen font-light text-black antialiased`}
       >
+        <AppFloatingLinesBackground />
         <PageLoader />
         {children}
       </body>
