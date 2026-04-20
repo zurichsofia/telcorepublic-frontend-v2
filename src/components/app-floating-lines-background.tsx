@@ -104,14 +104,17 @@ export function AppFloatingLinesBackground() {
         consolidateWavesOnEditorialScroll
         scrollBiasedFieldLayout
         scrollParallaxStrength={8}
-        animationSpeed={0.42}
+        animationSpeed={0.38}
         linesGradient={["#e8ecf0", "#eb1e25", "#c8d0d8", "#c4b4b8", "#9aa3ad"]}
         enabledWaves={["middle", "bottom"]}
-        lineCount={[10, 10]}
-        lineDistance={[10, 10]}
-        // topWavePosition={{ x: -4.4, y: -0.2, rotate: -0.65 }}
-        middleWavePosition={{ x: -0.8, y: -0.2, rotate: -0.40 }}
-        bottomWavePosition={{ x: 4.4, y: -0.88, rotate: -0.65 }}
+        lineCount={[12, 10]}
+        // lineDistance={[0, 0]}
+        middleWavePosition={{ x: -2.1, y: -1.6, rotate: 0.8 }}
+        bottomWavePosition={{ x: -10, y: -1.9, rotate: -0.4 }}
+
+      // saved position
+      // middleWavePosition={{ x: -2., y: -1.3, rotate: -0.4 }}
+      // bottomWavePosition={{ x: 1.9, y: 1, rotate: 0.96 }}
       />
     </div>
   );

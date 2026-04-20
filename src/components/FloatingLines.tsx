@@ -529,8 +529,8 @@ export default function FloatingLines({
           const rawVy = window.scrollY / vh;
           /* Cap drift so strokes do not shear out of frame or collapse under the light-mode gate. */
           const vy = Math.tanh(rawVy / 2.6) * 4.2;
-          scrollPx = vy * s * 0.018;
-          scrollPy = vy * s * 0.068;
+          scrollPx = vy * s * 0.028;
+          scrollPy = vy * s * 0.058;
         }
 
         if (interactive) {
