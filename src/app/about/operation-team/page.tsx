@@ -18,7 +18,6 @@ export default function OperationTeamPage() {
       <Navigation />
       <main className="flex-1">
         <PageHero
-          variant="centered"
           title="Operation Team"
           subtitle="Our Core Team Consists of Renowned OSS and BSS Market Analysts."
           description="Our background makes us uniquely qualified to cover the new market for next generation telecoms operations and business management systems."

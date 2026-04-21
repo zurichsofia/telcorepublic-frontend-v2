@@ -4,25 +4,26 @@
  */
 
 export type ServiceContentBlock =
-  | { type: "paragraph"; text: string }
-  | { type: "subheading"; text: string }
+  | { type: "paragraph"; text: string; }
+  | { type: "subheading"; text: string; }
   | {
-      type: "roleCallouts";
-      items: readonly { role: string; text: string }[];
-    }
-  | { type: "tagList"; heading?: string; tags: readonly string[] }
+    type: "roleCallouts";
+    items: readonly { role: string; text: string; }[];
+  }
+  | { type: "tagList"; heading?: string; tags: readonly string[]; }
   | {
-      type: "offers";
-      heading?: string;
-      items: readonly { name: string; description: string }[];
-    }
-  | { type: "simpleList"; heading?: string; items: readonly string[] };
+    type: "offers";
+    heading?: string;
+    items: readonly { name: string; description: string; }[];
+  }
+  | { type: "simpleList"; heading?: string; items: readonly string[]; };
 
 export const services = [
   {
     slug: "disrupter-quintants",
     title: "Disrupter Quintants",
     desc: "Evaluate and compare vendors that specialize in innovation and disruption in emerging next-generation telecom operations and business support systems.",
+    descShort: "Compare vendors driving innovation in next-gen telecom operations and business support systems.",
     content: [
       {
         type: "roleCallouts",
@@ -73,6 +74,7 @@ export const services = [
     slug: "competitive-positioning",
     title: "Competitive Positioning",
     desc: "Differentiate yourself with SWOTs, best practices, benchmarking, whitepapers and roadmap evaluations.",
+    descShort: "Differentiate with SWOTs, benchmarking, and roadmap insights.",
     content: [
       {
         type: "paragraph",
@@ -138,6 +140,7 @@ export const services = [
     slug: "go-to-market",
     title: "Go-To-Market",
     desc: "Refine your strategy with workshops, lead generation, RFP/RFI support, partner matchmaking, inquiry support and briefings.",
+    descShort: "Refine your strategy with workshops, leads and partner support.",
     content: [
       {
         type: "paragraph",
@@ -184,6 +187,7 @@ export const services = [
     slug: "market-assessment",
     title: "Market Assessment",
     desc: "Advance your business with addressable market insights, market entry evaluations, market segmentation and emerging vendors insights.",
+    descShort: "Advance with market insights, entry strategy, and vendor intelligence.",
     content: [
       {
         type: "paragraph",
@@ -253,6 +257,7 @@ export const services = [
     slug: "custom-research",
     title: "Custom Research",
     desc: "Gain in-depth insights tailored toward your individual requirements with our personalized custom research services.",
+    descShort: "Get tailored insights with custom research services.",
     content: [
       {
         type: "paragraph",
@@ -304,6 +309,7 @@ export const services = [
     slug: "subscription",
     title: "Subscription",
     desc: "Always be up-to-speed with recurring insights and real-time access to industry experts.",
+    descShort: "Stay up to date with real-time insights and expert access.",
     content: [
       {
         type: "paragraph",

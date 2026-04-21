@@ -14,7 +14,7 @@ export type NavItem = {
 
 export const defaultNavItems: readonly NavItem[] = [
   {
-    href: "/services/disrupter-quintants",
+    href: "/services",
     label: "Services",
     children: [
       { href: "/services/disrupter-quintants", label: "Disrupter Quintants" },

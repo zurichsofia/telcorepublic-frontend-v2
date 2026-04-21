@@ -7,7 +7,7 @@ import { Keyboard, Mousewheel, Parallax } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import { services, serviceIndexFromSlug } from "@/data/services";
-import { videoForServiceIndex } from "@/lib/service-hero-videos";
+import { serviceSlugHeroVideoUrlForSlide } from "@/lib/service-video-urls";
 import { cn } from "@/lib/utils";
 
 import { ServiceVideoHeroAxisStrip } from "./service-video-hero-axis-strip";
@@ -158,7 +158,7 @@ export function ServiceVideoHero({
                 index={index}
                 title={service.title}
                 description={service.desc}
-                videoSrc={videoForServiceIndex(index)}
+                videoSrc={serviceSlugHeroVideoUrlForSlide(index)}
                 isActive={index === chromeIndex}
                 reduceMotion={!!reduceMotion}
                 slideSizing="fill"

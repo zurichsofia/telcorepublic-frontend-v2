@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 
 import { cn } from "@/lib/utils";
 
-export { videoForServiceIndex as videoForIndex } from "@/lib/service-hero-videos";
+export { serviceSlugHeroVideoUrlForSlide as videoForSlide } from "@/lib/service-video-urls";
 
 export function ServiceVideoSlide({
   index,

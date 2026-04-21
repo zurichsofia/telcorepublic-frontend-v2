@@ -1,4 +1,11 @@
+import Link from "next/link";
+
 import { cn } from "@/lib/utils";
+
+export type PageHeroLink = {
+  label: string;
+  href: string;
+};
 
 export type PageHeroProps = {
   title: string;
@@ -6,71 +13,94 @@ export type PageHeroProps = {
   description?: string;
   className?: string;
   id?: string;
-  /**
-   * `editorial` — left-aligned neutral hero.
-   * `centered` — centered hero with red title/subtitle and black body (e.g. about pages).
-   */
-  variant?: "editorial" | "centered";
+  /** When set, shows a two-column list of links under the title (any labels / URLs you want). */
+  links?: readonly PageHeroLink[];
 };
 
-/**
- * Page hero with title, optional subtitle, optional description.
- * Uses standard Tailwind scale utilities only (no arbitrary sizing).
- */
 export function PageHero({
   title,
   subtitle,
   description,
   className,
   id,
-  variant = "editorial",
+  links,
 }: PageHeroProps) {
-  if (variant === "centered") {
-    return (
-      <section
-        id={id}
-        className={cn(
-          "mx-auto flex min-h-[calc(100vh-60rem)] w-full max-w-4xl flex-col justify-center px-5 text-center sm:px-8 sm:min-h-[calc(100vh-240px)]",
-          className,
-        )}
-      >
-        <h1 className="font-display text-5xl tracking-tight text-red-600 sm:text-8xl">
-          {title}
-        </h1>
-        {subtitle ? (
-          <p className="mx-auto mt-24 max-w-4xl text-lg font-normal leading-snug text-red-600 sm:text-4xl">
-            {subtitle}
-          </p>
-        ) : null}
-        {description ? (
-          <p className="mx-auto mt-8 max-w-3xl text-base font-light leading-relaxed text-neutral-900 sm:text-lg">
-            {description}
-          </p>
-        ) : null}
-      </section>
-    );
-  }
+  const hasLinks = links != null;
 
   return (
     <section
       id={id}
-      className={cn("mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-20", className)}
+      className={cn(
+        "mx-auto px-5 sm:px-8 min-h-[calc(100vh-240px)] w-full",
+        hasLinks
+          ? "max-w-7xl py-14 text-center sm:py-20"
+          : "flex max-w-4xl flex-col justify-center py-14 text-center sm:py-20",
+        className,
+      )}
     >
-      <div className="max-w-3xl">
-        <h1 className="font-display text-4xl font-semibold tracking-tight text-neutral-900 sm:text-5xl">
-          {title}
-        </h1>
-        {subtitle ? (
-          <p className="mt-4 text-lg font-normal leading-snug text-neutral-700 sm:text-xl">
-            {subtitle}
-          </p>
-        ) : null}
-        {description ? (
-          <p className="mt-6 text-base font-light leading-relaxed text-neutral-600 sm:text-lg">
-            {description}
-          </p>
-        ) : null}
-      </div>
+      <h1
+        className={cn(
+          "font-display text-5xl tracking-tight text-[var(--color-telco-red)] sm:text-7xl lg:text-8xl",
+        )}
+      >
+        {title}
+      </h1>
+
+      {subtitle && (
+        <p
+          className={cn(
+            "mx-auto text-lg leading-snug mt-24 max-w-4xl font-normal text-[var(--color-telco-red)] sm:text-4xl",
+          )}
+        >
+          {subtitle}
+        </p>
+      )}
+
+      {links && (
+        <div className="mt-16 flex w-full min-w-0 justify-center sm:mt-20">
+          <div className="grid w-max min-w-0 max-w-full grid-cols-1 gap-x-30 gap-y-6 text-left sm:grid-cols-[max-content_max-content] sm:gap-y-8">
+            <ul className="space-y-1" role="list">
+              {links
+                .slice(0, Math.ceil(links.length / 2))
+                .map((item) => (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className="font-display text-2xl font-medium tracking-tight text-[var(--color-telco-red)] transition sm:text-4xl"
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+            </ul>
+            <ul className="space-y-1" role="list">
+              {links
+                .slice(Math.ceil(links.length / 2))
+                .map((item) => (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className="font-display text-2xl font-medium tracking-tight text-[var(--color-telco-red)] sm:text-4xl"
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+            </ul>
+          </div>
+        </div>
+      )}
+
+      {description && (
+        <p
+          className={cn(
+            "mx-auto text-base font-light leading-relaxed sm:text-lg mt-8 max-w-3xl text-neutral-900",
+
+          )}
+        >
+          {description}
+        </p>
+      )}
     </section>
   );
 }
