@@ -98,6 +98,54 @@ body {
   }
 }
 
+/* Brand lockup — one dot “seeks” at a time (staggered pulse along the row) */
+@keyframes brand-signal-seek {
+  0% {
+    opacity: 0.22;
+    transform: scale(1);
+  }
+  3% {
+    opacity: 1;
+    transform: scale(1.28);
+  }
+  7% {
+    opacity: 0.22;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0.22;
+    transform: scale(1);
+  }
+}
+
+.brand-signal-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background-color: var(--signal-dot-color, var(--color-white));
+  animation-name: brand-signal-seek;
+  animation-duration: var(--seek-period, 2.4s);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-delay: var(--seek-delay, 0s);
+  animation-fill-mode: backwards;
+  transform-origin: center;
+}
+
+/* Smaller dots when the lockup uses `size="compact"` (e.g. main nav). */
+.brand-signal-dots-compact .brand-signal-dot {
+  width: 4px;
+  height: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-signal-dot {
+    animation: none;
+    opacity: 0.22;
+    transform: none;
+  }
+}
+
 /* Service video hero (Swiper v2): full-bleed row; avoid auto margins shrinking below parent */
 #hero .service-hero-swiper {
   width: 100%;

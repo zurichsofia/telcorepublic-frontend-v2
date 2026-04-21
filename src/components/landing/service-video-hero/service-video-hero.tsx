@@ -14,7 +14,7 @@ import { ServiceVideoHeroAxisStrip } from "./service-video-hero-axis-strip";
 import { ServiceVideoHeroScrollHint } from "./service-video-hero-scroll-hint";
 import { ServiceVideoSlide } from "./service-video-hero-slide";
 import { useServiceVideoHero } from "./use-service-video-hero";
-import { Navitation } from '@/components/landing/navigation';
+import { Navigation } from '../../common/navigation';
 
 export type ServiceVideoHeroProps = {
   initialSlug?: string;
@@ -107,7 +107,7 @@ export function ServiceVideoHero({
       aria-label="Featured services"
       className="relative isolate h-dvh min-h-[520px] max-h-[1200px] w-full min-w-0 max-w-full overflow-x-clip overflow-y-hidden bg-white text-white"
     >
-      <Navitation />
+      <Navigation />
 
       <div
         role="region"
