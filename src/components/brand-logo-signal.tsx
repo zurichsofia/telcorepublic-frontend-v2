@@ -44,9 +44,12 @@ export function BrandLogoSignal({
   const onLight = variant === "onLight";
 
   const seekPeriodS = SIGNAL_DOT_COUNT * SEEK_STEP_S;
+  /** Horizontal inset so the dot row matches typographic width (raster has clear margins). */
+  const trackPadInline = compact ? "0.16%" : "0%";
   const shellStyle = {
     "--signal-dot-color": onLight ? "var(--color-black)" : "var(--color-white)",
     "--seek-period": `${seekPeriodS}s`,
+    "--brand-signal-track-pad-inline": trackPadInline,
   } as CSSProperties;
 
   const inner = (
@@ -68,7 +71,8 @@ export function BrandLogoSignal({
       />
       <div
         className={cn(
-          "flex w-full justify-between gap-0.5",
+          "box-border flex w-full justify-between gap-0.5",
+          "px-(--brand-signal-track-pad-inline)",
           compact && "brand-signal-dots-compact",
         )}
         aria-hidden
