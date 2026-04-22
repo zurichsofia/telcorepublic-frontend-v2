@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 
-import { Footer } from "@/components/common/footer";
-import { Navigation } from "@/components/common/navigation";
 import { PageHero } from "@/components/common/page-hero";
 import { FullBleedMediaSectionList } from "@/components/sections/full-bleed-media-section";
 import { servicesListingSections } from "@/data/services-listing-sections";
@@ -20,13 +18,9 @@ const heroLinks = services.map((s) => ({
 
 export default function ServicesPage() {
   return (
-    <div className="relative z-10 flex min-h-screen flex-col bg-white">
-      <Navigation />
-      <main className="flex-1">
-        <PageHero title="What we provide" links={heroLinks} />
-        <FullBleedMediaSectionList items={servicesListingSections} />
-      </main>
-      <Footer className="mt-auto" />
+    <div>
+      <PageHero title="What we provide" links={heroLinks} />
+      <FullBleedMediaSectionList items={servicesListingSections} />
     </div>
   );
 }

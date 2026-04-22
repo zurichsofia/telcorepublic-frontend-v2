@@ -5,6 +5,7 @@ import "swiper/css";
 
 import "./globals.css";
 import { AppFloatingLinesBackground } from "@/components/app-floating-lines-background";
+import { AppShell } from "@/components/common/app-shell";
 import { PageLoader } from "@/components/page-loader";
 import { cn } from "@/lib/utils";
 
@@ -35,7 +36,7 @@ export default function RootLayout({
       >
         <AppFloatingLinesBackground />
         <PageLoader />
-        {children}
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );
