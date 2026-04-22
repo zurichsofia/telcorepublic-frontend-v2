@@ -1,0 +1,1778 @@
+[
+  {
+    "slug": "disrupter-quintant-update",
+    "sourceUrl": "https://telcorepublic.com/blog/disrupter-quintant-update/",
+    "title": "Disrupter Quintant Update",
+    "excerpt": "Telco Republic is pleased to announce the publication of the third iteration of our Disrupter Quintant for Next-Generation Telecom Operations and Business Support Systems. This year’s report ",
+    "coverImage": "/blog/covers/disrupter-quintant-update__disrupter_quintant_2025.jpg",
+    "publishedAt": "2025-11-09T22:00:00.000Z",
+    "dateLabel": "NOV 10, 2025",
+    "metaDescription": "Telco Republic is pleased to announce the publication of the third iteration of our Disrupter Quintant for Next-Generation Telecom Operations and Business Support Systems. This year’s report ",
+    "content": [
+      {
+        "type": "heading",
+        "level": 4,
+        "text": "Telco Republic is pleased to announce the publication of the third iteration of our Disrupter Quintant for Next-Generation Telecom Operations and Business Support Systems."
+      },
+      {
+        "type": "paragraph",
+        "text": "This year’s report presents a rigorous evaluation and analysis of 12 vendors that are disrupting the traditional operations support systems (OSS) and business support systems (BSS) markets."
+      },
+      {
+        "type": "list",
+        "ordered": false,
+        "items": [
+          "Amdocs",
+          "Cerillion",
+          "Comarch",
+          "CompaxDigital",
+          "Ericsson",
+          "Gaiia",
+          "Hansen",
+          "Huawei",
+          "Incognito",
+          "Netcracker",
+          "Nokia",
+          "Oracle"
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "The 60-page report provides a deep dive into these vendors’ ability to enable communications service providers (CSPs) to transition from traditional OSS and BSS to NG-TOBS infrastructures, composed of horizontally architected, cognitive, cloud-based operational and business infrastructure as well as monetization and customer management orchestration."
+      },
+      {
+        "type": "paragraph",
+        "text": "We assess vendors across five “quintants” and two dimensions to provide guidance to CSPs how to navigate this emerging market, and how to make the best technology buying decisions."
+      },
+      {
+        "type": "paragraph",
+        "text": "The following are some of the key findings:"
+      },
+      {
+        "type": "list",
+        "ordered": false,
+        "items": [
+          "Automation and AI are accelerating across all telecom operations, enabling zero-touch provisioning, autonomous networks and predictive maintenance by embedding AI/ML into OSS and BSS platforms for operational efficiency and innovation.",
+          "Cloud-native transformation is reshaping legacy systems, with containerization, microservices and orchestration technologies driving continuous deployment, real-time analytics and seamless upgrades for greater scalability and agility.",
+          "Integration of IoT, edge and advanced connectivity is increasing, requiring robust device management, billing solutions and network slicing to handle exponential connections and enable dynamic, programmable services.",
+          "Holistic orchestration models use cognitive automation to link network technologies with business outcomes, bridging legacy and modern cloud environments and enabling end-to-end service provisioning.",
+          "Open API frameworks and interoperability enable modular deployment and rapid service integration, supporting multi-tenant business models and agile ecosystem development to facilitate CSP innovation."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "For more details, contact Telco Republic at:"
+      },
+      {
+        "type": "paragraph",
+        "text": "martina.kurth@telcorepublic.com"
+      },
+      {
+        "type": "paragraph",
+        "text": "norbert.scholz@telcorepublic.com"
+      },
+      {
+        "type": "paragraph",
+        "text": "info@telcorepublic.com"
+      },
+      {
+        "type": "paragraph",
+        "text": "On Telco Republic’s webpage"
+      }
+    ],
+    "authors": "Martina Kurth (CEO), Norbert Scholz"
+  },
+  {
+    "slug": "telco-to-techco-fireside-chat",
+    "sourceUrl": "https://telcorepublic.com/blog/telco-to-techco-fireside-chat/",
+    "title": "Telco to Techco Fireside Chat",
+    "excerpt": "Listen to Martina Kurth, CEO of Telco Republic, and Per Borgklint, CEO of Kloudville discuss the history of the telecom industry and the major players in the shift from telco to techco. ",
+    "coverImage": "/blog/covers/telco-to-techco-fireside-chat__fireside_chat.jpg",
+    "publishedAt": "2025-08-14T21:00:00.000Z",
+    "dateLabel": "AUG 15, 2025",
+    "metaDescription": "Listen to Martina Kurth, CEO of Telco Republic, and Per Borgklint, CEO of Kloudville discuss the history of the telecom industry and the major players in the shift from telco to techco. ",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Listen to Martina Kurth, CEO of Telco Republic, and Per Borgklint, CEO of Kloudville discuss the history of the telecom industry and the major players in the shift from telco to techco."
+      },
+      {
+        "type": "heading",
+        "level": 5,
+        "text": "Telco to Techco Fireside Chat"
+      },
+      {
+        "type": "paragraph",
+        "text": "Martina Kurth and Per Borgklint discuss the global shift of telecom companies from traditional telcos to modern techcos. This evolution, they explain, is driven by the need for faster product innovation and a move from network-based environments to software-driven ones."
+      },
+      {
+        "type": "paragraph",
+        "text": "Martina Kurth emphasizes the need for modernizing and integrating cloud technologies, as well as updating operations support systems and business support systems (OSS/BSS)."
+      },
+      {
+        "type": "paragraph",
+        "text": "These systems, she says, must be cloud-native, real-time and flexible."
+      },
+      {
+        "type": "paragraph",
+        "text": "Per Borgklint adds that with the right solutions telcos can transform to techcos quickly by providing a unified, open-API platform."
+      },
+      {
+        "type": "paragraph",
+        "text": "The speakers stress that this transformation is not just about technology but also requires a change in business models, company culture and the need for strong partnership ecosystems."
+      },
+      {
+        "type": "paragraph",
+        "text": "They both recommend that telecom providers begin their transformation by investing in public cloud technology and modernizing critical components such as product catalogs and order management systems, particularly in the B2B space."
+      }
+    ],
+    "authors": "Martina Kurth (CEO)"
+  },
+  {
+    "slug": "predictions-for-operations-support-systems-oss-and-business-support-systems-bss",
+    "sourceUrl": "https://telcorepublic.com/blog/predictions-for-operations-support-systems-oss-and-business-support-systems-bss/",
+    "title": "Predictions for Operations Support Systems (OSS) and Business Support Systems (BSS)",
+    "excerpt": "Telco Republic is thrilled to announce the publication of our comprehensive six-part series of Predictions for Operations Support Systems (OSS) and Business Support Systems (BSS).",
+    "coverImage": "/blog/covers/predictions-for-operations-support-systems-oss-and-business-support-systems-bss__streaming_media.jpg",
+    "publishedAt": "2025-08-05T21:00:00.000Z",
+    "dateLabel": "AUG 06, 2025",
+    "metaDescription": "Telco Republic is thrilled to announce the publication of our comprehensive six-part series of Predictions for Operations Support Systems (OSS) and Business Support Systems (BSS).",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Are you ready to navigate the rapidly evolving landscape of telecommunications?"
+      },
+      {
+        "type": "paragraph",
+        "text": "The next few years will be pivotal for communications service providers (CSPs) and understanding the trajectory of operations support systems (OSS) and business support systems (BSS) is no longer optional – it’s essential for survival and growth."
+      },
+      {
+        "type": "paragraph",
+        "text": "That’s why Telco Republic is thrilled to announce the publication of our comprehensive six-part series of Predictions for Operations Support Systems (OSS) and Business Support Systems (BSS)."
+      },
+      {
+        "type": "paragraph",
+        "text": "These aren’t just vague trends. They are data-backed insights and projections that will directly impact your strategic decisions."
+      },
+      {
+        "type": "paragraph",
+        "text": "Inside, you’ll discover critical shifts, including:"
+      },
+      {
+        "type": "paragraph",
+        "text": "The AI Revolution in OSSLearn how artificial intelligence is poised to revolutionize network management, leading to faster service delivery, reductions in network downtime and operational cost savings. Understand the imperative of AI for navigating 5G/6G complexity, IoT scale and demanding customer expectations."
+      },
+      {
+        "type": "paragraph",
+        "text": "The Cloud-Native OSS ImperativeDiscover why the migration to cloud-native OSS is no longer a distant future but a present necessity. By 2030, most CSPs will adopt this architecture, unlocking faster service provisioning and operational cost reductions. Don’t get left behind with outdated legacy systems!"
+      },
+      {
+        "type": "paragraph",
+        "text": "OSS and the Power of New InfrastructureExplore the synergistic relationship between OSS and cutting-edge technologies like 5G/6G, IoT, SDN/NFV and AI. See how modernizing your OSS can lead to faster service deployment, operational cost reductions and the ability to dynamically monetize network slices by 2030."
+      },
+      {
+        "type": "paragraph",
+        "text": "AI Transforming BSS for Competitive AdvantageUnderstand how AI is reshaping the business side of telecom, enabling faster service delivery and cost reductions. Learn how AI-driven BSS automation, including autonomous billing and predictive maintenance, is becoming a critical differentiator."
+      },
+      {
+        "type": "paragraph",
+        "text": "Cloud-Native BSS: The Foundation for AgilityDiscover why adopting cloud-based BSS is crucial for monetizing 5G, edge computing and IoT. By 2030, most CSPs will embrace cloud BSS, enabling product launches in days, not months and achieving operational cost reductions."
+      },
+      {
+        "type": "paragraph",
+        "text": "BSS Integration with Next-Gen InfrastructureSee how the convergence of BSS with AI, blockchain and cloud-native architectures is redefining telecom competition. By 2030, most CSPs will adopt AI-driven, cloud-native BSS platforms, unlocking significant operational savings and new revenue streams."
+      },
+      {
+        "type": "image",
+        "src": "/blog/inline/predictions-for-operations-support-systems-oss-and-business-support-systems-bss__9b3860344b__2025_predictions_graphic.png"
+      },
+      {
+        "type": "paragraph",
+        "text": "Why Should You Read These Predictions?"
+      },
+      {
+        "type": "list",
+        "ordered": false,
+        "items": [
+          "Gain a Competitive EdgeUnderstand the future direction of OSS/BSS to make informed strategic decisions.",
+          "Identify Key Investment AreasPrioritize technologies and modernization efforts that will yield the highest returns.",
+          "Mitigate Potential RisksRecognize the challenges associated with legacy systems and talent gaps.",
+          "Unlock New Revenue OpportunitiesDiscover how modern OSS/BSS enables the monetization of next-generation services."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "Ready to future-proof your OSS and BSS strategies?"
+      },
+      {
+        "type": "paragraph",
+        "text": "Contact Telco Republic at https://telcorepublic.com/contact/"
+      },
+      {
+        "type": "paragraph",
+        "text": "Don’t wait until it’s too late. Get your copy of the Predictions for Operations Support Systems (OSS) and Business Support Systems (BSS) today and take the first step toward a more agile, efficient and profitable future!"
+      }
+    ],
+    "authors": "Martina Kurth (CEO), Norbert Scholz"
+  },
+  {
+    "slug": "the-transformative-impact-of-telecom-as-a-service-taas",
+    "sourceUrl": "https://telcorepublic.com/blog/the-transformative-impact-of-telecom-as-a-service-taas/",
+    "title": "The Transformative Impact of Telecom as a Service (TaaS)",
+    "excerpt": "Telecom as a Service (TaaS) is reshaping the landscape for MVNEs, turning them from mere infrastructure providers into agile innovators driving a connected future.",
+    "coverImage": "/blog/covers/the-transformative-impact-of-telecom-as-a-service-taas__modern_communication_technology_illustration_with_smartphones_and_holographic_background.jpg",
+    "publishedAt": "2025-01-16T22:00:00.000Z",
+    "dateLabel": "JAN 17, 2025",
+    "metaDescription": "Telecom as a Service (TaaS) is reshaping the landscape for MVNEs, turning them from mere infrastructure providers into agile innovators driving a connected future.",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "The Transformative Impact of Telecom as a Service (TaaS) on the Telecommunications Landscape"
+      },
+      {
+        "type": "paragraph",
+        "text": "The emergence of telecom as a service (TaaS) is reshaping the telecom industry, transforming how MVNOs, enterprises and MNOs interact with telecom services. This cloud-based model empowers businesses to seamlessly integrate branded mobile plans into their offerings without direct carrier integration."
+      },
+      {
+        "type": "paragraph",
+        "text": "TaaS is reshaping the landscape for MVNEs, turning them from mere infrastructure providers into agile innovators driving a connected future. By leveraging cloud solutions, MVNEs can now offer streamlined operations, manage multiple network connections efficiently and provide enhanced service offerings."
+      },
+      {
+        "type": "image",
+        "src": "/blog/inline/the-transformative-impact-of-telecom-as-a-service-taas__5e6c5313fc__mvne_orbit.png"
+      },
+      {
+        "type": "paragraph",
+        "text": "This transformation extends beyond traditional telecom players. Any enterprise can now harness connectivity to elevate their business offerings and customer experience. TaaS enables rapid deployment of telecom services, allowing companies to focus on their core competencies while accessing cutting-edge telecom capabilities."
+      },
+      {
+        "type": "paragraph",
+        "text": "The impact of TaaS is far-reaching, promising increased efficiency, improved customer satisfaction and new opportunities for innovation across industries. As we move forward, TaaS is set to play a pivotal role in shaping the future of connectivity and digital services."
+      },
+      {
+        "type": "paragraph",
+        "text": "The Emergence of MVNOs"
+      },
+      {
+        "type": "paragraph",
+        "text": "The rise of Mobile Virtual Network Operators (MVNOs) in the late 1990s disrupted the telecom industry, creating new ways to provide and engage with customers. MVNOs rent network capacity from MNOs and tailor services to specific markets. This led to the emergence of MVNEs, crucial in providing the operational and technical framework for MVNOs to succeed."
+      },
+      {
+        "type": "paragraph",
+        "text": "Virgin Mobile’s 1999 launch, focusing on transparent pricing without contracts, marked widespread MVNO adoption, particularly in Europe. This significantly impacted market dynamics by lowering prices and increasing customer choice."
+      },
+      {
+        "type": "paragraph",
+        "text": "The Diversification of MVNOs and Rise of MVNEs"
+      },
+      {
+        "type": "paragraph",
+        "text": "The success of early MVNOs demonstrated the need for flexible, customer-focused mobile services."
+      },
+      {
+        "type": "paragraph",
+        "text": "Initially, MVNEs provided basic support systems like billing platforms and CRM tools. However, as MVNOs diversified their services, MVNEs became crucial in supporting specialized plans, niche markets and bundled services. By hosting multiple MVNOs on a single platform, MVNEs can cut operational costs and streamline processes."
+      },
+      {
+        "type": "paragraph",
+        "text": "The Impact of Cloud Computing and TaaS"
+      },
+      {
+        "type": "paragraph",
+        "text": "The emergence of cloud-based solutions has further transformed MVNEs. TaaS, or “telecom in a box,” uses cloud technology to provide telecom capabilities as a subscription service. This model lowers capital expenditures and improves enterprise scalability and flexibility."
+      },
+      {
+        "type": "paragraph",
+        "text": "The public cloud has been critical, enabling TaaS providers to offer global telecom capabilities via simple APIs. This democratizes telecom, allowing businesses of all sizes to integrate advanced communication services into their offerings."
+      },
+      {
+        "type": "paragraph",
+        "text": "The Future of MVNEs"
+      },
+      {
+        "type": "paragraph",
+        "text": "As MVNEs embrace cloud solutions, they can improve their service offerings by including sophisticated analytics and AI capabilities. This enables more tailored customer experiences and supports new technologies like IoT and 5G."
+      },
+      {
+        "type": "paragraph",
+        "text": "MVNOs continue to explore new service models and MVNEs must adapt their platforms accordingly. New trends, such as eSIM technology, will further simplify customer onboarding procedures."
+      },
+      {
+        "type": "paragraph",
+        "text": "TaaS – A Major Player in the Future of Telecom"
+      },
+      {
+        "type": "paragraph",
+        "text": "These developments suggest that TaaS will play a major role in the future of the telecom industry. Increased telecom operations and processes automation, AI and machine learning integration and the progression of edge computing will accelerate the adoption of TaaS."
+      },
+      {
+        "type": "paragraph",
+        "text": "The evolution of MVNOs has significantly impacted the role of MVNEs in the telecom sector. The transition to cloud-based solutions like TaaS simplifies service delivery and enables businesses to innovate quickly."
+      },
+      {
+        "type": "paragraph",
+        "text": "As this landscape evolves, MVNEs, MVNOs and enterprises must embrace change proactively to meet the needs of an increasingly interconnected world."
+      },
+      {
+        "type": "paragraph",
+        "text": "To delve deeper into our latest research on TaaS and its implications for the industry, please reach out to Telco Republic at:"
+      },
+      {
+        "type": "paragraph",
+        "text": "https://telcorepublic.com/contact/"
+      },
+      {
+        "type": "paragraph",
+        "text": "info@telcorepublic.com"
+      },
+      {
+        "type": "paragraph",
+        "text": "martina.kurth@telcorepublic.com"
+      },
+      {
+        "type": "paragraph",
+        "text": "norbert.scholz@telcorepublic.com"
+      }
+    ],
+    "authors": "Martina Kurth (CEO), Norbert Scholz"
+  },
+  {
+    "slug": "from-telco-to-techco-with-next-gen-bss",
+    "sourceUrl": "https://telcorepublic.com/blog/from-telco-to-techco-with-next-gen-bss/",
+    "title": "From Telco to Techco with Next-Gen BSS",
+    "excerpt": "Telco Republic has conducted an in-depth analysis of how telcos can successfully transform into techcos by developing, deploying and utilizing a modern and agile BSS",
+    "coverImage": "/blog/covers/from-telco-to-techco-with-next-gen-bss__cubes_and_ball.jpg",
+    "publishedAt": "2024-10-10T21:00:00.000Z",
+    "dateLabel": "OCT 11, 2024",
+    "metaDescription": "Telco Republic has conducted an in-depth analysis of how telcos can successfully transform into techcos by developing, deploying and utilizing a modern and agile BSS",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Telco Republic has conducted an in-depth analysis of how telcos can successfully transform into techcos by developing, deploying and utilizing a modern and agile BSS."
+      },
+      {
+        "type": "paragraph",
+        "text": "This 26-page study shows how telcos can unlock new revenue streams and ensure their relevance in an increasingly competitive landscape by investing in next-generation BSS capabilities and fostering a culture of innovation."
+      },
+      {
+        "type": "paragraph",
+        "text": "If you would like to discuss this study with the experts at Telco Republic, please contact us at"
+      },
+      {
+        "type": "paragraph",
+        "text": "https://telcorepublic.com/contact/info@telcorepublic.commartina.kurth@telcorepublic.comnorbert.scholz@telcorepublic.com"
+      },
+      {
+        "type": "paragraph",
+        "text": "The Following are the Key Insights from the Study"
+      },
+      {
+        "type": "paragraph",
+        "text": "Communications Service Providers (CSPs) are at a pivotal juncture, transitioning from traditional telecommunications models to agile, technology-driven enterprises, often referred to as “techcos.” This transformation is largely fueled by the advent of 5G and the Internet of Things (IoT), which present new opportunities for innovation and revenue generation."
+      },
+      {
+        "type": "paragraph",
+        "text": "To capitalize on these advancements, CSPs must modernize their business support systems (BSS), which are currently hampered by legacy architectures."
+      },
+      {
+        "type": "paragraph",
+        "text": "The Need for a Modern BSS"
+      },
+      {
+        "type": "paragraph",
+        "text": "Legacy BSSs lack the flexibility and scalability required to support the rapid deployment of new services. Most existing systems are unable to keep pace with the demands of non-connectivity-based business models, limiting CSPs’ ability to launch new products efficiently."
+      },
+      {
+        "type": "paragraph",
+        "text": "A modern BSS should be cloud-native, modular and AI-enabled, allowing for intelligent orchestration and automation. By adopting these next-generation systems, CSPs can dynamically monetize services across various customer segments, ranging from individual consumers to large enterprises."
+      },
+      {
+        "type": "paragraph",
+        "text": "Key Challenges"
+      },
+      {
+        "type": "paragraph",
+        "text": "Despite recognizing the need for modernization, many CSPs face significant challenges. These include technical debt from maintaining multiple legacy systems, lack of integration across platforms and insufficient end-to-end visibility of customer interactions."
+      },
+      {
+        "type": "paragraph",
+        "text": "Furthermore, many CSPs struggle with poor data quality, which hinders their ability to leverage analytics effectively. These issues not only impede operational efficiency but also detract from the overall customer experience."
+      },
+      {
+        "type": "paragraph",
+        "text": "Navigating the Transition to a Next-Generation BSS"
+      },
+      {
+        "type": "paragraph",
+        "text": "To successfully navigate this transition, CSPs should undertake a thorough assessment of their current BSS capabilities. This evaluation will help identify gaps in supporting future 5G and IoT products. A gradual migration strategy is advisable. CSPs should aim for a consolidated, agile BSS that allows them to monetize services flexibly."
+      },
+      {
+        "type": "paragraph",
+        "text": "Additionally, integrating AI and machine learning into BSS can significantly enhance customer experiences and operational efficiencies. By employing low-code/no-code platforms, CSPs can foster collaboration between IT and business departments, enabling quicker adaptations to market demands."
+      },
+      {
+        "type": "paragraph",
+        "text": "The Future Landscape"
+      },
+      {
+        "type": "paragraph",
+        "text": "As CSPs evolve into techcos, they must also embrace ecosystem collaboration. Establishing digital marketplaces that combine their services with third-party offerings will be crucial for deepening customer engagement. This shift not only enhances service stickiness but also positions CSPs as key players in broader digital ecosystems."
+      },
+      {
+        "type": "paragraph",
+        "text": "The journey from telco to techco is not merely about adopting new technologies. It requires a fundamental rethinking of business models and operational frameworks."
+      },
+      {
+        "type": "paragraph",
+        "text": "By investing in next-generation BSS capabilities and fostering a culture of innovation, CSPs can unlock new revenue streams and ensure their relevance in an increasingly competitive landscape. The future belongs to those who are willing to adapt swiftly and innovate continuously."
+      }
+    ],
+    "authors": "Martina Kurth (CEO), Norbert Scholz"
+  },
+  {
+    "slug": "legacy-disrupted-telecoms-saas-awakening",
+    "sourceUrl": "https://telcorepublic.com/blog/legacy-disrupted-telecoms-saas-awakening/",
+    "title": "Legacy Disrupted: Telecom’s SaaS Awakening",
+    "excerpt": "Telco Republic AG has released new global research that provides an update on the innovation and adoption of software-as-a-service (SaaS) in the global telecom market. ",
+    "coverImage": "/blog/covers/legacy-disrupted-telecoms-saas-awakening__cloud_hyperscalers.jpg",
+    "publishedAt": "2024-08-15T21:00:00.000Z",
+    "dateLabel": "AUG 16, 2024",
+    "metaDescription": "Telco Republic AG has released new global research that provides an update on the innovation and adoption of software-as-a-service (SaaS) in the global telecom market. ",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Telco Republic AG has released new global research that provides an update on the innovation and adoption of software-as-a-service (SaaS) in the global telecom market."
+      },
+      {
+        "type": "paragraph",
+        "text": "The industry is undergoing an unstoppable wave toward cloud-based, SaaS solution delivery modes."
+      },
+      {
+        "type": "list",
+        "ordered": false,
+        "items": [
+          "Who are the early adopter communications service Providers (CSPs)?",
+          "What are their strategies for success?"
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "Telco Republic has independently interviewed a wide range of telecom executives representing all tiers of CSPs around the world."
+      },
+      {
+        "type": "paragraph",
+        "text": "We see some common success denominators among the early mover telcos and how they implemented SaaS to capitalize on new revenue streams, business models and ecosystems."
+      },
+      {
+        "type": "paragraph",
+        "text": "The report Legacy Disrupted: Telecom’s SaaS Awakening examines how leading CSPs are harnessing the power of SaaS to drive scalable agility, reduce costs and accelerate innovation."
+      },
+      {
+        "type": "paragraph",
+        "text": "The study will help you navigate your own SaaS transformation and position your organization for long-term success:"
+      },
+      {
+        "type": "list",
+        "ordered": false,
+        "items": [
+          "Realize tangible benefits – from 40% cost savings to reducing development cycles from six months to one month.",
+          "Insights gained from the experiences of early adopters and the lessons fast followers and late adopters can learn.",
+          "SaaS adoption by CSP tier, and the opportunities and approaches it presents.",
+          "Interview-based CSP SaaS journey stories.",
+          "Actionable recommendations for CSPs."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "For more details, contact Telco Republic at:martina.kurth@telcorepublic.comnorbert.scholz@telcorepublic.cominfo@telcorepublic.comOn Telco Republic's webpage"
+      }
+    ],
+    "authors": "Martina Kurth (CEO), Norbert Scholz"
+  },
+  {
+    "slug": "new-forecast-and-market-share-reports",
+    "sourceUrl": "https://telcorepublic.com/blog/new-forecast-and-market-share-reports/",
+    "title": "New Forecast and Market Share Reports",
+    "excerpt": "Telco Republic released its annual Forecast and Market Share reports for communication service provider (CSP) spending on Next-Generation Operations and Business Support Systems (NG-TOBS).",
+    "coverImage": "/blog/covers/new-forecast-and-market-share-reports__connected_globe.jpg",
+    "publishedAt": "2024-07-09T21:00:00.000Z",
+    "dateLabel": "JUL 10, 2024",
+    "metaDescription": "Telco Republic released its annual Forecast and Market Share reports for communication service provider (CSP) spending on Next-Generation Operations and Business Support Systems (NG-TOBS).",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Telco Republic released its annual Forecast and Market Share reports for communication service provider (CSP) spending on Next-Generation Operations and Business Support Systems (NG-TOBS) covering two solution components, three deployment models, five solution domains and six geographies."
+      },
+      {
+        "type": "paragraph",
+        "text": "This collection of 17 individual reports provides in-depth statistical analysis accompanied by detailed qualitative analysis."
+      },
+      {
+        "type": "paragraph",
+        "text": "The forecast reports show that CSPs continue to move their OSS and BSS solutions to the public and private cloud at a rapid pace."
+      },
+      {
+        "type": "list",
+        "ordered": false,
+        "items": [
+          "Global public cloud spending is forecast to grow at a double-digit compound annual growth rate (CAGR) from 2022-2029, while private cloud spending will grow at a high single-digit CAGR.",
+          "Over the forecast period, spending on on-premises deployments will decline at a double-digit CAGR."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "The market share reports show that the global vendor landscape for NG-TOBS software and services remains diversified."
+      },
+      {
+        "type": "list",
+        "ordered": false,
+        "items": [
+          "No NG-TOBS vendor had more than 9% market share in 2023.",
+          "Eight NG-TOBS vendors had more than 15% market share in one of the 17 subcategories covered in this report.",
+          "Worldwide, Netcracker had the highest market share across all categories, followed by Amdocs, Huawei, IBM and Ericsson."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "For more details, contact Telco Republic at:martina.kurth@telcorepublic.comnorbert.scholz@telcorepublic.cominfo@telcorepublic.comOn Telco Republic's webpage"
+      }
+    ],
+    "authors": "Martina Kurth (CEO), Norbert Scholz"
+  },
+  {
+    "slug": "artificial-intelligence-ai-rules-mwc-2024",
+    "sourceUrl": "https://telcorepublic.com/blog/artificial-intelligence-ai-rules-mwc-2024/",
+    "title": "Artificial Intelligence (AI) Rules MWC 2024",
+    "excerpt": "The main focus of GSMA's Mobile World Congress (MWC) 2024 was artificial intelligence (AI), with generative AI (genAI) as a subtheme. Almost every communications service provider (CSP) or vendor…",
+    "coverImage": "/blog/covers/artificial-intelligence-ai-rules-mwc-2024__mwc_2024.jpg",
+    "publishedAt": "2024-03-04T22:00:00.000Z",
+    "dateLabel": "MAR 05, 2024",
+    "metaDescription": "",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "The main focus of GSMA's Mobile World Congress (MWC) 2024 was artificial intelligence (AI), with generative AI (genAI) as a subtheme. Almost every communications service provider (CSP) or vendor highlighted the transformational impact of this technology, although many CSPs admitted that they are still in the early stages of the hype."
+      },
+      {
+        "type": "paragraph",
+        "text": "A closer look at the numerous product announcements, alliances and partnerships reveals a pattern that suggests AI is more akin to yesterday’s big data hype than a revolutionary change for the communications industry."
+      },
+      {
+        "type": "paragraph",
+        "text": "Some industry insiders suggest that CSPs could benefit greatly from AI due to their ownership of vast amounts of network and customer data. According to these claims, genAI relies heavily on access to large amounts of data. CSPs could potentially monetize this opportunity by selling their data to other companies to train their LLMs. Alternatively, CSPs could leverage AI to train their own genAI models for internal use."
+      },
+      {
+        "type": "paragraph",
+        "text": "The hype around big data promised lucrative data monetization opportunities, but they failed to materialize. There is little evidence to suggest that the current situation will be any different."
+      },
+      {
+        "type": "paragraph",
+        "text": "Telco Republic believes that the hype surrounding AI will subside and the industry will return to business as usual for the following reasons:"
+      },
+      {
+        "type": "list",
+        "ordered": false,
+        "items": [
+          "AI Is Mostly About Internal Efficiency, Productivity and Cost Improvements Rather Than Market Expansion.AI will not help CSPs tackle their biggest challenge: A shrinking market for consumer services.",
+          "AI Is About Use Cases Rather Than Transforming CSPs' Business Strategy.For CSPs, AI is a supporting technology, not a revenue-generating product.",
+          "AI Will Be Embedded In Vendor Solutions or Attached to Solutions as Chatbots and Copilots.AI will soon be a standard feature in all vendor solutions and will no longer be a competitive differentiator.",
+          "Ongoing CSP Initiatives Will Continue.AI will not replace current initiatives aimed at creating internal efficiency, mange costs and boost productivity."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "Telco Republic takes a closer look at a number of key AI-related alliance and product announcements during MWC 2024, including the following suppliers:"
+      },
+      {
+        "type": "list",
+        "ordered": false,
+        "items": [
+          "Aira Technologies",
+          "Amazon Web Services (AWS)",
+          "BMC",
+          "Dell",
+          "Ericsson",
+          "Fujitsu Network Communications",
+          "HPE",
+          "Huawei",
+          "Microsoft Azure",
+          "MYCOM OSI",
+          "Nokia",
+          "Salesforce",
+          "Samsung",
+          "Snowflake",
+          "Tech Mahindra",
+          "VIAVI Solutions"
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "To access the full analysis, contact Telco Republic at:martina.kurth@telcorepublic.com norbert.scholz@telcorepublic.com info@telcorepublic.com Or on Telco Republic's webpage."
+      }
+    ],
+    "authors": "Martina Kurth (CEO)"
+  },
+  {
+    "slug": "the-new-disrupter-quintant-is-ready",
+    "sourceUrl": "https://telcorepublic.com/blog/the-new-disrupter-quintant-is-ready/",
+    "title": "The New Disrupter Quintant is Ready",
+    "excerpt": "The 60-page report provides a deep dive into these vendors’ ability to disrupt the traditional operations support systems (OSS) and business support systems (BSS) markets.",
+    "coverImage": "/blog/covers/the-new-disrupter-quintant-is-ready__disrupter_quintant_2023.jpg",
+    "publishedAt": "2024-02-05T22:00:00.000Z",
+    "dateLabel": "FEB 06, 2024",
+    "metaDescription": "The 60-page report provides a deep dive into these vendors’ ability to disrupt the traditional operations support systems (OSS) and business support systems (BSS) markets.",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Telco Republic’s updated Disrupter Quintant is now available to the public."
+      },
+      {
+        "type": "paragraph",
+        "text": "We performed a rigorous and in-depth selection, evaluation and analysis of 13 leading NG-TOBS vendors."
+      },
+      {
+        "type": "list",
+        "ordered": false,
+        "items": [
+          "Amdocs",
+          "Cerillion",
+          "Circles",
+          "Comarch",
+          "Ericsson",
+          "Hansen",
+          "HPE",
+          "Huawei",
+          "Incognito",
+          "Netcracker",
+          "Nokia",
+          "Oracle",
+          "Wavelo"
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "The 60-page report provides a deep dive into these vendors’ ability to disrupt the traditional operations support systems (OSS) and business support systems (BSS) markets by enabling communications service providers (CSPs) to transition from traditional OSS and BSS to NG-TOBS infrastructures, composed of horizontally architected, cognitive, cloud-based operational and business infrastructure as well as monetization and customer management orchestration."
+      },
+      {
+        "type": "paragraph",
+        "text": "We assess vendors across five “quintants” and two dimensions to provide guidance to CSPs how to navigate this emerging market, and how to make the best technology buying decisions."
+      },
+      {
+        "type": "paragraph",
+        "text": "The following are some of the key findings:"
+      },
+      {
+        "type": "list",
+        "ordered": false,
+        "items": [
+          "Vendors have adopted product innovation across their entire solution stacks, with a particular focus on technologies such as cloud, embedded AI and autonomous operations.",
+          "All new NG-TOBS products and solutions are cloud-native but CSPs are slow to migrate to the public cloud. Most implementations remain on premise or in the private cloud.",
+          "Most NG-TOBS vendors have made their solutions available on multiple public clouds, including AWS, Google Cloud Platform and Microsoft Azure.",
+          "New vendors with agile solutions are emerging as potentially disruptive alternative sourcing alternatives for communications service providers (CSPs).",
+          "Transformation leadership across technology, business and organization continues to be a top priority for CSPs as they strive to scale their innovation initiatives.",
+          "Non-technical buyers, such as CMOs, heads of B2B and CDOs, have a significant impact on OSS and BSS sourcing decisions. The justification for ROI, or return on investment, based on emerging business models, developing partner ecosystems and novel revenue streams, can determine the success or failure of deals."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "For more details, contact Telco Republic at:martina.kurth@telcorepublic.comnorbert.scholz@telcorepublic.cominfo@telcorepublic.comOn Telco Republic's webpage"
+      }
+    ],
+    "authors": "Martina Kurth (CEO), Norbert Scholz"
+  },
+  {
+    "slug": "new-research-service-orchestration-and-ai",
+    "sourceUrl": "https://telcorepublic.com/blog/new-research-service-orchestration-and-ai/",
+    "title": "New Research: Service Orchestration and AI",
+    "excerpt": "The 64-page report analyzes emerging and established vendors, including Amdocs, Blue Planet, Cisco, Ericsson, HPE, IBM, Inmanta, Itential, Netcracker, Nokia, Oracle, and Xacria.",
+    "coverImage": "/blog/covers/new-research-service-orchestration-and-ai__mesh_-_a_network_of_relations_between_entities_1.jpg",
+    "publishedAt": "2023-12-03T22:00:00.000Z",
+    "dateLabel": "DEC 04, 2023",
+    "metaDescription": "The 64-page report analyzes emerging and established vendors, including Amdocs, Blue Planet, Cisco, Ericsson, HPE, IBM, Inmanta, Itential, Netcracker, Nokia, Oracle, and Xacria.",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Telco Republic is delighted to announce its latest research report: Vendor Competitive Environment: Service Orchestration and AI for communications service providers (CSPs)."
+      },
+      {
+        "type": "paragraph",
+        "text": "The 64-page report examines the current state of the service orchestration and AI market landscape and offers insights into its future directions."
+      },
+      {
+        "type": "paragraph",
+        "text": "The report thoroughly analyzes twelve established and emerging vendors, including:"
+      },
+      {
+        "type": "list",
+        "ordered": false,
+        "items": [
+          "Amdocs",
+          "Blue Planet",
+          "Cisco",
+          "Ericsson",
+          "HPE",
+          "IBM",
+          "Inmanta",
+          "Itential",
+          "Netcracker",
+          "Nokia",
+          "Oracle",
+          "Xacria"
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "It highlights their product differentiation, product portfolio, product strategy and innovation, and strategic differentiation."
+      },
+      {
+        "type": "paragraph",
+        "text": "Key findings include:"
+      },
+      {
+        "type": "list",
+        "ordered": false,
+        "items": [
+          "The market is expected to experience a double digit compound annual growth rate (CAGR) for the next five years, outpacing all other operations support systems (OSS) and business support systems (BSS) solutions.",
+          "CSPs are poised to ramp up their investment in end-to-end orchestration, leading to the emergence of cross-domain, hybrid technology orchestration solutions.",
+          "Fragmented vendor sourcing approaches within CSPs will create opportunities for new market players to challenge incumbents by introducing specialized solutions that focus on specific use cases, such as 5G network slicing.",
+          "Over the next two years, service orchestration will transition to end-to-end service management."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "For additional details, please contact us at info@telcorepublic.com or visit https://telcorepublic.com/contact/."
+      }
+    ],
+    "authors": "Martina Kurth (CEO), Norbert Scholz"
+  },
+  {
+    "slug": "dtw23-ignite-telecom-between-hype-and-pragmatism",
+    "sourceUrl": "https://telcorepublic.com/blog/dtw23-ignite-telecom-between-hype-and-pragmatism/",
+    "title": "DTW23 – Ignite: Telecom Between Hype and Pragmatism",
+    "excerpt": "The telecom industry remains stuck between disruption and business as usual.",
+    "coverImage": "/blog/covers/dtw23-ignite-telecom-between-hype-and-pragmatism__dtw_2023_image.jpg",
+    "publishedAt": "2023-10-03T21:00:00.000Z",
+    "dateLabel": "OCT 04, 2023",
+    "metaDescription": "The telecom industry remains stuck between disruption and business as usual.",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "The TM Forum stressed the importance of industry disruption. But for CSPs and vendors, it was business as usual. Nik Willetts, TMF’s President and CEO, attempted to heighten the urgency by stating that “the clock is ticking. … This industry has three years at the most to turn itself around,” having “reached a crisis point.”"
+      },
+      {
+        "type": "paragraph",
+        "text": "There are two general takeaways from the event:"
+      },
+      {
+        "type": "paragraph",
+        "text": "(1) Digital transformation is now so deeply ingrained in all activities that it no longer signifies a departure from the past. CSPs and vendors presented multiple ongoing transformation projects."
+      },
+      {
+        "type": "paragraph",
+        "text": "The next phase in digital transformation could be the “telco-to-techco” transition. There was a separate “Techco DNA” track, and some CSP representatives, such as those from Telus, Du and Orange, endorsed this concept. Nevertheless, the concept remains vague, rendering it difficult to determine its endurance."
+      },
+      {
+        "type": "paragraph",
+        "text": "(2) Generative AI is the new buzzword, but its potential impact on the telecom industry is uncertain."
+      },
+      {
+        "type": "paragraph",
+        "text": "Currently, GenAI is limited by the fact that models have not been specifically trained on telecom data and can only support broad use cases, like customer service, personalization, subscriber insights, marketing analysis and coding assistance. Furthermore, it is unclear if combining GenAI with automation and cloud technology will truly revolutionize the industry."
+      },
+      {
+        "type": "paragraph",
+        "text": "The TM Forum used the event as a platform to promote their own initiatives, including the Open Digital Architecture (ODA), Gen5 Open APIs and its “Autonomous Network Manifesto.\""
+      },
+      {
+        "type": "paragraph",
+        "text": "CSPs want to return to basics to increase revenue and enhance profitability through maximizing connectivity."
+      },
+      {
+        "type": "paragraph",
+        "text": "Vendors see lucrative revenue opportunities in assisting CSPs with their products and services, despite the pessimistic outlook presented by the TM Forum’s President and CEO"
+      },
+      {
+        "type": "paragraph",
+        "text": "In conclusion, the telecom industry remains stuck between disruption and business as usual."
+      },
+      {
+        "type": "paragraph",
+        "text": "DTW 2023 – Ignite provided few insights into the industry’s future. Unless there is a magical alignment of all industry forces, including digital transformation, automation, orchestration, cloud, GenAI and more, we will be hearing the same code red warning in three years’ time."
+      },
+      {
+        "type": "paragraph",
+        "text": "Find out more about our take on DTW23 – Ignite in our Research Note."
+      },
+      {
+        "type": "paragraph",
+        "text": "For details, contact us by clicking on this link."
+      }
+    ],
+    "authors": "Martina Kurth, CEO"
+  },
+  {
+    "slug": "csps-must-monetize-5g-b2b-solutions",
+    "sourceUrl": "https://telcorepublic.com/blog/csps-must-monetize-5g-b2b-solutions/",
+    "title": "CSPs Must Monetize 5G B2B Solutions",
+    "excerpt": "CSPs will not remain viable in their current form beyond the coming decade unless they find new ways to monetize 5G B2B solutions. ",
+    "coverImage": "/blog/covers/csps-must-monetize-5g-b2b-solutions__communications_-_mobile_communications_-_voip.jpg",
+    "publishedAt": "2023-08-27T21:00:00.000Z",
+    "dateLabel": "AUG 28, 2023",
+    "metaDescription": "CSPs will not remain viable in their current form beyond the coming decade unless they find new ways to monetize 5G B2B solutions. ",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "CSPs Must Monetize 5G Business-to-Business (B2B) Solutions to Survive the Next Decade"
+      },
+      {
+        "type": "paragraph",
+        "text": "CSPs will not remain viable in their current form beyond the coming decade unless they find new ways to monetize 5G B2B solutions."
+      },
+      {
+        "type": "paragraph",
+        "text": "Global CSP revenues have remained static at in the range of $1.7 to $1.8 trillion for over a decade, with annual growth anticipated to be below 2% for the upcoming five years."
+      },
+      {
+        "type": "paragraph",
+        "text": "The consumer market seems to have exhausted its potential for growth, while enterprises and SMBs have the freedom to choose from a variety of suppliers, including independent software vendors (ISVs), system integrators (SIs), network equipment providers (NEPs) and hyperscalers."
+      },
+      {
+        "type": "paragraph",
+        "text": "CSPs can neither work with nor speculate on the emergence of a “killer app” – one or a small number of innovative solutions that will dominate the competition and give them a near-exclusive foothold with customers. For more details, see Telco Republic’s white paper CSPs Must Launch Agile Ecosystems and Marketplaces to Monetize 5G B2B Opportunities."
+      },
+      {
+        "type": "paragraph",
+        "text": "Operations Modernization is Critical to Successful Monetization"
+      },
+      {
+        "type": "paragraph",
+        "text": "5G will facilitate low-latency, usage-based, high-bandwidth and massive machine-type communications connecting enterprises and SMBs."
+      },
+      {
+        "type": "paragraph",
+        "text": "The evolution of 5G-driven, cognitive, transactional and event-based services, as well as emerging digital business models, will pose a challenge to the current management tools of CSPs."
+      },
+      {
+        "type": "paragraph",
+        "text": "In order to stay relevant, decision makers in the telecom industry must modernize their operations and monetization system environments in a timely manner to capitalize on their investments in 5G infrastructure."
+      },
+      {
+        "type": "paragraph",
+        "text": "Investments in digital business operations and monetization infrastructure, such catalog and configure, price, quote (CPQ)-driven lead-to-quote-to-order, will be instrumental in helping telcos to operationalize, monetize and scale opportunities in future digital value creation chains throughout the remainder of the 2020s and beyond."
+      },
+      {
+        "type": "paragraph",
+        "text": "For details, contact us by clicking on this link."
+      }
+    ],
+    "authors": "Martina Kurth, CEO"
+  },
+  {
+    "slug": "new-telco-software-market-share-report",
+    "sourceUrl": "https://telcorepublic.com/blog/new-telco-software-market-share-report/",
+    "title": "New Telco Software Market Share Report",
+    "excerpt": "The report presents software and services vendor revenue and market share data in 17 categories.",
+    "coverImage": "/blog/covers/new-telco-software-market-share-report__market_share_2022.png",
+    "publishedAt": "2023-05-14T21:00:00.000Z",
+    "dateLabel": "MAY 15, 2023",
+    "metaDescription": "The report presents software and services vendor revenue and market share data in 17 categories.",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Telco Republic released its 2022 Market Share for Next-Generation Telecom Operations and Business Support Systems (NG-TOBS) also known as Operations Support Systems (OSS) and Business Support Systems (BSS)."
+      },
+      {
+        "type": "paragraph",
+        "text": "The report presents software and services vendor revenue and market share data in 17 categories."
+      },
+      {
+        "type": "paragraph",
+        "text": "The following are among the key findings:"
+      },
+      {
+        "type": "list",
+        "ordered": false,
+        "items": [
+          "The global vendor landscape remains diversified.",
+          "Worldwide, none of the NG-TOBS vendors managed to garner more than 9% market share in 2022.",
+          "Five NG-TOBS vendors had more than 15% market share in one of the 17 categories covered in this report.",
+          "OSS Resource Orchestration is relatively concentrated, with the top 5 vendors commanding over 40% market share.",
+          "OSS Service Orchestration is more diversified, with the top 5 vendors commanding around 30% market share.",
+          "NG-TOBS in the Public Cloud is relatively concentrated, with the top 5 vendors commanding over 40% market share, although the total market size remains smaller than that for on-premise and hybrid cloud deployments.",
+          "Geographically, Latin America and the Middle East/Africa regions are most concentrated, while Western Europe is the least concentrated."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "Compared to last year’s NG-TOBS Market Share report, about one-half of the vendors covered increased their revenue, while the other half saw a decline."
+      },
+      {
+        "type": "paragraph",
+        "text": "Telco Republic believes that the NG-TOBS market will remain diversified and highly competitive in the future."
+      },
+      {
+        "type": "paragraph",
+        "text": "CSPs are seeking innovation around 5G, cloud and business-to-business (B2B) requirements."
+      },
+      {
+        "type": "paragraph",
+        "text": "The incumbent vendors are adding new functionalities into their product suites through in-house development or by acquisitions. At the same time, upstart innovators are seizing the opportunity to bring products to market in a nimble and agile fashion."
+      },
+      {
+        "type": "paragraph",
+        "text": "2022 saw its share of M&A as shown in Table 1."
+      },
+      {
+        "type": "paragraph",
+        "text": "At the same time, an even larger number of new companies entered the market, as we showed in our research note series “Emerging and Disruptive Vendors in Telecom Operations.”"
+      },
+      {
+        "type": "paragraph",
+        "text": "For details, contact us by clicking on this link."
+      },
+      {
+        "type": "paragraph",
+        "text": "Table 1. Representative NG-TOBS Mergers and Acquisitions in 2022"
+      }
+    ],
+    "authors": "Martina Kurth (CEO), Norbert Scholz"
+  },
+  {
+    "slug": "technology-discussions-shifting-to-viable-business-outcomes-at-mwc-2023",
+    "sourceUrl": "https://telcorepublic.com/blog/technology-discussions-shifting-to-viable-business-outcomes-at-mwc-2023/",
+    "title": "Technology Discussions Shifting to Viable Business Outcomes at MWC 2023",
+    "excerpt": "Telco Republic observed five throughlines that extend developments of the past two to three years",
+    "coverImage": "/blog/covers/technology-discussions-shifting-to-viable-business-outcomes-at-mwc-2023__mwc.png",
+    "publishedAt": "2023-03-14T22:00:00.000Z",
+    "dateLabel": "MAR 15, 2023",
+    "metaDescription": "Telco Republic observed five throughlines that extend developments of the past two to three years",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "The 2023 Mobile World Congress (MWC) wrapped up on March 2 2023. There were no grand unifying themes or trends this year because the Congress convened in the interlude between 5G and 6G."
+      },
+      {
+        "type": "paragraph",
+        "text": "Telco Republic observed five throughlines related to Next-Generation Telecom Operations and Business Support Systems (NG-TOBS) that extend developments of the past two to three years."
+      },
+      {
+        "type": "paragraph",
+        "text": "Read our Research Note to learn more about these five trends."
+      },
+      {
+        "type": "paragraph",
+        "text": "The State of 5GHas 5G really failed to deliver? We do not share the opinion of the 5G naysayers."
+      },
+      {
+        "type": "paragraph",
+        "text": "Equipment Hiatus and Business Case BoostHow do suppliers show their value until 6G comes along?"
+      },
+      {
+        "type": "paragraph",
+        "text": "The Enterprise OpportunityHow can CSPs and their suppliers advance in the enterprise market in the face of incumbent suppliers?"
+      },
+      {
+        "type": "paragraph",
+        "text": "The Role of HyperscalersThe hyperscalers have changed the telecom market, but how long will they be best friends with CSPs?"
+      },
+      {
+        "type": "paragraph",
+        "text": "Ecosystems and APIsWho will be the beneficiaries of open APIs, such as the GSMA’s Open Gateway API initiative, the CSPs or the hyperscalers?"
+      },
+      {
+        "type": "paragraph",
+        "text": "Find out more about our take on MWC 2023 in our Research Note."
+      },
+      {
+        "type": "paragraph",
+        "text": "For details, contact us by clicking on this link."
+      }
+    ],
+    "authors": "Martina Kurth (CEO), Norbert Scholz"
+  },
+  {
+    "slug": "amdocs-surreptitiously-ditches-mycom-osi-acquisition",
+    "sourceUrl": "https://telcorepublic.com/blog/amdocs-surreptitiously-ditches-mycom-osi-acquisition/",
+    "title": "Amdocs Surreptitiously Ditches MYCOM OSI Acquisition",
+    "excerpt": "Amdocs suddenly cancels its planned $188 million acquisition of MYCOM OSI",
+    "coverImage": "/blog/covers/amdocs-surreptitiously-ditches-mycom-osi-acquisition__dawning_of_digital_transformation.jpg",
+    "publishedAt": "2022-12-26T22:00:00.000Z",
+    "dateLabel": "DEC 27, 2022",
+    "metaDescription": "Amdocs suddenly cancels its planned $188 million acquisition of MYCOM OSI",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Amdocs, with little fanfare, canceled its planned $188 million acquisition of MYCOM OSI, a provider of SaaS-based cloud network and service assurance solutions to some of the world's largest communications service providers (CSPs)."
+      },
+      {
+        "type": "paragraph",
+        "text": "We commented on the acquisition announcement in our blog Amdocs Buys Service Assurance Provider MYCOM OSI."
+      },
+      {
+        "type": "paragraph",
+        "text": "Telco Republic is surprised by this decision, which has gone unnoticed among industry observers."
+      },
+      {
+        "type": "paragraph",
+        "text": "The termination of the agreement was filed on December 5, 2022 with the Securities and Exchange Commission (SEC) on FORM 6-K – Current report of foreign issuer pursuant to Rules 13a-16 and 15d-16 Amendments and reads as follows:"
+      },
+      {
+        "type": "paragraph",
+        "text": "“As previously disclosed, the Company entered into a definitive agreement to acquire MYCOM-OSI in May 2022. Recently, the Company and MYCOM-OSI mutually and amicably decided not to move forward with the planned acquisition following a longer than expected regulatory review process in the United Kingdom (that was still not complete). The definitive agreement has been terminated without any payments by either party to the other. This acquisition was not material and the decision not to pursue it is not expected to have an impact on the Company’s guidance.”"
+      },
+      {
+        "type": "paragraph",
+        "text": "This announcement is even more surprising if one considers that less than a month earlier, on November 8, 2022, Amdocs touted MYCOM OSI’s “assurance capabilities to network automation portfolio” as part of its “Technological leadership”. (Amdocs Limited Fiscal Q4 2022 Earnings Presentation, Slide 8, “FY22 Operational Highlights”)"
+      },
+      {
+        "type": "paragraph",
+        "text": "Amdocs’ President and CEO, Mr. Shuky Sheffer, underlined the technological significance of MYCOM OSI in Amdocs’ Q4 2022 Earnings Conference Call, stating: “We also initiated a move to add service assurance to our network automation portfolio with the planned acquisition of MYCOM OSI, which subject to certain regulatory approvals, we expect to close before the end of fiscal Q1.”"
+      },
+      {
+        "type": "paragraph",
+        "text": "Unfortunately, the oblique wording of the SEC filing is unhelpful to understand the real reasons for this sudden reversal."
+      },
+      {
+        "type": "paragraph",
+        "text": "Telco Republic can agree that the acquisition was “not material” from a financial perspective, but it was certainly not immaterial from an OSS technology leadership perspective."
+      },
+      {
+        "type": "paragraph",
+        "text": "Losing anticipated service assurance capabilities will be a setback against Amdocs’ major competitors."
+      },
+      {
+        "type": "paragraph",
+        "text": "It should be interesting to see if and how Amdocs intends to fill this gap in its OSS portfolio – by shopping for another acquisition or by building service assurance capabilities internally."
+      },
+      {
+        "type": "paragraph",
+        "text": "For case studies or implementation best practice examples, please book an inquiry with us."
+      }
+    ],
+    "authors": "Martina Kurth (CEO), Norbert Scholz"
+  },
+  {
+    "slug": "telco-republic-research-notes",
+    "sourceUrl": "https://telcorepublic.com/blog/telco-republic-research-notes/",
+    "title": "Telco Republic Research Notes",
+    "excerpt": "Telco Republic presents new research on the emerging market for telecom Operations Support Systems (OSS) and Business Support Systems (BSS)",
+    "coverImage": "/blog/covers/telco-republic-research-notes__ecommerce_strategy_-_entrepreneur_-_dropshipping_-_online_business_2.jpg",
+    "publishedAt": "2022-09-26T21:00:00.000Z",
+    "dateLabel": "SEP 27, 2022",
+    "metaDescription": "Telco Republic presents new research on the emerging market for telecom Operations Support Systems (OSS) and Business Support Systems (BSS)",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Telco Republic is pleased to present an update of our research on the emerging next-generation Telecom Operations and Business Support Systems (NG-TOBS) market."
+      },
+      {
+        "type": "paragraph",
+        "text": "All research notes are available to clients of Telco Republic's subscription service."
+      },
+      {
+        "type": "paragraph",
+        "text": "To subscribe, contact us at info@telcorepublic.com or by filling out this online form."
+      },
+      {
+        "type": "paragraph",
+        "text": "Individual research notes are available on request. Contact us for more information."
+      },
+      {
+        "type": "image",
+        "src": "/blog/inline/telco-republic-research-notes__86b1ddc13a__telco_republic_reasearch_notes_september_2022_page_1.jpg"
+      },
+      {
+        "type": "image",
+        "src": "/blog/inline/telco-republic-research-notes__4718c6e8a9__telco_republic_reasearch_notes_september_2022_page_2.jpg"
+      },
+      {
+        "type": "image",
+        "src": "/blog/inline/telco-republic-research-notes__561ff632e9__telco_republic_reasearch_notes_september_2022_page_3.jpg"
+      },
+      {
+        "type": "image",
+        "src": "/blog/inline/telco-republic-research-notes__341f548f19__telco_republic_reasearch_notes_september_2022_page_4.jpg"
+      }
+    ],
+    "authors": "Martina Kurth (CEO), Norbert Scholz"
+  },
+  {
+    "slug": "join-telco-republic-at-dtw-2022",
+    "sourceUrl": "https://telcorepublic.com/blog/join-telco-republic-at-dtw-2022/",
+    "title": "Join Telco Republic at DTW 2022",
+    "excerpt": "Telco Republic will be available for in-person meetings at Digital Transformation World 2022.",
+    "coverImage": "/blog/covers/join-telco-republic-at-dtw-2022__city-6122118_19201.jpg",
+    "publishedAt": "2022-09-05T21:00:00.000Z",
+    "dateLabel": "SEP 06, 2022",
+    "metaDescription": "Telco Republic will be available for in-person meetings at Digital Transformation World 2022.",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Telco Republic will be available for in-person meetings at Digital Transformation World 2022."
+      },
+      {
+        "type": "paragraph",
+        "text": "This is a unique opportunity for vendors and telecom operators to brainstorm with industry experts."
+      },
+      {
+        "type": "paragraph",
+        "text": "Get incisive and thought-provoking research and advisory perspectives on the latest developments in Next-Generation Telecom Operations and Business Support Systems (NG-TOBS), also known as operations support systems (OSS) and business support systems (BSS)."
+      },
+      {
+        "type": "paragraph",
+        "text": "Our analyst team is here for you."
+      },
+      {
+        "type": "paragraph",
+        "text": "Don’t miss the chance to book your in-person meeting in just a few clicks. Sign-up is easy and unbureaucratic."
+      },
+      {
+        "type": "paragraph",
+        "text": "Just click here, or simply email us at info@telcorepublic.com or martina.kurth@telcorepublic.com."
+      },
+      {
+        "type": "paragraph",
+        "text": "Our experts can advise you on topics like:"
+      },
+      {
+        "type": "list",
+        "ordered": false,
+        "items": [
+          "CSPs’ journeys toward finding their role as cloud-native, software-driven digital native operators.",
+          "The future role of OSS and BSS. How to facilitate true change in the new telco world.",
+          "The role of hyperscalers and the new disruption opportunity in telco OSS and BSS.",
+          "Best practices to foster innovation at scale, across technology, culture and organization.",
+          "Evolving industry ecosystem value chains and resulting partner and relationship challenges.",
+          "Digital disruption and its implications on the long-term telco technology strategy.",
+          "Corresponding impact of evolving technologies, such as Cloud, 5G, ORAN, IoT on telco infrastructures (qualitative and quantitative assessment).",
+          "The formation of a new telco vendor market landscape addressing digital market needs."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "Reserve your spot today by clicking here, or emailing us at info@telcorepublic.com or martina.kurth@telcorepublic.com."
+      }
+    ],
+    "authors": "Martina Kurth, CEO"
+  },
+  {
+    "slug": "telco-republic-ag-recognition-in-the-global-media",
+    "sourceUrl": "https://telcorepublic.com/blog/telco-republic-ag-recognition-in-the-global-media/",
+    "title": "Telco Republic AG Recognition in the Global Media",
+    "excerpt": "Telco Republic is being recognized by the global media",
+    "coverImage": "/blog/covers/telco-republic-ag-recognition-in-the-global-media__business_man_drawing_network_on_world_map_1.jpg",
+    "publishedAt": "2022-08-19T21:00:00.000Z",
+    "dateLabel": "AUG 20, 2022",
+    "metaDescription": "Telco Republic is being recognized by the global media",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Telco Republic is a new research & advisory firm, with specific focus on innovation and disruption in the global telecommunications marketplace. We were founded only less than a year ago. And already we’re already being noticed by the global media."
+      },
+      {
+        "type": "paragraph",
+        "text": "Our new Disrupter Quintant for Next-Generation Telecom Operations and Business Support Systems (NG-TOBS) is hot off the press. We don’t use magic, wizardry or any some such prestidigitation but conduct solid research to gauge this emerging market. Check out the Disrupter Quintant preview in our blog and on LinkedIn."
+      },
+      {
+        "type": "paragraph",
+        "text": "We also have a slew of research notes ready and in the hopper investigating hot topics in telecom, such as: How do telecom providers innovate using internal and external tools; how are they using microservices; how are they adapting to post-Covid realities; what does 5G mean for the future of the industry and many more."
+      },
+      {
+        "type": "paragraph",
+        "text": "Contact us if you want to find out more."
+      },
+      {
+        "type": "paragraph",
+        "text": "Here is a short list of Telco Republic in the global media:"
+      },
+      {
+        "type": "paragraph",
+        "text": "Bloomberg"
+      },
+      {
+        "type": "paragraph",
+        "text": "Morningstar"
+      },
+      {
+        "type": "paragraph",
+        "text": "Financial Post"
+      },
+      {
+        "type": "paragraph",
+        "text": "FinanzNachrichten"
+      },
+      {
+        "type": "paragraph",
+        "text": "StreetInsider"
+      },
+      {
+        "type": "paragraph",
+        "text": "CyberNews"
+      },
+      {
+        "type": "paragraph",
+        "text": "TMCnet"
+      },
+      {
+        "type": "paragraph",
+        "text": "Business Operations"
+      },
+      {
+        "type": "paragraph",
+        "text": "Silicon"
+      },
+      {
+        "type": "paragraph",
+        "text": "DR Journal"
+      },
+      {
+        "type": "paragraph",
+        "text": "Investidollar"
+      },
+      {
+        "type": "paragraph",
+        "text": "IT Business Net"
+      },
+      {
+        "type": "paragraph",
+        "text": "Le Lézard"
+      },
+      {
+        "type": "paragraph",
+        "text": "MISCW"
+      },
+      {
+        "type": "paragraph",
+        "text": "Pipeline"
+      },
+      {
+        "type": "paragraph",
+        "text": "The AI Journal"
+      },
+      {
+        "type": "paragraph",
+        "text": "WN"
+      },
+      {
+        "type": "paragraph",
+        "text": "Yahoo! Live"
+      },
+      {
+        "type": "paragraph",
+        "text": "Acrofan"
+      },
+      {
+        "type": "paragraph",
+        "text": "aiTechPark"
+      }
+    ],
+    "authors": "Martina Kurth (CEO); Norbert Scholz"
+  },
+  {
+    "slug": "new-research-disrupter-quintant-for-next-generation-telecom-operations-and-business-support-systems-ng-tobs",
+    "sourceUrl": "https://telcorepublic.com/blog/new-research-disrupter-quintant-for-next-generation-telecom-operations-and-business-support-systems-ng-tobs/",
+    "title": "New Research: Disrupter Quintant for Next-Generation Telecom Operations and Business Support Systems (NG-TOBS)",
+    "excerpt": "Telco Republic s 43-page Disrupter Quintant fills a white space in next-generation operations support systems (OSS) and business support systems (BSS) research",
+    "coverImage": "/blog/covers/new-research-disrupter-quintant-for-next-generation-telecom-operations-and-business-support-systems-ng-tobs__disrupter_quintant.jpg",
+    "publishedAt": "2022-06-19T21:00:00.000Z",
+    "dateLabel": "JUN 20, 2022",
+    "metaDescription": "Telco Republic s 43-page Disrupter Quintant fills a white space in next-generation operations support systems (OSS) and business support systems (BSS) research",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Telco Republic AG, a new research and advisory firm, just launched the first Disrupter Quintant for Next-Generation Telecom Operations and Business Support Systems (NG-TOBS)."
+      },
+      {
+        "type": "paragraph",
+        "text": "The 43-page report fills a white space in covering this important market that has been neglected by mainstream industry reporting and analysis."
+      },
+      {
+        "type": "paragraph",
+        "text": "Telco Republic has performed a rigorous and in-depth selection, evaluation and analysis of eight leading NG-TOBS vendors. The result is a deep dive into these vendors’ ability to disrupt the traditional operations support systems (OSS) and business support systems (BSS) markets by enabling communications service providers (CSPs) to transition from traditional OSS and BSS to NG-TOBS infrastructures, composed of horizontally architected, cognitive, cloud-based operational and business infrastructure as well as monetization and customer management orchestration."
+      },
+      {
+        "type": "paragraph",
+        "text": "The Disrupter Quintant assesses vendors across five “quintants” and two dimensions to provide guidance to CSPs how to navigate this emerging market, and how to make the best technology buying decisions."
+      },
+      {
+        "type": "paragraph",
+        "text": "The following are some of the key findings:"
+      },
+      {
+        "type": "list",
+        "ordered": false,
+        "items": [
+          "NG-TOBS vendors predominantly innovate internally, or they get pulled into CSP innovation initiatives, rather than establishing relationships with startups.",
+          "New NG-TOBS products and solutions are cloud-native but CSPs are slow to migrate to the public cloud. Most implementations are still on premise or in the private cloud.",
+          "The role of hyperscalers will be a game changer for the evolution of CSPs’ operating models and hence disrupt the way NG-TOBS is delivered."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "For more details, contact Telco Republic at:martina.kurth@telcorepublic.com norbert.scholz@telcorepublic.com info@telcorepublic.com"
+      },
+      {
+        "type": "paragraph",
+        "text": "For case studies or implementation best practice examples, please book an inquiry with us."
+      }
+    ],
+    "authors": "Martina Kurth (CEO), Norbert Scholz"
+  },
+  {
+    "slug": "amdocs-buys-service-assurance-provider-mycom-osi",
+    "sourceUrl": "https://telcorepublic.com/blog/amdocs-buys-service-assurance-provider-mycom-osi/",
+    "title": "Amdocs Buys Service Assurance Provider MYCOM OSI",
+    "excerpt": "MYCOM OSI brings to the Amdocs portfolio a service assurance suite that includes performance management, fault management and service quality management. ",
+    "coverImage": "/blog/covers/amdocs-buys-service-assurance-provider-mycom-osi__fly-d-zi62gpjkak82_1.jpg",
+    "publishedAt": "2022-05-25T21:00:00.000Z",
+    "dateLabel": "MAY 26, 2022",
+    "metaDescription": "MYCOM OSI brings to the Amdocs portfolio a service assurance suite that includes performance management, fault management and service quality management. ",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "According to a May 24, 2022 company press release, U.K. private equity firm Inflexion offloaded MYCOM OSI to Amdocs for $188 million, nearly 50% more than what it paid three and a half years ago. MYCOM OSI is a provider of SaaS-based cloud network and service assurance solutions to some of the world's largest communications service providers (CSPs). Amdocs is one of the largest operations support (OSS) and business support (BSS) services and software vendors to CSPs."
+      },
+      {
+        "type": "paragraph",
+        "text": "MYCOM OSI, a 25 year-old company, brings to the Amdocs portfolio a service assurance suite that includes performance management, fault management and service quality management. The suite leverages artificial intelligence (AI) and machine learning (ML) to detect and predict anomalies and enable intent-driven closed loop operations through automated remediation and AIOps."
+      },
+      {
+        "type": "paragraph",
+        "text": "The acquisition shows that Amdocs continues to purchase innovation, rather than developing it in-house. At the relatively high cost of around five times MYCOM OSI's annual revenue, the acquisition amounts to about 60% of Amdocs' FY2021 research and development budget."
+      },
+      {
+        "type": "paragraph",
+        "text": "Based on Telco Republic's count, this is Amdocs' sixth acquisition since the beginning of 2020 and its largest one since it acquired Vubiquity in 2018."
+      },
+      {
+        "type": "paragraph",
+        "text": "The acquisition strengthens Amdocs' capabilities in OSS, which has always been playing second fiddle behind its BSS prowess. With the addition of service assurance, Amdocs joins the ranks of some of its competitors that also beefed up their OSS portfolios through acquisitions, namely Oracle with Federos and Ericsson with CENX."
+      },
+      {
+        "type": "paragraph",
+        "text": "According to Amdocs CEO Shuky Sheffer, MYCOM OSI will complement Amdocs' \"three core strategic pillars – intelligent network automation, 5G and cloud.\" It remains to be seen whether MYCOM OSI will be integrated tightly into Amdocs' sprawling OSS and BSS portfolio in an effort to build a full-stack OSS and BSS solution, or whether it will run its own shop, at least in the short term."
+      },
+      {
+        "type": "paragraph",
+        "text": "One of the more interesting corollaries of the acquisition that might point to possible synergies is Amdocs' evolving relationship with the hyperscalers, in particular Amazon Web Services (AWS). MYCOM OSI lately tied its fortunes closely to AWS and already scored a number of public cloud wins, including Globe Telecom in the Philippines, Three UK, Magenta Telekom in Austria and Vodafone UK. Similarly, Amdocs – mainly via Openet and Optima – signed up multiple CSPs for its public cloud solutions, albeit mainly for BSS."
+      },
+      {
+        "type": "paragraph",
+        "text": "For case studies or implementation best practice examples, please book an inquiry with us."
+      }
+    ],
+    "authors": "Norbert Scholz"
+  },
+  {
+    "slug": "telco-innovation-takes-center-stage-at-mwc-2022",
+    "sourceUrl": "https://telcorepublic.com/blog/telco-innovation-takes-center-stage-at-mwc-2022/",
+    "title": "Telco Innovation Takes Center Stage at MWC 2022",
+    "excerpt": "The common theme was how technology such as AI, cloud, 5G, robotics and big data will transform businesses and change the way society interact",
+    "coverImage": "/blog/covers/telco-innovation-takes-center-stage-at-mwc-2022__mwc-2022_1.jpg",
+    "publishedAt": "2022-03-14T22:00:00.000Z",
+    "dateLabel": "MAR 15, 2022",
+    "metaDescription": "The common theme was how technology such as AI, cloud, 5G, robotics and big data will transform businesses and change the way society interact",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Over 60,000 attendees convened in-person from around the world to discuss the evolution of mobile telecommunications. Above all, innovation to drive new revenue streams took center stage in all discussions, particularly unlocking the potential of vertical industries."
+      },
+      {
+        "type": "paragraph",
+        "text": "The common theme was how technology such as AI, cloud, 5G, robotics and big data will transform businesses and change the way society interact moving forward. Eventually the digital and connected economy represents an unprecedented potential for telcos to drive new revenue streams."
+      },
+      {
+        "type": "paragraph",
+        "text": "However, adequate innovation investments will be pivotal to capitalize on these bespoke market changes. The shift toward becoming a digital-native CSP will trigger innovation spanning all areas of telco operations: Connectivity as well as business model innovation have to be intertwined with the operations and business support systems to facilitate this paradigm shift."
+      },
+      {
+        "type": "paragraph",
+        "text": "Telco Republic met with numerous senior industry executives of leading market players on the CSP and vendor and system integrator side to discuss innovation focus areas. Highlights of our discussions were:"
+      },
+      {
+        "type": "paragraph",
+        "text": "Vodafone is aligning business and technology transformation and aims to establish new KPIs in the digital economy."
+      },
+      {
+        "type": "paragraph",
+        "text": "Swisscom is exploring new vertical industry ecosystems and business models to drive B2B revenue streams to new heights."
+      },
+      {
+        "type": "paragraph",
+        "text": "Andorra Telecom is venturing into a full telco SaaS-based operating model, forcing significant OPEX/CAPEX reductions and efficiency improvements."
+      },
+      {
+        "type": "paragraph",
+        "text": "On the telco software vendor side:"
+      },
+      {
+        "type": "paragraph",
+        "text": "Oracle is among the cloud-native early movers to promote a new telco operations and monetization paradigm in the light of 5G, IoT and edge."
+      },
+      {
+        "type": "paragraph",
+        "text": "Netcracker announced the launch of a digital platform encompassing a new breed of OSS/BSS, that will take intelligent telco automation to a new innovation level. Moreover, the company's strong transformation and legacy integration methodology advocates technology change, particularly in heterogeneous multi-technology domain environments."
+      },
+      {
+        "type": "paragraph",
+        "text": "Approaching the telco market from the IT infrastructure/enterprise angle:"
+      },
+      {
+        "type": "paragraph",
+        "text": "HPE is taking a bold position as an edge-to-cloud platform-as-a-service company. Being known as a robust technology player, HPE is well positioned in the emerging markets for 5G edge operations and service orchestration, especially with tier-1 CSPs and operator groups seeking to reap multi-domain as-a-service benefits."
+      },
+      {
+        "type": "paragraph",
+        "text": "SIs such Atos are taking a transformation leadership role, providing a partner ecosystem blueprint to facilitate the formation of new successful solution delivery value chains, including OSS/BSS. No single player will solve the complexity issues of bespoke technologies such as 5G, IoT or edge."
+      },
+      {
+        "type": "paragraph",
+        "text": "Even in meetings in meetings with the traditional telco network equipment vendors Nokia and Ericsson we witnessed the shift from network-driven to cloud-native, data-driven topics to cater to new digital business models, such as AI/big data, digital monetization, multi-cloud and of course 5G, IoT and network slicing operations and monetization."
+      },
+      {
+        "type": "paragraph",
+        "text": "AWS is driving a significant innovation push, shaking up conventional telco solution value chains and delivery models, for example with its launch of 5G private networks, Cloud WAN and Outposts. AWS is partnering with most OSS/BSS vendors who deliver their traditional stacks as cloud-enabled service delivery on top of AWS, and has gained considerable traction during the past two years. For example, the following vendors have publicly announced OSS and BSS solutions on AWS: BNET (Bahrain) – Beyond Now; CBTS (Canada) – CSG International; Deutsche Telekom – Netcracker; Lebara (Denmark, France, Germany, Netherlands, U.K.) – Amdocs; Liberty Global (Netherlands) – Nokia; Telenor Connexion – Ericsson; Videtron (Canada) – Etiya."
+      },
+      {
+        "type": "paragraph",
+        "text": "For case studies or implementation best practice examples, please book an inquiry with us."
+      }
+    ],
+    "authors": "Martina Kurth, CEO"
+  },
+  {
+    "slug": "csps-need-to-master-technology",
+    "sourceUrl": "https://telcorepublic.com/blog/csps-need-to-master-technology/",
+    "title": "CSPs Need to Master Technology",
+    "excerpt": "CSPs will fail in their digital endeavors without anticipating the implications on workforce, culture, processes and product/service development.",
+    "coverImage": "/blog/covers/csps-need-to-master-technology__analytics_-_concept_-_with_copyspace.jpg",
+    "publishedAt": "2022-03-13T22:00:00.000Z",
+    "dateLabel": "MAR 14, 2022",
+    "metaDescription": "CSPs will fail in their digital endeavors without anticipating the implications on workforce, culture, processes and product/service development.",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Network-based CSPs around the world, such as AT&T, Telefonica and Vodafone have embarked upon primarily technology-centric initiatives to manage the shift toward becoming a Digital Service Provider (DSP). However, such digital technology transformations often lack organizational and change management leadership, tackling intrinsic skillset, behavioral and cultural implications that underpin the core of digital business."
+      },
+      {
+        "type": "paragraph",
+        "text": "We see significant talent management challenges that arise in the context of the proliferation of digital technologies such as cloud, SDN/NFV, 5G and IoT. The crux of digital technology is about enabling fundamentally new business models that entail usage based discrete, real-time, AI-driven operational interactions and events residing in digital partner ecosystems."
+      },
+      {
+        "type": "paragraph",
+        "text": "Technology infrastructure transformation programs cannot unlock the business value of digital technology without factoring in people, organization and skill sets. Here are the four major digital dexterity factors that CSPs` technology talent management initiatives need to tackle:"
+      },
+      {
+        "type": "heading",
+        "level": 4,
+        "text": "Impact 1"
+      },
+      {
+        "type": "paragraph",
+        "text": "The paradigm shift from network-based operator to software driven operator cuts deep into the traditional development and operations structures."
+      },
+      {
+        "type": "heading",
+        "level": 4,
+        "text": "Impact 2"
+      },
+      {
+        "type": "paragraph",
+        "text": "Non-technical skill deficiencies create digital talent cliffs."
+      },
+      {
+        "type": "heading",
+        "level": 4,
+        "text": "Impact 3"
+      },
+      {
+        "type": "paragraph",
+        "text": "Digital Technology will face constraints by traditional organizational models."
+      },
+      {
+        "type": "heading",
+        "level": 4,
+        "text": "Impact 4"
+      },
+      {
+        "type": "paragraph",
+        "text": "Culture and mindset underpin digital dexterity."
+      },
+      {
+        "type": "paragraph",
+        "text": "Network based CSPs have to adopt an agile, on-demand service delivery culture that is the norm for cloud-native companies operating in the digital business paradigm."
+      },
+      {
+        "type": "paragraph",
+        "text": "For case studies or implementation best practice examples, please book an inquiry with us."
+      }
+    ],
+    "authors": "Martina Kurth, CEO"
+  },
+  {
+    "slug": "microservices-architectures-can-help-tsps",
+    "sourceUrl": "https://telcorepublic.com/blog/microservices-architectures-can-help-tsps/",
+    "title": "Microservices Architectures Can Help TSPs",
+    "excerpt": "Technology service providers (TSPs) can gain benefits of a microservices architecture (MSA) by solving specific problems in a well-defined solution scope.",
+    "coverImage": "/blog/covers/microservices-architectures-can-help-tsps__people_in_a_network_sharing_ideas_-_social_connections.jpg",
+    "publishedAt": "2022-03-13T22:00:00.000Z",
+    "dateLabel": "MAR 14, 2022",
+    "metaDescription": "Technology service providers (TSPs) can gain benefits of a microservices architecture (MSA) by solving specific problems in a well-defined solution scope.",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Microservices design and deployment patterns has gained prominence in the TSP industry in an endeavor to boost business agility and operational efficiency in the light of evolving digital environments."
+      },
+      {
+        "type": "paragraph",
+        "text": "The term “microservices architecture” (MSA) stems from IT applications architecture world. It manifests a composite of the various types of application infrastructure technologies used to build, deploy, run and manage fine-grained distributed application components (microservices)."
+      },
+      {
+        "type": "paragraph",
+        "text": "Digital innovators and over-the-top (OTT) players, such as Airbnb, Dropbox and Twitter, have achieved significant development agility and time-to-market improvements of up to 75% by adopting this approach."
+      },
+      {
+        "type": "paragraph",
+        "text": "Tech leaders are now exploring the option adopt microservices to solve agility problems in evolving software-driven, cloud-native service delivery infrastructures. While microservices are part of cloud-native architectures, there is also an option to create cloud-native applications without using microservices."
+      },
+      {
+        "type": "paragraph",
+        "text": "However, the anticipated benefits of MSA will only be realized solving specific problems in a well-defined solution scope, as broad adoption may become complex and expensive.TSPs can generate an early mover advantage, but only if the prerequisites are given to achieve the actual benefit from MSA."
+      },
+      {
+        "type": "paragraph",
+        "text": "Keep in mind that MSA is a post-DevOps capability. Without a continual change demand, and an organization that’s already prepared to develop rapidly, MSA will be at best a marketing bullet point.That means before adopting microservices pattern, TSPs need to be good at developing software using modern practices including agile, DevOps and CI/CT/CD."
+      },
+      {
+        "type": "paragraph",
+        "text": "For case studies or implementation best practice examples, please book an inquiry with us."
+      }
+    ],
+    "authors": "Martina Kurth, CEO"
+  },
+  {
+    "slug": "the-new-telco-era-post-covid-19",
+    "sourceUrl": "https://telcorepublic.com/blog/the-new-telco-era-post-covid-19/",
+    "title": "The New Telco Era Post COVID-19",
+    "excerpt": "Covid-19 will transform telecom providers as facilitators of changes in consumer demand, enterprise innovation and the way society interacts.",
+    "coverImage": "/blog/covers/the-new-telco-era-post-covid-19__5g_antenna_-_future_of_connectivity-_1_.jpg",
+    "publishedAt": "2022-03-13T22:00:00.000Z",
+    "dateLabel": "MAR 14, 2022",
+    "metaDescription": "Covid-19 will transform telecom providers as facilitators of changes in consumer demand, enterprise innovation and the way society interacts.",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "COVID-19 will be a game changer for telecommunications providers as facilitators of changes in consumer demand, enterprise innovation and the way the entire society interacts."
+      },
+      {
+        "type": "paragraph",
+        "text": "According to telco leaders, one conclusion sticks out: Moving forward COVID-19's impact on the digital society will underpin and help boosting CSPs' digital transformation strategies. But companies will also benefit from the \"new normal\" as far as remote operating paradigms and telco talent sourcing, independent of location, are concerned. Here are the main COVID-19 implications, that will inevitably shape CSPs' strategy moving forward:"
+      },
+      {
+        "type": "paragraph",
+        "text": "Remote EverywhereRemote operations will persist as the biggest structural power change in the telco sector."
+      },
+      {
+        "type": "paragraph",
+        "text": "Location Independent Access to Specialist Talent This will be the most powerful game changer for the telecommunications industry."
+      },
+      {
+        "type": "paragraph",
+        "text": "CSPs Will Have to Reinvent Their DNAThis shift will be foremost reflected through CSPs' positioning in Digital Value Creation Ecosystems in the OTT-dominated digital economy."
+      },
+      {
+        "type": "paragraph",
+        "text": "New Operating Paradigmsthe proliferation of the digital services requires foremost deep changes in telco companies' business and operating model, intertwined with skillsets and organizational change management."
+      },
+      {
+        "type": "paragraph",
+        "text": "Changing Consumer Spending Behavior Usage Patterns and VolumeMuch of the forced changes in consumer behavior, as well as enterprise sector restructuring, will accelerate investments in bandwidth upgrades (incl. core network, 5G and FTTx)."
+      },
+      {
+        "type": "paragraph",
+        "text": "Reformation of External Supplier Relationships in Favor of Local (External) Customer Response TeamsThis implies adjustments of supplier sourcing criteria, shifting to local and nearshoring, as well as digital KPIs that support strategic technology investments."
+      },
+      {
+        "type": "paragraph",
+        "text": "For case studies or implementation best practice examples, please book an inquiry with us."
+      }
+    ],
+    "authors": "Martina Kurth, CEO"
+  },
+  {
+    "slug": "5g-business-scalability-hinges-on-operations",
+    "sourceUrl": "https://telcorepublic.com/blog/5g-business-scalability-hinges-on-operations/",
+    "title": "5G Business Scalability Hinges on Operations",
+    "excerpt": "We explore how telcos can create value at scale by tapping into the real value of 5G and injecting value as part of wider digital economic value chains.",
+    "coverImage": "/blog/covers/5g-business-scalability-hinges-on-operations__communications_-_mobile_communications_-_apps_-_it.jpg",
+    "publishedAt": "2022-03-13T22:00:00.000Z",
+    "dateLabel": "MAR 14, 2022",
+    "metaDescription": "We explore how telcos can create value at scale by tapping into the real value of 5G and injecting value as part of wider digital economic value chains.",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "As telcos investments in 5G backend infrastructures advances, the question regarding the capitalization of 5G use cases and business value at scale remains. What value will 5G bring as part of wider digital ecosystems and value chains, especially in conjunction with the proliferation of Edge computing?"
+      },
+      {
+        "type": "paragraph",
+        "text": "5G Implies a Fundamental Market Shift"
+      },
+      {
+        "type": "paragraph",
+        "text": "5G will connect industries with low-latency usage-based, high bandwidth and massive machine type communications, and early mover use cases will reside in discrete areas at smaller scale."
+      },
+      {
+        "type": "paragraph",
+        "text": "Potential Accelerators and Inhibitors"
+      },
+      {
+        "type": "paragraph",
+        "text": "New 5G enabled services will disrupt any telco business that lacks software supporting the event-driven, real-time nature of digital business operations. Telcos can now tap into evolving digital ecosystems and business models toward consumption-based value creation."
+      },
+      {
+        "type": "paragraph",
+        "text": "With 5G, the nature of underlying services will transform from traditional network-based services, to services with unique service quality, low latency (or minimum video quality) and bandwidth requirements. This will enable use cases such as augmented reality, drone video, network slicing and Internet of Things (IoT). 5G enables devices to consume data at even higher rates and in short order, speed becomes the value play,"
+      },
+      {
+        "type": "paragraph",
+        "text": "In the future, we will IoT ecosystems connecting high power and low power devices, machine-type of communications across industry verticals such as smart cities, public safety or transport, Industrie 4.0 or connected cars."
+      },
+      {
+        "type": "paragraph",
+        "text": "The next big wave will be to deploy the 5G ultra-low latency-sensitive portions of an application at the Edge of the network, requiring new micro-orchestration solution from core-to-edge."
+      },
+      {
+        "type": "paragraph",
+        "text": "Bottom line: 5G will change the nature of telco services business, as well as the way services are created, designed and delivered to customers. 5G and edge deployed on larger scale, in conjunction with AI-and data-driven operations and monetization, will become the foundation for digitalization across industries."
+      },
+      {
+        "type": "heading",
+        "level": 4,
+        "text": "For case studies or implementation best practice examples, please book an inquiry with us."
+      }
+    ],
+    "authors": "Martina Kurth, CEO"
+  },
+  {
+    "slug": "strategic-innovation-imperatives",
+    "sourceUrl": "https://telcorepublic.com/blog/strategic-innovation-imperatives/",
+    "title": "Strategic Innovation Imperatives",
+    "excerpt": "The success of 5G hinges on a combination of business model innovation, fruitful partnerships and adequate digital operations infrastructure.",
+    "coverImage": "/blog/covers/strategic-innovation-imperatives__cloud_infrastructure_-_infrastructure_as_a_service_-_iaas_1.jpg",
+    "publishedAt": "2022-03-13T22:00:00.000Z",
+    "dateLabel": "MAR 14, 2022",
+    "metaDescription": "The success of 5G hinges on a combination of business model innovation, fruitful partnerships and adequate digital operations infrastructure.",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Typically 5G discussions evolve around the question what the killer application will be to build a viable 5G business case. However, panel discussions among early mover telcos advocate their view that 5G actually will be foundational for digitalization in the new digital economy."
+      },
+      {
+        "type": "paragraph",
+        "text": "During the recent Virtual Workshop Enabling New Business Models with 5G, facilitated by Juliet Media, key telco executives stressed challenges and potential of evolving digital business models and emerging 5G value creation ecosystems (further insights)."
+      },
+      {
+        "type": "paragraph",
+        "text": "The collective triumph of 5G will rather hinge on the successful formation of industry ecosystems, as well as the innovation in terms of business models that allow to fully leverage the potential of 5G technology across industry value chains."
+      },
+      {
+        "type": "paragraph",
+        "text": "Telcos have yet to innovate commercial business models. Currently, much strategic focus is being placed on consumer strategies. However, moving forward much more emphasis will be placed on enterprise B2B2B and B2B2C telco strategies, to be able to exploit the vast potential of commercial 5G revenue streams across commercial value creation ecosystems."
+      },
+      {
+        "type": "paragraph",
+        "text": "The challenge for telcos to inject value in new digital value creation ecosystems and evolving 5G partnerships is far more complex and requires them to re-invent themselves, not just on a technology and commercial/business model front. It also requires that telcos modernize their current operating and monetization architectures to meet these digital agility requirements and in order to be able capitalize on new backend telco infrastructures."
+      },
+      {
+        "type": "paragraph",
+        "text": "For case studies or implementation best practice examples, please book an inquiry with us."
+      }
+    ],
+    "authors": "Martina Kurth, CEO"
+  },
+  {
+    "slug": "generation-shift-at-swisscom-amidst-technology-challenges",
+    "sourceUrl": "https://telcorepublic.com/blog/generation-shift-at-swisscom-amidst-technology-challenges/",
+    "title": "Generation Shift at Swisscom Amidst Technology Challenges",
+    "excerpt": "Swiscom CEO Urs Schaeppi will step down on June 1 after 9 years as CEO to be followed by Christoph Aeschlimann",
+    "coverImage": "/blog/covers/generation-shift-at-swisscom-amidst-technology-challenges__claudio-schwarz-ekwipwgfruo-unsplash.jpg",
+    "publishedAt": "2022-03-13T22:00:00.000Z",
+    "dateLabel": "MAR 14, 2022",
+    "metaDescription": "Swiscom CEO Urs Schaeppi will step down on June 1 after 9 years as CEO to be followed by Christoph Aeschlimann",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "The Swiss incumbent, which is 51% owned by the Swiss government, announced a \"strong financial result in 2021,\" when it recorded growth in revenue and operating income despite the difficulties related to the pandemic. Putting customer experience at the center of all activities, while pursuing a drastic operational paradigm shift, and tireless focus on efficiency improvements and cost savings over the past years, have paid off. As a result, Swisscom is well positioned to cope with structural and changes in demand, which will ultimately shake up the technology strategy of any CSP post-Covid."
+      },
+      {
+        "type": "paragraph",
+        "text": "Unexpectedly coinciding with the timing of the paradigm shift, the CEO Urs Schaeppi decided to step down on June 1 after 9 years as CEO."
+      },
+      {
+        "type": "paragraph",
+        "text": "Furthermore, Swisscom is still seeking clarity with the Swiss Competition Commission (ComCo) and the Federal Administrative Court (FAC) regarding the planned expansion of its mission-critical fiber-optic network expansion to drive digitization forward."
+      },
+      {
+        "type": "paragraph",
+        "text": "The focus is now on the deployment of fiber-to-the-home (FTTH). Swisscom had aimed to double FTTH coverage to around 60% in Switzerland by 2025, but said the intervention by the authorities would make such a feat significantly more expensive and would reduce the planned coverage to 50%."
+      },
+      {
+        "type": "paragraph",
+        "text": "Swisscom was one of the European early mover technology innovators to introduce 5G in 2019. In terms of 5G coverage, Swisscom claims it currently covers 99% of the Swiss population with a basic version of 5G."
+      },
+      {
+        "type": "paragraph",
+        "text": "New Company Leadership from the Technology Side of the House"
+      },
+      {
+        "type": "paragraph",
+        "text": "Swisscom announced that Christoph Aeschlimann, currently head of infrastructure, network and IT, and a member of Swisscom's group executive board since 2019, will take over the top job when Schaeppi leaves on June 1, 2022."
+      },
+      {
+        "type": "paragraph",
+        "text": "During his 3 years as CTIO at Swisscom, Aeschlimann was taking a strong leadership position to drive the required organizational alignment alongside operational and technology change. Among his achievements is the promotion of \"Value Streams\" – interdisciplinary teams and adaptive organizational process organizations with and end-to end responsibility to create, design and deliver a product or service, spanning business, development as well as operations."
+      },
+      {
+        "type": "paragraph",
+        "text": "This position is also reflected in its financial position:"
+      },
+      {
+        "type": "paragraph",
+        "text": "Strong Financial Year Result 2021"
+      },
+      {
+        "type": "paragraph",
+        "text": "For the 2022 financial year, Swisscom is forecasting net revenue of CHF 11.1 billion to CHF 11.2 billion ($12 billion to $12.2 billion), EBITDA of around CHF 4.4 billion ($4.77 billion) and capital expenditure of around CHF 2.3 billion ($2.5 billion). Swisscom is proposing an unchanged dividend of CHF 22 ($23.86) per share for both 2021 and 2022."
+      },
+      {
+        "type": "paragraph",
+        "text": "In 2021, group revenue increased by 0.7% year-on-year to CHF 11.2 billion (US$12.1 billion), once again primarily owing to growth at Italian unit Fastweb. Group EBITDA increased by 2.2% to CHF 4.45 billion ($4.82 billion). In Switzerland, revenue fell slightly by 0.2% to CHF 8.2 billion ($8.89 billion) due to heavy price pressure."
+      },
+      {
+        "type": "paragraph",
+        "text": "Fastweb remains the cash-cow, with reported year-on-year revenue growth of 3.8% to €2.4 billion ($2.7 billion), meanwhile, as well as a 5.4% rise in EBITDA to €826 million ($932.6 million)."
+      },
+      {
+        "type": "paragraph",
+        "text": "Future Outlook"
+      },
+      {
+        "type": "paragraph",
+        "text": "Swisscom remains the undisputed leader in the Swiss telecommunications market. Yet with the given market saturation and extremely high competition and squeezed profit margins, there are limited domestic growth opportunities."
+      },
+      {
+        "type": "paragraph",
+        "text": "The question is how could Aeschlimann grow the business in the future? Options include: Exploiting the untapped revenue potential in B2B with cloud-based, as-a-service business models, or venturing into the MVNO business in other markets."
+      },
+      {
+        "type": "paragraph",
+        "text": "Last but not least, a viable, impactful growth option could be to acquire telcos in European markets. This strategy has paid off in Italy, yet previous attempts to acquire for example Eircom in Ireland, TDC Denmark, or Czesky Telecom, which then got acquired by Telefonica, have failed."
+      },
+      {
+        "type": "paragraph",
+        "text": "For case studies or implementation best practice examples, please book an inquiry with us."
+      }
+    ],
+    "authors": "Martina Kurth, CEO"
+  }
+]

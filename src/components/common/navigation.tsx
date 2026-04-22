@@ -45,10 +45,34 @@ export type NavigationProps = {
   items?: readonly NavItem[];
   logoHref?: string;
   className?: string;
+  /** Black header with light nav links (blog index, etc.). */
+  theme?: "default" | "blog";
 };
 
+function navItemActive(
+  item: NavItem,
+  pathname: string,
+): boolean {
+  if (item.href === "/news") {
+    return pathname === "/news" || pathname.startsWith("/news/");
+  }
+  if (item.href !== "#" && !item.children?.length) {
+    return pathname === item.href;
+  }
+  return false;
+}
+
 /** Telco red: matches brand accent (see `--color-telco-red` in globals). */
-function navLinkClass(active: boolean) {
+function navLinkClass(
+  active: boolean,
+  theme: "default" | "blog",
+) {
+  if (theme === "blog") {
+    return cn(
+      "text-sm font-light transition",
+      active ? "text-red-600" : "text-white hover:text-red-600",
+    );
+  }
   return cn(
     "text-sm font-light transition",
     active
@@ -68,9 +92,11 @@ function parentSectionActive(item: NavItem, pathname: string): boolean {
 function NavSubList({
   items,
   pathname,
+  theme,
 }: {
   items: readonly NavItem[];
   pathname: string;
+  theme: "default" | "blog";
 }) {
   return (
     <ul className={dropdownPanelClass} role="list">
@@ -84,7 +110,9 @@ function NavSubList({
                 "block text-sm font-light transition",
                 subActive
                   ? "text-red-600"
-                  : "text-neutral-900 hover:text-red-600",
+                  : theme === "blog"
+                    ? "text-white hover:text-red-600"
+                    : "text-neutral-900 hover:text-red-600",
               )}
             >
               {sub.label}
@@ -100,13 +128,25 @@ export function Navigation({
   items = defaultNavItems,
   logoHref = "/",
   className,
+  theme = "default",
 }: NavigationProps) {
   const pathname = usePathname() ?? "";
+  const blog = theme === "blog";
 
   return (
-    <header className={cn("bg-white px-5 py-6 sm:px-8 h-60", className)}>
+    <header
+      className={cn(
+        "px-5 py-6 sm:px-8 h-60",
+        blog ? "bg-black" : "bg-white",
+        className,
+      )}
+    >
       <div className="mx-auto flex items-end justify-between gap-8">
-        <BrandLogoSignal href={logoHref} variant="onLight" size="compact" />
+        <BrandLogoSignal
+          href={logoHref}
+          variant={blog ? "onDark" : "onLight"}
+          size="compact"
+        />
 
         <nav aria-label="Primary" className="pt-1">
           <ul className="flex flex-wrap items-start justify-start gap-x-24 gap-y-2 pr-20">
@@ -117,20 +157,30 @@ export function Navigation({
                     <div className="group">
                       <Link
                         href={item.href}
-                        className={navLinkClass(parentSectionActive(item, pathname))}
+                        className={navLinkClass(
+                          parentSectionActive(item, pathname),
+                          theme,
+                        )}
                       >
                         {item.label}
                       </Link>
-                      <NavSubList items={item.children} pathname={pathname} />
+                      <NavSubList
+                        items={item.children}
+                        pathname={pathname}
+                        theme={theme}
+                      />
                     </div>
                   </li>
                 );
               }
 
-              const isActive = item.href !== "#" && pathname === item.href;
+              const isActive = navItemActive(item, pathname);
               return (
                 <li key={item.label}>
-                  <Link href={item.href} className={navLinkClass(isActive)}>
+                  <Link
+                    href={item.href}
+                    className={navLinkClass(isActive, theme)}
+                  >
                     {item.label}
                   </Link>
                 </li>
