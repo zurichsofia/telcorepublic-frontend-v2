@@ -8,7 +8,20 @@ import { cn } from "@/lib/utils";
 
 import { NewsPostCard } from "./news-post-card";
 
-const PAGE_SIZE = 6;
+const PAGE_SIZE = 8;
+
+/** Even indices → left column, odd → right; stable when loading more (row-major order). */
+function splitRowMajor(shown: readonly NewsPost[]): {
+  left: NewsPost[];
+  right: NewsPost[];
+} {
+  const left: NewsPost[] = [];
+  const right: NewsPost[] = [];
+  shown.forEach((post, i) => {
+    (i % 2 === 0 ? left : right).push(post);
+  });
+  return { left, right };
+}
 
 export type NewsList = {
   hero: ReactNode;
@@ -20,8 +33,8 @@ export type NewsList = {
 
 /**
  * News hub layout: hero + lower stack in the left rail, two lead stories then
- * the rest in the right rail (50/50 from lg; each rail takes half of the
- * remaining posts).
+ * the rest (lg+). Grid posts use row-major pairing (0|1, 2|3, …) so reading
+ * order matches `gridPosts` and load-more never moves a card to the other column.
  */
 export function NewsList({
   hero,
@@ -33,11 +46,12 @@ export function NewsList({
   const shown = useMemo(() => gridPosts.slice(0, visible), [gridPosts, visible]);
   const hasMore = visible < gridPosts.length;
 
-  const mid = Math.ceil(shown.length / 2);
-  const leftRail = shown.slice(0, mid);
-  const rightRail = shown.slice(mid);
+  const { left: leftRail, right: rightRail } = useMemo(
+    () => splitRowMajor(shown),
+    [shown],
+  );
 
-  /** Two lead stories: grid rows so left-rail[0] shares a row with right-rail[0] (3rd card on the right). */
+  /** Two lead stories: explicit grid; grid posts fill row-major from row 3. */
   const hasTwoLeads = Boolean(first && second);
 
   const loadMore =
@@ -67,7 +81,7 @@ export function NewsList({
         ))}
       </div>
 
-      {/* Wide: grid rows align first left-rail card with third right-column card */}
+      {/* Wide: two-lead grid + row-major grid posts from row 3 */}
       {hasTwoLeads ? (
         <div
           className={cn(
@@ -87,20 +101,14 @@ export function NewsList({
           <div className="min-w-0 lg:col-start-2 lg:row-start-2">
             <NewsPostCard post={second!} />
           </div>
-          {leftRail.map((post, i) => (
+          {shown.map((post, i) => (
             <div
               key={post.slug}
               className="min-w-0"
-              style={{ gridColumn: 1, gridRow: 3 + i }}
-            >
-              <NewsPostCard post={post} />
-            </div>
-          ))}
-          {rightRail.map((post, i) => (
-            <div
-              key={post.slug}
-              className="min-w-0"
-              style={{ gridColumn: 2, gridRow: 3 + i }}
+              style={{
+                gridColumn: 1 + (i % 2),
+                gridRow: 3 + Math.floor(i / 2),
+              }}
             >
               <NewsPostCard post={post} />
             </div>
