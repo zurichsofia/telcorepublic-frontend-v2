@@ -137,7 +137,7 @@ export function Navigation({
     <header
       className={cn(
         "px-5 py-6 sm:px-8 h-60",
-        blog ? "bg-black" : "bg-white",
+        blog ? "bg-telco-dark" : "bg-white",
         className,
       )}
     >

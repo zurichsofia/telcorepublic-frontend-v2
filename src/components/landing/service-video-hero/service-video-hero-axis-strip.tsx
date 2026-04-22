@@ -45,7 +45,7 @@ export function ServiceVideoHeroAxisStrip({
                 className="absolute inset-0 flex items-center will-change-[transform,opacity]"
                 aria-hidden={i !== activeIndex}
               >
-                <h2 className="font-display w-full px-10 text-left text-3xl font-normal uppercase leading-none tracking-wide text-[var(--color-telco-red)] sm:text-4xl lg:text-5xl">
+                <h2 className="font-display w-full px-10 text-left text-3xl font-normal uppercase leading-none tracking-wide text-telco-red sm:text-4xl lg:text-5xl">
                   {service.title}
                 </h2>
               </div>
@@ -61,7 +61,7 @@ export function ServiceVideoHeroAxisStrip({
             )}
           >
             <div className="pointer-events-none relative h-px w-full -translate-y-[0.1em]">
-              <div className="absolute inset-0 bg-[var(--color-telco-red)]/50" />
+              <div className="absolute inset-0 bg-telco-red/50" />
             </div>
             <div
               role="slider"

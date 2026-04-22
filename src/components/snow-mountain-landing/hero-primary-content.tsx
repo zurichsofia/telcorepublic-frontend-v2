@@ -20,7 +20,7 @@ export function HeroPrimaryContent({ reduceMotion }: HeroPrimaryContentProps) {
       }}
     >
       <div className="max-w-2xl">
-        <p className="font-display text-xs font-medium uppercase tracking-widest text-[var(--color-telco-red)]">
+        <p className="font-display text-xs font-medium uppercase tracking-widest text-telco-red">
           {labelWords.map((word, i) => (
             <span
               key={word}

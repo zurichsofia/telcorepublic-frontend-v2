@@ -2,7 +2,14 @@
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
 
+@theme {
+  --color-telco-dark: #191919;
+  --color-telco-red: #eb1e25;
+  --color-clouds: #b5bec7;
+}
+
 :root {
+  --color-telco-dark: #191919;
   --color-telco-red: #eb1e25;
   --color-clouds: #b5bec7;
   --color-white: #ffffff;

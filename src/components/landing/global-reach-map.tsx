@@ -46,7 +46,7 @@ export function GlobalReachMapSection() {
     >
       <div className="relative mx-auto max-w-7xl px-5 text-center sm:px-8">
         <ScrollReveal from="up">
-          <p className="text-xs font-medium uppercase tracking-widest text-[var(--color-telco-red)]">
+          <p className="text-xs font-medium uppercase tracking-widest text-telco-red">
             International footprint
           </p>
         </ScrollReveal>

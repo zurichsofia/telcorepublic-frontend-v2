@@ -25,7 +25,7 @@ export function SiteFooter() {
             <p className="font-display text-xl font-semibold tracking-tight text-black">
               Telcorepublic
             </p>
-            <p className="mt-2 max-w-xs text-xs font-light leading-relaxed text-[var(--color-clouds)]">
+            <p className="mt-2 max-w-xs text-xs font-light leading-relaxed text-clouds">
               Independent research for the people who design, regulate, and invest in
               connectivity.
             </p>
@@ -35,7 +35,7 @@ export function SiteFooter() {
               <div key={item.href}>
                 <Link
                   href={item.href}
-                  className="text-xs font-light text-[var(--color-clouds)] transition hover:text-black"
+                  className="text-xs font-light text-clouds transition hover:text-black"
                 >
                   {item.label}
                 </Link>
@@ -66,7 +66,7 @@ export function SiteFooter() {
           <p className="font-display text-xl font-semibold tracking-tight text-black">
             Telcorepublic
           </p>
-          <p className="mt-2 max-w-xs text-xs font-light leading-relaxed text-[var(--color-clouds)]">
+          <p className="mt-2 max-w-xs text-xs font-light leading-relaxed text-clouds">
             Independent research for the people who design, regulate, and invest in
             connectivity.
           </p>
@@ -83,7 +83,7 @@ export function SiteFooter() {
             >
               <Link
                 href={item.href}
-                className="text-xs font-light text-[var(--color-clouds)] transition hover:text-black"
+                className="text-xs font-light text-clouds transition hover:text-black"
               >
                 {item.label}
               </Link>

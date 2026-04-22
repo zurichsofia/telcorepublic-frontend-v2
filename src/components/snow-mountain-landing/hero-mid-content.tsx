@@ -16,7 +16,7 @@ export function HeroMidContent({ reduceMotion }: HeroMidContentProps) {
     >
       <div className="max-w-md text-right">
         <p
-          className="font-display text-left text-xs font-medium uppercase tracking-widest text-[var(--color-telco-red)]"
+          className="font-display text-left text-xs font-medium uppercase tracking-widest text-telco-red"
           style={{ transform: "translateY(var(--sm-mid-label-y))" }}
         >
           Telcorepublic

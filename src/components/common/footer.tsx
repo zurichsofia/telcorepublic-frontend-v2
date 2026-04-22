@@ -47,7 +47,7 @@ export function Footer({
   return (
     <footer
       className={cn(
-        "bg-black px-5 py-16 text-white sm:px-8 sm:py-20",
+        "bg-telco-dark px-5 py-16 text-white sm:px-8 sm:py-20",
         className,
       )}
     >

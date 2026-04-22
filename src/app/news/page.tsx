@@ -18,7 +18,7 @@ export default function NewsIndexPage() {
   const gridPosts = rest;
 
   return (
-    <div className="relative z-10 flex min-h-screen flex-col bg-black">
+    <div className="relative z-10 flex min-h-screen flex-col bg-telco-dark">
       <Navigation theme="blog" />
       <main className="flex-1">
         <section

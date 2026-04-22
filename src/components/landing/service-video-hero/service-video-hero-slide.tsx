@@ -70,7 +70,7 @@ export function ServiceVideoSlide({
       </div>
 
       <div className="relative z-10 flex h-full flex-col justify-end px-5 pb-28 pt-28 sm:px-10 sm:pb-32 sm:pt-32 lg:px-14">
-        <p className="font-display text-xs font-medium uppercase tracking-widest text-[var(--color-telco-red)]">
+        <p className="font-display text-xs font-medium uppercase tracking-widest text-telco-red">
           {n}
           {" · "}
           Services

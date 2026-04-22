@@ -42,7 +42,7 @@ export default async function NewsArticlePage({ params }: NewsArticleProps) {
   if (!post) notFound();
 
   return (
-    <div className="relative z-10 flex min-h-screen flex-col bg-black">
+    <div className="relative z-10 flex min-h-screen flex-col bg-telco-dark">
       <Navigation theme="blog" />
       <main className="mx-auto w-full max-w-4xl flex-1 px-5 py-10 sm:px-8 sm:py-16">
         <p className="text-[10px] font-normal tracking-[0.2em] text-white/90 sm:text-xs">

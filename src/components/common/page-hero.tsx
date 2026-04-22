@@ -40,7 +40,7 @@ export function PageHero({
     >
       <h1
         className={cn(
-          "font-display text-5xl tracking-tight text-[var(--color-telco-red)] sm:text-7xl lg:text-8xl",
+          "font-display text-5xl tracking-tight text-telco-red sm:text-7xl lg:text-8xl",
         )}
       >
         {title}
@@ -49,7 +49,7 @@ export function PageHero({
       {subtitle && (
         <p
           className={cn(
-            "mx-auto text-lg leading-snug mt-24 max-w-4xl font-normal text-[var(--color-telco-red)] sm:text-4xl",
+            "mx-auto text-lg leading-snug mt-24 max-w-4xl font-normal text-telco-red sm:text-4xl",
           )}
         >
           {subtitle}
@@ -66,7 +66,7 @@ export function PageHero({
                   <li key={item.href}>
                     <Link
                       href={item.href}
-                      className="font-display text-2xl font-medium tracking-tight text-[var(--color-telco-red)] transition sm:text-4xl"
+                      className="font-display text-2xl font-medium tracking-tight text-telco-red transition sm:text-4xl"
                     >
                       {item.label}
                     </Link>
@@ -80,7 +80,7 @@ export function PageHero({
                   <li key={item.href}>
                     <Link
                       href={item.href}
-                      className="font-display text-2xl font-medium tracking-tight text-[var(--color-telco-red)] sm:text-4xl"
+                      className="font-display text-2xl font-medium tracking-tight text-telco-red sm:text-4xl"
                     >
                       {item.label}
                     </Link>
