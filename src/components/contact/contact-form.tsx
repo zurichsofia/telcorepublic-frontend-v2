@@ -6,22 +6,22 @@ import { submitContactForm } from "@/app/contact/actions";
 import { cn } from "@/lib/utils";
 
 const inputClassDefault = cn(
-  "w-full rounded-lg border border-white/15 bg-white/5 px-4 py-3 text-sm font-light text-white",
+  "w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-sm font-light text-white",
   "placeholder:text-white/35",
   "outline-none transition focus:border-telco-red/80 focus:ring-2 focus:ring-telco-red/35",
 );
 
 const inputClassMinimal = cn(
-  "w-full border-0 border-b border-white/10 bg-transparent px-0 py-3 text-base font-light text-white",
+  "w-full border-0 border-b border-white/10 bg-transparent px-0 py-2 text-base font-light text-white",
   "placeholder:text-white/30",
   "outline-none transition focus:border-telco-red focus:ring-0",
 );
 
 const labelClassDefault =
-  "mb-2 block text-xs font-normal uppercase tracking-wide text-white/55";
+  "mb-1 block text-xs font-normal uppercase tracking-wide text-white/55";
 
 const labelClassMinimal =
-  "mb-1 block text-xs font-normal uppercase tracking-widest text-white/40";
+  "mb-0 block text-xs font-normal uppercase tracking-widest text-white/40";
 
 export type ContactFormProps = {
   className?: string;
@@ -41,7 +41,7 @@ export function ContactForm({
   const successShell =
     variant === "minimal"
       ? "py-1"
-      : "rounded-2xl border border-white/12 bg-telco-dark/80 p-8 backdrop-blur-md sm:p-10";
+      : "rounded-2xl border border-white/12 bg-telco-dark/80 p-5 backdrop-blur-md sm:p-7";
 
   if (state.ok) {
     return (
@@ -49,7 +49,7 @@ export function ContactForm({
         <p className="font-display text-2xl font-medium tracking-tight text-white sm:text-3xl">
           Thank you
         </p>
-        <p className="mt-4 text-sm font-light leading-relaxed text-white/75">
+        <p className="mt-2.5 text-sm font-light leading-relaxed text-white/75">
           We will get back to you as soon as we can. For anything urgent, you can also
           write to us directly at{" "}
           <a
@@ -67,11 +67,11 @@ export function ContactForm({
   const formShell =
     variant === "minimal"
       ? ""
-      : "rounded-2xl border border-white/12 bg-telco-dark/75 p-8 backdrop-blur-md sm:p-10";
+      : "rounded-2xl border border-white/12 bg-telco-dark/75 p-5 backdrop-blur-md sm:p-7";
 
   return (
     <form action={formAction} className={cn(formShell, className)} noValidate>
-      <div className={variant === "minimal" ? "space-y-7" : "space-y-6"}>
+      <div className="space-y-4">
         <div>
           <label htmlFor="contact-name" className={labelClass}>
             Name
@@ -136,20 +136,20 @@ export function ContactForm({
             id="contact-message"
             name="message"
             required
-            rows={5}
-            className={cn(inputClass, "min-h-36 resize-y")}
+            rows={3}
+            className={cn(inputClass, "min-h-28 resize-y")}
             disabled={pending}
           />
         </div>
       </div>
 
       {state.error ? (
-        <p className="mt-6 text-sm text-telco-red" role="alert">
+        <p className="mt-3 text-sm text-telco-red" role="alert">
           {state.error}
         </p>
       ) : null}
 
-      <div className={variant === "minimal" ? "mt-10" : "mt-8"}>
+      <div className={variant === "minimal" ? "mt-7" : "mt-6"}>
         <button
           type="submit"
           disabled={pending}
@@ -157,12 +157,12 @@ export function ContactForm({
             "inline-flex min-w-40 items-center justify-center transition disabled:cursor-not-allowed disabled:opacity-60",
             variant === "minimal"
               ? cn(
-                  "rounded-full border border-white/20 bg-transparent px-10 py-2.5",
+                  "rounded-full border border-white/20 bg-transparent px-8 py-2",
                   "text-xs font-normal uppercase tracking-widest text-white",
                   "hover:border-telco-red hover:bg-telco-red/10",
                 )
-              : cn(
-                  "rounded-lg bg-telco-red px-8 py-3.5 text-sm font-normal tracking-wide text-white",
+                : cn(
+                  "rounded-lg bg-telco-red px-6 py-2.5 text-sm font-normal tracking-wide text-white",
                   "hover:bg-telco-red/90",
                 ),
           )}
