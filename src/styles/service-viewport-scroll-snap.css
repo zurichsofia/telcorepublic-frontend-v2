@@ -1,14 +1,15 @@
 /*
  * Full-viewport vertical scroll snap (e.g. hero → editorial).
- * Class name must stay in sync with `SERVICE_VIEWPORT_SCROLL_SNAP_HTML_CLASS`
- * in `use-service-viewport-scroll-snap.ts`.
+ * Class names must stay in sync with `SERVICE_VIEWPORT_SCROLL_SNAP_HTML_CLASS` and
+ * `SERVICE_VIEWPORT_SCROLL_SMOOTH_PAST_HERO_CLASS` in `use-service-viewport-scroll-snap.ts`.
  */
 html.service-vh-scroll-snap {
   scroll-snap-type: y mandatory;
+  scroll-behavior: auto;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  html.service-vh-scroll-snap {
+  html.service-vh-scroll-snap.service-vh-scroll-smooth-past-hero {
     scroll-behavior: smooth;
   }
 }

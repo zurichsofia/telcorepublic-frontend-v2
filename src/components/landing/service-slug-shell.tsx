@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { ServiceVideoHero } from "@/components/landing/service-video-hero/service-video-hero";
+import { ServiceVideoHeroV2 } from "@/components/landing/service-video-hero/service-video-hero-v2";
 import { ServiceEditorialScroll } from "./service-editorial-scroll/service-editorial-scroll";
 import { getServiceBySlug } from "@/data/services";
 import { useServiceViewportScrollSnap } from "@/hooks/use-service-viewport-scroll-snap";
@@ -62,7 +62,7 @@ export function ServiceSlugShell({ initialSlug }: ServiceSlugShellProps) {
 
   return (
     <>
-      <ServiceVideoHero
+      <ServiceVideoHeroV2
         initialSlug={activeSlug}
         onActiveServiceChange={onActiveServiceChange}
       />

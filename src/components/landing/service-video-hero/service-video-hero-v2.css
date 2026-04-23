@@ -1,0 +1,54 @@
+/**
+ * Service hero v2 — Swiper navigation & pagination overrides.
+ * Loaded after `swiper/css/navigation` and `swiper/css/pagination` so these win.
+ */
+.service-hero-swiper-v2 {
+  --swiper-navigation-color: rgb(255, 255, 255);
+  --swiper-navigation-size: 1.75rem;
+}
+
+.service-hero-swiper-v2 .swiper-button-next,
+.service-hero-swiper-v2 .swiper-button-prev {
+  opacity: 0.4;
+  transition: opacity 150ms ease;
+}
+
+.service-hero-swiper-v2 .swiper-button-next:hover,
+.service-hero-swiper-v2 .swiper-button-prev:hover {
+  opacity: 0.85;
+}
+
+.service-hero-swiper-v2 .swiper-button-next:focus-visible,
+.service-hero-swiper-v2 .swiper-button-prev:focus-visible {
+  opacity: 0.9;
+}
+
+.service-hero-swiper-v2 .swiper-pagination {
+  bottom: 2rem;
+  z-index: 30;
+}
+
+.service-hero-swiper-v2 .swiper-pagination-bullet {
+  width: 0.5rem;
+  height: 0.5rem;
+  margin: 0 0.4rem !important;
+  background: rgb(255, 255, 255);
+  opacity: 0.5;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.35);
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.service-hero-swiper-v2 .swiper-pagination-bullet:hover {
+  opacity: 0.85;
+}
+
+.service-hero-swiper-v2 .swiper-pagination-bullet-active {
+  width: 0.53rem;
+  height: 0.53rem;
+  border-radius: 9999px;
+  opacity: 1;
+  transform: scale(1.15);
+}

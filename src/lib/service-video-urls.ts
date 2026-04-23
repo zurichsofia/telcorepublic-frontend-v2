@@ -16,7 +16,7 @@ export const SERVICES_VIDEO_URLS = {
 } as const satisfies Record<ServiceSlug, string>;
 
 /**
- * Clips for `/services/[slug]` (ServiceVideoHero swiper).
+ * Clips for `/services/[slug]` service hero swiper.
  * Paths: `/videos/services/hero/{slug}.mp4`
  */
 export const SERVICE_SLUG_HERO_VIDEO_URLS = {
