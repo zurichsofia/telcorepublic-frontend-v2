@@ -25,7 +25,7 @@ export function EditorialRoleCallouts({
             <p className="font-sans text-xs font-medium uppercase tracking-widest text-black/40">
               {item.role}
             </p>
-            <p className="mt-5 text-pretty font-sans text-sm font-light leading-relaxed text-black/75 sm:text-base">
+            <p className="mt-5 text-pretty font-sans text-base font-light leading-relaxed text-black/75 sm:text-2xl">
               {item.text}
             </p>
           </div>
