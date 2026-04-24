@@ -40,7 +40,7 @@ export function TeamMemberBlock({
     <article
       id={id}
       className={cn(
-        "mx-auto grid max-w-6xl grid-cols-1 gap-10 px-5 py-16 sm:px-8 lg:grid-cols-2 lg:gap-20 lg:py-20",
+        "mx-auto grid max-w-6xl grid-cols-1 gap-10 px-5 py-16 sm:px-6 lg:grid-cols-2 lg:gap-20 lg:py-20 text-justify",
         reverse && "[&>div]:order-1 [&>header]:order-2",
         className,
       )}

@@ -14,16 +14,12 @@ export const operationTeamMembers: readonly OperationTeamMember[] = [
     name: "Martina Kurth",
     role: "CEO",
     previewParagraphs: [
-      "Martina Kurth is an established industry analyst and seasoned strategic business and technology Advisor in the global telco industry.",
-      "Having worked for the top 3 world leading analyst firms, Martina has nearly 20 years of subject matter expertise in the global telecom sector.",
-      "She has been leading high-profile engagements, where she advised Telco CIOs and CTOs regarding mission critical investments.",
-      "Her research/advisory expertise pertains to intertwined telco infrastructure & software related topics, incl. Digital technology platforms, cloud, 5G, edge, IoT, customer experience and AI/analytics.",
+      "Martina is a seasoned Executive in the global Tech Business, having worked 15 years for the No 1, most influential global Tech Strategy company Gartner ($6 billion). Martina has advised top Fortune 500 clients around the globe.",
+      "As passionate and accomplished C-level advisor and research leader, she provides high-quality, innovative market analysis and advisory services to global clients. She has demonstrated leadership skills to lead globally dispersed teams.",
     ],
     moreParagraphs: [
-      "Particular emphasis is placed on the operational, monetization and customer engagement technology evolution, as well as new operating models, required to tap into digital business model innovations. This perspective encompasses structural process, organization and cultural change management.",
-      "Martina leverages a well-established contact network with CSPs, vendors, standard bodies, start-ups and investors in the global telco industry. She is frequently requested for delivering executive leadership workshops, industry speaking engagements and media articles and quotes, such as Forbes.",
-      "Previously, Martina has held various senior roles in the Telco industry, comprising product management, business development and technology consulting positions with Ericsson Hewlett Packard Telecom (EHPT) and Nokia, which included start-ups of telco green-field operations. She has been hands-on involved in Telco standards shaping technology evolution with leading global standards organizations, including 5G BVME in Europe, and TM Forum, US.",
-      "Martina holds a B.A. Economic and Political Sciences Hamburg University, and an M.A. in European Business and Information Technology from Newcastle University, UK.",
+      "Martina is a founder of Telco Republic AG, a boutique consultancy firm that specializes in telco innovation research and thought leadership executive advisory, in Jan 2022. As a senior high tech subject-matter expert, Martina leverages her extensive expertise and contact network to help CIOs, CTOs, CDOs, and senior executives make strategic technology investment decisions to optimize their digital business infrastructures and capitalize business outcomes.",
+      "Areas of expertise include Cloud, 5G, IoT, generative AI, CX, and blockchain, as well as the organizational and cultural change management required to succeed in digital transformation. Martina frequently is involved in executive leadership workshops, industry speaking engagements, and global media quotes, providing thought leadership vision and insights on the future of high tech & telco.",
     ],
   },
   {
