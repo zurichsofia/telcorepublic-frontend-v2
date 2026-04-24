@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 const heroLinks = services.map((s) => ({
   label: s.title,
-  href: `#${s.slug}`,
+  href: `/services/${s.slug}`,
 }));
 
 export default function ServicesPage() {

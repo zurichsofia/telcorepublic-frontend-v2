@@ -6,6 +6,7 @@ export type ServicesListingSection = {
   title: string;
   description: string;
   videoSrc: string;
+  href: string;
 };
 
 /** Copy + video for each full-bleed block on `/services` (anchors use `id`). */
@@ -15,5 +16,6 @@ export const servicesListingSections: ServicesListingSection[] = services.map(
     title: s.title,
     description: s.descShort,
     videoSrc: servicesListingVideoUrlForSlug(s.slug),
+    href: `/services/${s.slug}`,
   }),
 );

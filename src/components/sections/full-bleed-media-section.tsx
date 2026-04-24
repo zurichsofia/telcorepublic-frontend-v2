@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef } from "react";
 
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
@@ -10,6 +11,7 @@ export type FullBleedMediaItem = {
   title: string;
   description: string;
   videoSrc?: string;
+  href?: string;
 };
 
 export type FullBleedMediaSectionProps = FullBleedMediaItem & {
@@ -25,6 +27,7 @@ export function FullBleedMediaSection({
   title,
   description,
   videoSrc,
+  href,
   index,
 }: FullBleedMediaSectionProps) {
   const reduceMotion = usePrefersReducedMotion();
@@ -50,7 +53,7 @@ export function FullBleedMediaSection({
       {videoSrc ? (
         <video
           ref={videoRef}
-          className="absolute inset-0 h-full w-full scale-[1.06] object-cover object-center"
+          className="absolute inset-0 z-0 h-full w-full scale-[1.06] object-cover object-center"
           src={videoSrc}
           muted
           playsInline
@@ -60,14 +63,14 @@ export function FullBleedMediaSection({
         />
       ) : (
         <div
-          className="absolute inset-0 bg-linear-to-br from-neutral-950 via-[#3a0a0c] to-neutral-900"
+          className="absolute inset-0 z-0 bg-linear-to-br from-neutral-950 via-[#3a0a0c] to-neutral-900"
           aria-hidden
         />
       )}
 
       {/* TODO: Remove overlay */}
       <div
-        className="absolute inset-0 bg-linear-to-t from-black/75 via-black/50 to-black/35"
+        className="absolute inset-0 z-1 bg-linear-to-t from-black/75 via-black/50 to-black/35"
         aria-hidden
       />
 
@@ -96,6 +99,14 @@ export function FullBleedMediaSection({
           </p>
         </div>
       </div>
+
+      {href ? (
+        <Link
+          href={href}
+          aria-label={title}
+          className="absolute inset-0 z-20 cursor-pointer outline-offset-0 transition focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-inset"
+        />
+      ) : null}
     </section>
   );
 }
