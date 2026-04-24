@@ -22,6 +22,13 @@ html.service-vh-scroll-snap {
 
 html.service-vh-scroll-snap #hero {
   scroll-snap-align: start;
+  /*
+   * Reserve space above the hero snap so the shell header stays visible. Use
+   * `scroll-margin` on this snap target only — `scroll-padding-top` on `html`
+   * also applied to `#service-detail` and broke advancing past the hero.
+   * Match `Navigation` (`h-60` → 15rem).
+   */
+  scroll-margin-top: 15rem;
 }
 
 html.service-vh-scroll-snap #service-detail {

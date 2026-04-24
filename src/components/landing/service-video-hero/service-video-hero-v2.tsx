@@ -9,7 +9,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { services, serviceIndexFromSlug } from "@/data/services";
 import { serviceSlugHeroVideoUrlForSlide } from "@/lib/service-video-urls";
 
-import { Navigation as SiteNavigation } from "@/components/common/navigation";
 import { ServiceVideoSlide } from "./service-video-hero-slide";
 
 import "swiper/css/pagination";
@@ -81,8 +80,6 @@ export function ServiceVideoHeroV2({
       aria-label="Featured services"
       className="relative isolate flex min-h-0 w-full min-w-0 max-w-full flex-col overflow-x-clip bg-white text-white"
     >
-      <SiteNavigation />
-
       <div
         role="region"
         aria-label={`Service highlights: slide ${chromeIndex + 1} of ${sectionCount}, ${activeTitle}`}

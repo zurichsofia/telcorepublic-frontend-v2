@@ -12,10 +12,7 @@ export const SERVICE_VIEWPORT_SCROLL_SMOOTH_PAST_HERO_CLASS =
   "service-vh-scroll-smooth-past-hero";
 
 /**
- * Enables root scroll-snap between `#hero` and `#service-detail` (see stylesheet).
- * `scroll-behavior: smooth` applies only after scrolling past `#hero` (navbar + 100vh
- * video stack) so the first viewport scrolls natively. Other routes stay on default
- * `scroll-behavior: auto` from `globals.css`.
+ * Enables full-viewport scroll between `#hero` and `#service-detail`
  */
 export function useServiceViewportScrollSnap() {
   useEffect(() => {
