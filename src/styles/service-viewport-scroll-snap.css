@@ -35,3 +35,14 @@ html.service-vh-scroll-snap #service-detail {
   scroll-snap-align: start;
   min-height: 100dvh;
 }
+
+/*
+ * Mandatory snap on `html` only had snap targets on `#hero` and `#service-detail`.
+ * The site footer sits after `main` and had no snap alignment, so the scroll
+ * position could not settle with the footer in view. Register the footer as a
+ * snap target and match the hero’s top offset for the overlay nav (`h-60`).
+ */
+html.service-vh-scroll-snap footer {
+  scroll-snap-align: start;
+  scroll-margin-top: 15rem;
+}
