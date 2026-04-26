@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 import { BrandLogoSignal } from "@/components/brand-logo-signal";
 import { cn } from "@/lib/utils";
@@ -40,6 +41,14 @@ export const defaultNavItems: readonly NavItem[] = [
 
 const dropdownPanelClass =
   "absolute left-0 top-full z-20 -mt-1 min-w-56 py- pl pt-3 text-left invisible opacity-0 transition group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100";
+
+/** Drop `group-focus-within` on the parent so the flyout hides after choosing a sublink. */
+function closeNavDropdown() {
+  requestAnimationFrame(() => {
+    const el = document.activeElement;
+    if (el instanceof HTMLElement) el.blur();
+  });
+}
 
 export type NavigationProps = {
   items?: readonly NavItem[];
@@ -94,10 +103,14 @@ function NavSubList({
   items,
   pathname,
   theme,
+  flyoutSuppressed,
+  onSublinkPick,
 }: {
   items: readonly NavItem[];
   pathname: string;
   theme: "default" | "blog" | "overlay";
+  flyoutSuppressed: boolean;
+  onSublinkPick: () => void;
 }) {
   const onDarkNav = theme === "blog" || theme === "overlay";
   return (
@@ -108,6 +121,11 @@ function NavSubList({
         ""
       )}
       role="list"
+      style={
+        flyoutSuppressed
+          ? { visibility: "hidden", opacity: 0, pointerEvents: "none" }
+          : undefined
+      }
     >
       {items.map((sub) => {
         const subActive =
@@ -123,7 +141,14 @@ function NavSubList({
         return (
           <li key={sub.label}>
             {sub.href ? (
-              <Link href={sub.href} className={className}>
+              <Link
+                href={sub.href}
+                className={className}
+                onClick={() => {
+                  onSublinkPick();
+                  closeNavDropdown();
+                }}
+              >
                 {sub.label}
               </Link>
             ) : (
@@ -135,6 +160,44 @@ function NavSubList({
         );
       })}
     </ul>
+  );
+}
+
+function NavItemWithSubmenu({
+  item,
+  pathname,
+  theme,
+}: {
+  item: NavItem;
+  pathname: string;
+  theme: "default" | "blog" | "overlay";
+}) {
+  const [flyoutSuppressed, setFlyoutSuppressed] = useState(false);
+
+  return (
+    <li className="relative">
+      <div
+        className="group"
+        onMouseLeave={() => setFlyoutSuppressed(false)}
+      >
+        <Link
+          href={item.href}
+          className={navLinkClass(
+            parentSectionActive(item, pathname),
+            theme,
+          )}
+        >
+          {item.label}
+        </Link>
+        <NavSubList
+          items={item.children!}
+          pathname={pathname}
+          theme={theme}
+          flyoutSuppressed={flyoutSuppressed}
+          onSublinkPick={() => setFlyoutSuppressed(true)}
+        />
+      </div>
+    </li>
   );
 }
 
@@ -167,24 +230,12 @@ export function Navigation({
             {items.map((item) => {
               if (item.children?.length) {
                 return (
-                  <li key={item.label} className="relative">
-                    <div className="group">
-                      <Link
-                        href={item.href}
-                        className={navLinkClass(
-                          parentSectionActive(item, pathname),
-                          theme,
-                        )}
-                      >
-                        {item.label}
-                      </Link>
-                      <NavSubList
-                        items={item.children}
-                        pathname={pathname}
-                        theme={theme}
-                      />
-                    </div>
-                  </li>
+                  <NavItemWithSubmenu
+                    key={item.label}
+                    item={item}
+                    pathname={pathname}
+                    theme={theme}
+                  />
                 );
               }
 
