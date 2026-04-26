@@ -34,7 +34,7 @@ export default function RootLayout({
       <body
         className={`${helveticaNeue.className} relative min-h-screen font-light text-black antialiased`}
       >
-        <AppFloatingLinesBackground />
+        {/* <AppFloatingLinesBackground /> */}
         <PageLoader />
         <AppShell>{children}</AppShell>
       </body>
