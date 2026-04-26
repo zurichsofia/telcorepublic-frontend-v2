@@ -71,6 +71,66 @@ export const services = [
     ] as const satisfies readonly ServiceContentBlock[],
   },
   {
+    slug: "subscription",
+    title: "Subscription",
+    desc: "Always be up-to-speed with recurring insights and real-time access to industry experts.",
+    descShort: "Stay up to date with real-time insights and expert access.",
+    content: [
+      {
+        type: "paragraph",
+        text: "We ensure that you are always up-to-speed.",
+      },
+      {
+        type: "subheading",
+        text: "Our subscription service includes",
+      },
+      {
+        type: "simpleList",
+        items: [
+          "Recurring Insights on Technologies, Users, Vendors and Industry Trends",
+          "Decision Support on Technology Purchasing, Product Development and Corporate Strategy",
+          "Real-Time, Unlimited Access to Industry Experts",
+        ],
+      },
+      {
+        type: "paragraph",
+        text: "Subscribers have full access to Telco Republic's research notes, including unlimited inquiries.",
+      },
+      {
+        type: "simpleList",
+        heading: "Research notes cover",
+        items: [
+          "Disrupter Quintants",
+          "Five-Year Market Forecasts",
+          "Vendor Market Share Reports",
+          "Emerging and Disruptive Vendors",
+          "Market Innovation Trends",
+          "Technology Innovation and Disruption Radar",
+          "Technology and Industry Predictions",
+          "Executive Interviews",
+          "Case Studies",
+          "Best Practices",
+          "Surveys",
+          "Webinars",
+          "Podcasts",
+          "Custom Competitive Positioning",
+          "Sponsored Executive Roundtables",
+          "Strategy Sessions",
+          "Press Support",
+          "Distribution Rights",
+        ],
+      },
+      {
+        type: "paragraph",
+        text: "Telco Republic offers three subscription tiers with multiple levels of discounts and add-ons.",
+      },
+      {
+        type: "paragraph",
+        text: "To subscribe, contact us at info@telcorepublic.com or by filling out the online contact form. Individual research notes are available on request. Contact us for more information.",
+      },
+    ] as const satisfies readonly ServiceContentBlock[],
+  },
+  {
     slug: "competitive-positioning",
     title: "Competitive Positioning",
     desc: "Differentiate yourself with SWOTs, best practices, benchmarking, whitepapers and roadmap evaluations.",
@@ -305,66 +365,7 @@ export const services = [
       },
     ] as const satisfies readonly ServiceContentBlock[],
   },
-  {
-    slug: "subscription",
-    title: "Subscription",
-    desc: "Always be up-to-speed with recurring insights and real-time access to industry experts.",
-    descShort: "Stay up to date with real-time insights and expert access.",
-    content: [
-      {
-        type: "paragraph",
-        text: "We ensure that you are always up-to-speed.",
-      },
-      {
-        type: "subheading",
-        text: "Our subscription service includes",
-      },
-      {
-        type: "simpleList",
-        items: [
-          "Recurring Insights on Technologies, Users, Vendors and Industry Trends",
-          "Decision Support on Technology Purchasing, Product Development and Corporate Strategy",
-          "Real-Time, Unlimited Access to Industry Experts",
-        ],
-      },
-      {
-        type: "paragraph",
-        text: "Subscribers have full access to Telco Republic's research notes, including unlimited inquiries.",
-      },
-      {
-        type: "simpleList",
-        heading: "Research notes cover",
-        items: [
-          "Disrupter Quintants",
-          "Five-Year Market Forecasts",
-          "Vendor Market Share Reports",
-          "Emerging and Disruptive Vendors",
-          "Market Innovation Trends",
-          "Technology Innovation and Disruption Radar",
-          "Technology and Industry Predictions",
-          "Executive Interviews",
-          "Case Studies",
-          "Best Practices",
-          "Surveys",
-          "Webinars",
-          "Podcasts",
-          "Custom Competitive Positioning",
-          "Sponsored Executive Roundtables",
-          "Strategy Sessions",
-          "Press Support",
-          "Distribution Rights",
-        ],
-      },
-      {
-        type: "paragraph",
-        text: "Telco Republic offers three subscription tiers with multiple levels of discounts and add-ons.",
-      },
-      {
-        type: "paragraph",
-        text: "To subscribe, contact us at info@telcorepublic.com or by filling out the online contact form. Individual research notes are available on request. Contact us for more information.",
-      },
-    ] as const satisfies readonly ServiceContentBlock[],
-  },
+
 ] as const;
 
 export type ServiceEntry = (typeof services)[number];
