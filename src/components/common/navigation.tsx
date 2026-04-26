@@ -45,8 +45,8 @@ export type NavigationProps = {
   items?: readonly NavItem[];
   logoHref?: string;
   className?: string;
-  /** Black header with light nav links (blog index, etc.). */
-  theme?: "default" | "blog";
+  /** `blog` — dark bar, light links. `overlay` — transparent, light links (e.g. service video hero). */
+  theme?: "default" | "blog" | "overlay";
 };
 
 function navItemActive(
@@ -65,12 +65,13 @@ function navItemActive(
 /** Telco red: matches brand accent (see `--color-telco-red` in globals). */
 function navLinkClass(
   active: boolean,
-  theme: "default" | "blog",
+  theme: "default" | "blog" | "overlay",
 ) {
-  if (theme === "blog") {
+  if (theme === "blog" || theme === "overlay") {
     return cn(
       "text-sm font-light transition",
       active ? "text-red-600" : "text-white hover:text-red-600",
+      theme === "overlay" && "text-shadow-sm",
     );
   }
   return cn(
@@ -96,10 +97,18 @@ function NavSubList({
 }: {
   items: readonly NavItem[];
   pathname: string;
-  theme: "default" | "blog";
+  theme: "default" | "blog" | "overlay";
 }) {
+  const onDarkNav = theme === "blog" || theme === "overlay";
   return (
-    <ul className={dropdownPanelClass} role="list">
+    <ul
+      className={cn(
+        dropdownPanelClass,
+        theme === "overlay" &&
+        ""
+      )}
+      role="list"
+    >
       {items.map((sub) => {
         const subActive = sub.href !== "#" && pathname === sub.href;
         return (
@@ -110,7 +119,7 @@ function NavSubList({
                 "block text-sm font-light transition",
                 subActive
                   ? "text-red-600"
-                  : theme === "blog"
+                  : onDarkNav
                     ? "text-white hover:text-red-600"
                     : "text-neutral-900 hover:text-red-600",
               )}
@@ -131,20 +140,20 @@ export function Navigation({
   theme = "default",
 }: NavigationProps) {
   const pathname = usePathname() ?? "";
-  const blog = theme === "blog";
+  const onDark = theme === "blog" || theme === "overlay";
 
   return (
     <header
       className={cn(
-        "px-5 py-6 sm:px-8 h-60",
-        blog ? "bg-telco-dark" : "bg-white",
+        "px-5 py-6 sm:px-8",
+        theme === "blog" ? "bg-telco-dark" : "bg-transparent",
         className,
       )}
     >
-      <div className="mx-auto flex items-end justify-between gap-8">
+      <div className="mx-auto flex items-center justify-between gap-8">
         <BrandLogoSignal
           href={logoHref}
-          variant={blog ? "onDark" : "onLight"}
+          variant={onDark ? "onDark" : "onLight"}
           size="compact"
         />
 

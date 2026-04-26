@@ -78,12 +78,12 @@ export function ServiceVideoHeroV2({
     <section
       id="hero"
       aria-label="Featured services"
-      className="relative isolate flex min-h-0 w-full min-w-0 max-w-full flex-col overflow-x-clip bg-white text-white"
+      className="relative isolate flex min-h-0 w-full min-w-0 max-w-full flex-col overflow-x-clip bg-black text-white"
     >
       <div
         role="region"
         aria-label={`Service highlights: slide ${chromeIndex + 1} of ${sectionCount}, ${activeTitle}`}
-        className="relative z-10 h-screen min-h-0 w-full min-w-0 max-w-full shrink-0 overflow-x-clip overflow-y-hidden bg-white"
+        className="relative z-10 h-screen min-h-0 w-full min-w-0 max-w-full shrink-0 overflow-x-clip overflow-y-hidden bg-black"
       >
         <span className="sr-only">
           {multi
