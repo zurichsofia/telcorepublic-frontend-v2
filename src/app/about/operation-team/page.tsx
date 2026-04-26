@@ -12,8 +12,9 @@ export const metadata: Metadata = {
 
 export default function OperationTeamPage() {
   return (
-    <div>
+    <div className="pb-8 sm:pb-12">
       <PageHero
+        className="mb-28 sm:mb-40"
         title="Operation Team"
         subtitle="Our Core Team Consists of Renowned OSS and BSS Market Analysts."
         description="Our background makes us uniquely qualified to cover the new market for next generation telecoms operations and business management systems."

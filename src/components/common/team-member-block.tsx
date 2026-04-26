@@ -40,7 +40,7 @@ export function TeamMemberBlock({
     <article
       id={id}
       className={cn(
-        "mx-auto grid max-w-6xl grid-cols-1 gap-10 px-5 py-16 sm:px-6 lg:grid-cols-2 lg:gap-20 lg:py-44 text-justify",
+        "mx-auto grid max-w-6xl grid-cols-1 gap-12 px-6 py-20 sm:px-8 lg:grid-cols-2 lg:gap-24 lg:py-52 text-justify",
         reverse && "[&>div]:order-1 [&>header]:order-2",
         className,
       )}
@@ -59,7 +59,7 @@ export function TeamMemberBlock({
         </h2>
       </header>
       <div className="min-w-0">
-        <div className="space-y-4 text-base font-light leading-relaxed text-neutral-900">
+        <div className="space-y-5 text-base font-light leading-relaxed text-neutral-900">
           {previewParagraphs.map((p, index) => (
             <p key={`${id}-preview-${index}`}>{p}</p>
           ))}
@@ -69,7 +69,7 @@ export function TeamMemberBlock({
           <div
             id={regionId}
             hidden={!expanded}
-            className="mt-4 space-y-4 pt-4 text-base font-light leading-relaxed text-neutral-900"
+            className="mt-5 space-y-5 pt-5 text-base font-light leading-relaxed text-neutral-900"
           >
             {moreParagraphs.map((p, index) => (
               <p key={`${id}-more-${index}`}>{p}</p>

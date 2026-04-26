@@ -40,11 +40,11 @@ export default async function NewsArticlePage({ params }: NewsArticleProps) {
   if (!post) notFound();
 
   return (
-    <main className="mx-auto w-full max-w-4xl flex-1 px-5 pb-10 pt-32 sm:px-8 sm:pb-16 sm:pt-44">
+    <main className="mx-auto w-full max-w-4xl flex-1 px-6 pb-16 pt-36 sm:px-10 sm:pb-20 sm:pt-48">
       <p className="text-[10px] font-normal tracking-[0.2em] text-white/90 sm:text-xs">
         {post.dateLabel}
       </p>
-      <h1 className="mt-4 font-display text-3xl font-medium leading-tight tracking-tight text-white sm:text-4xl md:text-5xl">
+      <h1 className="mt-6 font-display text-3xl font-medium leading-tight tracking-tight text-white sm:text-4xl md:text-5xl">
         {post.title}
       </h1>
       {post.authors ? (
@@ -54,7 +54,7 @@ export default async function NewsArticlePage({ params }: NewsArticleProps) {
       ) : null}
 
       {post.coverImage ? (
-        <div className="relative mt-10 aspect-21/9 w-full max-w-4xl overflow-hidden bg-neutral-900 sm:aspect-2/1">
+        <div className="relative mt-12 aspect-21/9 w-full max-w-4xl overflow-hidden bg-neutral-900 sm:mt-14 sm:aspect-2/1">
           <Image
             src={post.coverImage}
             alt={post.title}
@@ -66,11 +66,11 @@ export default async function NewsArticlePage({ params }: NewsArticleProps) {
         </div>
       ) : null}
 
-      <div className="mt-10 sm:mt-12">
+      <div className="mt-12 sm:mt-16">
         <NewsArticleContent content={post.content} />
       </div>
 
-      <p className="mt-12 border-t border-white/10 pt-10 text-sm font-light text-white/50">
+      <p className="mt-16 border-t border-white/10 pt-12 text-sm font-light text-white/50 sm:mt-20 sm:pt-14">
         <a
           href={post.sourceUrl}
           className="text-white/80 underline decoration-white/30 underline-offset-4 hover:decoration-white/60"

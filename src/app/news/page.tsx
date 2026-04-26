@@ -18,7 +18,7 @@ export default function NewsIndexPage() {
   return (
     <div>
       <div
-        className="mx-auto max-w-7xl px-5 pb-20 pt-32 sm:px-8 sm:pb-24 sm:pt-44"
+        className="mx-auto max-w-7xl px-6 pb-28 pt-36 sm:px-10 sm:pb-32 sm:pt-48"
         aria-labelledby="news-hero-title"
       >
         <NewsList

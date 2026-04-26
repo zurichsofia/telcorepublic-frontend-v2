@@ -56,7 +56,7 @@ export function NewsList({
 
   const loadMore =
     hasMore ? (
-      <div className="mt-20 flex flex-col items-center gap-6 sm:mt-24 sm:gap-7 lg:mt-24">
+      <div className="mt-24 flex flex-col items-center gap-7 sm:mt-28 sm:gap-8 lg:mt-32">
         <button
           type="button"
           onClick={() =>
@@ -72,7 +72,7 @@ export function NewsList({
   return (
     <>
       {/* Narrow: single column, chronological */}
-      <div className="flex flex-col gap-14 lg:hidden">
+      <div className="flex flex-col gap-20 lg:hidden">
         {hero}
         {first ? <NewsPostCard post={first} /> : null}
         {second ? <NewsPostCard post={second} /> : null}
@@ -87,7 +87,7 @@ export function NewsList({
           className={cn(
             "hidden lg:grid",
             "lg:grid-cols-2",
-            "lg:items-start lg:gap-x-10 lg:gap-y-24 xl:gap-x-16 xl:gap-y-28",
+            "lg:items-start lg:gap-x-12 lg:gap-y-32 xl:gap-x-20 xl:gap-y-40",
           )}
         >
           <div className="min-w-0 lg:col-start-1 lg:row-start-1">{hero}</div>
@@ -117,12 +117,12 @@ export function NewsList({
       ) : (
         <div
           className={cn(
-            "hidden gap-14 lg:grid",
+            "hidden gap-20 lg:grid",
             "lg:grid-cols-2",
-            "lg:items-start lg:gap-x-10 lg:gap-y-24 xl:gap-x-16 xl:gap-y-28",
+            "lg:items-start lg:gap-x-12 lg:gap-y-32 xl:gap-x-20 xl:gap-y-40",
           )}
         >
-          <div className="flex min-w-0 flex-col gap-20 sm:gap-24 lg:gap-28">
+          <div className="flex min-w-0 flex-col gap-24 sm:gap-28 lg:gap-32">
             {hero}
             {leftRail.map((post) => (
               <NewsPostCard key={post.slug} post={post} />
@@ -130,7 +130,7 @@ export function NewsList({
           </div>
           <div
             className={cn(
-              "flex min-w-0 flex-col gap-20 sm:gap-24 lg:gap-28",
+              "flex min-w-0 flex-col gap-24 sm:gap-28 lg:gap-32",
               "lg:pl-2",
             )}
           >

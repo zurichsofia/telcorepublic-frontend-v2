@@ -19,7 +19,7 @@ export function NewsPostCard({
     <article className={cn("group relative", className)}>
       <Link
         href={`/news/${post.slug}`}
-        className="grid gap-5 sm:grid-cols-[minmax(0,200px)_1fr] sm:gap-8 lg:gap-10"
+        className="grid gap-6 sm:grid-cols-[minmax(0,200px)_1fr] sm:gap-10 lg:gap-12"
       >
         <div
           className={cn(
