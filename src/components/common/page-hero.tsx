@@ -33,8 +33,8 @@ export function PageHero({
       className={cn(
         "mx-auto px-5 sm:px-8 min-h-[calc(100dvh-6rem)] w-full mb-20",
         hasLinks
-          ? "max-w-7xl py-14 text-center sm:py-20"
-          : "flex max-w-4xl flex-col justify-center py-14 text-center sm:py-20",
+          ? "max-w-7xl pb-14 pt-32 text-center sm:pb-20 sm:pt-44"
+          : "flex max-w-4xl flex-col justify-center pb-14 pt-32 text-center sm:pb-20 sm:pt-44",
         className,
       )}
     >

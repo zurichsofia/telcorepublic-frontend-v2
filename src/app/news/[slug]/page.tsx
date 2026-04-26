@@ -40,7 +40,7 @@ export default async function NewsArticlePage({ params }: NewsArticleProps) {
   if (!post) notFound();
 
   return (
-    <main className="mx-auto w-full max-w-4xl flex-1 px-5 py-10 sm:px-8 sm:py-16">
+    <main className="mx-auto w-full max-w-4xl flex-1 px-5 pb-10 pt-32 sm:px-8 sm:pb-16 sm:pt-44">
       <p className="text-[10px] font-normal tracking-[0.2em] text-white/90 sm:text-xs">
         {post.dateLabel}
       </p>

@@ -9,7 +9,7 @@ export function ContactPageContent() {
   return (
     <div className="bg-telco-dark text-white">
       <FloatingLinesContactBg>
-        <div className="relative z-10 mx-auto flex max-w-6xl flex-col px-5 pb-20 pt-10 sm:px-8 sm:pb-28 sm:pt-14 lg:pt-16">
+        <div className="relative z-10 mx-auto flex max-w-6xl flex-col px-5 pb-20 pt-32 sm:px-8 sm:pb-28 sm:pt-44">
           <p className="text-xs font-normal uppercase tracking-widest text-white/40">
             Get in touch
           </p>
