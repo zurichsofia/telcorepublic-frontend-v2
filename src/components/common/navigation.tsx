@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 
 import { BrandLogoSignal } from "@/components/brand-logo-signal";
 import { cn } from "@/lib/utils";
@@ -54,7 +54,7 @@ export type NavigationProps = {
   items?: readonly NavItem[];
   logoHref?: string;
   className?: string;
-  /** `blog` — dark bar, light links. `overlay` — transparent, light links (e.g. service video hero). */
+  /** `blog` — dark bar, light links. `overlay` — on hero: transparent + light links; below `#hero`: bar + dark links. */
   theme?: "default" | "blog" | "overlay";
 };
 
@@ -75,12 +75,18 @@ function navItemActive(
 function navLinkClass(
   active: boolean,
   theme: "default" | "blog" | "overlay",
+  overlayPastHero: boolean,
 ) {
-  if (theme === "blog" || theme === "overlay") {
+  if (theme === "blog") {
     return cn(
       "text-sm font-light transition",
       active ? "text-red-600" : "text-white hover:text-red-600",
-      theme === "overlay" && "text-shadow-sm",
+    );
+  }
+  if (theme === "overlay" && !overlayPastHero) {
+    return cn(
+      "text-sm font-light transition text-shadow-sm",
+      active ? "text-red-600" : "text-white hover:text-red-600",
     );
   }
   return cn(
@@ -103,23 +109,22 @@ function NavSubList({
   items,
   pathname,
   theme,
+  overlayPastHero,
   flyoutSuppressed,
   onSublinkPick,
 }: {
   items: readonly NavItem[];
   pathname: string;
   theme: "default" | "blog" | "overlay";
+  overlayPastHero: boolean;
   flyoutSuppressed: boolean;
   onSublinkPick: () => void;
 }) {
-  const onDarkNav = theme === "blog" || theme === "overlay";
+  const onDarkNav =
+    theme === "blog" || (theme === "overlay" && !overlayPastHero);
   return (
     <ul
-      className={cn(
-        dropdownPanelClass,
-        theme === "overlay" &&
-        ""
-      )}
+      className={cn(dropdownPanelClass)}
       role="list"
       style={
         flyoutSuppressed
@@ -167,10 +172,12 @@ function NavItemWithSubmenu({
   item,
   pathname,
   theme,
+  overlayPastHero,
 }: {
   item: NavItem;
   pathname: string;
   theme: "default" | "blog" | "overlay";
+  overlayPastHero: boolean;
 }) {
   const [flyoutSuppressed, setFlyoutSuppressed] = useState(false);
 
@@ -185,6 +192,7 @@ function NavItemWithSubmenu({
           className={navLinkClass(
             parentSectionActive(item, pathname),
             theme,
+            overlayPastHero,
           )}
         >
           {item.label}
@@ -193,12 +201,44 @@ function NavItemWithSubmenu({
           items={item.children!}
           pathname={pathname}
           theme={theme}
+          overlayPastHero={overlayPastHero}
           flyoutSuppressed={flyoutSuppressed}
           onSublinkPick={() => setFlyoutSuppressed(true)}
         />
       </div>
     </li>
   );
+}
+
+function useOverlayPastHero(theme: "default" | "blog" | "overlay") {
+  const [pastHero, setPastHero] = useState(false);
+
+  useLayoutEffect(() => {
+    if (theme !== "overlay") {
+      setPastHero(false);
+      return;
+    }
+
+    const sync = () => {
+      const hero = document.getElementById("hero");
+      if (!hero) {
+        setPastHero(false);
+        return;
+      }
+      const heroBottom = hero.offsetTop + hero.offsetHeight;
+      setPastHero(window.scrollY >= heroBottom - 0.5);
+    };
+
+    sync();
+    window.addEventListener("scroll", sync, { passive: true });
+    window.addEventListener("resize", sync);
+    return () => {
+      window.removeEventListener("scroll", sync);
+      window.removeEventListener("resize", sync);
+    };
+  }, [theme]);
+
+  return pastHero;
 }
 
 export function Navigation({
@@ -208,13 +248,21 @@ export function Navigation({
   theme = "default",
 }: NavigationProps) {
   const pathname = usePathname() ?? "";
-  const onDark = theme === "blog" || theme === "overlay";
+  const overlayPastHero = useOverlayPastHero(theme);
+  const onDark =
+    theme === "blog" || (theme === "overlay" && !overlayPastHero);
 
   return (
     <header
       className={cn(
-        "px-5 py-6 sm:px-8",
-        theme === "blog" ? "bg-telco-dark" : "bg-transparent",
+        "sticky top-0 z-50 w-full shrink-0 px-5 py-6 sm:px-8 transition-colors duration-200",
+        theme === "blog"
+          ? "bg-telco-dark"
+          : theme === "overlay"
+            ? overlayPastHero
+              ? "bg-white"
+              : "bg-transparent"
+            : "bg-white",
         className,
       )}
     >
@@ -235,6 +283,7 @@ export function Navigation({
                     item={item}
                     pathname={pathname}
                     theme={theme}
+                    overlayPastHero={overlayPastHero}
                   />
                 );
               }
@@ -244,7 +293,7 @@ export function Navigation({
                 <li key={item.label}>
                   <Link
                     href={item.href}
-                    className={navLinkClass(isActive, theme)}
+                    className={navLinkClass(isActive, theme, overlayPastHero)}
                   >
                     {item.label}
                   </Link>
