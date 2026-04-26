@@ -56,7 +56,7 @@ export function NewsList({
 
   const loadMore =
     hasMore ? (
-      <div className="mt-24 flex flex-col items-center gap-7 sm:mt-28 sm:gap-8 lg:mt-32">
+      <div className="mt-32 flex flex-col items-center gap-8 sm:mt-36 sm:gap-9 lg:mt-40">
         <button
           type="button"
           onClick={() =>
@@ -72,7 +72,7 @@ export function NewsList({
   return (
     <>
       {/* Narrow: single column, chronological */}
-      <div className="flex flex-col gap-20 lg:hidden">
+      <div className="flex flex-col gap-28 sm:gap-32 lg:hidden">
         {hero}
         {first ? <NewsPostCard post={first} /> : null}
         {second ? <NewsPostCard post={second} /> : null}
@@ -87,7 +87,7 @@ export function NewsList({
           className={cn(
             "hidden lg:grid",
             "lg:grid-cols-2",
-            "lg:items-start lg:gap-x-12 lg:gap-y-32 xl:gap-x-20 xl:gap-y-40",
+            "lg:items-start lg:gap-x-12 lg:gap-y-40 xl:gap-x-20 xl:gap-y-48",
           )}
         >
           <div className="min-w-0 lg:col-start-1 lg:row-start-1">{hero}</div>
@@ -119,18 +119,18 @@ export function NewsList({
           className={cn(
             "hidden gap-20 lg:grid",
             "lg:grid-cols-2",
-            "lg:items-start lg:gap-x-12 lg:gap-y-32 xl:gap-x-20 xl:gap-y-40",
+            "lg:items-start lg:gap-x-12 lg:gap-y-40 xl:gap-x-20 xl:gap-y-48",
           )}
         >
-          <div className="flex min-w-0 flex-col gap-24 sm:gap-28 lg:gap-32">
+          <div className="flex min-w-0 flex-col gap-32 sm:gap-36 lg:gap-40">
             {hero}
             {leftRail.map((post) => (
               <NewsPostCard key={post.slug} post={post} />
             ))}
           </div>
-          <div
+            <div
             className={cn(
-              "flex min-w-0 flex-col gap-24 sm:gap-28 lg:gap-32",
+              "flex min-w-0 flex-col gap-32 sm:gap-36 lg:gap-40",
               "lg:pl-2",
             )}
           >
