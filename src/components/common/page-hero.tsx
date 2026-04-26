@@ -31,7 +31,7 @@ export function PageHero({
     <section
       id={id}
       className={cn(
-        "mx-auto px-5 sm:px-8 min-h-[calc(100vh-240px)] w-full",
+        "mx-auto px-5 sm:px-8 min-h-[calc(100vh-240px)] w-full mb-20",
         hasLinks
           ? "max-w-7xl py-14 text-center sm:py-20"
           : "flex max-w-4xl flex-col justify-center py-14 text-center sm:py-20",

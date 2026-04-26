@@ -40,21 +40,21 @@ export function TeamMemberBlock({
     <article
       id={id}
       className={cn(
-        "mx-auto grid max-w-6xl grid-cols-1 gap-10 px-5 py-16 sm:px-6 lg:grid-cols-2 lg:gap-20 lg:py-20 text-justify",
+        "mx-auto grid max-w-6xl grid-cols-1 gap-10 px-5 py-16 sm:px-6 lg:grid-cols-2 lg:gap-20 lg:py-44 text-justify",
         reverse && "[&>div]:order-1 [&>header]:order-2",
         className,
       )}
     >
       <header
         className={cn(
-          "max-w-sm",
+          "max-w-md",
           reverse && "lg:ml-auto lg:text-right",
         )}
       >
-        <p className="text-sm font-semibold uppercase tracking-wide text-red-600">
+        <p className="text-lg font-semibold tracking-wide text-red-600">
           {role}
         </p>
-        <h2 className="mt-2 font-display text-4xl font-semibold tracking-tight text-red-600 sm:text-5xl">
+        <h2 className="mt-2 font-display text-4xl text-red-600 sm:text-5xl">
           {name}
         </h2>
       </header>
