@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { BrandLogoSignal } from "@/components/brand-logo-signal";
 import { cn } from "@/lib/utils";
@@ -38,9 +38,6 @@ export const defaultNavItems: readonly NavItem[] = [
   { href: "/news", label: "News" },
   { href: "/contact", label: "Contact" },
 ];
-
-const dropdownPanelClass =
-  "absolute left-0 top-full z-20 -mt-1 min-w-56 py- pl pt-3 text-left invisible opacity-0 transition group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100";
 
 /** Drop `group-focus-within` on the parent so the flyout hides after choosing a sublink. */
 function closeNavDropdown() {
@@ -110,41 +107,48 @@ function NavSubList({
   pathname,
   theme,
   overlayPastHero,
-  flyoutSuppressed,
+  menuOpen,
   onSublinkPick,
 }: {
   items: readonly NavItem[];
   pathname: string;
   theme: "default" | "blog" | "overlay";
   overlayPastHero: boolean;
-  flyoutSuppressed: boolean;
+  menuOpen: boolean;
   onSublinkPick: () => void;
 }) {
   const onDarkNav =
     theme === "blog" || (theme === "overlay" && !overlayPastHero);
+  const panelSurface = onDarkNav
+    ? "bg-telco-dark shadow-sm ring-1 ring-white/10"
+    : "bg-white shadow-sm ring-1 ring-neutral-700/10";
   return (
     <ul
-      className={cn(dropdownPanelClass)}
+      className={cn(
+        "absolute left-0 top-full z-70 mt-0 flex min-w-56 max-w-[min(100vw-2.5rem,20rem)] flex-col gap-y-0 rounded-md px-3 py-2 text-left",
+        panelSurface,
+        !menuOpen && "hidden",
+      )}
       role="list"
-      style={
-        flyoutSuppressed
-          ? { visibility: "hidden", opacity: 0, pointerEvents: "none" }
-          : undefined
-      }
+      aria-hidden={!menuOpen}
     >
       {items.map((sub) => {
-        const subActive =
-          Boolean(sub.href) && sub.href !== "#" && pathname === sub.href;
+        const hasHref = Boolean(sub.href);
+        const subActive = hasHref && pathname === sub.href;
         const className = cn(
-          "block text-sm font-light transition",
-          subActive
-            ? "text-red-600"
-            : onDarkNav
-              ? "text-white hover:text-red-600"
-              : "text-neutral-900 hover:text-red-600",
+          "block py-1.5 text-sm font-light leading-normal transition-colors",
+          !hasHref
+            ? onDarkNav
+              ? "text-white/35"
+              : "text-neutral-400"
+            : subActive
+              ? "text-red-600"
+              : onDarkNav
+                ? "text-white hover:text-red-600"
+                : "text-neutral-900 hover:text-red-600",
         );
         return (
-          <li key={sub.label}>
+          <li key={sub.label} className="min-w-0">
             {sub.href ? (
               <Link
                 href={sub.href}
@@ -179,13 +183,45 @@ function NavItemWithSubmenu({
   theme: "default" | "blog" | "overlay";
   overlayPastHero: boolean;
 }) {
-  const [flyoutSuppressed, setFlyoutSuppressed] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      setMenuOpen((open) => {
+        if (!open) return open;
+        const root = wrapRef.current;
+        const ae = document.activeElement;
+        if (ae instanceof HTMLElement && root?.contains(ae)) {
+          ae.blur();
+        }
+        return false;
+      });
+    };
+    document.addEventListener("scroll", onScroll, true);
+    return () => document.removeEventListener("scroll", onScroll, true);
+  }, []);
+
+  const closeIfFocusLeft = (e: React.FocusEvent<HTMLDivElement>) => {
+    const related = e.relatedTarget as Node | null;
+    if (!related || !e.currentTarget.contains(related)) {
+      setMenuOpen(false);
+    }
+  };
 
   return (
-    <li className="relative">
+    <li className="relative isolate">
       <div
-        className="group"
-        onMouseLeave={() => setFlyoutSuppressed(false)}
+        ref={wrapRef}
+        className="relative pb-3"
+        onMouseEnter={() => setMenuOpen(true)}
+        onMouseLeave={() => {
+          if (!wrapRef.current?.contains(document.activeElement)) {
+            setMenuOpen(false);
+          }
+        }}
+        onFocusCapture={() => setMenuOpen(true)}
+        onBlur={closeIfFocusLeft}
       >
         <Link
           href={item.href}
@@ -202,8 +238,8 @@ function NavItemWithSubmenu({
           pathname={pathname}
           theme={theme}
           overlayPastHero={overlayPastHero}
-          flyoutSuppressed={flyoutSuppressed}
-          onSublinkPick={() => setFlyoutSuppressed(true)}
+          menuOpen={menuOpen}
+          onSublinkPick={() => setMenuOpen(false)}
         />
       </div>
     </li>
@@ -255,7 +291,7 @@ export function Navigation({
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 w-full shrink-0 px-5 py-6 sm:px-8 transition-colors duration-200",
+        "sticky top-0 z-50 isolate w-full shrink-0 px-5 py-6 sm:px-8 transition-colors duration-500",
         theme === "blog"
           ? "bg-telco-dark"
           : theme === "overlay"

@@ -57,7 +57,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         }
         theme={darkShell ? "blog" : isServiceDetail ? "overlay" : "default"}
       />
-      <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+      <div className="relative z-0 flex min-h-0 flex-1 flex-col">{children}</div>
       <Footer className="mt-auto" />
     </div>
   );
