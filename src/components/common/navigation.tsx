@@ -110,22 +110,27 @@ function NavSubList({
       role="list"
     >
       {items.map((sub) => {
-        const subActive = sub.href !== "#" && pathname === sub.href;
+        const subActive =
+          Boolean(sub.href) && sub.href !== "#" && pathname === sub.href;
+        const className = cn(
+          "block text-sm font-light transition",
+          subActive
+            ? "text-red-600"
+            : onDarkNav
+              ? "text-white hover:text-red-600"
+              : "text-neutral-900 hover:text-red-600",
+        );
         return (
           <li key={sub.label}>
-            <Link
-              href={sub.href}
-              className={cn(
-                "block text-sm font-light transition",
-                subActive
-                  ? "text-red-600"
-                  : onDarkNav
-                    ? "text-white hover:text-red-600"
-                    : "text-neutral-900 hover:text-red-600",
-              )}
-            >
-              {sub.label}
-            </Link>
+            {sub.href ? (
+              <Link href={sub.href} className={className}>
+                {sub.label}
+              </Link>
+            ) : (
+              <span className={className} aria-disabled>
+                {sub.label}
+              </span>
+            )}
           </li>
         );
       })}
