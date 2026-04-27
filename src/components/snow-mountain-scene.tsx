@@ -53,7 +53,15 @@ useGLTF.preload("/scene/snow_mountain.glb");
 // Tell the PageLoader it must wait for this scene before dismissing.
 registerScene();
 
-type HeroScrollRead = { getRawProgress: () => number; };
+type HeroScrollRead = {
+  getRawProgress: () => number;
+  /**
+   * Increment (via ref) so `HeroScrollCameraFraming` drops its cached baseline and
+   * re-snaps to whatever `Stage`/`Bounds` last fitted — avoids locking FOV/position
+   * before drei's post-GLB `Refit` runs (felt as an extra zoom-out on load).
+   */
+  cameraBaselineGenerationRef: MutableRefObject<number>;
+};
 
 /** `getRawProgress()` inside `useFrame` — reads hero layout (same formula as CSS scroll sync). */
 const HeroScrollReadContext = createContext<HeroScrollRead | null>(null);
@@ -132,6 +140,7 @@ function HeroScrollCameraFraming({ reduceMotion }: { reduceMotion: boolean; }) {
   const lastSizeRef = useRef({ w: 0, h: 0 });
   const lookAt = useMemo(() => new THREE.Vector3(), []);
   const posScratch = useMemo(() => new THREE.Vector3(), []);
+  const lastBaselineGenRef = useRef(-1);
 
   useFrame(() => {
     if (!(camera instanceof THREE.PerspectiveCamera)) return;
@@ -139,6 +148,13 @@ function HeroScrollCameraFraming({ reduceMotion }: { reduceMotion: boolean; }) {
     const { width, height } = size;
     if (width !== lastSizeRef.current.w || height !== lastSizeRef.current.h) {
       lastSizeRef.current = { w: width, h: height };
+      baseFovRef.current = null;
+      basePosRef.current = null;
+    }
+
+    const gen = scrollRead?.cameraBaselineGenerationRef.current;
+    if (gen !== undefined && gen !== lastBaselineGenRef.current) {
+      lastBaselineGenRef.current = gen;
       baseFovRef.current = null;
       basePosRef.current = null;
     }
@@ -327,6 +343,7 @@ function SnowMountainModel({ reduceMotion }: { reduceMotion: boolean; }) {
   const gltf = useGLTF("/scene/snow_mountain.glb");
   const rigRef = useRef<THREE.Group>(null);
   const scrollRead = useContext(HeroScrollReadContext);
+  const baselineGenRef = scrollRead?.cameraBaselineGenerationRef;
 
   useLayoutEffect(() => {
     applyTerrainIceStyle(gltf.scene);
@@ -335,7 +352,22 @@ function SnowMountainModel({ reduceMotion }: { reduceMotion: boolean; }) {
   // Signal the PageLoader that the GLB has loaded and the model is mounted.
   useEffect(() => {
     markSceneReady();
-  }, []);
+    if (!baselineGenRef) return;
+    let cancelled = false;
+    let raf1 = 0;
+    let raf2 = 0;
+    /* After drei's Stage `Refit` effect + a frame, re-lock scroll framing to fitted camera. */
+    raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => {
+        if (!cancelled) baselineGenRef.current += 1;
+      });
+    });
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+    };
+  }, [baselineGenRef]);
 
   useFrame(() => {
     const p = scrollRead?.getRawProgress() ?? 0;
@@ -393,6 +425,7 @@ export function SnowMountainScene({
   const reduceMotion = usePrefersReducedMotion();
   const rawScrollRef = scrollProgressRef ?? FALLBACK_SCROLL_PROGRESS;
   const parallaxMotionRef = motionRef ?? FALLBACK_PARALLAX_MOTION;
+  const cameraBaselineGenerationRef = useRef(0);
 
   const scrollRead = useMemo((): HeroScrollRead => {
     return {
@@ -402,6 +435,7 @@ export function SnowMountainScene({
         if (el) return readHeroScrollProgress(el);
         return rawScrollRef.current;
       },
+      cameraBaselineGenerationRef,
     };
   }, [reduceMotion, heroSectionRef, rawScrollRef]);
 
@@ -458,6 +492,12 @@ export function SnowMountainScene({
               Stage still refits when the model radius is known (Refit on radius).
             */}
               {/*
+              Bounds defaults to maxDuration=1 and lerps the camera each frame. Our
+              HeroScrollCameraFraming (useFrame priority 50) overwrites the camera from a
+              cached baseline — during that lerp it captures a mid-flight position and then
+              pulls the camera back every frame (felt as “loads then zooms back”). Snap fit.
+            */}
+              {/*
               drei Stage always adds ambient + spot (2× intensity) + point — on top of our lights.
               intensity={0} turns those off; we only want Bounds/Center + IBL from Environment.
             */}
@@ -471,9 +511,10 @@ export function SnowMountainScene({
                 }}
                 preset="soft"
                 shadows={false}
-                // Forwarded to Bounds via Stage ...props (drei merge); not on StageProps.
-                // @ts-expect-error Bounds observe
+                // Forwarded to Bounds via Stage ...props; not declared on StageProps.
+                // @ts-expect-error Bounds props forwarded from Stage
                 observe={false}
+                maxDuration={0}
               >
                 <SnowMountainModel reduceMotion={reduceMotion} />
               </Stage>
