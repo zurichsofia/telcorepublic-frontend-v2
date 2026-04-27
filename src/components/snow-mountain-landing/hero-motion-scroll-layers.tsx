@@ -121,8 +121,8 @@ function HeroMotionScrollLayersMotion({
           ))}
         </p>
         <h1 className="mt-6 font-display text-[clamp(2.25rem,6vw,4.5rem)] font-normal leading-[1.05] tracking-tight text-white">
-          <span className="block">Navigating the shift.</span>
-          <span className="mt-2 block sm:mt-3">Leading the Techco Revolution</span>
+          <span className="block text-shadow-lg">Navigating the shift.</span>
+          <span className="mt-2 block sm:mt-3 text-shadow-lg">Leading the Techco Revolution</span>
         </h1>
       </motion.div>
 
@@ -133,10 +133,10 @@ function HeroMotionScrollLayersMotion({
         <p className="font-display text-xs font-medium uppercase tracking-[0.2em] text-telco-red">
           Telcorepublic
         </p>
-        <p className="mt-6 font-display text-[clamp(1.75rem,4.5vw,3rem)] font-normal leading-tight tracking-tight text-white">
+        <p className="mt-6 font-display text-[clamp(1.75rem,4.5vw,3rem)] font-normal leading-tight tracking-tight text-white text-shadow-lg">
           Crossing the Telco Chasm
         </p>
-        <p className={cn("mt-6 max-w-prose", bodyClass)}>
+        <p className={cn("mt-6 max-w-2xl text-shadow-lg", bodyClass)}>
           We are the go-to, thought-provoking market research and advisory firm in the new
           telecommunications software market.
         </p>
@@ -149,10 +149,10 @@ function HeroMotionScrollLayersMotion({
         <p className="font-display text-xs font-medium uppercase tracking-[0.2em] text-telco-red">
           Telcorepublic
         </p>
-        <p className="mt-6 font-display text-[clamp(1.75rem,4.5vw,3rem)] font-normal leading-tight tracking-tight text-white">
+        <p className="mt-6 font-display text-[clamp(1.75rem,4.5vw,3rem)] font-normal leading-tight tracking-tight text-white text-shadow-lg">
           Our Mission
         </p>
-        <p className={cn("mt-6 max-w-prose", bodyClass)}>
+        <p className={cn("mt-6 max-w-2xl text-shadow-lg", bodyClass)}>
           We track ongoing disruption and innovation related to telecommunications business and
           operations.
         </p>

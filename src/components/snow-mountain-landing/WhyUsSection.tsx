@@ -43,8 +43,7 @@ const WHY_CHAPTERS = [
   {
     title: "Extensive Network",
     paragraphs: [
-      "Industry leaders rely on our insights and advice.",
-      "We maintain a strong Senior Executive and C-Level network on a global basis.",
+      "Industry leaders rely on our insights and advice. We maintain a strong Senior Executive and C-Level network on a global basis.",
     ],
   },
 ] as const;
@@ -106,7 +105,7 @@ function WhyChapter({
     >
       <div
         className={cn(
-          "w-full max-w-3xl space-y-5 md:space-y-6",
+          "w-full max-w-2xl space-y-5 md:space-y-6",
           !isA && "ml-auto text-right",
         )}
       >

@@ -18,10 +18,10 @@ export function StickyChapter({
   const innerClassName = cn(shellClassName, motionClassName);
 
   return (
-    <div className="relative min-h-[82svh] w-full overflow-x-clip overflow-y-visible">
+    <div className="relative min-h-[68svh] w-full overflow-x-clip overflow-y-visible">
       <div
         className={cn(
-          "sticky top-0 z-0 flex min-h-[76svh] w-full max-w-full flex-col overflow-visible text-black",
+          "sticky top-0 z-0 flex min-h-[62svh] w-full max-w-full flex-col overflow-visible text-black",
           stickyClassName,
         )}
       >
