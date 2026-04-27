@@ -1,10 +1,19 @@
 "use client";
 
-export function HeroScrollHint() {
+import { motion, type MotionValue } from "motion/react";
+
+type HeroScrollHintProps = {
+  scrollOpacity?: MotionValue<number>;
+};
+
+export function HeroScrollHint({ scrollOpacity }: HeroScrollHintProps) {
   return (
     <div className="pointer-events-none absolute inset-0 z-[24] flex justify-center">
       <div className="sticky top-0 flex h-dvh w-full flex-col items-center justify-end pb-10 sm:pb-14">
-        <div className="flex flex-col items-center">
+        <motion.div
+          className="flex flex-col items-center"
+          style={scrollOpacity ? { opacity: scrollOpacity } : undefined}
+        >
           <a
             href="#signal"
             className="pointer-events-auto flex items-center gap-3 rounded-full text-xs font-medium uppercase tracking-widest text-white animate-pulse duration-900"
@@ -16,7 +25,7 @@ export function HeroScrollHint() {
             />
             <span>Scroll</span>
           </a>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

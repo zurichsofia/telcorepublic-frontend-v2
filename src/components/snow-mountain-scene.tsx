@@ -66,8 +66,6 @@ type HeroScrollRead = {
 /** `getRawProgress()` inside `useFrame` — reads hero layout (same formula as CSS scroll sync). */
 const HeroScrollReadContext = createContext<HeroScrollRead | null>(null);
 
-const FALLBACK_SCROLL_PROGRESS: MutableRefObject<number> = { current: 0 };
-
 function clamp01(p: number): number {
   if (p <= 0) return 0;
   if (p >= 1) return 1;
@@ -407,23 +405,19 @@ const FALLBACK_PARALLAX_MOTION: MutableRefObject<HeroParallaxMotion> = {
 };
 
 export type SnowMountainSceneProps = {
-  /** Hero `<section>` ref — progress is read from layout every R3F frame (continuous with scroll). */
+  /** Hero `<section>` ref — progress is read from layout every R3F frame. */
   heroSectionRef?: RefObject<HTMLElement | null>;
-  /** Mirrored progress for non-WebGL consumers (updated on scroll/resize in hero). */
-  scrollProgressRef?: MutableRefObject<number>;
-  /** Shared with CSS `--sm-primary-x` / `--sm-primary-y` so WebGL clouds track the same parallax. */
+  /** Cloud parallax driven from hero scroll (updated in `SnowMountainHero`). */
   motionRef?: MutableRefObject<HeroParallaxMotion>;
   className?: string;
 };
 
 export function SnowMountainScene({
   heroSectionRef,
-  scrollProgressRef,
   motionRef,
   className,
 }: SnowMountainSceneProps) {
   const reduceMotion = usePrefersReducedMotion();
-  const rawScrollRef = scrollProgressRef ?? FALLBACK_SCROLL_PROGRESS;
   const parallaxMotionRef = motionRef ?? FALLBACK_PARALLAX_MOTION;
   const cameraBaselineGenerationRef = useRef(0);
 
@@ -432,12 +426,11 @@ export function SnowMountainScene({
       getRawProgress: () => {
         if (reduceMotion) return 0;
         const el = heroSectionRef?.current ?? null;
-        if (el) return readHeroScrollProgress(el);
-        return rawScrollRef.current;
+        return readHeroScrollProgress(el);
       },
       cameraBaselineGenerationRef,
     };
-  }, [reduceMotion, heroSectionRef, rawScrollRef]);
+  }, [reduceMotion, heroSectionRef]);
 
   /* `HeroCloudsThree` uses its own `<Canvas>` — must not nest inside this Canvas (R3F rejects it). */
   return (

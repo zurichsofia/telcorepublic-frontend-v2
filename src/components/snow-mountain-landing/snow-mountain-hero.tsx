@@ -1,32 +1,22 @@
 "use client";
 
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
-import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
+  useMotionValueEvent,
+  useScroll,
+  useTransform,
+} from "motion/react";
 
-import { SNOW_MOUNTAIN_FOG_COLOR } from "@/lib/snow-mountain-fog";
-import { cn } from "@/lib/utils";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 
 import type { HeroParallaxMotion } from "@/components/landing/hero-clouds-three";
 import {
   heroPrimaryParallaxX,
   heroPrimaryParallaxY,
-  readHeroScrollProgress,
 } from "@/lib/snow-mountain-hero-scroll";
-import {
-  applyHeroScrollVars,
-  HERO_SCROLL_VARS_INITIAL,
-  HERO_SECTION_VH,
-  HERO_STICKY_SCROLL_VH,
-} from "./hero-scroll";
+import { HERO_SECTION_VH } from "./hero-scroll";
 import { HeroCursorGlow } from "./hero-cursor-glow";
-import { HeroMidContent } from "./hero-mid-content";
-// import { Navitation } from "../landing/navigation";
-import { HeroPrimaryContent } from "./hero-primary-content";
+import { HeroMotionScrollLayers } from "./hero-motion-scroll-layers";
 import { HeroScrollHint } from "./hero-scroll-hint";
 import { HeroStickyLayer } from "./hero-sticky-layer";
 
@@ -34,7 +24,6 @@ export function SnowMountainHero() {
   const reduce = usePrefersReducedMotion();
   const heroRef = useRef<HTMLElement | null>(null);
   const heroCanvasRef = useRef<HTMLDivElement | null>(null);
-  const scrollProgressRef = useRef(0);
   const heroParallaxMotionRef = useRef<HeroParallaxMotion>({
     x: 0,
     y: 0,
@@ -44,6 +33,34 @@ export function SnowMountainHero() {
     x: number;
     y: number;
   } | null>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+
+  const scrollHintOpacity = useTransform(scrollYProgress, [0.65, 0.88], [1, 0]);
+
+  const syncParallax = useCallback(
+    (latest: number) => {
+      if (reduce) {
+        heroParallaxMotionRef.current = { x: 0, y: 0, scale: 1 };
+        return;
+      }
+      heroParallaxMotionRef.current = {
+        x: heroPrimaryParallaxX(latest),
+        y: heroPrimaryParallaxY(latest),
+        scale: 1,
+      };
+    },
+    [reduce],
+  );
+
+  useMotionValueEvent(scrollYProgress, "change", syncParallax);
+
+  useLayoutEffect(() => {
+    syncParallax(reduce ? 0 : scrollYProgress.get());
+  }, [reduce, scrollYProgress, syncParallax]);
 
   useEffect(() => {
     if (reduce) {
@@ -69,86 +86,33 @@ export function SnowMountainHero() {
     return () => window.removeEventListener("mousemove", onMove);
   }, [reduce]);
 
-  /**
-   * Same progress as WebGL: `readHeroScrollProgress` from layout every frame (RAF), not
-   * Motion’s scroll pipeline (different phase than R3F → felt laggy / non‑continuous).
-   * Scroll/resize listeners kick an extra flush so the first paint after layout jumps is right.
-   */
-  useLayoutEffect(() => {
-    const flush = () => {
-      const el = heroRef.current;
-      const p = readHeroScrollProgress(el);
-      scrollProgressRef.current = reduce ? 0 : p;
-      if (el) applyHeroScrollVars(el, p, reduce);
-      if (reduce) {
-        heroParallaxMotionRef.current = { x: 0, y: 0, scale: 1 };
-      } else {
-        heroParallaxMotionRef.current = {
-          x: heroPrimaryParallaxX(p),
-          y: heroPrimaryParallaxY(p),
-          scale: 1,
-        };
-      }
-    };
-    let raf = 0;
-    const tick = () => {
-      flush();
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    const onScrollOrResize = () => flush();
-    window.addEventListener("scroll", onScrollOrResize, { passive: true });
-    window.addEventListener("resize", onScrollOrResize, { passive: true });
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("scroll", onScrollOrResize);
-      window.removeEventListener("resize", onScrollOrResize);
-    };
-  }, [reduce]);
-
   return (
     <section
       ref={heroRef}
       id="hero"
-      // className="relative isolate z-20 [--color-heading:#001538] [--accent-hover:#0891b2]"
       style={{
-        // backgroundColor: SNOW_MOUNTAIN_FOG_COLOR,
         position: "relative",
         height: `${HERO_SECTION_VH}vh`,
         minHeight: `${HERO_SECTION_VH}vh`,
-        ...HERO_SCROLL_VARS_INITIAL,
       }}
     >
       <HeroStickyLayer
         reduceMotion={!!reduce}
         heroCanvasRef={heroCanvasRef}
         heroSectionRef={heroRef}
-        scrollProgressRef={scrollProgressRef}
         motionRef={heroParallaxMotionRef}
-      />
-
-      <div
-        className={cn(
-          "pointer-events-none absolute inset-0 z-20 flex flex-col",
-          !reduce && "cursor-none [&_a]:cursor-pointer",
-        )}
       >
-
-        <HeroPrimaryContent reduceMotion={!!reduce} />
-        <HeroMidContent reduceMotion={reduce} />
-
-        <div
-          className="shrink-0"
-          style={{ minHeight: `${HERO_STICKY_SCROLL_VH / 2}vh` }}
-          aria-hidden
+        <HeroMotionScrollLayers
+          scrollYProgress={scrollYProgress}
+          reduceMotion={!!reduce}
         />
-      </div>
+      </HeroStickyLayer>
 
       {!reduce && heroCursor != null ? (
         <HeroCursorGlow position={heroCursor} />
       ) : null}
 
-      <HeroScrollHint />
+      <HeroScrollHint scrollOpacity={reduce ? undefined : scrollHintOpacity} />
     </section>
   );
 }
