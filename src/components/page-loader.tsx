@@ -110,20 +110,7 @@ export function PageLoader() {
       <div className="flex flex-col items-center text-center">
         <BrandLogoSignal priority />
 
-        <div className="relative mt-10 h-[2px] w-[min(12rem,70vw)] overflow-hidden rounded-full">
-          {!reduce && (
-            <span
-              className="page-loader-shimmer absolute inset-y-0 w-1/3 rounded-full bg-linear-to-r from-transparent via-[rgba(58,52,68,0.42)] to-transparent"
-              aria-hidden
-            />
-          )}
-          {reduce && (
-            <span
-              className="absolute inset-0 bg-linear-to-r from-transparent via-[rgba(58,52,68,0.42)] to-transparent opacity-80"
-              aria-hidden
-            />
-          )}
-        </div>
+
       </div>
     </div>
   );

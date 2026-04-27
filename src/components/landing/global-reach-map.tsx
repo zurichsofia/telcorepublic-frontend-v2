@@ -33,14 +33,14 @@ export function GlobalReachMapSection() {
   return (
     <section
       id="global-reach"
-      className="relative w-full overflow-hidden bg-white py-24 sm:py-32"
+      className="relative w-full overflow-hidden bg-white py-24 sm:pb-32"
       aria-labelledby="global-reach-heading"
     >
       <div className="relative mx-auto max-w-7xl px-5 text-center sm:px-8">
-        <p className="text-xs font-medium uppercase tracking-widest text-telco-red">
+        {/* <p className="text-xs font-medium uppercase tracking-widest text-telco-red">
           International footprint
-        </p>
-        <p className="mx-auto mt-5 max-w-2xl text-sm font-light leading-relaxed text-black md:text-lg">
+        </p> */}
+        <p className="mx-auto mt-5 max-w-2xl text-sm font-light leading-relaxed text-black md:text-xl">
           Leverage Telco Republic&apos;s network to connect with industry leaders and
           emerging technology solutions, fostering co-innovation and expanding your
           market reach.
