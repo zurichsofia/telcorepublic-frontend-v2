@@ -1,6 +1,5 @@
 "use client";
 
-import { ScrollReveal } from "@/components/landing/scroll-reveal";
 import { StickyChapter } from "@/components/landing/service-editorial-scroll/sticky-chapter";
 
 import { cn } from "@/lib/utils";
@@ -104,21 +103,19 @@ export function WhyUsSection() {
       aria-labelledby="home-why-heading"
     >
       <header className="relative z-10 mx-auto max-w-4xl px-5 pt-28 pb-16 text-center sm:px-8 sm:pt-32 md:pb-20 lg:pt-36">
-        <ScrollReveal from="up">
-          <div
-            className="mx-auto mb-6 h-px w-12 bg-linear-to-r from-telco-red/55 to-transparent sm:mb-8 sm:w-16"
-            aria-hidden
-          />
-          <p className="text-xs font-medium uppercase tracking-widest text-black/75">
-            Why us
-          </p>
-          <h2
-            id="home-why-heading"
-            className="mx-auto mt-4 max-w-3xl text-pretty font-display text-3xl font-normal tracking-tight text-telco-red sm:text-4xl md:text-5xl"
-          >
-            Why Telco Republic
-          </h2>
-        </ScrollReveal>
+        <div
+          className="mx-auto mb-6 h-px w-12 bg-linear-to-r from-telco-red/55 to-transparent sm:mb-8 sm:w-16"
+          aria-hidden
+        />
+        <p className="text-xs font-medium uppercase tracking-widest text-black/75">
+          Why us
+        </p>
+        <h2
+          id="home-why-heading"
+          className="mx-auto mt-4 max-w-3xl text-pretty font-display text-3xl font-normal tracking-tight text-telco-red sm:text-4xl md:text-5xl"
+        >
+          Why Telco Republic
+        </h2>
       </header>
 
       <div className="relative w-full" aria-label="Why Telco Republic">

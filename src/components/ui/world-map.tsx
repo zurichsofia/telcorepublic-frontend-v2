@@ -2,13 +2,9 @@
 
 import { useEffect, useId, useMemo, useRef } from "react";
 import DottedMap from "dotted-map";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import proj4 from "proj4";
 
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
-
-gsap.registerPlugin(ScrollTrigger);
 
 type MapEndpoint = {
   lat: number;
@@ -131,39 +127,58 @@ export default function WorldMap({
 
     const preparePath = (path: SVGPathElement) => {
       const len = path.getTotalLength();
-      gsap.killTweensOf(path);
-      gsap.set(path, { strokeDasharray: len, strokeDashoffset: len });
+      path.setAttribute("stroke-dasharray", String(len));
+      path.setAttribute("stroke-dashoffset", String(len));
     };
 
     paths.forEach((path) => {
       preparePath(path);
       if (reduceMotion) {
-        gsap.set(path, { strokeDashoffset: 0 });
+        path.setAttribute("stroke-dashoffset", "0");
       }
     });
 
     if (reduceMotion) return;
 
-    const st = ScrollTrigger.create({
-      trigger: container,
-      start: "top 65%",
-      once: true,
-      onEnter: () => {
-        paths.forEach((path, index) => {
-          const i = Math.floor(index / 2);
-          gsap.to(path, {
-            strokeDashoffset: 0,
-            duration: 1,
-            delay: 0.45 * i,
-            ease: "power2.out",
-          });
-        });
+    const pathAnimations: Animation[] = [];
+
+    const runDraw = () => {
+      paths.forEach((path, index) => {
+        const len = path.getTotalLength();
+        const i = Math.floor(index / 2);
+        pathAnimations.push(
+          path.animate(
+            [
+              { strokeDashoffset: len },
+              { strokeDashoffset: 0 },
+            ],
+            {
+              duration: 1000,
+              delay: 450 * i,
+              fill: "forwards",
+              easing: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+            },
+          ),
+        );
+      });
+    };
+
+    const obs = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          obs.disconnect();
+          runDraw();
+          return;
+        }
       },
-    });
+      { root: null, rootMargin: "0px 0px -35% 0px", threshold: 0 },
+    );
+    obs.observe(container);
 
     return () => {
-      st.kill();
-      paths.forEach((p) => gsap.killTweensOf(p));
+      obs.disconnect();
+      pathAnimations.forEach((a) => a.cancel());
     };
   }, [dots, reduceMotion]);
 

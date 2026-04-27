@@ -1,8 +1,6 @@
-import { ScrollReveal } from "@/components/landing/scroll-reveal";
-
 export function ServiceSectionIntro() {
   return (
-    <ScrollReveal from="up" className="lg:col-span-5">
+    <div className="lg:col-span-5">
       <div className="lg:sticky lg:top-28 lg:max-w-md">
         <div
           className="mb-6 h-px w-12 bg-linear-to-r from-(--color-telco-red)/55 to-transparent sm:w-16"
@@ -19,6 +17,6 @@ export function ServiceSectionIntro() {
           long-term intelligence - structured for clarity at every step.
         </p>
       </div>
-    </ScrollReveal>
+    </div>
   );
 }

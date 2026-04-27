@@ -1,9 +1,5 @@
 "use client";
 
-import AnimatedContent from "@/components/AnimatedContent";
-import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
-
-import { ScrollReveal } from "@/components/landing/scroll-reveal";
 import WorldMap from "@/components/ui/world-map";
 
 const GLOBAL_REACH_DOTS = [
@@ -34,10 +30,6 @@ const GLOBAL_REACH_DOTS = [
 ] as const;
 
 export function GlobalReachMapSection() {
-  const reduce = usePrefersReducedMotion();
-
-  const mapBlock = <WorldMap dots={GLOBAL_REACH_DOTS} />;
-
   return (
     <section
       id="global-reach"
@@ -45,33 +37,19 @@ export function GlobalReachMapSection() {
       aria-labelledby="global-reach-heading"
     >
       <div className="relative mx-auto max-w-7xl px-5 text-center sm:px-8">
-        <ScrollReveal from="up">
-          <p className="text-xs font-medium uppercase tracking-widest text-telco-red">
-            International footprint
-          </p>
-        </ScrollReveal>
-        <ScrollReveal from="up" delayMs={100}>
-          <p className="mx-auto mt-5 max-w-2xl text-sm font-light leading-relaxed text-black md:text-lg">
-            Leverage Telco Republic&apos;s network to connect with industry leaders and
-            emerging technology solutions, fostering co-innovation and expanding your
-            market reach.
-          </p>
-        </ScrollReveal>
+        <p className="text-xs font-medium uppercase tracking-widest text-telco-red">
+          International footprint
+        </p>
+        <p className="mx-auto mt-5 max-w-2xl text-sm font-light leading-relaxed text-black md:text-lg">
+          Leverage Telco Republic&apos;s network to connect with industry leaders and
+          emerging technology solutions, fostering co-innovation and expanding your
+          market reach.
+        </p>
       </div>
 
-      {reduce ? (
-        <div className="relative mx-auto mt-14 max-w-6xl px-5 sm:px-8">{mapBlock}</div>
-      ) : (
-        <AnimatedContent
-          className="relative mx-auto mt-14 max-w-6xl px-5 sm:px-8"
-          distance={28}
-          duration={0.95}
-          ease="power3.out"
-          threshold={0.18}
-        >
-          {mapBlock}
-        </AnimatedContent>
-      )}
+      <div className="relative mx-auto mt-14 max-w-6xl px-5 sm:px-8">
+        <WorldMap dots={GLOBAL_REACH_DOTS} />
+      </div>
     </section>
   );
 }

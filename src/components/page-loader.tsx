@@ -1,6 +1,5 @@
 "use client";
 
-import { gsap } from "gsap";
 import { useEffect, useRef, useState } from "react";
 
 import { BrandLogoSignal } from "@/components/brand-logo-signal";
@@ -16,7 +15,6 @@ export function PageLoader() {
   const [phase, setPhase] = useState<"loading" | "exit" | "gone">("loading");
   const reduce = usePrefersReducedMotion();
   const rootRef = useRef<HTMLDivElement>(null);
-  const exitTweenRef = useRef<gsap.core.Tween | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -75,26 +73,25 @@ export function PageLoader() {
     const el = rootRef.current;
     if (!el || phase !== "exit") return;
 
-    exitTweenRef.current?.kill();
-
-    let finished = false;
     const exitDuration = reduce ? 0.2 : 0.75;
-    exitTweenRef.current = gsap.to(el, {
-      opacity: 0,
-      duration: exitDuration,
-      ease: "power3.out",
-      onComplete: () => {
-        if (!finished) {
-          finished = true;
-          setPhase("gone");
-        }
+    const anim = el.animate(
+      [{ opacity: 1 }, { opacity: 0 }],
+      {
+        duration: exitDuration * 1000,
+        fill: "forwards",
+        easing: "cubic-bezier(0.33, 1, 0.68, 1)",
       },
-    });
-
+    );
+    let cleanedUp = false;
+    const onFinish = () => {
+      if (cleanedUp) return;
+      setPhase("gone");
+    };
+    anim.addEventListener("finish", onFinish);
     return () => {
-      finished = true;
-      exitTweenRef.current?.kill();
-      exitTweenRef.current = null;
+      cleanedUp = true;
+      anim.removeEventListener("finish", onFinish);
+      anim.cancel();
     };
   }, [phase, reduce]);
 
