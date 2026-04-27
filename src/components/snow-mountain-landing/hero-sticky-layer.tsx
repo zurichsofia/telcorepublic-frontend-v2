@@ -23,11 +23,11 @@ export function HeroStickyLayer({
   children,
 }: HeroStickyLayerProps) {
   return (
-    <div className="sticky top-0 z-0 h-dvh min-h-dvh w-full overflow-hidden">
+    <div className="sticky top-0 z-0 h-screen min-h-screen w-full shrink-0 overflow-hidden">
       <div
         ref={heroCanvasRef}
         className={cn(
-          "absolute inset-0 z-0 min-h-dvh contain-paint",
+          "absolute inset-0 z-0 min-h-screen contain-paint",
           !reduceMotion && "cursor-none",
         )}
       >

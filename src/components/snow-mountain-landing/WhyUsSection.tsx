@@ -1,7 +1,15 @@
 "use client";
 
-import { StickyChapter } from "@/components/landing/service-editorial-scroll/sticky-chapter";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "motion/react";
 
+import { StickyChapter } from "@/components/landing/service-editorial-scroll/sticky-chapter";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
+
+import {
+  DOC_SCROLL_SNAP_PANE_CLASS,
+  HOME_WHY_SNAP_ID,
+} from "@/components/common/document-scroll-snap";
 import { cn } from "@/lib/utils";
 
 const WHY_CHAPTERS = [
@@ -96,27 +104,52 @@ function WhyChapter({
  * `EditorialParagraph`, alternating left / right alignment.
  */
 export function WhyUsSection() {
+  const reduce = usePrefersReducedMotion();
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+  const lift = reduce ? 0 : 40;
+  const opacity = useTransform(
+    scrollYProgress,
+    [0, 0.2, 0.78, 1],
+    reduce ? [1, 1, 1, 1] : [0.9, 1, 1, 0.94],
+  );
+  /** Keep y ≤ 0 so we never translate content downward at the top edge (that exposed the hero). */
+  const y = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [0, -lift]);
+
   return (
-    <section
+    <motion.section
+      ref={sectionRef}
       id="why-telco-republic"
-      className="relative isolate w-full overflow-x-clip bg-white pb-8"
+      className="relative isolate w-full overflow-x-clip bg-white pb-8 will-change-transform"
       aria-labelledby="home-why-heading"
+      style={{ opacity, y }}
     >
-      <header className="relative z-10 mx-auto max-w-4xl px-5 pt-28 pb-16 text-center sm:px-8 sm:pt-32 md:pb-20 lg:pt-36">
-        <div
-          className="mx-auto mb-6 h-px w-12 bg-linear-to-r from-telco-red/55 to-transparent sm:mb-8 sm:w-16"
-          aria-hidden
-        />
-        <p className="text-xs font-medium uppercase tracking-widest text-black/75">
-          Why us
-        </p>
-        <h2
-          id="home-why-heading"
-          className="mx-auto mt-4 max-w-3xl text-pretty font-display text-3xl font-normal tracking-tight text-telco-red sm:text-4xl md:text-5xl"
-        >
-          Why Telco Republic
-        </h2>
-      </header>
+      <div
+        id={HOME_WHY_SNAP_ID}
+        className={cn(
+          DOC_SCROLL_SNAP_PANE_CLASS,
+          "flex min-h-dvh w-full flex-col justify-center",
+        )}
+      >
+        <header className="relative z-10 mx-auto max-w-4xl px-5 pt-28 pb-16 text-center sm:px-8 sm:pt-32 md:pb-20 lg:pt-36">
+          <div
+            className="mx-auto mb-6 h-px w-12 bg-linear-to-r from-telco-red/55 to-transparent sm:mb-8 sm:w-16"
+            aria-hidden
+          />
+          <p className="text-xs font-medium uppercase tracking-widest text-black/75">
+            Why us
+          </p>
+          <h2
+            id="home-why-heading"
+            className="mx-auto mt-4 max-w-3xl text-pretty font-display text-3xl font-normal tracking-tight text-telco-red sm:text-4xl md:text-5xl"
+          >
+            Why Telco Republic
+          </h2>
+        </header>
+      </div>
 
       <div className="relative w-full" aria-label="Why Telco Republic">
         {WHY_CHAPTERS.map((chapter, i) => (
@@ -128,6 +161,6 @@ export function WhyUsSection() {
           />
         ))}
       </div>
-    </section>
+    </motion.section>
   );
 }

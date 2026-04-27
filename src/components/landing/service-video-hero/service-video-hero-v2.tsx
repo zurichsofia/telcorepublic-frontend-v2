@@ -6,8 +6,11 @@ import type { Swiper as SwiperType } from "swiper";
 import { Keyboard, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
+import { DOC_SCROLL_SNAP_PANE_CLASS } from "@/components/common/document-scroll-snap";
 import { services, serviceIndexFromSlug } from "@/data/services";
 import { serviceSlugHeroVideoUrlForSlide } from "@/lib/service-video-urls";
+
+import { cn } from "@/lib/utils";
 
 import { ServiceVideoSlide } from "./service-video-hero-slide";
 
@@ -83,7 +86,10 @@ export function ServiceVideoHeroV2({
       <div
         role="region"
         aria-label={`Service highlights: slide ${chromeIndex + 1} of ${sectionCount}, ${activeTitle}`}
-        className="relative z-10 h-screen min-h-0 w-full min-w-0 max-w-full shrink-0 overflow-x-clip overflow-y-hidden bg-black"
+        className={cn(
+          "relative z-10 h-dvh min-h-0 w-full min-w-0 max-w-full shrink-0 overflow-x-clip overflow-y-hidden bg-black",
+          DOC_SCROLL_SNAP_PANE_CLASS,
+        )}
       >
         <span className="sr-only">
           {multi
