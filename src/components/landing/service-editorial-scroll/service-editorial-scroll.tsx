@@ -1,13 +1,26 @@
 "use client";
 
-import type { ServiceContentBlock } from "@/data/services";
+import type { ServiceContentBlock } from "@/data/service-content-types";
+import { Fragment } from "react";
 
 import { EditorialOffersGroup } from "./editorial-offers";
 import { EditorialParagraph } from "./editorial-paragraph";
 import { EditorialRoleCallouts } from "./editorial-role-callouts";
 import { EditorialSimpleList } from "./editorial-simple-list";
 import { EditorialSubheading } from "./editorial-subheading";
-import { EditorialTagList } from "./editorial-tag-list";
+
+function paragraphOrdinalBefore(
+  blocks: readonly ServiceContentBlock[],
+  index: number,
+): number {
+  let n = 0;
+  for (let k = 0; k < index; k++) {
+    const b = blocks[k];
+    if (b.type === "paragraph") n += 1;
+    else if (b.type === "paragraphGroup") n += b.paragraphs.length;
+  }
+  return n;
+}
 
 export type ServiceEditorialScrollProps = {
   blocks: readonly ServiceContentBlock[];
@@ -24,26 +37,39 @@ export function ServiceEditorialScroll({
         const key = `${storyKey}-${block.type}-${i}`;
         switch (block.type) {
           case "paragraph": {
-            const paragraphIndex = blocks
-              .slice(0, i)
-              .filter((b) => b.type === "paragraph").length;
+            const paragraphIndex = paragraphOrdinalBefore(blocks, i);
             const variant = paragraphIndex % 2 === 0 ? "a" : "b";
             return (
               <EditorialParagraph key={key} text={block.text} variant={variant} />
             );
           }
+          case "paragraphGroup":
+            return (
+              <Fragment key={key}>
+                {block.subheading ? (
+                  <EditorialSubheading key={`${key}-subheading`} text={block.subheading} />
+                ) : null}
+                {block.paragraphs.map((text, j) => {
+                  const paragraphIndex = paragraphOrdinalBefore(blocks, i) + j;
+                  const variant = paragraphIndex % 2 === 0 ? "a" : "b";
+                  return (
+                    <EditorialParagraph
+                      key={`${key}-${j}`}
+                      text={text}
+                      variant={variant}
+                    />
+                  );
+                })}
+              </Fragment>
+            );
           case "subheading":
             return <EditorialSubheading key={key} text={block.text} />;
+          case "pillarLines":
+            return (
+              <EditorialParagraph key={key} text={block.lines.join(" ")} variant="a" />
+            );
           case "roleCallouts":
             return <EditorialRoleCallouts key={key} items={block.items} />;
-          case "tagList":
-            return (
-              <EditorialTagList
-                key={key}
-                heading={block.heading}
-                tags={block.tags}
-              />
-            );
           case "offers":
             return (
               <EditorialOffersGroup

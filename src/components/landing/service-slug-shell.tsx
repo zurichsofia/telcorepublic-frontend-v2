@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { ServiceVideoHeroV2 } from "@/components/landing/service-video-hero/service-video-hero-v2";
-import { ServiceEditorialScroll } from "./service-editorial-scroll/service-editorial-scroll";
+import { ServiceDetailPanel } from "@/components/landing/service-detail-panel/service-detail-panel";
 import { getServiceBySlug } from "@/data/services";
 import { useServiceViewportScrollSnap } from "@/hooks/use-service-viewport-scroll-snap";
 
@@ -67,10 +67,7 @@ export function ServiceSlugShell({ initialSlug }: ServiceSlugShellProps) {
         onActiveServiceChange={onActiveServiceChange}
       />
       <div id="service-detail" className="relative isolate w-full">
-        <ServiceEditorialScroll
-          blocks={service.content}
-          storyKey={service.slug}
-        />
+        <ServiceDetailPanel service={service} />
       </div>
     </>
   );
