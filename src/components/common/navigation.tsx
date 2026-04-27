@@ -19,11 +19,11 @@ export const defaultNavItems: readonly NavItem[] = [
     label: "Services",
     children: [
       { href: "/services/disrupter-quintants", label: "Disrupter Quintants" },
+      { href: "/services/subscription", label: "Subscription" },
       { href: "/services/competitive-positioning", label: "Competitive Positioning" },
       { href: "/services/go-to-market", label: "Go-To-Market" },
       { href: "/services/market-assessment", label: "Market Assessment" },
       { href: "/services/custom-research", label: "Custom Research" },
-      { href: "/services/subscription", label: "Subscription" },
     ],
   },
   {
@@ -118,7 +118,7 @@ function NavSubList({
   onSublinkPick: () => void;
 }) {
   const onDarkNav =
-    theme === "blog" || (theme === "overlay" && !overlayPastHero);
+    theme === "blog";
   const panelSurface = onDarkNav
     ? "bg-telco-dark shadow-sm ring-1 ring-white/10"
     : "bg-white shadow-sm ring-1 ring-neutral-700/10";
