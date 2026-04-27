@@ -109,7 +109,7 @@ export function SnowMountainHero() {
   return (
     <section
       ref={heroRef}
-      id="summit"
+      id="hero"
       // className="relative isolate z-20 [--color-heading:#001538] [--accent-hover:#0891b2]"
       style={{
         // backgroundColor: SNOW_MOUNTAIN_FOG_COLOR,
@@ -133,9 +133,6 @@ export function SnowMountainHero() {
           !reduce && "cursor-none [&_a]:cursor-pointer",
         )}
       >
-        <div className="pointer-events-auto">
-          {/* <Navitation /> */}
-        </div>
 
         <HeroPrimaryContent reduceMotion={!!reduce} />
         <HeroMidContent reduceMotion={reduce} />

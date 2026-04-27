@@ -16,6 +16,8 @@ function scrollViewToTop() {
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() ?? "";
   const isServiceDetail = /^\/services\/[^/]+$/.test(pathname);
+  const isHome = pathname === "/" || pathname === "";
+  const immersiveHero = isServiceDetail || isHome;
   const isNews = pathname === "/news" || pathname.startsWith("/news/");
   const isContact = pathname === "/contact";
   const darkShell = isNews || isContact;
@@ -48,14 +50,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div
       className={cn(
         "relative z-10 flex min-h-screen flex-col",
-        darkShell ? "bg-telco-dark" : isServiceDetail ? "bg-transparent" : "bg-white",
+        darkShell ? "bg-telco-dark" : immersiveHero ? "bg-transparent" : "bg-white",
       )}
     >
       <Navigation
         className={
-          isServiceDetail ? "fixed top-0 right-0 left-0 z-50 w-full" : undefined
+          immersiveHero ? "fixed top-0 right-0 left-0 z-50 w-full" : undefined
         }
-        theme={darkShell ? "blog" : isServiceDetail ? "overlay" : "default"}
+        theme={darkShell ? "blog" : immersiveHero ? "overlay" : "default"}
       />
       <div className="relative z-0 flex min-h-0 flex-1 flex-col">{children}</div>
       <Footer className="mt-auto" />

@@ -1,7 +1,11 @@
-import { permanentRedirect } from "next/navigation";
-
-import { services } from "@/data/services";
+import { WhyUsSection } from "@/components/snow-mountain-landing/WhyUsSection";
+import { SnowMountainHero } from "@/components/snow-mountain-landing/snow-mountain-hero";
 
 export default function Home() {
-  permanentRedirect(`/services/${services[0].slug}`);
+  return (
+    <main id="home" className="relative z-10 isolate">
+      <SnowMountainHero />
+      <WhyUsSection />
+    </main>
+  );
 }
