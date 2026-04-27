@@ -93,9 +93,13 @@ export function ServiceVideoHeroV2({
       if (idealY == null) return null;
       const vh = window.innerHeight;
       const exitPx = vh * 1.1;
+      // When the hero is ~1× viewport tall, `idealY - exitPx` goes negative. Without a
+      // floor, `scrollY === 0` (e.g. after Link navigation) sits “inside” the seam and
+      // `scrollend` fires `commitEase` — jumping past the video hero to the intro.
+      const seamLow = Math.max(idealY - exitPx, vh * 0.22);
       return {
         idealY,
-        seamLow: idealY - exitPx,
+        seamLow,
         seamHigh: idealY + 28,
         vh,
       };
