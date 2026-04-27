@@ -3,7 +3,6 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 
-import { StickyChapter } from "@/components/landing/service-editorial-scroll/sticky-chapter";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 
 import { HOME_WHY_SNAP_ID } from "@/components/common/document-scroll-snap";
@@ -59,7 +58,8 @@ function ScrollRevealParagraph({
   const ref = useRef<HTMLParagraphElement | null>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start 0.92", "start 0.48"],
+    /** Wide band so opacity / y ramp over more scroll (was ~0.44vh → feels rushed). */
+    offset: ["start end", "start 0.28"],
   });
   const opacity = useTransform(
     scrollYProgress,
@@ -95,13 +95,18 @@ function WhyChapter({
   reduceMotion: boolean;
 }) {
   const isA = variant === "a";
+  /**
+   * One chapter ≈ one viewport: avoid stacked `position: sticky` (previous pin + next
+   * in-flow shows two chapters in the same view).
+   */
   return (
-    <StickyChapter
-      stickyClassName={
+    <div
+      className={cn(
+        "flex min-h-dvh w-full max-w-full flex-col justify-center overflow-x-clip py-16 md:py-24",
         isA
-          ? "pt-16 pl-5 pr-4 md:pt-28 md:pl-12 md:pr-8 lg:pt-20 lg:pl-24 lg:pr-12"
-          : "justify-center pl-5 pr-4 md:pl-16 md:pr-8 lg:pl-28 lg:pr-16"
-      }
+          ? "pl-5 pr-4 md:pl-12 md:pr-8 lg:pl-24 lg:pr-12"
+          : "pl-5 pr-4 md:pl-16 md:pr-8 lg:pl-28 lg:pr-16",
+      )}
     >
       <div
         className={cn(
@@ -133,13 +138,15 @@ function WhyChapter({
           ))}
         </div>
       </div>
-    </StickyChapter>
+    </div>
   );
 }
 
 /**
- * “Why Telco Republic” — same sticky scroll-up chapters as `ServiceEditorialScroll` /
- * `EditorialParagraph`, alternating left / right alignment.
+ * “Why Telco Republic” — full-viewport chapters (not `StickyChapter`): stacked sticky
+ * would show two chapters in one viewport while one pin hands off to the next.
+ *
+ * The root `motion.section` only drives opacity (no `transform` — avoids sticky bugs).
  */
 export function WhyUsSection() {
   const reduce = usePrefersReducedMotion();
@@ -148,22 +155,19 @@ export function WhyUsSection() {
     target: sectionRef,
     offset: ["start end", "end start"],
   });
-  const lift = reduce ? 0 : 40;
   const opacity = useTransform(
     scrollYProgress,
     [0, 0.2, 0.78, 1],
     reduce ? [1, 1, 1, 1] : [0.9, 1, 1, 0.94],
   );
-  /** Keep y ≤ 0 so we never translate content downward at the top edge (that exposed the hero). */
-  const y = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [0, -lift]);
 
   return (
     <motion.section
       ref={sectionRef}
       id="why-telco-republic"
-      className="relative isolate w-full overflow-x-clip bg-white pb-8 will-change-transform"
+      className="relative isolate w-full overflow-x-clip bg-white pb-8"
       aria-labelledby="home-why-heading"
-      style={{ opacity, y }}
+      style={{ opacity }}
     >
       <div
         id={HOME_WHY_SNAP_ID}
