@@ -6,10 +6,7 @@ import { motion, useScroll, useTransform } from "motion/react";
 import { StickyChapter } from "@/components/landing/service-editorial-scroll/sticky-chapter";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 
-import {
-  DOC_SCROLL_SNAP_PANE_CLASS,
-  HOME_WHY_SNAP_ID,
-} from "@/components/common/document-scroll-snap";
+import { HOME_WHY_SNAP_ID } from "@/components/common/document-scroll-snap";
 import { cn } from "@/lib/utils";
 
 const WHY_CHAPTERS = [
@@ -52,14 +49,51 @@ const WHY_CHAPTERS = [
   },
 ] as const;
 
+/** Paragraphs slide up and fade in as their scroll position crosses the viewport band. */
+function ScrollRevealParagraph({
+  children,
+  reduceMotion,
+}: {
+  children: string;
+  reduceMotion: boolean;
+}) {
+  const ref = useRef<HTMLParagraphElement | null>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start 0.92", "start 0.48"],
+  });
+  const opacity = useTransform(
+    scrollYProgress,
+    [0, 1],
+    reduceMotion ? [1, 1] : [0, 1],
+  );
+  const y = useTransform(
+    scrollYProgress,
+    [0, 1],
+    reduceMotion ? [0, 0] : [36, 0],
+  );
+
+  return (
+    <motion.p
+      ref={ref}
+      className="will-change-[transform,opacity]"
+      style={{ opacity, y }}
+    >
+      {children}
+    </motion.p>
+  );
+}
+
 function WhyChapter({
   title,
   paragraphs,
   variant,
+  reduceMotion,
 }: {
   title: string;
   paragraphs: readonly string[];
   variant: "a" | "b";
+  reduceMotion: boolean;
 }) {
   const isA = variant === "a";
   return (
@@ -91,7 +125,12 @@ function WhyChapter({
           )}
         >
           {paragraphs.map((text, j) => (
-            <p key={`${title}-${j}`}>{text}</p>
+            <ScrollRevealParagraph
+              key={`${title}-${j}`}
+              reduceMotion={reduceMotion}
+            >
+              {text}
+            </ScrollRevealParagraph>
           ))}
         </div>
       </div>
@@ -129,10 +168,7 @@ export function WhyUsSection() {
     >
       <div
         id={HOME_WHY_SNAP_ID}
-        className={cn(
-          DOC_SCROLL_SNAP_PANE_CLASS,
-          "flex min-h-dvh w-full flex-col justify-center",
-        )}
+        className="flex min-h-dvh w-full flex-col justify-center"
       >
         <header className="relative z-10 mx-auto max-w-4xl px-5 pt-28 pb-16 text-center sm:px-8 sm:pt-32 md:pb-20 lg:pt-36">
           <div
@@ -158,6 +194,7 @@ export function WhyUsSection() {
             title={chapter.title}
             paragraphs={chapter.paragraphs}
             variant={i % 2 === 0 ? "a" : "b"}
+            reduceMotion={reduce}
           />
         ))}
       </div>

@@ -69,93 +69,95 @@ export function SnowMountainHero() {
 
   useMotionValueEvent(scrollYProgress, "change", syncParallax);
 
-  /** After exit commit, skip until user scrolls clearly back up from the Why intro. */
-  const homeExitSnapConsumedRef = useRef(false);
-  const ignoreCommitUntilRef = useRef(0);
-  /** Last scroll position after a settled gesture (`scrollend`) — for fast-skip recovery. */
-  const scrollYAtLastScrollEndRef = useRef(0);
-
+  /**
+   * Align `#home-why-snap` when leaving the snow hero tail:
+   * - Down-scroll in the seam → one eased `scrollTo` (not instant).
+   * - `scrollend` in the seam → same, for slow drags.
+   * `smoothInFlight` + `ignoreUntil` avoid overlapping smooth scrolls.
+   */
   useEffect(() => {
     if (reduce) return;
+    let ignoreUntil = 0;
+    let lastY = window.scrollY;
+    let smoothInFlight = false;
+    let clearFlightId: number | undefined;
 
-    scrollYAtLastScrollEndRef.current = window.scrollY;
-
-    let debounceId: number | undefined;
-    const DEBOUNCE_MS = 120;
-
-    const tryCommitAfterIdle = () => {
-      if (performance.now() < ignoreCommitUntilRef.current) return;
-
+    const metrics = () => {
       const idealY = homeWhySnapScrollTop();
-      if (idealY == null) return;
-
-      const y = window.scrollY;
+      if (idealY == null) return null;
       const vh = window.innerHeight;
-
-      // Snap only fires in the hero's exit zone — after the parallax animation
-      // completes (HERO_STICKY_SCROLL_VH) up to the section end (HERO_SECTION_VH).
       const exitZonePx = ((HERO_SECTION_VH - HERO_STICKY_SCROLL_VH) / 100) * vh;
-      const seamLow = idealY - exitZonePx;
-      const seamHigh = idealY + Math.min(vh * 0.6, 640);
+      return {
+        idealY,
+        seamLow: idealY - exitZonePx,
+        seamHigh: idealY + 24,
+        vh,
+      };
+    };
 
-      // Re-arm once the user scrolls clearly above the snap zone.
-      if (y < seamLow) {
-        homeExitSnapConsumedRef.current = false;
-      }
-      if (homeExitSnapConsumedRef.current) return;
-
-      // Looser than 1px so we do not fight native scroll-snap + subpixel layout.
-      if (Math.abs(y - idealY) <= 8) return;
-
-      if (y < seamLow || y > seamHigh) return;
-
-      homeExitSnapConsumedRef.current = true;
-      ignoreCommitUntilRef.current = performance.now() + 900;
+    const commitEase = (idealY: number) => {
+      if (smoothInFlight) return;
+      smoothInFlight = true;
+      if (clearFlightId !== undefined) window.clearTimeout(clearFlightId);
+      ignoreUntil = performance.now() + 520;
       window.scrollTo({ top: idealY, left: 0, behavior: "smooth" });
+      lastY = idealY;
+      clearFlightId = window.setTimeout(() => {
+        smoothInFlight = false;
+        clearFlightId = undefined;
+      }, 620);
     };
 
     const onScroll = () => {
-      // Ignore scroll events produced by the smooth snap animation itself.
-      if (performance.now() < ignoreCommitUntilRef.current) return;
-      if (debounceId !== undefined) window.clearTimeout(debounceId);
-      debounceId = window.setTimeout(() => {
-        debounceId = undefined;
-        tryCommitAfterIdle();
-      }, DEBOUNCE_MS);
-    };
-
-    const onScrollEnd = () => {
-      if (debounceId !== undefined) {
-        window.clearTimeout(debounceId);
-        debounceId = undefined;
+      if (performance.now() < ignoreUntil) {
+        lastY = window.scrollY;
+        return;
       }
-      const prevSettledY = scrollYAtLastScrollEndRef.current;
-      tryCommitAfterIdle();
+      const m = metrics();
+      if (!m) return;
+      const { idealY, seamLow, vh } = m;
+      const y = window.scrollY;
 
-      if (performance.now() < ignoreCommitUntilRef.current) {
-        scrollYAtLastScrollEndRef.current = window.scrollY;
+      if (Math.abs(y - idealY) <= 10) {
+        lastY = y;
+        return;
+      }
+      if (y > idealY + vh * 0.42) {
+        lastY = y;
         return;
       }
 
-      const idealY = homeWhySnapScrollTop();
-      if (idealY != null) {
-        const y = window.scrollY;
-        const vh = window.innerHeight;
-        const dy = y - prevSettledY;
-        // One gesture jumped from the hero / Why top into the middle of the first
-        // Why viewport (CSS snap + `scroll-snap-stop` can still miss on some inputs).
-        if (
-          prevSettledY < idealY + vh * 0.06 &&
-          y > idealY + vh * 0.14 &&
-          y < idealY + vh * 0.88 &&
-          dy > vh * 0.32
-        ) {
-          ignoreCommitUntilRef.current = performance.now() + 900;
-          window.scrollTo({ top: idealY, left: 0, behavior: "smooth" });
-        }
+      const scrollingDown = y > lastY + 1;
+      if (!scrollingDown) {
+        lastY = y;
+        if (y < idealY - 80) smoothInFlight = false;
+        return;
       }
+      lastY = y;
+      if (y >= seamLow && y < idealY - 8) {
+        commitEase(idealY);
+      }
+    };
 
-      scrollYAtLastScrollEndRef.current = window.scrollY;
+    const onScrollEnd = () => {
+      if (performance.now() < ignoreUntil) {
+        lastY = window.scrollY;
+        return;
+      }
+      if (smoothInFlight) {
+        lastY = window.scrollY;
+        return;
+      }
+      const m = metrics();
+      if (!m) return;
+      const { idealY, seamLow, seamHigh, vh } = m;
+      const y = window.scrollY;
+      lastY = y;
+
+      if (y > idealY + vh * 0.45) return;
+      if (Math.abs(y - idealY) <= 10) return;
+      if (y < seamLow || y > seamHigh) return;
+      commitEase(idealY);
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -163,15 +165,11 @@ export function SnowMountainHero() {
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("scrollend", onScrollEnd);
-      if (debounceId !== undefined) window.clearTimeout(debounceId);
+      if (clearFlightId !== undefined) window.clearTimeout(clearFlightId);
     };
   }, [reduce]);
 
   useLayoutEffect(() => {
-    if (reduce) {
-      homeExitSnapConsumedRef.current = false;
-      ignoreCommitUntilRef.current = 0;
-    }
     syncParallax(reduce ? 0 : scrollYProgress.get());
   }, [reduce, scrollYProgress, syncParallax]);
 

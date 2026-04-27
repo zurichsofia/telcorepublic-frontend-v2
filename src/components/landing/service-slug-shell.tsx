@@ -2,10 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import {
-  DOC_SCROLL_SNAP_CLASS,
-  DOC_SCROLL_SNAP_SERVICES_CLASS,
-} from "@/components/common/document-scroll-snap";
 import { ServiceVideoHeroV2 } from "@/components/landing/service-video-hero/service-video-hero-v2";
 import { ServiceDetailPanel } from "@/components/landing/service-detail-panel/service-detail-panel";
 import { getServiceBySlug } from "@/data/services";
@@ -27,20 +23,12 @@ export type ServiceSlugShellProps = {
 /**
  * Keeps the video hero and editorial scroll on the active service when the URL
  * updates via `history.replaceState` or browser history (no App Router navigation
- * — avoids a full-tree flash). While this shell is mounted, `html` gets CSS scroll snap
- * (`doc-scroll-snap` in `globals.css`) for hero ↔ detail transitions.
+ * — avoids a full-tree flash). Post–video-hero scroll alignment uses `scrollend` in
+ * `ServiceVideoHeroV2` (no CSS root scroll snap).
  */
 export function ServiceSlugShell({ initialSlug }: ServiceSlugShellProps) {
   const [activeSlug, setActiveSlug] = useState(initialSlug);
   const lastServerSlugRef = useRef(initialSlug);
-
-  useEffect(() => {
-    const root = document.documentElement;
-    root.classList.add(DOC_SCROLL_SNAP_CLASS, DOC_SCROLL_SNAP_SERVICES_CLASS);
-    return () => {
-      root.classList.remove(DOC_SCROLL_SNAP_CLASS, DOC_SCROLL_SNAP_SERVICES_CLASS);
-    };
-  }, []);
 
   useEffect(() => {
     if (lastServerSlugRef.current === initialSlug) return;

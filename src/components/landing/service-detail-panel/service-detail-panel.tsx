@@ -3,7 +3,7 @@
 import { CustomResearchRadialDiagram } from "@/components/landing/service-editorial-panel/custom-research-radial-diagram";
 import { EditorialInlineList } from "@/components/landing/service-editorial-panel/editorial-inline-list";
 import { EditorialPillarsSection } from "@/components/landing/service-editorial-panel/editorial-pillars-section";
-import { DOC_SCROLL_SNAP_PANE_CLASS } from "@/components/common/document-scroll-snap";
+import { SERVICE_DETAIL_INTRO_SNAP_ID } from "@/components/common/document-scroll-snap";
 import type { ServiceContentBlock } from "@/data/service-content-types";
 import type { ServiceEntry } from "@/data/services";
 import { cn } from "@/lib/utils";
@@ -183,10 +183,8 @@ export function ServiceDetailPanel({ service }: ServiceDetailPanelProps) {
     <div className="relative w-full bg-white pb-28 text-black md:pb-36 lg:pb-44">
       <div className={cn("w-full", detailBlockStack)}>
         <section
-          className={cn(
-            DOC_SCROLL_SNAP_PANE_CLASS,
-            "mx-auto flex min-h-dvh max-w-4xl flex-col justify-center px-5 pt-28 pb-16 text-center sm:px-8 lg:max-w-4xl",
-          )}
+          id={SERVICE_DETAIL_INTRO_SNAP_ID}
+          className="mx-auto flex min-h-dvh max-w-4xl flex-col justify-center px-5 pt-28 pb-16 text-center sm:px-8 lg:max-w-4xl"
         >
           <h2 className="text-pretty font-sans text-xl font-normal leading-snug tracking-tight text-telco-red sm:text-2xl md:text-3xl lg:text-[2rem] lg:leading-tight">
             {service.desc}
