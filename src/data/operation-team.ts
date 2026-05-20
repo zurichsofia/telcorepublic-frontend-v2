@@ -2,6 +2,7 @@ export type OperationTeamMember = {
   id: string;
   name: string;
   role: string;
+  linkedinUrl: string;
   /** Shown before “Read more”. */
   previewParagraphs: readonly string[];
   /** Shown after expanding “Read more”. */
@@ -13,6 +14,7 @@ export const operationTeamMembers: readonly OperationTeamMember[] = [
     id: "martina-kurth",
     name: "Martina Kurth",
     role: "CEO",
+    linkedinUrl: "https://www.linkedin.com/in/martina-kurth",
     previewParagraphs: [
       "Martina is a seasoned Executive in the global Tech Business, having worked 15 years for the No 1, most influential global Tech Strategy company Gartner ($6 billion). Martina has advised top Fortune 500 clients around the globe.",
       "As passionate and accomplished C-level advisor and research leader, she provides high-quality, innovative market analysis and advisory services to global clients. She has demonstrated leadership skills to lead globally dispersed teams.",
@@ -26,6 +28,7 @@ export const operationTeamMembers: readonly OperationTeamMember[] = [
     id: "norbert-scholz",
     name: "Norbert Scholz",
     role: "Head of Telco Research & Advisory",
+    linkedinUrl: "https://www.linkedin.com/in/norbert-scholz/",
     previewParagraphs: [
       "With over 20 years experience, Norbert Scholz is a renowned global industry analyst, strategist, market researcher and forecaster, with focus on the BSS and CRM segment in the comms industry.",
       "His coverage comprises fixed, mobile, cable, software as a service (SaaS) and subscription services.",
@@ -41,6 +44,7 @@ export const operationTeamMembers: readonly OperationTeamMember[] = [
     id: "brendan-logan",
     name: "Brendan Logan",
     role: "Co-Founder",
+    linkedinUrl: "https://www.linkedin.com/in/loganbrendan/",
     previewParagraphs: [
       "Brendan Logan has worked in the telecom industry for over 35 years in a variety of operator and vendor roles and is widely known within the telecom Industry.",
       "He has been at the forefront of many technology changes within the industry, and he cofounded Logan-Orviss, a successful strategic OSS/BSS consulting company within the industry for 12 years.",

@@ -25,6 +25,7 @@ export default function OperationTeamPage() {
           id={member.id}
           role={member.role}
           name={member.name}
+          linkedinUrl={member.linkedinUrl}
           previewParagraphs={member.previewParagraphs}
           moreParagraphs={member.moreParagraphs}
           reverse={index % 2 === 1}

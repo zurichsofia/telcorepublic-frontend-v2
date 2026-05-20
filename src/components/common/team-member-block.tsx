@@ -8,6 +8,7 @@ export type TeamMemberBlockProps = {
   id: string;
   role: string;
   name: string;
+  linkedinUrl?: string;
   previewParagraphs: readonly string[];
   /** Extra copy revealed by “Read more”. Omit or pass empty to hide the control. */
   moreParagraphs?: readonly string[];
@@ -25,6 +26,7 @@ export function TeamMemberBlock({
   id,
   role,
   name,
+  linkedinUrl,
   previewParagraphs,
   moreParagraphs = [],
   readMoreLabel = "Read more",
@@ -48,14 +50,26 @@ export function TeamMemberBlock({
       <header
         className={cn(
           "max-w-md",
-          reverse && "lg:ml-auto lg:text-right",
+          reverse && "lg:ml-auto ",
         )}
       >
         <p className="text-lg font-semibold tracking-wide text-red-600">
           {role}
         </p>
         <h2 className="mt-2 font-display text-4xl text-red-600 sm:text-5xl">
-          {name}
+          {linkedinUrl ? (
+            <a
+              href={linkedinUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-inherit transition-opacity hover:opacity-75"
+              aria-label={`${name} on LinkedIn`}
+            >
+              {name}
+            </a>
+          ) : (
+            name
+          )}
         </h2>
       </header>
       <div className="min-w-0">
@@ -81,7 +95,7 @@ export function TeamMemberBlock({
           <p className="mt-8">
             <button
               type="button"
-              className="text-base font-normal text-red-600 underline-offset-4 hover:underline"
+              className="text-base font-normal text-red-600 transition-opacity hover:opacity-75 cursor-pointer"
               aria-expanded={expanded}
               aria-controls={regionId}
               onClick={() => setExpanded((v) => !v)}
