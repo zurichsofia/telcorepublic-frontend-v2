@@ -5,7 +5,11 @@ import { useEffect, useLayoutEffect } from "react";
 import { usePathname } from "next/navigation";
 
 import { Footer } from "@/components/common/footer";
-import { Navigation } from "@/components/common/navigation";
+import {
+  Navigation,
+  shellSurfaceClassName,
+  useOverlayPastHero,
+} from "@/components/common/navigation";
 import { cn } from "@/lib/utils";
 
 function scrollViewToTop() {
@@ -21,6 +25,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const isNews = pathname === "/news" || pathname.startsWith("/news/");
   const isContact = pathname === "/contact";
   const darkShell = isNews || isContact;
+  const theme = darkShell ? "blog" : immersiveHero ? "overlay" : "default";
+  const overlayPastHero = useOverlayPastHero(theme);
+  const surfaceClassName = shellSurfaceClassName(theme, overlayPastHero);
 
   // Browsers can restore/apply scroll after a client navigation, which (with a long view
   // e.g. /services or /services/slug) leaves a high scroll offset that clamps to the
@@ -50,14 +57,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div
       className={cn(
         "relative z-10 flex min-h-screen flex-col",
-        darkShell ? "bg-telco-dark" : immersiveHero ? "bg-transparent" : "bg-white",
+        surfaceClassName,
       )}
     >
       <Navigation
         className={
           immersiveHero ? "fixed top-0 right-0 left-0 z-50 w-full" : undefined
         }
-        theme={darkShell ? "blog" : immersiveHero ? "overlay" : "default"}
+        theme={theme}
+        surfaceClassName={surfaceClassName}
+        overlayPastHero={overlayPastHero}
       />
       <div className="relative z-0 flex min-h-0 flex-1 flex-col">{children}</div>
       <Footer className="mt-auto" />

@@ -6,6 +6,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { HOME_WHY_SNAP_ID } from "@/components/common/document-scroll-snap";
 import { BrandLogoSignal } from "@/components/brand-logo-signal";
+import { blogPosts } from "@/data/news";
 import { cn } from "@/lib/utils";
 
 export type NavItem = {
@@ -52,8 +53,12 @@ export type NavigationProps = {
   items?: readonly NavItem[];
   logoHref?: string;
   className?: string;
-  /** `blog` — dark bar, light links. `overlay` — on hero: transparent + light links; below `#hero`: bar + dark links. */
+  /** `blog` — light links on dark shell. `overlay` — on hero: light links; below `#hero`: dark links. */
   theme?: "default" | "blog" | "overlay";
+  /** Same background as `AppShell` (opaque bar; keeps nav in sync with page surface). */
+  surfaceClassName: string;
+  /** Passed from `AppShell` when `theme === "overlay"`. */
+  overlayPastHero?: boolean;
 };
 
 function navItemActive(
@@ -70,28 +75,61 @@ function navItemActive(
 }
 
 /** Telco red: matches brand accent (see `--color-telco-red` in globals). */
+function NewsCountBadge({
+  onDark,
+  active,
+}: {
+  onDark: boolean;
+  active: boolean;
+}) {
+  return (
+    <span
+      className={cn(
+        "inline-flex min-h-4.5 min-w-4.5 shrink-0 items-center justify-center rounded-md px-1 text-[11px] font-medium leading-none tabular-nums transition-colors",
+        active
+          ? "bg-telco-red text-white"
+          : cn(
+              onDark
+                ? "bg-white text-neutral-900"
+                : "bg-neutral-900 text-white",
+              "group-hover:bg-telco-red group-hover:text-white",
+            ),
+      )}
+      aria-label={`${blogPosts.length} articles`}
+    >
+      {blogPosts.length}
+    </span>
+  );
+}
+
 function navLinkClass(
   active: boolean,
   theme: "default" | "blog" | "overlay",
   overlayPastHero: boolean,
 ) {
+  const type = cn(
+    "text-sm transition-colors",
+    active ? "font-normal" : "font-light",
+  );
+
   if (theme === "blog") {
     return cn(
-      "text-sm font-light transition",
-      active ? "text-red-600" : "text-white hover:text-red-600",
+      type,
+      active ? "text-telco-red" : "text-white hover:text-telco-red",
     );
   }
   if (theme === "overlay" && !overlayPastHero) {
     return cn(
-      "text-sm font-light transition text-shadow-sm",
-      active ? "text-red-600" : "text-white hover:text-red-600",
+      type,
+      "text-shadow-sm",
+      active ? "text-telco-red" : "text-white hover:text-telco-red",
     );
   }
   return cn(
-    "text-sm font-light transition",
+    type,
     active
-      ? "text-red-600"
-      : "text-neutral-900 hover:text-red-600",
+      ? "text-telco-red"
+      : "text-neutral-900 hover:text-telco-red",
   );
 }
 
@@ -107,7 +145,6 @@ function NavSubList({
   items,
   pathname,
   theme,
-  overlayPastHero,
   menuOpen,
   onSublinkPick,
 }: {
@@ -143,10 +180,10 @@ function NavSubList({
               ? "text-white/35"
               : "text-neutral-400"
             : subActive
-              ? "text-red-600"
+              ? "text-telco-red"
               : onDarkNav
-                ? "text-white hover:text-red-600"
-                : "text-neutral-900 hover:text-red-600",
+                ? "text-white hover:text-telco-red"
+                : "text-neutral-900 hover:text-telco-red",
         );
         return (
           <li key={sub.label} className="min-w-0">
@@ -247,7 +284,18 @@ function NavItemWithSubmenu({
   );
 }
 
-function useOverlayPastHero(theme: "default" | "blog" | "overlay") {
+export function shellSurfaceClassName(
+  theme: "default" | "blog" | "overlay",
+  overlayPastHero: boolean,
+): string {
+  if (theme === "blog") return "bg-telco-dark";
+  if (theme === "overlay") {
+    return overlayPastHero ? "bg-white" : "bg-transparent";
+  }
+  return "bg-white";
+}
+
+export function useOverlayPastHero(theme: "default" | "blog" | "overlay") {
   const [pastHero, setPastHero] = useState(false);
 
   useLayoutEffect(() => {
@@ -297,23 +345,18 @@ export function Navigation({
   logoHref = "/",
   className,
   theme = "default",
+  surfaceClassName,
+  overlayPastHero = false,
 }: NavigationProps) {
   const pathname = usePathname() ?? "";
-  const overlayPastHero = useOverlayPastHero(theme);
   const onDark =
     theme === "blog" || (theme === "overlay" && !overlayPastHero);
 
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 isolate w-full shrink-0 px-5 py-6 sm:px-8 transition-colors duration-500",
-        theme === "blog"
-          ? "bg-telco-dark"
-          : theme === "overlay"
-            ? overlayPastHero
-              ? "bg-white"
-              : "bg-transparent"
-            : "bg-white",
+        "sticky top-0 z-50 isolate w-full shrink-0 px-5 py-6 sm:px-8",
+        surfaceClassName,
         className,
       )}
     >
@@ -340,13 +383,19 @@ export function Navigation({
               }
 
               const isActive = navItemActive(item, pathname);
+              const isNews = item.href === "/news";
               return (
                 <li key={item.label}>
                   <Link
                     href={item.href}
-                    className={navLinkClass(isActive, theme, overlayPastHero)}
+                    className={cn(
+                      navLinkClass(isActive, theme, overlayPastHero),
+                      isNews && "group inline-flex items-center gap-1.5",
+                      isNews && isActive && "font-medium",
+                    )}
                   >
                     {item.label}
+                    {isNews ? <NewsCountBadge onDark={onDark} active={isActive} /> : null}
                   </Link>
                 </li>
               );

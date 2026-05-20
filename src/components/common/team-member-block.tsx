@@ -20,7 +20,7 @@ export type TeamMemberBlockProps = {
 };
 
 /**
- * Two-column profile: role + name (red) and body copy + read more, with optional reversed columns.
+ * Two-column profile: role + name (telco-red) and body copy + read more, with optional reversed columns.
  */
 export function TeamMemberBlock({
   id,
@@ -53,10 +53,10 @@ export function TeamMemberBlock({
           reverse && "lg:ml-auto ",
         )}
       >
-        <p className="text-lg font-semibold tracking-wide text-red-600">
+        <p className="text-lg font-semibold tracking-wide text-telco-red">
           {role}
         </p>
-        <h2 className="mt-2 font-display text-4xl text-red-600 sm:text-5xl">
+        <h2 className="mt-2 font-display text-4xl text-telco-red sm:text-5xl">
           {linkedinUrl ? (
             <a
               href={linkedinUrl}
@@ -95,7 +95,7 @@ export function TeamMemberBlock({
           <p className="mt-8">
             <button
               type="button"
-              className="text-base font-normal text-red-600 transition-opacity hover:opacity-75 cursor-pointer"
+              className="text-base font-normal text-telco-red transition-opacity hover:opacity-75 cursor-pointer"
               aria-expanded={expanded}
               aria-controls={regionId}
               onClick={() => setExpanded((v) => !v)}
