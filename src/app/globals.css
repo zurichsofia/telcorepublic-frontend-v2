@@ -108,20 +108,16 @@ body {
 /* Brand lockup — one dot “seeks” at a time (staggered pulse along the row) */
 @keyframes brand-signal-seek {
   0% {
-    opacity: 0.22;
-    transform: scale(1);
+    opacity: 0;
   }
   3% {
     opacity: 1;
-    transform: scale(1.28);
   }
   7% {
-    opacity: 0.22;
-    transform: scale(1);
+    opacity: 0;
   }
   100% {
-    opacity: 0.22;
-    transform: scale(1);
+    opacity: 0;
   }
 }
 
@@ -136,13 +132,12 @@ body {
   animation-iteration-count: infinite;
   animation-delay: var(--seek-delay, 0s);
   animation-fill-mode: backwards;
-  transform-origin: center;
 }
 
 /* Smaller dots when the lockup uses `size="compact"` (e.g. main nav). */
 .brand-signal-dots-compact .brand-signal-dot {
-  width: 4px;
-  height: 4px;
+  width: 3.8px;
+  height: 3.8px;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 const SIGNAL_DOT_COUNT = 12;
 /** Seconds between each dot’s pulse (one full sweep = count × step). */
-const SEEK_STEP_S = 0.4;
+const SEEK_STEP_S = 1;
 
 /** White lockup asset (default for both variants until a dark PNG ships). */
 const LOGO_SRC = "/logo/TelcoRepublic_Logo_white.png";
