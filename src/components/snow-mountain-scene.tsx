@@ -43,11 +43,17 @@ import {
   type HeroParallaxMotion,
 } from "./landing/hero-clouds-three";
 
-/** Extra Y rotation (rad) on the outer rig by end of hero — small orbit / spin with scroll. */
-const HERO_SCROLL_YAW_RAD = 0.42;
+/** Total azimuth swept while scrolling (rad). Camera orbits in XZ — linear in scroll for even pace. */
+const HERO_SCROLL_ORBIT_RAD = 0.74;
 
-/** Additional terrain Y spin (rad at t=1), combines with the yaw rig above. */
-const HERO_SCROLL_TERRAIN_YAW_EXTRA = 0.14;
+/** Extra terrain Y at t=1 — small; camera orbit carries most of the turn. */
+const HERO_SCROLL_TERRAIN_YAW_EXTRA = 0.12;
+
+/** Subtle radius breathe on the orbit (sin(π·t) scale). */
+const HERO_ORBIT_RADIUS_BREATHE = 0.02;
+
+/** Mid-scroll vertical arc (world). */
+const HERO_ORBIT_HEIGHT_ARC = 0.12;
 
 useGLTF.preload("/scene/snow_mountain.glb");
 // Tell the PageLoader it must wait for this scene before dismissing.
@@ -72,6 +78,11 @@ function clamp01(p: number): number {
   return p;
 }
 
+/** Ease with a faster middle — reads more “cinematic” than linear scroll mapping. */
+function easeInOutCubic(t: number): number {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
 /** Keeps exponential smoothers stable after visibility/background throttling (large `delta`). */
 function clampFrameDelta(delta: number): number {
   return Math.min(delta, 1 / 24);
@@ -80,27 +91,24 @@ function clampFrameDelta(delta: number): number {
 /** Base Y rotation (rad) for the terrain rig; scroll adds a small delta on top. */
 const BASE_TERRAIN_YAW_RAD = 1;
 
-/**
- * World-space X of the look-at target. Positive X looks “past” the peak to the right → empty
- * space on the right of the frame. Negative X by end of scroll recenters mass and hides that gap.
- */
+/** Pivot / look-at in Stage space — keep stable so orbit stays centered on the mass. */
+const CAMERA_ORBIT_PIVOT = new THREE.Vector3(0, 0.22, 0);
+
+/** Look-at stays on the pivot’s vertical line so the mass doesn’t slide left/right in frame. */
 const CAMERA_LOOK_AT_X_START = 0;
-const CAMERA_LOOK_AT_X_END = -0.14;
-
-/** Tiny upward look-at nudge at end of hero — reads as a minimal perspective lift, not a tilt. */
+const CAMERA_LOOK_AT_X_END = 0;
 const CAMERA_LOOK_AT_Y_START = 0;
-const CAMERA_LOOK_AT_Y_END = 0.3;
+const CAMERA_LOOK_AT_Y_END = 0.04;
 
-/** Negative = slightly narrower FOV at end of hero → crops sides / less empty periphery. */
-const HERO_SCROLL_ZOOM_FOV_DELTA = -3.8;
+/** FOV tighten by end of hero — eased. */
+const HERO_SCROLL_ZOOM_FOV_DELTA = -1.15;
 
 /**
- * Added to Stage’s fitted camera position by scroll progress (world space).
- * Negative X drifts the eye left so the terrain fills the right side of the frame (no open gap).
+ * Small vertical drift only — no X/Z scroll slide (those skewed center vs camera orbit).
  */
-const CAMERA_SCROLL_OFFSET_X = -0.65;
-const CAMERA_SCROLL_OFFSET_Y = 4.25;
-const CAMERA_SCROLL_OFFSET_Z = 2.1;
+const CAMERA_SCROLL_OFFSET_X = 0;
+const CAMERA_SCROLL_OFFSET_Y = 0.18;
+const CAMERA_SCROLL_OFFSET_Z = 0;
 
 /** Sky/clouds opt out of fog; terrain shaders still carry haze — a touch more = softer horizon blend. */
 const FOG_EXP_BASE = 0.026;
@@ -126,8 +134,7 @@ function BreathingFogExp2({ reduceMotion }: { reduceMotion: boolean; }) {
 }
 
 /**
- * After Bounds fit: FOV + look-at + world position offset → scroll toward a higher, more top-down read.
- * Baseline FOV/position are re-derived when the canvas size changes (see `observe={false}` note inside).
+ * After Bounds fit: orbit, eased FOV, look-at, and small layered offsets (see `observe={false}` note).
  */
 function HeroScrollCameraFraming({ reduceMotion }: { reduceMotion: boolean; }) {
   const camera = useThree((s) => s.camera);
@@ -159,6 +166,7 @@ function HeroScrollCameraFraming({ reduceMotion }: { reduceMotion: boolean; }) {
 
     const p = scrollRead?.getRawProgress() ?? 0;
     const t = reduceMotion ? 0 : clamp01(p);
+    const te = reduceMotion ? 0 : easeInOutCubic(t);
 
     /*
      * Bounds uses `observe={false}`, so the fitted camera is not reset when the canvas resizes.
@@ -167,7 +175,7 @@ function HeroScrollCameraFraming({ reduceMotion }: { reduceMotion: boolean; }) {
      * Recover the Stage baseline by reversing the scroll-driven deltas.
      */
     if (baseFovRef.current === null) {
-      baseFovRef.current = camera.fov - t * HERO_SCROLL_ZOOM_FOV_DELTA;
+      baseFovRef.current = camera.fov - te * HERO_SCROLL_ZOOM_FOV_DELTA;
     }
     if (basePosRef.current === null) {
       basePosRef.current = new THREE.Vector3(
@@ -178,27 +186,37 @@ function HeroScrollCameraFraming({ reduceMotion }: { reduceMotion: boolean; }) {
     }
 
     const base = baseFovRef.current;
-
-    const { x: bx, y: by, z: bz } = basePosRef.current;
-    posScratch.set(bx, by, bz);
-    posScratch.x += t * CAMERA_SCROLL_OFFSET_X;
-    posScratch.y += t * CAMERA_SCROLL_OFFSET_Y;
-    posScratch.z += t * CAMERA_SCROLL_OFFSET_Z;
+    const B = basePosRef.current;
+    const px = CAMERA_ORBIT_PIVOT.x;
+    const pz = CAMERA_ORBIT_PIVOT.z;
+    const dx = B.x - px;
+    const dz = B.z - pz;
+    let r = Math.hypot(dx, dz);
+    const theta0 = Math.atan2(dx, dz);
+    if (r < 0.02) {
+      r = 0.02;
+    }
+    const rBreathe = 1 + HERO_ORBIT_RADIUS_BREATHE * Math.sin(t * Math.PI);
+    const rEff = r * rBreathe;
+    /* Linear in scroll so orbit speed stays even (ease-in-out was accelerating the middle). */
+    const theta = theta0 + t * HERO_SCROLL_ORBIT_RAD;
+    const yArc = HERO_ORBIT_HEIGHT_ARC * Math.sin(t * Math.PI);
+    posScratch.set(
+      px + rEff * Math.sin(theta) + t * CAMERA_SCROLL_OFFSET_X,
+      B.y + t * CAMERA_SCROLL_OFFSET_Y + yArc,
+      pz + rEff * Math.cos(theta) + t * CAMERA_SCROLL_OFFSET_Z,
+    );
     camera.position.copy(posScratch);
 
-    camera.fov = base + t * HERO_SCROLL_ZOOM_FOV_DELTA;
+    camera.fov = base + te * HERO_SCROLL_ZOOM_FOV_DELTA;
     camera.updateProjectionMatrix();
-    const x = THREE.MathUtils.lerp(
-      CAMERA_LOOK_AT_X_START,
-      CAMERA_LOOK_AT_X_END,
-      t,
+    lookAt.set(
+      CAMERA_ORBIT_PIVOT.x +
+      THREE.MathUtils.lerp(CAMERA_LOOK_AT_X_START, CAMERA_LOOK_AT_X_END, te),
+      CAMERA_ORBIT_PIVOT.y +
+      THREE.MathUtils.lerp(CAMERA_LOOK_AT_Y_START, CAMERA_LOOK_AT_Y_END, te),
+      CAMERA_ORBIT_PIVOT.z,
     );
-    const y = THREE.MathUtils.lerp(
-      CAMERA_LOOK_AT_Y_START,
-      CAMERA_LOOK_AT_Y_END,
-      t,
-    );
-    lookAt.set(x, y, 0);
     camera.lookAt(lookAt);
   }, 50);
   return null;
@@ -208,9 +226,9 @@ function HeroScrollCameraFraming({ reduceMotion }: { reduceMotion: boolean; }) {
  * Two-rig design keeps scroll-preset positions and mouse tracking completely
  * independent so they never fight each other's lerp targets:
  *
- *   scrollRigRef  – driven exclusively by smooth scroll progress (preset positions).
- *     mouseRigRef – driven exclusively by mouse direction (parallax overlay).
- *       yawRigRef – additional scroll-driven yaw preset.
+ *   scrollRigRef  – kept at identity; scroll motion is camera orbit only (avoids lateral drift).
+ *     mouseRigRef – mouse parallax only (subtle).
+ *       yawRigRef – identity; avoids stacking yaw with camera orbit.
  *
  * Separating them means scrolling never causes mouse lag artefacts and vice-versa.
  */
@@ -255,17 +273,16 @@ function ParallaxWorld({
       return;
     }
 
-    scrollRig.rotation.x = t * 0.05;
-    scrollRig.rotation.y = t * 0.052;
-    yaw.rotation.y = t * HERO_SCROLL_YAW_RAD;
+    /* No scroll yaw/tilt on the world rig — camera orbit already turns the mountain; extra yaw read as off-center drift. */
+    scrollRig.rotation.set(0, 0, 0);
+    yaw.rotation.y = 0;
 
-    // Mouse parallax — independent lerp, faster for a more direct feel.
-    // This adds a subtle offset on top of the scroll position without disturbing it.
-    const mouseLerp = 1 - Math.pow(0.88, dt * 60);
+    // Mouse parallax — gentle; slower follow so hover doesn’t yank the scene.
+    const mouseLerp = 1 - Math.pow(0.92, dt * 60);
     smoothMouse.current.x += (mouse.current.x - smoothMouse.current.x) * mouseLerp;
     smoothMouse.current.y += (mouse.current.y - smoothMouse.current.y) * mouseLerp;
-    mouseRig.rotation.x = smoothMouse.current.y * -0.038;
-    mouseRig.rotation.y = smoothMouse.current.x * 0.042;
+    mouseRig.rotation.x = smoothMouse.current.y * -0.02;
+    mouseRig.rotation.y = smoothMouse.current.x * 0.022;
   });
 
   return (
@@ -372,9 +389,9 @@ function SnowMountainModel({ reduceMotion }: { reduceMotion: boolean; }) {
     const t = reduceMotion ? 0 : clamp01(p);
     if (rigRef.current) {
       rigRef.current.rotation.set(
-        t * 0.025,
+        t * 0.012,
         BASE_TERRAIN_YAW_RAD + t * HERO_SCROLL_TERRAIN_YAW_EXTRA,
-        t * -0.012,
+        t * -0.008,
       );
     }
   });
