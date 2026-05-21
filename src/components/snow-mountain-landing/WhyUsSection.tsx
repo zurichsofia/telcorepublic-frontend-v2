@@ -1,4 +1,3 @@
-import { HOME_WHY_SNAP_ID } from "@/components/common/document-scroll-snap";
 import { cn } from "@/lib/utils";
 
 const WHY_CHAPTERS = [
@@ -96,13 +95,6 @@ export function WhyUsSection() {
       className="relative isolate w-full overflow-x-clip bg-white pb-8"
       aria-labelledby="home-why-heading"
     >
-      <div
-        id={HOME_WHY_SNAP_ID}
-        className="flex w-full flex-col justify-center"
-      >
-        <div> </div>
-      </div>
-
       <div
         className="relative flex w-full flex-col space-y-16 md:space-y-60"
         aria-label="Why Telco Republic"

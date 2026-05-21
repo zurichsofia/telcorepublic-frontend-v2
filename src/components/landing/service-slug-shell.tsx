@@ -23,8 +23,7 @@ export type ServiceSlugShellProps = {
 /**
  * Keeps the video hero and editorial scroll on the active service when the URL
  * updates via `history.replaceState` or browser history (no App Router navigation
- * — avoids a full-tree flash). Post–video-hero scroll alignment uses `scrollend` in
- * `ServiceVideoHeroV2` (no CSS root scroll snap).
+ * — avoids a full-tree flash).
  */
 export function ServiceSlugShell({ initialSlug }: ServiceSlugShellProps) {
   const [activeSlug, setActiveSlug] = useState(initialSlug);

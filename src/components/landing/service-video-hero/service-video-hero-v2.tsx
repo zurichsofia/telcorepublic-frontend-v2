@@ -6,7 +6,6 @@ import type { Swiper as SwiperType } from "swiper";
 import { Keyboard, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-import { SERVICE_DETAIL_INTRO_SNAP_ID } from "@/components/common/document-scroll-snap";
 import { services, serviceIndexFromSlug } from "@/data/services";
 import { serviceSlugHeroVideoUrlForSlide } from "@/lib/service-video-urls";
 
@@ -15,12 +14,6 @@ import { ServiceVideoSlide } from "./service-video-hero-slide";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import "./service-video-hero-v2.css";
-
-function serviceDetailIntroSnapScrollTop(): number | null {
-  const el = document.getElementById(SERVICE_DETAIL_INTRO_SNAP_ID);
-  if (!el) return null;
-  return Math.max(0, el.getBoundingClientRect().top + window.scrollY);
-}
 
 export type ServiceVideoHeroV2Props = {
   initialSlug?: string;
@@ -79,105 +72,6 @@ export function ServiceVideoHeroV2({
       sw.slideTo(initialSlide, speed);
     }
   }, [initialSlide, multi, speed]);
-
-  /** Align first detail viewport with eased scroll; avoids stacked smooth + abrupt `auto`. */
-  useEffect(() => {
-    if (reduceMotion) return;
-    let ignoreUntil = 0;
-    let lastY = window.scrollY;
-    let smoothInFlight = false;
-    let clearFlightId: number | undefined;
-
-    const metrics = () => {
-      const idealY = serviceDetailIntroSnapScrollTop();
-      if (idealY == null) return null;
-      const vh = window.innerHeight;
-      const exitPx = vh * 1.1;
-      // When the hero is ~1× viewport tall, `idealY - exitPx` goes negative. Without a
-      // floor, `scrollY === 0` (e.g. after Link navigation) sits “inside” the seam and
-      // `scrollend` fires `commitEase` — jumping past the video hero to the intro.
-      const seamLow = Math.max(idealY - exitPx, vh * 0.22);
-      return {
-        idealY,
-        seamLow,
-        seamHigh: idealY + 28,
-        vh,
-      };
-    };
-
-    const commitEase = (idealY: number) => {
-      if (smoothInFlight) return;
-      smoothInFlight = true;
-      if (clearFlightId !== undefined) window.clearTimeout(clearFlightId);
-      ignoreUntil = performance.now() + 520;
-      window.scrollTo({ top: idealY, left: 0, behavior: "smooth" });
-      lastY = idealY;
-      clearFlightId = window.setTimeout(() => {
-        smoothInFlight = false;
-        clearFlightId = undefined;
-      }, 620);
-    };
-
-    const onScroll = () => {
-      if (performance.now() < ignoreUntil) {
-        lastY = window.scrollY;
-        return;
-      }
-      const m = metrics();
-      if (!m) return;
-      const { idealY, seamLow, vh } = m;
-      const y = window.scrollY;
-
-      if (Math.abs(y - idealY) <= 10) {
-        lastY = y;
-        return;
-      }
-      if (y > idealY + vh * 0.42) {
-        lastY = y;
-        return;
-      }
-
-      const scrollingDown = y > lastY + 1;
-      if (!scrollingDown) {
-        lastY = y;
-        if (y < idealY - 80) smoothInFlight = false;
-        return;
-      }
-      lastY = y;
-      if (y >= seamLow && y < idealY - 8) {
-        commitEase(idealY);
-      }
-    };
-
-    const onScrollEnd = () => {
-      if (performance.now() < ignoreUntil) {
-        lastY = window.scrollY;
-        return;
-      }
-      if (smoothInFlight) {
-        lastY = window.scrollY;
-        return;
-      }
-      const m = metrics();
-      if (!m) return;
-      const { idealY, seamLow, seamHigh, vh } = m;
-      const y = window.scrollY;
-      lastY = y;
-
-      if (y > idealY + vh * 0.45) return;
-      if (Math.abs(y - idealY) <= 10) return;
-      if (y < seamLow || y > seamHigh) return;
-      commitEase(idealY);
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("scrollend", onScrollEnd, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("scrollend", onScrollEnd);
-      if (clearFlightId !== undefined) window.clearTimeout(clearFlightId);
-    };
-  }, [reduceMotion]);
 
   const activeTitle = services[chromeIndex]?.title ?? "";
 

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-import { HOME_WHY_SNAP_ID } from "@/components/common/document-scroll-snap";
 import { BrandLogoSignal } from "@/components/brand-logo-signal";
 import { blogPosts } from "@/data/news";
 import { cn } from "@/lib/utils";
@@ -305,18 +304,6 @@ export function useOverlayPastHero(theme: "default" | "blog" | "overlay") {
     }
 
     const sync = () => {
-      const whySnap = document.getElementById(HOME_WHY_SNAP_ID);
-      if (whySnap) {
-        // Prefer the same geometry as `SnowMountainHero` (getBoundingClientRect), not
-        // `hero.offsetHeight`: the Why block sits under a scroll-linked `motion` parent,
-        // so layout `heroBottom` can disagree with the scroll position after `scrollTo`
-        // — smooth snap then ends with no further `scroll` frame and nav stayed on
-        // overlay colors until the user moved again.
-        const top = whySnap.getBoundingClientRect().top;
-        setPastHero(top <= 0.75);
-        return;
-      }
-
       const hero = document.getElementById("hero");
       if (!hero) {
         setPastHero(false);
@@ -328,11 +315,9 @@ export function useOverlayPastHero(theme: "default" | "blog" | "overlay") {
 
     sync();
     window.addEventListener("scroll", sync, { passive: true });
-    window.addEventListener("scrollend", sync, { passive: true });
     window.addEventListener("resize", sync);
     return () => {
       window.removeEventListener("scroll", sync);
-      window.removeEventListener("scrollend", sync);
       window.removeEventListener("resize", sync);
     };
   }, [theme]);

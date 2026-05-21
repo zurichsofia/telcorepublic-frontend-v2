@@ -3,7 +3,6 @@
 import { CustomResearchRadialDiagram } from "@/components/landing/service-editorial-panel/custom-research-radial-diagram";
 import { EditorialInlineList } from "@/components/landing/service-editorial-panel/editorial-inline-list";
 import { EditorialPillarsSection } from "@/components/landing/service-editorial-panel/editorial-pillars-section";
-import { SERVICE_DETAIL_INTRO_SNAP_ID } from "@/components/common/document-scroll-snap";
 import type { ServiceContentBlock } from "@/data/service-content-types";
 import type { ServiceEntry } from "@/data/services";
 import { cn } from "@/lib/utils";
@@ -182,10 +181,7 @@ export function ServiceDetailPanel({ service }: ServiceDetailPanelProps) {
   return (
     <div className="relative w-full bg-white pb-28 text-black md:pb-36 lg:pb-44">
       <div className={cn("w-full", detailBlockStack)}>
-        <section
-          id={SERVICE_DETAIL_INTRO_SNAP_ID}
-          className="mx-auto flex min-h-dvh max-w-4xl flex-col justify-center px-5 pt-28 pb-16 text-center sm:px-8 lg:max-w-4xl"
-        >
+        <section className="mx-auto flex min-h-dvh max-w-4xl flex-col justify-center px-5 pt-28 pb-16 text-center sm:px-8 lg:max-w-4xl">
           <h2 className="text-pretty font-sans text-xl font-normal leading-snug tracking-tight text-telco-red sm:text-2xl md:text-3xl lg:text-[2rem] lg:leading-tight">
             {service.desc}
           </h2>
