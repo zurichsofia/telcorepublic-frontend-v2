@@ -60,22 +60,22 @@ function WhyChapter({
     >
       <div
         className={cn(
-          "w-full max-w-2xl ",
+          "w-full max-w-3xl space-y-2 ",
           !isA && "ml-auto text-right",
         )}
       >
         <h3
           className={cn(
-            "text-pretty font-sans text-xl font-medium leading-snug tracking-tight text-telco-red sm:text-2xl lg:text-3xl",
-            !isA && "ml-auto max-w-2xl",
+            "text-pretty font-sans text-xl font-medium leading-normal  text-telco-red sm:text-2xl lg:text-3xl",
+            !isA && "ml-auto max-w-3xl",
           )}
         >
           {title}
         </h3>
         <div
           className={cn(
-            "space-y-4 text-pretty font-sans text-base font-light leading-tight tracking-tight text-black lg:text-xl",
-            !isA && "ml-auto",
+            "space-y-4 text-pretty font-sans text-base leading-tight tracking-wide text-black lg:text-xl",
+            !isA && "ml-auto max-w-3xl",
           )}
         >
           {paragraphs.map((text, j) => (
@@ -96,7 +96,7 @@ export function WhyUsSection() {
       aria-labelledby="home-why-heading"
     >
       <div
-        className="relative flex w-full flex-col space-y-16 md:space-y-60"
+        className="relative flex w-full flex-col space-y-16 md:space-y-[45vh]"
         aria-label="Why Telco Republic"
       >
         {WHY_CHAPTERS.map((chapter, i) => (

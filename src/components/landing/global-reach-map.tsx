@@ -44,7 +44,7 @@ export function GlobalReachMapSection() {
         market reach.
       </p>
     </div> */}
-
+      <div className="text-center text-telco-red text-5xl my-16">TR MISSION</div>
       <div className="relative mx-auto mt-14 max-w-6xl px-5 sm:px-8">
         <WorldMap dots={GLOBAL_REACH_DOTS} />
       </div>
