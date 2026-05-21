@@ -1,10 +1,3 @@
-"use client";
-
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "motion/react";
-
-import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
-
 import { HOME_WHY_SNAP_ID } from "@/components/common/document-scroll-snap";
 import { cn } from "@/lib/utils";
 
@@ -47,62 +40,20 @@ const WHY_CHAPTERS = [
   },
 ] as const;
 
-/** Paragraphs slide up and fade in as their scroll position crosses the viewport band. */
-function ScrollRevealParagraph({
-  children,
-  reduceMotion,
-}: {
-  children: string;
-  reduceMotion: boolean;
-}) {
-  const ref = useRef<HTMLParagraphElement | null>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    /** Wide band so opacity / y ramp over more scroll (was ~0.44vh → feels rushed). */
-    offset: ["start end", "start 0.28"],
-  });
-  const opacity = useTransform(
-    scrollYProgress,
-    [0, 1],
-    reduceMotion ? [1, 1] : [0, 1],
-  );
-  const y = useTransform(
-    scrollYProgress,
-    [0, 1],
-    reduceMotion ? [0, 0] : [36, 0],
-  );
-
-  return (
-    <motion.p
-      ref={ref}
-      className="will-change-[transform,opacity]"
-      style={{ opacity, y }}
-    >
-      {children}
-    </motion.p>
-  );
-}
-
 function WhyChapter({
   title,
   paragraphs,
   variant,
-  reduceMotion,
 }: {
   title: string;
   paragraphs: readonly string[];
   variant: "a" | "b";
-  reduceMotion: boolean;
 }) {
   const isA = variant === "a";
-  /**
-   * One chapter ≈ one viewport: avoid stacked `position: sticky` (previous pin + next
-   * in-flow shows two chapters in the same view).
-   */
   return (
     <div
       className={cn(
-        "flex min-h-dvh w-full max-w-full flex-col justify-center overflow-x-clip py-16 md:py-24",
+        "flex w-full max-w-full flex-col justify-center overflow-x-clip",
         isA
           ? "pl-5 pr-4 md:pl-12 md:pr-8 lg:pl-24 lg:pr-12"
           : "pl-5 pr-4 md:pl-16 md:pr-8 lg:pl-28 lg:pr-16",
@@ -110,7 +61,7 @@ function WhyChapter({
     >
       <div
         className={cn(
-          "w-full max-w-2xl space-y-5 md:space-y-6",
+          "w-full max-w-2xl ",
           !isA && "ml-auto text-right",
         )}
       >
@@ -124,17 +75,12 @@ function WhyChapter({
         </h3>
         <div
           className={cn(
-            "space-y-4 text-pretty font-sans text-base font-light leading-relaxed tracking-tight text-black/80 md:space-y-5 lg:text-xl",
+            "space-y-4 text-pretty font-sans text-base font-light leading-tight tracking-tight text-black lg:text-xl",
             !isA && "ml-auto",
           )}
         >
           {paragraphs.map((text, j) => (
-            <ScrollRevealParagraph
-              key={`${title}-${j}`}
-              reduceMotion={reduceMotion}
-            >
-              {text}
-            </ScrollRevealParagraph>
+            <p key={`${title}-${j}`}>{text}</p>
           ))}
         </div>
       </div>
@@ -142,65 +88,34 @@ function WhyChapter({
   );
 }
 
-/**
- * “Why Telco Republic” — full-viewport chapters (not `StickyChapter`): stacked sticky
- * would show two chapters in one viewport while one pin hands off to the next.
- *
- * The root `motion.section` only drives opacity (no `transform` — avoids sticky bugs).
- */
+/** “Why Telco Republic” — in-flow chapters (not sticky). */
 export function WhyUsSection() {
-  const reduce = usePrefersReducedMotion();
-  const sectionRef = useRef<HTMLElement | null>(null);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"],
-  });
-  const opacity = useTransform(
-    scrollYProgress,
-    [0, 0.2, 0.78, 1],
-    reduce ? [1, 1, 1, 1] : [0.9, 1, 1, 0.94],
-  );
-
   return (
-    <motion.section
-      ref={sectionRef}
+    <section
       id="why-telco-republic"
       className="relative isolate w-full overflow-x-clip bg-white pb-8"
       aria-labelledby="home-why-heading"
-      style={{ opacity }}
     >
       <div
         id={HOME_WHY_SNAP_ID}
-        className="flex min-h-dvh w-full flex-col justify-center"
+        className="flex w-full flex-col justify-center"
       >
-        <header className="relative z-10 mx-auto max-w-4xl px-5 pt-28 pb-16 text-center sm:px-8 sm:pt-32 md:pb-20 lg:pt-36">
-          <div
-            className="mx-auto mb-6 h-px w-12 bg-linear-to-r from-telco-red/55 to-transparent sm:mb-8 sm:w-16"
-            aria-hidden
-          />
-          <p className="text-xs font-medium uppercase tracking-widest text-black/75">
-            Why us
-          </p>
-          <h2
-            id="home-why-heading"
-            className="mx-auto mt-4 max-w-3xl text-pretty font-display text-3xl font-normal tracking-tight text-telco-red sm:text-4xl md:text-5xl"
-          >
-            Why Telco Republic
-          </h2>
-        </header>
+        <div> </div>
       </div>
 
-      <div className="relative w-full" aria-label="Why Telco Republic">
+      <div
+        className="relative flex w-full flex-col space-y-16 md:space-y-60"
+        aria-label="Why Telco Republic"
+      >
         {WHY_CHAPTERS.map((chapter, i) => (
           <WhyChapter
             key={chapter.title}
             title={chapter.title}
             paragraphs={chapter.paragraphs}
             variant={i % 2 === 0 ? "a" : "b"}
-            reduceMotion={reduce}
           />
         ))}
       </div>
-    </motion.section>
+    </section>
   );
 }

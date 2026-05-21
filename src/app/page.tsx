@@ -6,8 +6,8 @@ export default function Home() {
   return (
     <main id="home" className="relative z-10 isolate">
       <SnowMountainHero />
-      <WhyUsSection />
       <GlobalReachMapSection />
+      <WhyUsSection />
 
     </main>
   );
