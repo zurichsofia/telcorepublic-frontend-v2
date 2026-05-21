@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
@@ -10,7 +10,8 @@ import { cn } from "@/lib/utils";
 export const INSIGHTS_QUOTES_VIDEO_SRC =
   "/videos/TelcoRepublic_Ocean_1280x720.mp4";
 
-const CYCLE_INTERVAL_MS = 4500;
+/** Pause between stack updates */
+const SWAP_INTERVAL_MS = 4000;
 
 const QUOTES = [
   {
@@ -40,29 +41,61 @@ const QUOTES = [
 ] as const;
 
 type Quote = (typeof QUOTES)[number];
+type BubbleSize = "large" | "medium" | "small";
 
-const SLOTS = [
-  {
-    size: "large" as const,
-    position:
-      "relative z-20 lg:absolute lg:left-[26%] lg:top-0 lg:max-w-[min(52vw,560px)] xl:left-[28%]",
-  },
-  {
-    size: "medium" as const,
-    position:
-      "relative z-10 lg:absolute lg:right-[2%] lg:top-[38%] lg:max-w-[min(38vw,420px)] xl:right-[4%]",
-  },
-  {
-    size: "small" as const,
-    position:
-      "relative z-0 lg:absolute lg:bottom-6 lg:left-[1%] lg:max-w-[min(30vw,340px)] xl:bottom-10 xl:left-[3%]",
-  },
-] as const;
+type StackCard = {
+  id: number;
+  quoteIndex: number;
+};
 
-function quoteAt(activeIndex: number, slotOffset: number): Quote {
-  const n = QUOTES.length;
-  return QUOTES[(activeIndex + slotOffset) % n]!;
-}
+/** Slot 0 = top (exits), slot 2 = bottom (new entries) */
+const STACK_SLOTS: {
+  size: BubbleSize;
+  className: string;
+}[] = [
+  {
+    size: "large",
+    className:
+      "w-full lg:absolute lg:left-[10%] lg:top-0 lg:w-[min(52vw,560px)] xl:left-[12%]",
+  },
+  {
+    size: "medium",
+    className:
+      "w-full lg:absolute lg:right-[2%] lg:top-[36%] lg:w-[min(38vw,420px)] xl:right-[4%]",
+  },
+  {
+    size: "small",
+    className:
+      "w-full lg:absolute lg:bottom-8 lg:left-[2%] lg:w-[min(30vw,340px)] xl:bottom-10 xl:left-[4%]",
+  },
+];
+
+const layoutSpring = {
+  type: "spring" as const,
+  stiffness: 420,
+  damping: 34,
+  mass: 0.85,
+};
+
+const enterSpring = {
+  type: "spring" as const,
+  stiffness: 480,
+  damping: 36,
+  mass: 0.8,
+};
+
+const exitTransition = {
+  type: "spring" as const,
+  stiffness: 520,
+  damping: 38,
+  mass: 0.75,
+};
+
+const INITIAL_CARDS: StackCard[] = [
+  { id: 0, quoteIndex: 0 },
+  { id: 1, quoteIndex: 1 },
+  { id: 2, quoteIndex: 2 },
+];
 
 function OceanStrip({
   videoSrc,
@@ -102,15 +135,22 @@ function OceanStrip({
   );
 }
 
-function BubbleContent({
+function MessageBubble({
   quote,
   size,
 }: {
   quote: Quote;
-  size: "large" | "medium" | "small";
+  size: BubbleSize;
 }) {
   return (
-    <>
+    <div
+      className={cn(
+        "relative w-full rounded-[18px] bg-[#1c1c1c] shadow-[0_20px_50px_rgba(0,0,0,0.55)]",
+        size === "large" && "px-7 py-6 sm:px-8 sm:py-7",
+        size === "medium" && "px-6 py-5 sm:px-7 sm:py-6",
+        size === "small" && "px-5 py-4 sm:px-6 sm:py-5",
+      )}
+    >
       <p className="font-sans text-[0.68rem] font-normal tracking-[0.18em] text-white/55 uppercase">
         {quote.date}
       </p>
@@ -127,52 +167,114 @@ function BubbleContent({
         {quote.text}
         <span className="text-white/90">&rdquo;</span>
       </p>
-    </>
+      <span
+        className="absolute -bottom-[7px] left-1/2 size-4 -translate-x-1/2 rotate-45 bg-[#1c1c1c]"
+        aria-hidden
+      />
+    </div>
   );
 }
 
-function CyclingMessageBubble({
-  quote,
-  size,
-  className,
-  reduceMotion,
-}: {
-  quote: Quote;
-  size: "large" | "medium" | "small";
-  className?: string;
-  reduceMotion: boolean;
-}) {
-  return (
-    <article className={cn("w-full", className)}>
-      <div
-        className={cn(
-          "relative overflow-hidden rounded-[18px] bg-[#1c1c1c] shadow-[0_20px_50px_rgba(0,0,0,0.55)]",
-          size === "large" && "px-7 py-6 sm:px-8 sm:py-7",
-          size === "medium" && "px-6 py-5 sm:px-7 sm:py-6",
-          size === "small" && "px-5 py-4 sm:px-6 sm:py-5",
-        )}
-      >
-        {reduceMotion ? (
-          <BubbleContent quote={quote} size={size} />
-        ) : (
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={`${quote.date}-${quote.text}`}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <BubbleContent quote={quote} size={size} />
-            </motion.div>
-          </AnimatePresence>
-        )}
-        <span
-          className="absolute -bottom-[7px] left-1/2 size-4 -translate-x-1/2 rotate-45 bg-[#1c1c1c]"
-          aria-hidden
-        />
+function NotificationStack({ reduceMotion }: { reduceMotion: boolean }) {
+  const [cards, setCards] = useState<StackCard[]>(INITIAL_CARDS);
+  const [enteringId, setEnteringId] = useState<number | null>(null);
+  const nextId = useRef(INITIAL_CARDS.length);
+  const quoteCursor = useRef(INITIAL_CARDS.length);
+
+  useEffect(() => {
+    if (reduceMotion) return;
+
+    const id = window.setInterval(() => {
+      const newId = nextId.current++;
+      const newCard: StackCard = {
+        id: newId,
+        quoteIndex: quoteCursor.current++ % QUOTES.length,
+      };
+
+      setEnteringId(newId);
+      setCards((prev) => [prev[1]!, prev[2]!, newCard]);
+
+      window.setTimeout(() => setEnteringId(null), 550);
+    }, SWAP_INTERVAL_MS);
+
+    return () => window.clearInterval(id);
+  }, [reduceMotion]);
+
+  if (reduceMotion) {
+    return (
+      <div className="relative flex flex-col gap-8 lg:h-[580px] lg:gap-0">
+        {INITIAL_CARDS.map((card, slotIndex) => (
+          <div key={card.id} className={STACK_SLOTS[slotIndex]!.className}>
+            <MessageBubble
+              quote={QUOTES[card.quoteIndex]!}
+              size={STACK_SLOTS[slotIndex]!.size}
+            />
+          </div>
+        ))}
       </div>
-    </article>
+    );
+  }
+
+  return (
+    <>
+      <LayoutGroup id="insights-notification-stack">
+        <div className="relative flex flex-col gap-8 overflow-hidden lg:h-[580px] lg:gap-0">
+          <AnimatePresence mode="popLayout" initial={false}>
+            {cards.map((card, slotIndex) => {
+              const slot = STACK_SLOTS[slotIndex]!;
+              const isEntering = card.id === enteringId;
+
+              return (
+                <motion.div
+                  key={card.id}
+                  layout
+                  className={slot.className}
+                  initial={
+                    isEntering
+                      ? { y: 56, opacity: 0, scale: 0.96 }
+                      : false
+                  }
+                  animate={{ y: 0, opacity: 1, scale: 1 }}
+                  exit={{
+                    y: -48,
+                    opacity: 0,
+                    scale: 0.96,
+                    transition: exitTransition,
+                  }}
+                  transition={{
+                    layout: layoutSpring,
+                    ...(isEntering
+                      ? {
+                          y: enterSpring,
+                          opacity: enterSpring,
+                          scale: enterSpring,
+                        }
+                      : {
+                          y: layoutSpring,
+                          opacity: { duration: 0.35 },
+                          scale: layoutSpring,
+                        }),
+                  }}
+                >
+                  <MessageBubble
+                    quote={QUOTES[card.quoteIndex]!}
+                    size={slot.size}
+                  />
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
+        </div>
+      </LayoutGroup>
+      <p className="sr-only">
+        {cards
+          .map((card) => {
+            const q = QUOTES[card.quoteIndex]!;
+            return `${q.date}: ${q.text}`;
+          })
+          .join(". ")}
+      </p>
+    </>
   );
 }
 
@@ -182,15 +284,6 @@ export function InsightsQuotesSection({
   videoSrc?: string;
 }) {
   const reduceMotion = usePrefersReducedMotion();
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  useEffect(() => {
-    if (reduceMotion) return;
-    const id = window.setInterval(() => {
-      setActiveIndex((i) => (i + 1) % QUOTES.length);
-    }, CYCLE_INTERVAL_MS);
-    return () => window.clearInterval(id);
-  }, [reduceMotion]);
 
   return (
     <section
@@ -214,30 +307,12 @@ export function InsightsQuotesSection({
           </div>
 
           <div
-            className="relative flex flex-col gap-8 lg:min-h-[560px] lg:pl-[14%] xl:min-h-[600px] xl:pl-[12%]"
+            className="relative lg:min-h-[580px] lg:pl-[14%] xl:pl-[12%]"
             role="region"
             aria-live="polite"
-            aria-atomic="false"
             aria-label="Industry insights"
           >
-            {SLOTS.map((slot, slotIndex) => {
-              const quote = quoteAt(activeIndex, slotIndex);
-              return (
-                <CyclingMessageBubble
-                  key={slot.size}
-                  quote={quote}
-                  size={slot.size}
-                  className={slot.position}
-                  reduceMotion={reduceMotion}
-                />
-              );
-            })}
-            <p className="sr-only">
-              {SLOTS.map((_, slotIndex) => {
-                const q = quoteAt(activeIndex, slotIndex);
-                return `${q.date}: ${q.text}`;
-              }).join(". ")}
-            </p>
+            <NotificationStack reduceMotion={reduceMotion} />
           </div>
         </div>
       </div>
