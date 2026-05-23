@@ -1,26 +1,22 @@
 "use client";
 
-import type { CSSProperties, ReactNode } from "react";
+import type { CSSProperties } from "react";
 
-import { motion, useTransform, type MotionValue } from "motion/react";
-
+import { getHeroScrollLayerStyles } from "@/lib/hero-scroll-layer-styles";
+import {
+  useScrollProgress,
+  type ScrollProgressStore,
+} from "@/lib/scroll-progress";
 import { cn } from "@/lib/utils";
 
 export type HeroMotionScrollLayersProps = {
-  scrollYProgress: MotionValue<number>;
+  scrollProgress: ScrollProgressStore;
   reduceMotion: boolean;
 };
 
 const labelWords = ["Independent", "telecom", "research"] as const;
 
 const bodyClass = "text-base font-light leading-relaxed text-white/95 sm:text-lg";
-
-function smoothstep(edge0: number, edge1: number, x: number): number {
-  if (x <= edge0) return 0;
-  if (x >= edge1) return 1;
-  const t = (x - edge0) / (edge1 - edge0);
-  return t * t * (3 - 2 * t);
-}
 
 const base =
   "pointer-events-auto absolute inset-y-0 z-1 flex max-w-[min(100%,52rem)] flex-col justify-center sm:max-w-[52rem]";
@@ -71,43 +67,22 @@ function HeroMotionScrollLayersStatic() {
   );
 }
 
-function HeroMotionScrollLayersMotion({
-  scrollYProgress,
+function HeroMotionScrollLayersAnimated({
+  scrollProgress,
 }: {
-  scrollYProgress: MotionValue<number>;
+  scrollProgress: ScrollProgressStore;
 }) {
-  const primaryOpacity = useTransform(scrollYProgress, (t) => 1 - smoothstep(0.19, 0.3, t));
-  const primaryY = useTransform(scrollYProgress, (t) => {
-    const rise = (1 - smoothstep(0, 0.12, t)) * 56;
-    const lift = smoothstep(0.16, 0.3, t) * -36;
-    return rise + lift;
-  });
-
-  const telcoOpacity = useTransform(
-    scrollYProgress,
-    (t) => smoothstep(0.22, 0.34, t) * (1 - smoothstep(0.42, 0.54, t)),
-  );
-  const telcoY = useTransform(scrollYProgress, (t) => {
-    const rise = (1 - smoothstep(0.22, 0.38, t)) * 60;
-    const lift = smoothstep(0.38, 0.54, t) * -40;
-    return rise + lift;
-  });
-
-  const missionOpacity = useTransform(
-    scrollYProgress,
-    (t) => smoothstep(0.4, 0.52, t) * (1 - smoothstep(0.82, 0.94, t)),
-  );
-  const missionY = useTransform(scrollYProgress, (t) => {
-    const rise = (1 - smoothstep(0.5, 0.55, t)) * 60;
-    const lift = smoothstep(0.5, 0.78, t) * -32;
-    return rise + lift;
-  });
+  const t = useScrollProgress(scrollProgress);
+  const { primary, telco, mission } = getHeroScrollLayerStyles(t);
 
   return (
     <div className="pointer-events-none relative h-full w-full">
-      <motion.div
+      <div
         className={cn(slotLeft, "will-change-[transform,opacity]")}
-        style={{ opacity: primaryOpacity, y: primaryY }}
+        style={{
+          opacity: primary.opacity,
+          transform: `translate3d(0, ${primary.y}px, 0)`,
+        }}
       >
         <p className="font-display text-xs font-medium uppercase tracking-[0.2em] text-telco-red">
           {labelWords.map((word, i) => (
@@ -124,11 +99,14 @@ function HeroMotionScrollLayersMotion({
           <span className="block text-shadow-lg">Navigating the shift.</span>
           <span className="mt-2 block sm:mt-3 text-shadow-lg">Leading the Techco Revolution</span>
         </h1>
-      </motion.div>
+      </div>
 
-      <motion.div
+      <div
         className={cn(slotRight, "will-change-[transform,opacity]")}
-        style={{ opacity: telcoOpacity, y: telcoY }}
+        style={{
+          opacity: telco.opacity,
+          transform: `translate3d(0, ${telco.y}px, 0)`,
+        }}
       >
         <p className="font-display text-xs font-medium uppercase tracking-[0.2em] text-telco-red">
           Telcorepublic
@@ -140,11 +118,14 @@ function HeroMotionScrollLayersMotion({
           We are the go-to, thought-provoking market research and advisory firm in the new
           telecommunications software market.
         </p>
-      </motion.div>
+      </div>
 
-      <motion.div
+      <div
         className={cn(slotLeft, "will-change-[transform,opacity]")}
-        style={{ opacity: missionOpacity, y: missionY }}
+        style={{
+          opacity: mission.opacity,
+          transform: `translate3d(0, ${mission.y}px, 0)`,
+        }}
       >
         <p className="font-display text-xs font-medium uppercase tracking-[0.2em] text-telco-red">
           Telcorepublic
@@ -156,15 +137,15 @@ function HeroMotionScrollLayersMotion({
           We track ongoing disruption and innovation related to telecommunications business and
           operations.
         </p>
-      </motion.div>
+      </div>
     </div>
   );
 }
 
 export function HeroMotionScrollLayers({
-  scrollYProgress,
+  scrollProgress,
   reduceMotion,
 }: HeroMotionScrollLayersProps) {
   if (reduceMotion) return <HeroMotionScrollLayersStatic />;
-  return <HeroMotionScrollLayersMotion scrollYProgress={scrollYProgress} />;
+  return <HeroMotionScrollLayersAnimated scrollProgress={scrollProgress} />;
 }

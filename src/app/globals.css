@@ -17,10 +17,23 @@
 }
 
 html {
-  /* Native scroll + no `background-attachment: fixed` — both reduce scroll jank. */
+  /* Lenis owns scroll interpolation on immersive routes — keep native behavior elsewhere. */
   scroll-behavior: auto;
   min-height: 100%;
   background-color: #ffffff;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+html.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
 }
 
 body {

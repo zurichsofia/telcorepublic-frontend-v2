@@ -10,6 +10,7 @@ import {
   shellSurfaceClassName,
   useOverlayPastHero,
 } from "@/components/common/navigation";
+import { SmoothScrollProvider } from "@/components/common/smooth-scroll-provider";
 import { cn } from "@/lib/utils";
 
 function scrollViewToTop() {
@@ -54,22 +55,24 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }, [pathname]);
 
   return (
-    <div
-      className={cn(
-        "relative z-10 flex min-h-screen flex-col",
-        surfaceClassName,
-      )}
-    >
-      <Navigation
-        className={
-          immersiveHero ? "fixed top-0 right-0 left-0 z-50 w-full" : undefined
-        }
-        theme={theme}
-        surfaceClassName={surfaceClassName}
-        overlayPastHero={overlayPastHero}
-      />
-      <div className="relative z-0 flex min-h-0 flex-1 flex-col">{children}</div>
-      <Footer className="mt-auto" />
-    </div>
+    <SmoothScrollProvider enabled={isHome || isServiceDetail}>
+      <div
+        className={cn(
+          "relative z-10 flex min-h-screen flex-col",
+          surfaceClassName,
+        )}
+      >
+        <Navigation
+          className={
+            immersiveHero ? "fixed top-0 right-0 left-0 z-50 w-full" : undefined
+          }
+          theme={theme}
+          surfaceClassName={surfaceClassName}
+          overlayPastHero={overlayPastHero}
+        />
+        <div className="relative z-0 flex min-h-0 flex-1 flex-col">{children}</div>
+        <Footer className="mt-auto" />
+      </div>
+    </SmoothScrollProvider>
   );
 }

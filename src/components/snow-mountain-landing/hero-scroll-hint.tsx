@@ -1,21 +1,29 @@
 "use client";
 
-import { motion, type MotionValue } from "motion/react";
+import { useRef } from "react";
+
+import { getHeroScrollHintOpacity } from "@/lib/hero-scroll-layer-styles";
+import {
+  createScrollProgressStore,
+  useScrollProgress,
+  type ScrollProgressStore,
+} from "@/lib/scroll-progress";
 
 type HeroScrollHintProps = {
-  scrollOpacity?: MotionValue<number>;
+  scrollProgress?: ScrollProgressStore;
 };
 
-export function HeroScrollHint({ scrollOpacity }: HeroScrollHintProps) {
+export function HeroScrollHint({ scrollProgress }: HeroScrollHintProps) {
+  const fallbackStore = useRef(createScrollProgressStore(0)).current;
+  const store = scrollProgress ?? fallbackStore;
+  const t = useScrollProgress(store);
+  const opacity = scrollProgress ? getHeroScrollHintOpacity(t) : 1;
+
   return (
     <div className="pointer-events-none absolute inset-0 z-[24] flex justify-center">
       <div className="sticky top-0 flex h-screen w-full flex-col items-center justify-end pb-10 sm:pb-14">
-        <motion.div
-          className="flex flex-col items-center"
-          style={scrollOpacity ? { opacity: scrollOpacity } : undefined}
-        >
+        <div className="flex flex-col items-center" style={{ opacity }}>
           <a
-            // href="#signal"
             className="pointer-events-auto flex items-center gap-3 rounded-full text-xs font-medium uppercase tracking-widest text-white animate-pulse duration-900"
             aria-label="Scroll to Signal intelligence"
           >
@@ -25,7 +33,7 @@ export function HeroScrollHint({ scrollOpacity }: HeroScrollHintProps) {
             />
             <span>Scroll</span>
           </a>
-        </motion.div>
+        </div>
       </div>
     </div>
   );

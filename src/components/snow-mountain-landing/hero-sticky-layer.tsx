@@ -1,9 +1,9 @@
 "use client";
 
 import type { MutableRefObject, ReactNode, RefObject } from "react";
-import type { MotionValue } from "motion/react";
 
 import type { HeroParallaxMotion } from "@/components/landing/hero-clouds-three";
+import type { ScrollProgressStore } from "@/lib/scroll-progress";
 import { SnowMountainScene } from "@/components/snow-mountain-scene";
 import { cn } from "@/lib/utils";
 
@@ -11,7 +11,7 @@ type HeroStickyLayerProps = {
   reduceMotion: boolean;
   heroCanvasRef: RefObject<HTMLDivElement | null>;
   heroSectionRef: RefObject<HTMLElement | null>;
-  heroProgress: MotionValue<number>;
+  heroProgress: ScrollProgressStore;
   isSnappingRef: MutableRefObject<boolean>;
   motionRef: MutableRefObject<HeroParallaxMotion>;
   /** Copy + UI drawn in the same pinned viewport as the WebGL mountain. */

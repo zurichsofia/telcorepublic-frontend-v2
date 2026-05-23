@@ -31,30 +31,33 @@ setConsoleFunction((type, message, ...params) => {
 });
 
 import { SNOW_MOUNTAIN_FOG_COLOR } from "@/lib/snow-mountain-fog";
-import { readHeroScrollProgress } from "@/lib/snow-mountain-hero-scroll";
+import {
+  mapHeroScrollProgress,
+  readHeroScrollProgress,
+} from "@/lib/snow-mountain-hero-scroll";
 import { applyTerrainIceStyle } from "@/lib/snow-mountain-terrain-ice";
 // import { SnowMountainDreiSkyClouds } from "@/components/snow-mountain-drei-sky-clouds";
 import { AtmosphericParticles } from "@/components/snow-mountain-atmospheric-particles";
 import { markSceneReady, registerScene } from "@/lib/scene-ready";
 
 import { cn } from "@/lib/utils";
-import type { MotionValue } from "motion/react";
+import type { HeroProgressRead } from "@/lib/scroll-progress";
 import {
   HeroCloudsThree,
   type HeroParallaxMotion,
 } from "./landing/hero-clouds-three";
 
-/** Total azimuth swept while scrolling (rad). Camera orbits in XZ — linear in scroll for even pace. */
-const HERO_SCROLL_ORBIT_RAD = 0.74;
+/** Total azimuth swept while scrolling (rad). Camera orbits in XZ — eased scroll for cinematic pace. */
+const HERO_SCROLL_ORBIT_RAD = 0.82;
 
 /** Extra terrain Y at t=1 — small; camera orbit carries most of the turn. */
-const HERO_SCROLL_TERRAIN_YAW_EXTRA = 0.12;
+const HERO_SCROLL_TERRAIN_YAW_EXTRA = 0.08;
 
 /** Subtle radius breathe on the orbit (sin(π·t) scale). */
-const HERO_ORBIT_RADIUS_BREATHE = 0.02;
+const HERO_ORBIT_RADIUS_BREATHE = 0.015;
 
 /** Mid-scroll vertical arc (world). */
-const HERO_ORBIT_HEIGHT_ARC = 0.12;
+const HERO_ORBIT_HEIGHT_ARC = 0.16;
 
 useGLTF.preload("/scene/snow_mountain.glb");
 // Tell the PageLoader it must wait for this scene before dismissing.
@@ -80,9 +83,12 @@ function clamp01(p: number): number {
   return p;
 }
 
-/** Ease with a faster middle — reads more “cinematic” than linear scroll mapping. */
-function easeInOutCubic(t: number): number {
-  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+/** Map raw hero progress to eased cinematic t (matches mont-fort-style scroll curves). */
+function heroCameraProgress(raw: number, reduceMotion: boolean, snapping: boolean): number {
+  const clamped = clamp01(raw);
+  if (reduceMotion) return 0;
+  if (snapping) return clamped;
+  return mapHeroScrollProgress(clamped);
 }
 
 /** Keeps exponential smoothers stable after visibility/background throttling (large `delta`). */
@@ -103,13 +109,13 @@ const CAMERA_LOOK_AT_Y_START = 0;
 const CAMERA_LOOK_AT_Y_END = 0.04;
 
 /** FOV tighten by end of hero — eased. */
-const HERO_SCROLL_ZOOM_FOV_DELTA = -1.15;
+const HERO_SCROLL_ZOOM_FOV_DELTA = -0.95;
 
 /**
  * Small vertical drift only — no X/Z scroll slide (those skewed center vs camera orbit).
  */
 const CAMERA_SCROLL_OFFSET_X = 0;
-const CAMERA_SCROLL_OFFSET_Y = 0.18;
+const CAMERA_SCROLL_OFFSET_Y = 0.14;
 const CAMERA_SCROLL_OFFSET_Z = 0;
 
 /** Sky/clouds opt out of fog; terrain shaders still carry haze — a touch more = softer horizon blend. */
@@ -167,9 +173,9 @@ function HeroScrollCameraFraming({ reduceMotion }: { reduceMotion: boolean; }) {
     }
 
     const p = scrollRead?.getRawProgress() ?? 0;
-    const t = reduceMotion ? 0 : clamp01(p);
     const snapping = scrollRead?.isSnappingRef.current ?? false;
-    const te = reduceMotion ? 0 : snapping ? t : easeInOutCubic(t);
+    const t = heroCameraProgress(p, reduceMotion, snapping);
+    const te = t;
 
     /*
      * Bounds uses `observe={false}`, so the fitted camera is not reset when the canvas resizes.
@@ -201,7 +207,6 @@ function HeroScrollCameraFraming({ reduceMotion }: { reduceMotion: boolean; }) {
     }
     const rBreathe = 1 + HERO_ORBIT_RADIUS_BREATHE * Math.sin(t * Math.PI);
     const rEff = r * rBreathe;
-    /* Linear in scroll so orbit speed stays even (ease-in-out was accelerating the middle). */
     const theta = theta0 + t * HERO_SCROLL_ORBIT_RAD;
     const yArc = HERO_ORBIT_HEIGHT_ARC * Math.sin(t * Math.PI);
     posScratch.set(
@@ -266,7 +271,8 @@ function ParallaxWorld({
     if (!scrollRig || !mouseRig || !yaw) return;
 
     const p = scrollRead?.getRawProgress() ?? 0;
-    const t = reduceMotion ? 0 : clamp01(p);
+    const snapping = scrollRead?.isSnappingRef.current ?? false;
+    const t = heroCameraProgress(p, reduceMotion, snapping);
     const dt = clampFrameDelta(delta);
 
     if (reduceMotion) {
@@ -281,11 +287,12 @@ function ParallaxWorld({
     yaw.rotation.y = 0;
 
     // Mouse parallax — gentle; slower follow so hover doesn’t yank the scene.
-    const mouseLerp = 1 - Math.pow(0.92, dt * 60);
+    const mouseLerp = 1 - Math.pow(0.94, dt * 60);
     smoothMouse.current.x += (mouse.current.x - smoothMouse.current.x) * mouseLerp;
     smoothMouse.current.y += (mouse.current.y - smoothMouse.current.y) * mouseLerp;
-    mouseRig.rotation.x = smoothMouse.current.y * -0.02;
-    mouseRig.rotation.y = smoothMouse.current.x * 0.022;
+    const parallaxScale = 1 - t * 0.35;
+    mouseRig.rotation.x = smoothMouse.current.y * -0.018 * parallaxScale;
+    mouseRig.rotation.y = smoothMouse.current.x * 0.02 * parallaxScale;
   });
 
   return (
@@ -389,12 +396,13 @@ function SnowMountainModel({ reduceMotion }: { reduceMotion: boolean; }) {
 
   useFrame(() => {
     const p = scrollRead?.getRawProgress() ?? 0;
-    const t = reduceMotion ? 0 : clamp01(p);
+    const snapping = scrollRead?.isSnappingRef.current ?? false;
+    const t = heroCameraProgress(p, reduceMotion, snapping);
     if (rigRef.current) {
       rigRef.current.rotation.set(
-        t * 0.012,
+        t * 0.008,
         BASE_TERRAIN_YAW_RAD + t * HERO_SCROLL_TERRAIN_YAW_EXTRA,
-        t * -0.008,
+        t * -0.005,
       );
     }
   });
@@ -428,7 +436,7 @@ export type SnowMountainSceneProps = {
   /** Hero `<section>` ref — progress is read from layout every R3F frame. */
   heroSectionRef?: RefObject<HTMLElement | null>;
   /** Unified hero progress — drives camera during scroll and snap. */
-  heroProgress?: MotionValue<number>;
+  heroProgress?: HeroProgressRead;
   isSnappingRef?: MutableRefObject<boolean>;
   /** Cloud parallax driven from hero scroll (updated in `SnowMountainHero`). */
   motionRef?: MutableRefObject<HeroParallaxMotion>;
