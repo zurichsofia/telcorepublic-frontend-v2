@@ -12,9 +12,7 @@ type HeroStickyLayerProps = {
   heroCanvasRef: RefObject<HTMLDivElement | null>;
   heroSectionRef: RefObject<HTMLElement | null>;
   heroProgress: ScrollProgressStore;
-  isSnappingRef: MutableRefObject<boolean>;
   motionRef: MutableRefObject<HeroParallaxMotion>;
-  /** Copy + UI drawn in the same pinned viewport as the WebGL mountain. */
   children?: ReactNode;
 };
 
@@ -23,7 +21,6 @@ export function HeroStickyLayer({
   heroCanvasRef,
   heroSectionRef,
   heroProgress,
-  isSnappingRef,
   motionRef,
   children,
 }: HeroStickyLayerProps) {
@@ -39,7 +36,6 @@ export function HeroStickyLayer({
         <SnowMountainScene
           heroSectionRef={heroSectionRef}
           heroProgress={heroProgress}
-          isSnappingRef={isSnappingRef}
           motionRef={motionRef}
           className={!reduceMotion ? "cursor-none" : undefined}
         />

@@ -41,11 +41,11 @@ export function SmoothScrollProvider({
     }
 
     const instance = new Lenis({
-      lerp: 0.09,
+      lerp: 0.085,
       smoothWheel: true,
       syncTouch: false,
-      wheelMultiplier: 0.85,
-      touchMultiplier: 1.35,
+      wheelMultiplier: 0.92,
+      touchMultiplier: 1.25,
       autoRaf: false,
     });
 

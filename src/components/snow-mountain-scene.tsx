@@ -65,7 +65,6 @@ registerScene();
 
 type HeroScrollRead = {
   getRawProgress: () => number;
-  isSnappingRef: MutableRefObject<boolean>;
   /**
    * Increment (via ref) so `HeroScrollCameraFraming` drops its cached baseline and
    * re-snaps to whatever `Stage`/`Bounds` last fitted — avoids locking FOV/position
@@ -84,10 +83,9 @@ function clamp01(p: number): number {
 }
 
 /** Map raw hero progress to eased cinematic t (matches mont-fort-style scroll curves). */
-function heroCameraProgress(raw: number, reduceMotion: boolean, snapping: boolean): number {
+function heroCameraProgress(raw: number, reduceMotion: boolean): number {
   const clamped = clamp01(raw);
   if (reduceMotion) return 0;
-  if (snapping) return clamped;
   return mapHeroScrollProgress(clamped);
 }
 
@@ -124,16 +122,27 @@ const FOG_EXP_BREATH = 0.0028;
 
 function BreathingFogExp2({ reduceMotion }: { reduceMotion: boolean; }) {
   const scene = useThree((s) => s.scene);
+  const gl = useThree((s) => s.gl);
+  const iceFog = useMemo(() => new THREE.Color(SNOW_MOUNTAIN_FOG_COLOR), []);
+  const clearScratch = useMemo(() => new THREE.Color(), []);
 
   useFrame(({ clock }) => {
     const fog = scene.fog;
     if (!fog || !(fog instanceof THREE.FogExp2)) return;
+
     if (reduceMotion) {
       fog.density = FOG_EXP_BASE;
+      fog.color.copy(iceFog);
+      clearScratch.copy(iceFog);
+      gl.setClearColor(clearScratch, 1);
       return;
     }
-    fog.density =
-      FOG_EXP_BASE + Math.sin(clock.elapsedTime * 0.11) * FOG_EXP_BREATH;
+
+    const breath = Math.sin(clock.elapsedTime * 0.11) * FOG_EXP_BREATH;
+    fog.density = FOG_EXP_BASE + breath;
+    fog.color.copy(iceFog);
+    clearScratch.copy(iceFog);
+    gl.setClearColor(clearScratch, 1);
   });
 
   return (
@@ -173,8 +182,7 @@ function HeroScrollCameraFraming({ reduceMotion }: { reduceMotion: boolean; }) {
     }
 
     const p = scrollRead?.getRawProgress() ?? 0;
-    const snapping = scrollRead?.isSnappingRef.current ?? false;
-    const t = heroCameraProgress(p, reduceMotion, snapping);
+    const t = heroCameraProgress(p, reduceMotion);
     const te = t;
 
     /*
@@ -271,8 +279,7 @@ function ParallaxWorld({
     if (!scrollRig || !mouseRig || !yaw) return;
 
     const p = scrollRead?.getRawProgress() ?? 0;
-    const snapping = scrollRead?.isSnappingRef.current ?? false;
-    const t = heroCameraProgress(p, reduceMotion, snapping);
+    const t = heroCameraProgress(p, reduceMotion);
     const dt = clampFrameDelta(delta);
 
     if (reduceMotion) {
@@ -396,8 +403,7 @@ function SnowMountainModel({ reduceMotion }: { reduceMotion: boolean; }) {
 
   useFrame(() => {
     const p = scrollRead?.getRawProgress() ?? 0;
-    const snapping = scrollRead?.isSnappingRef.current ?? false;
-    const t = heroCameraProgress(p, reduceMotion, snapping);
+    const t = heroCameraProgress(p, reduceMotion);
     if (rigRef.current) {
       rigRef.current.rotation.set(
         t * 0.008,
@@ -435,9 +441,8 @@ const FALLBACK_PARALLAX_MOTION: MutableRefObject<HeroParallaxMotion> = {
 export type SnowMountainSceneProps = {
   /** Hero `<section>` ref — progress is read from layout every R3F frame. */
   heroSectionRef?: RefObject<HTMLElement | null>;
-  /** Unified hero progress — drives camera during scroll and snap. */
+  /** Hero scroll progress — drives camera orbit. */
   heroProgress?: HeroProgressRead;
-  isSnappingRef?: MutableRefObject<boolean>;
   /** Cloud parallax driven from hero scroll (updated in `SnowMountainHero`). */
   motionRef?: MutableRefObject<HeroParallaxMotion>;
   className?: string;
@@ -446,15 +451,12 @@ export type SnowMountainSceneProps = {
 export function SnowMountainScene({
   heroSectionRef,
   heroProgress,
-  isSnappingRef,
   motionRef,
   className,
 }: SnowMountainSceneProps) {
   const reduceMotion = usePrefersReducedMotion();
   const parallaxMotionRef = motionRef ?? FALLBACK_PARALLAX_MOTION;
   const cameraBaselineGenerationRef = useRef(0);
-  const fallbackSnappingRef = useRef(false);
-  const snappingRef = isSnappingRef ?? fallbackSnappingRef;
 
   const scrollRead = useMemo((): HeroScrollRead => {
     return {
@@ -464,10 +466,9 @@ export function SnowMountainScene({
         const el = heroSectionRef?.current ?? null;
         return readHeroScrollProgress(el);
       },
-      isSnappingRef: snappingRef,
       cameraBaselineGenerationRef,
     };
-  }, [reduceMotion, heroSectionRef, heroProgress, snappingRef]);
+  }, [reduceMotion, heroSectionRef, heroProgress]);
 
   /* `HeroCloudsThree` uses its own `<Canvas>` — must not nest inside this Canvas (R3F rejects it). */
   return (
@@ -491,7 +492,7 @@ export function SnowMountainScene({
           gl.toneMappingExposure = 0.68;
         }}
       >
-        <HeroScrollReadContext.Provider value={scrollRead}>
+          <HeroScrollReadContext.Provider value={scrollRead}>
           <BreathingFogExp2 reduceMotion={reduceMotion} />
           {/* <SnowMountainDreiSkyClouds reduceMotion={
         reduceMotion} /> */}

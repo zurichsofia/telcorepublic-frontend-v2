@@ -1,3 +1,4 @@
+import { getHeroCameraProgress } from "@/lib/hero-scroll-layer-styles";
 import { heroScrollEase } from "@/lib/snow-mountain-scroll-easing";
 
 /**
@@ -15,16 +16,17 @@ export function readHeroScrollProgress(section: HTMLElement | null): number {
 /** End of primary headline motion (used for cloud parallax vs scroll). */
 const CROSSFADE_END = 0.32;
 
-/** Map raw scroll progress to eased cinematic progress (camera + parallax). */
-export function mapHeroScrollProgress(progress: number): number {
-  if (progress <= 0) return 0;
-  if (progress >= 1) return 1;
-  return heroScrollEase(progress);
+/** Map section progress to eased cinematic progress (camera + parallax). */
+export function mapHeroScrollProgress(sectionProgress: number): number {
+  const cameraProgress = getHeroCameraProgress(sectionProgress);
+  if (cameraProgress <= 0) return 0;
+  if (cameraProgress >= 1) return 1;
+  return heroScrollEase(cameraProgress);
 }
 
 /** Primary hero copy: vertical drift (px) for WebGL cloud parallax. */
-export function heroPrimaryParallaxY(progress: number): number {
-  const eased = mapHeroScrollProgress(progress);
+export function heroPrimaryParallaxY(sectionProgress: number): number {
+  const eased = mapHeroScrollProgress(sectionProgress);
   if (eased <= 0) return 0;
   if (eased >= CROSSFADE_END) return -44;
   const t = eased / CROSSFADE_END;
@@ -33,8 +35,8 @@ export function heroPrimaryParallaxY(progress: number): number {
 }
 
 /** Horizontal nudge (px) for cloud parallax. */
-export function heroPrimaryParallaxX(progress: number): number {
-  const eased = mapHeroScrollProgress(progress);
+export function heroPrimaryParallaxX(sectionProgress: number): number {
+  const eased = mapHeroScrollProgress(sectionProgress);
   if (eased <= 0) return 0;
   if (eased >= CROSSFADE_END) return 12;
   const t = eased / CROSSFADE_END;

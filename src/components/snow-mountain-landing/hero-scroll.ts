@@ -1,13 +1,19 @@
-/** Scroll distance (vh) while the mountain canvas is pinned. */
-export const HERO_STICKY_SCROLL_VH = 340;
-/** Total hero `<section>` height (vh). */
-export const HERO_SECTION_VH = HERO_STICKY_SCROLL_VH + 100;
+/** Mountain camera orbit + copy sequence (ends when orbit completes). */
+export const HERO_CAMERA_SCROLL_VH = 280;
 
-/** Progress where the sticky layer releases — start snapping from here. */
-export const HERO_EXIT_SNAP_START = HERO_STICKY_SCROLL_VH / HERO_SECTION_VH;
+/** Pinned hold — “Our Mission” stays on screen, camera frozen at final pose. */
+export const HERO_MISSION_HOLD_VH = 56;
 
-/** Scroll target when snapping back into the hero. */
-export const HERO_SNAP_BACK_PROGRESS = HERO_EXIT_SNAP_START - 0.02;
+/** Scroll distance while the sticky canvas stays pinned. */
+export const HERO_STICKY_SCROLL_VH =
+  HERO_CAMERA_SCROLL_VH + HERO_MISSION_HOLD_VH;
 
-/** Minimum hero peek (ratio of viewport) before an upward snap fires. */
-export const HERO_PEEK_SNAP_RATIO = 0.05;
+/** Extra section height so sticky stays pinned for the full sticky scroll distance. */
+export const HERO_RELEASE_SCROLL_VH = 100;
+
+/** Total hero `<section>` height — pinned scroll + viewport for sticky release. */
+export const HERO_SECTION_VH = HERO_STICKY_SCROLL_VH + HERO_RELEASE_SCROLL_VH;
+
+/** Section progress where camera motion completes. */
+export const HERO_CAMERA_END_PROGRESS =
+  HERO_CAMERA_SCROLL_VH / HERO_SECTION_VH;
