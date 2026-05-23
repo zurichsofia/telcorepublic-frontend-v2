@@ -38,6 +38,7 @@ import { AtmosphericParticles } from "@/components/snow-mountain-atmospheric-par
 import { markSceneReady, registerScene } from "@/lib/scene-ready";
 
 import { cn } from "@/lib/utils";
+import type { MotionValue } from "motion/react";
 import {
   HeroCloudsThree,
   type HeroParallaxMotion,
@@ -61,6 +62,7 @@ registerScene();
 
 type HeroScrollRead = {
   getRawProgress: () => number;
+  isSnappingRef: MutableRefObject<boolean>;
   /**
    * Increment (via ref) so `HeroScrollCameraFraming` drops its cached baseline and
    * re-snaps to whatever `Stage`/`Bounds` last fitted — avoids locking FOV/position
@@ -166,7 +168,8 @@ function HeroScrollCameraFraming({ reduceMotion }: { reduceMotion: boolean; }) {
 
     const p = scrollRead?.getRawProgress() ?? 0;
     const t = reduceMotion ? 0 : clamp01(p);
-    const te = reduceMotion ? 0 : easeInOutCubic(t);
+    const snapping = scrollRead?.isSnappingRef.current ?? false;
+    const te = reduceMotion ? 0 : snapping ? t : easeInOutCubic(t);
 
     /*
      * Bounds uses `observe={false}`, so the fitted camera is not reset when the canvas resizes.
@@ -424,6 +427,9 @@ const FALLBACK_PARALLAX_MOTION: MutableRefObject<HeroParallaxMotion> = {
 export type SnowMountainSceneProps = {
   /** Hero `<section>` ref — progress is read from layout every R3F frame. */
   heroSectionRef?: RefObject<HTMLElement | null>;
+  /** Unified hero progress — drives camera during scroll and snap. */
+  heroProgress?: MotionValue<number>;
+  isSnappingRef?: MutableRefObject<boolean>;
   /** Cloud parallax driven from hero scroll (updated in `SnowMountainHero`). */
   motionRef?: MutableRefObject<HeroParallaxMotion>;
   className?: string;
@@ -431,23 +437,29 @@ export type SnowMountainSceneProps = {
 
 export function SnowMountainScene({
   heroSectionRef,
+  heroProgress,
+  isSnappingRef,
   motionRef,
   className,
 }: SnowMountainSceneProps) {
   const reduceMotion = usePrefersReducedMotion();
   const parallaxMotionRef = motionRef ?? FALLBACK_PARALLAX_MOTION;
   const cameraBaselineGenerationRef = useRef(0);
+  const fallbackSnappingRef = useRef(false);
+  const snappingRef = isSnappingRef ?? fallbackSnappingRef;
 
   const scrollRead = useMemo((): HeroScrollRead => {
     return {
       getRawProgress: () => {
         if (reduceMotion) return 0;
+        if (heroProgress) return heroProgress.get();
         const el = heroSectionRef?.current ?? null;
         return readHeroScrollProgress(el);
       },
+      isSnappingRef: snappingRef,
       cameraBaselineGenerationRef,
     };
-  }, [reduceMotion, heroSectionRef]);
+  }, [reduceMotion, heroSectionRef, heroProgress, snappingRef]);
 
   /* `HeroCloudsThree` uses its own `<Canvas>` — must not nest inside this Canvas (R3F rejects it). */
   return (

@@ -1,6 +1,7 @@
 "use client";
 
 import type { MutableRefObject, ReactNode, RefObject } from "react";
+import type { MotionValue } from "motion/react";
 
 import type { HeroParallaxMotion } from "@/components/landing/hero-clouds-three";
 import { SnowMountainScene } from "@/components/snow-mountain-scene";
@@ -10,6 +11,8 @@ type HeroStickyLayerProps = {
   reduceMotion: boolean;
   heroCanvasRef: RefObject<HTMLDivElement | null>;
   heroSectionRef: RefObject<HTMLElement | null>;
+  heroProgress: MotionValue<number>;
+  isSnappingRef: MutableRefObject<boolean>;
   motionRef: MutableRefObject<HeroParallaxMotion>;
   /** Copy + UI drawn in the same pinned viewport as the WebGL mountain. */
   children?: ReactNode;
@@ -19,6 +22,8 @@ export function HeroStickyLayer({
   reduceMotion,
   heroCanvasRef,
   heroSectionRef,
+  heroProgress,
+  isSnappingRef,
   motionRef,
   children,
 }: HeroStickyLayerProps) {
@@ -33,6 +38,8 @@ export function HeroStickyLayer({
       >
         <SnowMountainScene
           heroSectionRef={heroSectionRef}
+          heroProgress={heroProgress}
+          isSnappingRef={isSnappingRef}
           motionRef={motionRef}
           className={!reduceMotion ? "cursor-none" : undefined}
         />
