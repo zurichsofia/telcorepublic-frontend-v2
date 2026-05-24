@@ -27,16 +27,16 @@ const QUOTES = [
     text: "The shift from infrastructure ownership to platform orchestration is redefining how telecom operators compete in cloud-native ecosystems.",
   },
   {
-    date: "APR 28, 2026",
-    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    date: "MAY 15, 2026",
+    text: "AI-native BSS platforms are becoming the new operating layer of telecom transformation. Legacy stacks can no longer support the speed of modern service ecosystems.",
   },
   {
-    date: "MAR 10, 2026",
-    text: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    date: "JUN 05, 2025",
+    text: "Modular OSS architectures are enabling operators to decouple network functions and accelerate innovation without wholesale infrastructure replacement.",
   },
   {
-    date: "FEB 02, 2026",
-    text: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+    date: "JUL 18, 2024",
+    text: "The shift from infrastructure ownership to platform orchestration is redefining how telecom operators compete in cloud-native ecosystems.",
   },
 ] as const;
 
@@ -49,26 +49,29 @@ type StackCard = {
 };
 
 /** Slot 0 = top (exits), slot 2 = bottom (new entries) */
+const STACK_GAP_CLASS = "gap-10 sm:gap-12 lg:gap-14";
+/** Room for the bottom bubble tail (absolute, does not affect flex height) */
+const STACK_TAIL_PADDING = "pb-5 sm:pb-6";
+
 const STACK_SLOTS: {
   size: BubbleSize;
   className: string;
 }[] = [
-  {
-    size: "large",
-    className:
-      "w-full lg:absolute lg:left-[10%] lg:top-0 lg:w-[min(52vw,560px)] xl:left-[12%]",
-  },
-  {
-    size: "medium",
-    className:
-      "w-full lg:absolute lg:right-[2%] lg:top-[36%] lg:w-[min(38vw,420px)] xl:right-[4%]",
-  },
-  {
-    size: "small",
-    className:
-      "w-full lg:absolute lg:bottom-8 lg:left-[2%] lg:w-[min(30vw,340px)] xl:bottom-10 xl:left-[4%]",
-  },
-];
+    {
+      size: "large",
+      className: "w-full lg:w-[90%] lg:self-end",
+    },
+    {
+      size: "medium",
+      className:
+        "w-full lg:w-1/2 lg:translate-x-6 lg:self-center xl:translate-x-10",
+    },
+    {
+      size: "small",
+      className:
+        "w-full min-w-0 lg:w-[35%] lg:-translate-x-4 lg:self-start xl:-translate-x-6",
+    },
+  ];
 
 const layoutSpring = {
   type: "spring" as const,
@@ -113,7 +116,7 @@ function OceanStrip({
       v.pause();
       return;
     }
-    void v.play().catch(() => {});
+    void v.play().catch(() => { });
   }, [reduceMotion, videoSrc]);
 
   return (
@@ -151,16 +154,25 @@ function MessageBubble({
         size === "small" && "px-5 py-4 sm:px-6 sm:py-5",
       )}
     >
-      <p className="font-sans text-[0.68rem] font-normal tracking-[0.18em] text-white/55 uppercase">
+      <p
+        className={cn(
+          "font-sans font-normal tracking-[0.18em] text-white/55 uppercase",
+          size === "large" && "text-xs sm:text-[0.8rem]",
+          size === "medium" && "text-[0.62rem] sm:text-[0.65rem]",
+          size === "small" && "text-[0.6rem] sm:text-[0.65rem]",
+        )}
+      >
         {quote.date}
       </p>
       <p
         className={cn(
-          "mt-3 text-pretty font-sans leading-[1.35] text-white",
+          "text-pretty font-sans text-white",
           size === "large" &&
-            "mt-4 text-[1.05rem] font-semibold sm:text-[1.15rem] lg:text-xl",
-          size === "medium" && "text-sm font-medium sm:text-[0.95rem]",
-          size === "small" && "text-[0.82rem] font-medium leading-snug sm:text-sm",
+            "mt-4 text-lg font-semibold leading-[1.35] sm:text-xl lg:text-2xl",
+          size === "medium" &&
+            "mt-3 text-sm font-medium leading-[1.35] sm:text-base lg:text-lg",
+          size === "small" &&
+            "mt-2.5 text-sm font-medium leading-snug sm:text-base lg:text-[0.9rem]",
         )}
       >
         <span className="text-white/90">&ldquo;</span>
@@ -168,14 +180,19 @@ function MessageBubble({
         <span className="text-white/90">&rdquo;</span>
       </p>
       <span
-        className="absolute -bottom-[7px] left-1/2 size-4 -translate-x-1/2 rotate-45 bg-[#1c1c1c]"
+        className={cn(
+          "absolute rotate-45 bg-[#1c1c1c]",
+          size === "large" && "-bottom-[10px] left-8 size-6",
+          size === "medium" && "-bottom-[9px] left-6 size-5",
+          size === "small" && "-bottom-[7px] left-5 size-4",
+        )}
         aria-hidden
       />
     </div>
   );
 }
 
-function NotificationStack({ reduceMotion }: { reduceMotion: boolean }) {
+function NotificationStack({ reduceMotion }: { reduceMotion: boolean; }) {
   const [cards, setCards] = useState<StackCard[]>(INITIAL_CARDS);
   const [enteringId, setEnteringId] = useState<number | null>(null);
   const nextId = useRef(INITIAL_CARDS.length);
@@ -202,7 +219,13 @@ function NotificationStack({ reduceMotion }: { reduceMotion: boolean }) {
 
   if (reduceMotion) {
     return (
-      <div className="relative flex flex-col gap-8 lg:h-[580px] lg:gap-0">
+      <div
+        className={cn(
+          "relative flex flex-col",
+          STACK_GAP_CLASS,
+          STACK_TAIL_PADDING,
+        )}
+      >
         {INITIAL_CARDS.map((card, slotIndex) => (
           <div key={card.id} className={STACK_SLOTS[slotIndex]!.className}>
             <MessageBubble
@@ -218,7 +241,13 @@ function NotificationStack({ reduceMotion }: { reduceMotion: boolean }) {
   return (
     <>
       <LayoutGroup id="insights-notification-stack">
-        <div className="relative flex flex-col gap-8 overflow-hidden lg:h-[580px] lg:gap-0">
+        <div
+          className={cn(
+            "relative flex flex-col overflow-visible",
+            STACK_GAP_CLASS,
+            STACK_TAIL_PADDING,
+          )}
+        >
           <AnimatePresence mode="popLayout" initial={false}>
             {cards.map((card, slotIndex) => {
               const slot = STACK_SLOTS[slotIndex]!;
@@ -228,7 +257,7 @@ function NotificationStack({ reduceMotion }: { reduceMotion: boolean }) {
                 <motion.div
                   key={card.id}
                   layout
-                  className={slot.className}
+                  className={cn(slot.className, "overflow-visible")}
                   initial={
                     isEntering
                       ? { y: 56, opacity: 0, scale: 0.96 }
@@ -245,15 +274,15 @@ function NotificationStack({ reduceMotion }: { reduceMotion: boolean }) {
                     layout: layoutSpring,
                     ...(isEntering
                       ? {
-                          y: enterSpring,
-                          opacity: enterSpring,
-                          scale: enterSpring,
-                        }
+                        y: enterSpring,
+                        opacity: enterSpring,
+                        scale: enterSpring,
+                      }
                       : {
-                          y: layoutSpring,
-                          opacity: { duration: 0.35 },
-                          scale: layoutSpring,
-                        }),
+                        y: layoutSpring,
+                        opacity: { duration: 0.35 },
+                        scale: layoutSpring,
+                      }),
                   }}
                 >
                   <MessageBubble
@@ -294,8 +323,8 @@ export function InsightsQuotesSection({
       <OceanStrip videoSrc={videoSrc} reduceMotion={reduceMotion} />
 
       <div className="relative bg-black px-4 py-14 sm:px-8 sm:py-16 lg:px-10 lg:py-20 xl:px-12">
-        <div className="relative mx-auto w-full max-w-6xl">
-          <div className="mb-10 flex justify-center lg:absolute lg:left-0 lg:top-1/2 lg:mb-0 lg:-translate-y-1/2 lg:justify-start">
+        <div className="relative mx-auto w-full max-w-6xl overflow-visible">
+          <div className="mb-10 flex justify-center lg:absolute lg:-left-6 lg:top-1/2 lg:mb-0 lg:-translate-y-1/2 lg:justify-start xl:-left-10">
             <Image
               src="/images/TR_Bird_Icon.svg"
               alt=""
@@ -307,7 +336,7 @@ export function InsightsQuotesSection({
           </div>
 
           <div
-            className="relative lg:min-h-[580px] lg:pl-[14%] xl:pl-[12%]"
+            className="relative overflow-visible lg:pl-[4%] xl:pl-[2%]"
             role="region"
             aria-live="polite"
             aria-label="Industry insights"
