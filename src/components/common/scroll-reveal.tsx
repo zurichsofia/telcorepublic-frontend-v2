@@ -15,15 +15,14 @@ import {
   type RefObject,
 } from "react";
 
-import { useLenis } from "@/components/common/smooth-scroll-provider";
-
 export const SCROLL_REVEAL_DEFAULTS = {
-  x: 40,
-  y: 56,
-  enterTopVh: 0.88,
-  enterMinBottomVh: 0.02,
-  duration: 0.85,
-  ease: [0.25, 0.1, 0.25, 1] as const,
+  x: 28,
+  y: 36,
+  enterTopVh: 0.9,
+  enterMinBottomVh: 0.06,
+  stiffness: 82,
+  damping: 21,
+  mass: 0.78,
 };
 
 export type ScrollRevealThresholds = {
@@ -35,10 +34,12 @@ export type ScrollRevealMotionOptions = ScrollRevealThresholds & {
   xDirection?: 1 | -1;
   revealX?: number;
   revealY?: number;
-  duration?: number;
+  stiffness?: number;
+  damping?: number;
+  mass?: number;
+  /** Keep content visible after first reveal (default: true). */
+  once?: boolean;
 };
-
-const INSTANT_TRANSITION: Transition = { duration: 0 };
 
 function scrollRevealVariants(
   revealX: number,
@@ -59,41 +60,77 @@ function scrollRevealVariants(
   };
 }
 
-/** Tracks scroll position and toggles visibility for enter / instant reset. */
+function springTransition(
+  delay: number,
+  {
+    stiffness = SCROLL_REVEAL_DEFAULTS.stiffness,
+    damping = SCROLL_REVEAL_DEFAULTS.damping,
+    mass = SCROLL_REVEAL_DEFAULTS.mass,
+  }: Pick<
+    ScrollRevealMotionOptions,
+    "stiffness" | "damping" | "mass"
+  > = {},
+): Transition {
+  return {
+    type: "spring",
+    stiffness,
+    damping,
+    mass,
+    delay,
+  };
+}
+
+/** Reveal on enter via IntersectionObserver — no per-frame scroll work. */
 export function useScrollReveal(
   ref: RefObject<HTMLElement | null>,
   {
     enterTopVh = SCROLL_REVEAL_DEFAULTS.enterTopVh,
     enterMinBottomVh = SCROLL_REVEAL_DEFAULTS.enterMinBottomVh,
-  }: ScrollRevealThresholds = {},
+    once = true,
+  }: ScrollRevealThresholds & { once?: boolean } = {},
 ): boolean {
-  const lenis = useLenis();
   const [visible, setVisible] = useState(false);
+  const revealedRef = useRef(false);
 
   useEffect(() => {
-    const check = () => {
-      const node = ref.current;
-      if (!node) return;
+    const node = ref.current;
+    if (!node) return;
 
-      const vh = window.innerHeight;
-      const { top, bottom } = node.getBoundingClientRect();
+    if (once && revealedRef.current) {
+      setVisible(true);
+      return;
+    }
 
-      setVisible((prev) => {
-        if (!prev) {
-          return (
-            top < vh * enterTopVh && bottom > vh * enterMinBottomVh
-          );
+    const bottomMarginPct = Math.round((1 - enterTopVh) * 100);
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) {
+          if (!once) setVisible(false);
+          return;
         }
-        return bottom > 0 && top < vh;
-      });
-    };
 
-    check();
-    if (lenis) return lenis.on("scroll", check);
+        const vh = window.innerHeight;
+        const { top, bottom } = entry.boundingClientRect;
+        const entering =
+          top < vh * enterTopVh && bottom > vh * enterMinBottomVh;
 
-    window.addEventListener("scroll", check, { passive: true });
-    return () => window.removeEventListener("scroll", check);
-  }, [enterMinBottomVh, enterTopVh, lenis, ref]);
+        if (!entering) return;
+
+        revealedRef.current = true;
+        setVisible(true);
+        if (once) observer.disconnect();
+      },
+      {
+        root: null,
+        rootMargin: `0px 0px -${bottomMarginPct}% 0px`,
+        threshold: 0,
+      },
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [enterMinBottomVh, enterTopVh, once, ref]);
 
   return visible;
 }
@@ -101,7 +138,7 @@ export function useScrollReveal(
 type ScrollRevealContextValue = {
   inView: boolean;
   variants: Variants;
-  enterTransition: Transition;
+  spring: Pick<ScrollRevealMotionOptions, "stiffness" | "damping" | "mass">;
 };
 
 const ScrollRevealContext = createContext<ScrollRevealContextValue | null>(
@@ -118,15 +155,18 @@ function ScrollRevealRoot({
   children,
   className,
   disabled = false,
+  once = true,
   xDirection = -1,
   revealX = SCROLL_REVEAL_DEFAULTS.x,
   revealY = SCROLL_REVEAL_DEFAULTS.y,
-  duration = SCROLL_REVEAL_DEFAULTS.duration,
+  stiffness = SCROLL_REVEAL_DEFAULTS.stiffness,
+  damping = SCROLL_REVEAL_DEFAULTS.damping,
+  mass = SCROLL_REVEAL_DEFAULTS.mass,
   enterTopVh,
   enterMinBottomVh,
 }: ScrollRevealRootProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useScrollReveal(ref, { enterTopVh, enterMinBottomVh });
+  const inView = useScrollReveal(ref, { enterTopVh, enterMinBottomVh, once });
 
   if (disabled) {
     return <div className={className}>{children}</div>;
@@ -135,10 +175,7 @@ function ScrollRevealRoot({
   const value: ScrollRevealContextValue = {
     inView,
     variants: scrollRevealVariants(revealX, revealY, xDirection),
-    enterTransition: {
-      duration,
-      ease: [...SCROLL_REVEAL_DEFAULTS.ease],
-    },
+    spring: { stiffness, damping, mass },
   };
 
   return (
@@ -189,17 +226,18 @@ function ScrollRevealItem({
   }
 
   const MotionTag = MOTION_TAGS[as];
+  const show = ctx.inView;
 
   return (
     <MotionTag
       id={id}
       initial="hidden"
-      animate={ctx.inView ? "visible" : "hidden"}
+      animate={show ? "visible" : "hidden"}
       variants={ctx.variants}
       transition={
-        ctx.inView
-          ? { ...ctx.enterTransition, delay }
-          : INSTANT_TRANSITION
+        show
+          ? springTransition(delay, ctx.spring)
+          : { duration: 0 }
       }
       className={className}
     >
@@ -208,7 +246,7 @@ function ScrollRevealItem({
   );
 }
 
-/** Scroll-triggered fade/slide reveal — wraps a block and animates items on enter. */
+/** Scroll-triggered fade/slide reveal — IO-triggered, spring-animated on enter. */
 export const ScrollReveal = Object.assign(ScrollRevealRoot, {
   Item: ScrollRevealItem,
 });

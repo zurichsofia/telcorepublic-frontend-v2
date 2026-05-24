@@ -1,6 +1,7 @@
 "use client";
 
 import { ScrollReveal } from "@/components/common/scroll-reveal";
+import { FloatingLinesWhyUsBg } from "@/components/snow-mountain-landing/floating-lines-why-us-bg";
 import { HERO_RELEASE_SCROLL_VH } from "@/components/snow-mountain-landing/hero-scroll";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { cn } from "@/lib/utils";
@@ -50,7 +51,7 @@ function WhyChapter({
   variant,
   animate,
   headingId,
-  bodyDelay = 0.12,
+  bodyDelay = 0.14,
 }: {
   title: string;
   paragraphs: readonly string[];
@@ -89,18 +90,22 @@ function WhyChapter({
         >
           {title}
         </ScrollReveal.Item>
-        <ScrollReveal.Item
-          as="div"
-          delay={bodyDelay}
+        <div
           className={cn(
             "space-y-4 text-pretty font-sans text-base leading-tight tracking-wide text-black lg:text-xl",
             !isA && "ml-auto max-w-3xl",
           )}
         >
           {paragraphs.map((text, j) => (
-            <p key={`${title}-${j}`}>{text}</p>
+            <ScrollReveal.Item
+              key={`${title}-${j}`}
+              as="p"
+              delay={bodyDelay + j * 0.07}
+            >
+              {text}
+            </ScrollReveal.Item>
           ))}
-        </ScrollReveal.Item>
+        </div>
       </div>
     </ScrollReveal>
   );
@@ -113,41 +118,41 @@ export function WhyUsSection() {
   const [first, ...rest] = WHY_CHAPTERS;
 
   return (
-    <section
-      id="why-telco-republic"
-      className="relative z-20 w-full overflow-x-clip bg-white"
+    <FloatingLinesWhyUsBg
+      className="z-20 w-full"
       style={{ marginTop: `-${HERO_RELEASE_SCROLL_VH}vh` }}
-      aria-label="Why Telco Republic"
     >
-      <div
-        id="why-us-first-screen"
-        className="flex h-screen min-h-screen w-full flex-col justify-center pt-24"
-        aria-labelledby="why-us-entry"
-      >
-        <WhyChapter
-          title={first.title}
-          paragraphs={first.paragraphs}
-          variant="a"
-          animate={animate}
-          headingId="why-us-entry"
-        />
-      </div>
+      <section className="overflow-x-clip" aria-label="Why Telco Republic">
+        <div
+          id="why-us-first-screen"
+          className="flex h-screen min-h-screen w-full flex-col justify-center pt-24"
+          aria-labelledby="why-us-entry"
+        >
+          <WhyChapter
+            title={first.title}
+            paragraphs={first.paragraphs}
+            variant="a"
+            animate={animate}
+            headingId="why-us-entry"
+          />
+        </div>
 
-      <div
-        id="why-us-rest"
-        className="flex w-full flex-col space-y-12 pb-8 md:space-y-20"
-      >
-        {rest.map((chapter, i) => (
-          <div key={chapter.title} className="py-8 md:py-12">
-            <WhyChapter
-              title={chapter.title}
-              paragraphs={chapter.paragraphs}
-              variant={(i + 1) % 2 === 0 ? "a" : "b"}
-              animate={animate}
-            />
-          </div>
-        ))}
-      </div>
-    </section>
+        <div
+          id="why-us-rest"
+          className="flex w-full flex-col space-y-12 pb-8 md:space-y-20"
+        >
+          {rest.map((chapter, i) => (
+            <div key={chapter.title} className="py-8 md:py-12">
+              <WhyChapter
+                title={chapter.title}
+                paragraphs={chapter.paragraphs}
+                variant={(i + 1) % 2 === 0 ? "a" : "b"}
+                animate={animate}
+              />
+            </div>
+          ))}
+        </div>
+      </section>
+    </FloatingLinesWhyUsBg>
   );
 }

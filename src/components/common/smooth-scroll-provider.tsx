@@ -10,6 +10,7 @@ import {
 } from "react";
 
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
+import { resetLenisScrollY, setLenisScrollY } from "@/lib/lenis-scroll";
 
 const LenisContext = createContext<Lenis | null>(null);
 
@@ -36,21 +37,28 @@ export function SmoothScrollProvider({
 
   useEffect(() => {
     if (reduceMotion || !enabled) {
+      resetLenisScrollY();
       setLenis(null);
       return;
     }
 
     const instance = new Lenis({
-      lerp: 0.085,
+      lerp: 0.11,
       smoothWheel: true,
       syncTouch: false,
-      wheelMultiplier: 0.92,
-      touchMultiplier: 1.25,
+      wheelMultiplier: 0.95,
+      touchMultiplier: 1.15,
       autoRaf: false,
     });
 
+    const syncScrollY = () => {
+      setLenisScrollY(instance.scroll);
+    };
+
     document.documentElement.classList.add("lenis", "lenis-smooth");
     setLenis(instance);
+    syncScrollY();
+    const offScroll = instance.on("scroll", syncScrollY);
 
     let rafId = 0;
     const raf = (time: number) => {
@@ -60,9 +68,11 @@ export function SmoothScrollProvider({
     rafId = requestAnimationFrame(raf);
 
     return () => {
+      offScroll();
       cancelAnimationFrame(rafId);
       instance.destroy();
       document.documentElement.classList.remove("lenis", "lenis-smooth");
+      resetLenisScrollY();
       setLenis(null);
     };
   }, [reduceMotion, enabled]);

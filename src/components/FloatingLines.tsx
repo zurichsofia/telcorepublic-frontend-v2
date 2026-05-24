@@ -13,6 +13,8 @@ import {
   WebGLRenderer
 } from 'three';
 
+import { getLenisScrollY, isLenisActive } from '@/lib/lenis-scroll';
+
 const vertexShader = `
 precision highp float;
 
@@ -265,6 +267,11 @@ type FloatingLinesProps = {
    * (useful with `interactive={false}` for a site backdrop).
    */
   scrollParallaxStrength?: number;
+  /**
+   * When set, parallax follows linear progress through this element (0 at section
+   * entry → increases through its full height). Keeps drift continuous on long sections.
+   */
+  scrollParallaxSectionId?: string;
   mixBlendMode?: React.CSSProperties['mixBlendMode'];
   /** Map the shader’s additive strokes onto a white field (avoids graying the whole canvas). */
   lightBackground?: boolean;
@@ -320,6 +327,7 @@ export default function FloatingLines({
   parallax = true,
   parallaxStrength = 0.2,
   scrollParallaxStrength = 0,
+  scrollParallaxSectionId,
   mixBlendMode = 'screen',
   lightBackground = false,
   consolidateWavesOnEditorialScroll = false,
@@ -369,7 +377,9 @@ export default function FloatingLines({
     camera.position.z = 1;
 
     const renderer = new WebGLRenderer({ antialias: true, alpha: false });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(
+      Math.min(window.devicePixelRatio || 1, scrollParallaxSectionId ? 1.5 : 2),
+    );
     renderer.domElement.style.width = '100%';
     renderer.domElement.style.height = '100%';
     container.appendChild(renderer.domElement);
@@ -512,6 +522,15 @@ export default function FloatingLines({
 
       uniforms.iTime.value = clock.getElapsedTime();
 
+      let shouldRender = true;
+      if (scrollParallaxSectionId && typeof document !== "undefined") {
+        const section = document.getElementById(scrollParallaxSectionId);
+        if (section) {
+          const rect = section.getBoundingClientRect();
+          shouldRender = rect.bottom > 0 && rect.top < window.innerHeight;
+        }
+      }
+
       if (interactive) {
         currentMouseRef.current.lerp(targetMouseRef.current, mouseDamping);
         uniforms.iMouse.value.copy(currentMouseRef.current);
@@ -526,11 +545,25 @@ export default function FloatingLines({
         let scrollPy = 0;
         if (s > 0 && typeof window !== "undefined") {
           const vh = Math.max(window.innerHeight, 1);
-          const rawVy = window.scrollY / vh;
-          /* Cap drift so strokes do not shear out of frame or collapse under the light-mode gate. */
-          const vy = Math.tanh(rawVy / 2.6) * 4.2;
-          scrollPx = vy * s * 0.028;
-          scrollPy = vy * s * 0.058;
+          const scrollY = getLenisScrollY();
+
+          if (scrollParallaxSectionId) {
+            const section = document.getElementById(scrollParallaxSectionId);
+            if (section) {
+              const sectionTop = section.offsetTop;
+              const sectionHeight = Math.max(section.offsetHeight, vh);
+              const traveled = scrollY - sectionTop + vh * 0.12;
+              const progress = Math.max(0, traveled / sectionHeight);
+              scrollPx = progress * s * 0.032;
+              scrollPy = progress * s * 0.068;
+            }
+          } else {
+            const rawVy = scrollY / vh;
+            /* Cap drift so strokes do not shear out of frame or collapse under the light-mode gate. */
+            const vy = Math.tanh(rawVy / 2.6) * 4.2;
+            scrollPx = vy * s * 0.028;
+            scrollPy = vy * s * 0.058;
+          }
         }
 
         if (interactive) {
@@ -540,7 +573,16 @@ export default function FloatingLines({
             currentParallaxRef.current.y + scrollPy,
           );
         } else {
-          uniforms.parallaxOffset.value.set(scrollPx, scrollPy);
+          const target = targetParallaxRef.current;
+          target.set(scrollPx, scrollPy);
+          if (scrollParallaxSectionId && isLenisActive()) {
+            uniforms.parallaxOffset.value.copy(target);
+          } else if (scrollParallaxSectionId) {
+            currentParallaxRef.current.lerp(target, 0.12);
+            uniforms.parallaxOffset.value.copy(currentParallaxRef.current);
+          } else {
+            uniforms.parallaxOffset.value.copy(target);
+          }
         }
       }
 
@@ -550,7 +592,7 @@ export default function FloatingLines({
         let t = 0;
         if (hero) {
           const foldY = hero.offsetTop + hero.offsetHeight;
-          const rel = window.scrollY - foldY + vh * 0.06;
+          const rel = getLenisScrollY() - foldY + vh * 0.06;
           t = Math.min(1, Math.max(0, rel / (vh * 2.15)));
         }
         const smoothstep = (e0: number, e1: number, x: number) => {
@@ -578,7 +620,7 @@ export default function FloatingLines({
 
       if (scrollBiasedFieldLayout && typeof window !== "undefined") {
         const vh = Math.max(window.innerHeight, 1);
-        const raw = window.scrollY / vh;
+        const raw = getLenisScrollY() / vh;
         const t = Math.min(1, Math.tanh(raw / 1.72));
         /* Negative x pulls dominant ribbons to the viewport right early; ease toward center + down for lower-right read. */
         const targetX = -0.44 * (1.0 - t) + 0.06 * t;
@@ -592,7 +634,9 @@ export default function FloatingLines({
         layoutBiasSmoothedRef.current.set(0, 0);
       }
 
-      renderer.render(scene, camera);
+      if (shouldRender) {
+        renderer.render(scene, camera);
+      }
       raf = requestAnimationFrame(renderLoop);
     };
     renderLoop();
@@ -634,6 +678,7 @@ export default function FloatingLines({
     parallax,
     parallaxStrength,
     scrollParallaxStrength,
+    scrollParallaxSectionId,
     lightBackground,
     consolidateWavesOnEditorialScroll,
     scrollBiasedFieldLayout
