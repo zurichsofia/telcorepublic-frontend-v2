@@ -34,7 +34,7 @@ export function GlobalReachMapSection() {
   return (
     <section
       id="global-reach"
-      className="relative z-30 w-full overflow-hidden bg-white py-24 sm:pb-32"
+      className="relative z-30 w-full overflow-hidden bg-white px-6 py-24 sm:px-10 sm:pb-36 lg:px-16 xl:px-20"
       style={{ marginTop: `-${HERO_RELEASE_SCROLL_VH}vh` }}
       aria-labelledby="global-reach-heading"
     >
@@ -47,7 +47,7 @@ export function GlobalReachMapSection() {
       </p>
     </div> */}
       <div className="text-center text-telco-red text-5xl my-16">TR MISSION</div>
-      <div className="relative mx-auto mt-14 max-w-6xl px-5 sm:px-8">
+      <div className="relative mx-auto mt-14 max-w-6xl">
         <WorldMap dots={GLOBAL_REACH_DOTS} />
       </div>
     </section >

@@ -20,6 +20,7 @@ import {
 } from "react";
 
 import { useLenis } from "@/components/common/smooth-scroll-provider";
+import { subscribeLenisScroll } from "@/lib/lenis-scroll";
 
 export const SCROLL_REVEAL_DEFAULTS = {
   x: 28,
@@ -107,35 +108,52 @@ export function useScrollReveal(
       return;
     }
 
-    const bottomMarginPct = Math.round((1 - enterTopVh) * 100);
+    // enterTopVh < 1 shrinks the root (later reveal); > 1 expands downward (earlier reveal).
+    const bottomRootMarginPct = Math.round((enterTopVh - 1) * 100);
+    const rootMargin = `0px 0px ${bottomRootMarginPct}% 0px`;
 
-    const observer = new IntersectionObserver(
+    let observer: IntersectionObserver | undefined;
+    let offScroll: (() => void) | undefined;
+
+    const tryReveal = () => {
+      if (once && revealedRef.current) return;
+
+      const vh = window.innerHeight;
+      const { top, bottom } = node.getBoundingClientRect();
+      const entering =
+        top < vh * enterTopVh && bottom > vh * enterMinBottomVh;
+
+      if (!entering) return;
+
+      revealedRef.current = true;
+      setVisible(true);
+      observer?.disconnect();
+      offScroll?.();
+    };
+
+    observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry?.isIntersecting) {
           if (!once) setVisible(false);
           return;
         }
-
-        const vh = window.innerHeight;
-        const { top, bottom } = entry.boundingClientRect;
-        const entering =
-          top < vh * enterTopVh && bottom > vh * enterMinBottomVh;
-
-        if (!entering) return;
-
-        revealedRef.current = true;
-        setVisible(true);
-        if (once) observer.disconnect();
+        tryReveal();
       },
       {
         root: null,
-        rootMargin: `0px 0px -${bottomMarginPct}% 0px`,
+        rootMargin,
         threshold: 0,
       },
     );
 
     observer.observe(node);
-    return () => observer.disconnect();
+    offScroll = subscribeLenisScroll(tryReveal);
+    tryReveal();
+
+    return () => {
+      observer?.disconnect();
+      offScroll?.();
+    };
   }, [enterMinBottomVh, enterTopVh, once, ref]);
 
   return visible;
@@ -151,11 +169,11 @@ const ScrollRevealContext = createContext<ScrollRevealContextValue | null>(
   null,
 );
 
-type ScrollRevealRootProps = ScrollRevealMotionOptions & {
-  children: ReactNode;
-  className?: string;
-  disabled?: boolean;
-};
+type ScrollRevealRootProps = ScrollRevealMotionOptions &
+  Omit<React.ComponentPropsWithoutRef<"div">, "children"> & {
+    children: ReactNode;
+    disabled?: boolean;
+  };
 
 function ScrollRevealRoot({
   children,
@@ -170,6 +188,7 @@ function ScrollRevealRoot({
   mass = SCROLL_REVEAL_DEFAULTS.mass,
   enterTopVh,
   enterMinBottomVh,
+  ...rest
 }: ScrollRevealRootProps) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useScrollReveal(ref, { enterTopVh, enterMinBottomVh, once });
@@ -186,7 +205,7 @@ function ScrollRevealRoot({
 
   return (
     <ScrollRevealContext.Provider value={value}>
-      <div ref={ref} className={className}>
+      <div ref={ref} className={className} {...rest}>
         {children}
       </div>
     </ScrollRevealContext.Provider>
@@ -372,4 +391,44 @@ export function useLenisScrollLinkedMotion(
   ]);
 
   return { opacity, y };
+}
+
+type ScrollLinkedRevealProps = LenisScrollLinkedMotionOptions &
+  Omit<React.ComponentPropsWithoutRef<typeof motion.div>, "children"> & {
+    children: ReactNode;
+  };
+
+/** Continuous scroll-linked fade/slide — pairs with Lenis and parallax backdrops. */
+export function ScrollLinkedReveal({
+  children,
+  className,
+  disabled,
+  completeAtVh,
+  startAtVh,
+  lead,
+  driftPx,
+  ...rest
+}: ScrollLinkedRevealProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { opacity, y } = useLenisScrollLinkedMotion(ref, {
+    completeAtVh,
+    startAtVh,
+    lead,
+    driftPx,
+    disabled,
+  });
+
+  if (disabled) {
+    return (
+      <div className={className} {...(rest as React.ComponentPropsWithoutRef<"div">)}>
+        {children}
+      </div>
+    );
+  }
+
+  return (
+    <motion.div ref={ref} className={className} style={{ opacity, y }} {...rest}>
+      {children}
+    </motion.div>
+  );
 }

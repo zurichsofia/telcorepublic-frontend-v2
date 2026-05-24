@@ -4,7 +4,7 @@ export function GetInTouchSection() {
   return (
     <section
       id="get-in-touch"
-      className="relative isolate w-full bg-white px-5 py-24 sm:px-8 sm:py-28 md:py-32 lg:py-36"
+      className="relative isolate w-full bg-white px-6 py-24 sm:px-10 sm:py-28 md:py-32 lg:px-16 lg:py-36 xl:px-20"
       aria-labelledby="get-in-touch-heading"
     >
       <div className="mx-auto flex max-w-4xl flex-col items-center text-center">

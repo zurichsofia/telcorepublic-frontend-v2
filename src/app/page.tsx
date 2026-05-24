@@ -6,7 +6,7 @@ import { SnowMountainHero } from "@/components/snow-mountain-landing/snow-mounta
 
 export default function Home() {
   return (
-    <main id="home" className="relative z-10 isolate">
+    <main id="home" className="relative z-10 isolate overflow-x-clip bg-white">
       <SnowMountainHero />
       <GlobalReachMapSection />
       <WhyUsSection />

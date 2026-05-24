@@ -1,5 +1,11 @@
+"use client";
+
+import {
+  ScrollLinkedReveal,
+} from "@/components/common/scroll-reveal";
 import { FloatingLinesWhyUsBg } from "@/components/snow-mountain-landing/floating-lines-why-us-bg";
 import { HERO_RELEASE_SCROLL_VH } from "@/components/snow-mountain-landing/hero-scroll";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { cn } from "@/lib/utils";
 
 const WHY_CHAPTERS = [
@@ -41,77 +47,82 @@ const WHY_CHAPTERS = [
   },
 ] as const;
 
+const WHY_SCROLL_LINKED = {
+  startAtVh: 0.92,
+  completeAtVh: 0.5,
+  driftPx: 36,
+} as const;
+
 function WhyChapter({
   title,
   paragraphs,
   variant,
   headingId,
   sectionClassName,
-  sectionProps,
+  sectionId,
+  labelledBy,
 }: {
   title: string;
   paragraphs: readonly string[];
   variant: "a" | "b";
   headingId?: string;
   sectionClassName?: string;
-  sectionProps?: React.ComponentPropsWithoutRef<"div">;
+  sectionId?: string;
+  labelledBy?: string;
 }) {
   const isA = variant === "a";
+  const reduceMotion = usePrefersReducedMotion();
 
   return (
-    <div
+    <ScrollLinkedReveal
+      disabled={reduceMotion}
+      id={sectionId}
+      aria-labelledby={labelledBy}
       className={cn(
-        "flex w-full flex-col justify-center px-0",
+        "flex w-full flex-col justify-center",
         sectionClassName,
       )}
-      {...sectionProps}
+      {...WHY_SCROLL_LINKED}
     >
       <div
         className={cn(
-          "flex w-full max-w-full flex-col justify-center overflow-x-clip",
-          isA
-            ? "pl-5 pr-4 md:pl-12 md:pr-8 lg:pl-24 lg:pr-12"
-            : "pl-5 pr-4 md:pl-16 md:pr-8 lg:pl-28 lg:pr-16",
+          "flex w-full max-w-full flex-1 flex-col justify-center overflow-x-clip",
+          !isA && "items-end",
         )}
       >
         <div
           className={cn(
             "w-full max-w-3xl space-y-4 md:space-y-5",
-            !isA && "ml-auto text-right",
+            !isA && "text-right",
           )}
         >
           <h3
             id={headingId}
-            className={cn(
-              "text-pretty font-sans text-xl font-medium leading-normal text-telco-red sm:text-2xl lg:text-3xl",
-              !isA && "ml-auto max-w-3xl",
-            )}
+            className="text-pretty font-sans text-xl font-medium leading-normal text-telco-red sm:text-2xl lg:text-3xl"
           >
             {title}
           </h3>
-          <div
-            className={cn(
-              "space-y-4 text-pretty font-sans text-base leading-tight tracking-wide text-black lg:text-xl",
-              !isA && "ml-auto max-w-3xl",
-            )}
-          >
+          <div className="space-y-4 text-pretty font-sans text-base leading-tight tracking-wide text-black lg:text-xl">
             {paragraphs.map((text) => (
               <p key={text}>{text}</p>
             ))}
           </div>
         </div>
       </div>
-    </div>
+    </ScrollLinkedReveal>
   );
 }
 
 export function WhyUsSection() {
   return (
     <FloatingLinesWhyUsBg
-      className="z-20 w-full"
+      className="z-20 w-full px-6 py-12 sm:px-10 sm:py-16 lg:px-16 lg:py-20 xl:px-20"
       style={{ marginTop: `-${HERO_RELEASE_SCROLL_VH}vh` }}
     >
-      <section className="overflow-x-clip" aria-label="Why Telco Republic">
+      <section
+        className="mx-auto w-full max-w-7xl overflow-x-clip"
+        aria-label="Why Telco Republic"
+      >
         {WHY_CHAPTERS.map((chapter, i) => (
           <WhyChapter
             key={chapter.title}
@@ -120,16 +131,12 @@ export function WhyUsSection() {
             variant={i % 2 === 0 ? "a" : "b"}
             headingId={i === 0 ? "why-us-entry" : undefined}
             sectionClassName={
-              i === 0 ? "min-h-screen pt-24" : "py-20 md:py-28"
-            }
-            sectionProps={
               i === 0
-                ? {
-                    id: "why-us-first-screen",
-                    "aria-labelledby": "why-us-entry",
-                  }
-                : undefined
+                ? "min-h-[min(100svh,56rem)] pt-20 sm:pt-28"
+                : "py-24 sm:py-28 md:py-32"
             }
+            sectionId={i === 0 ? "why-us-first-screen" : undefined}
+            labelledBy={i === 0 ? "why-us-entry" : undefined}
           />
         ))}
       </section>
