@@ -1,4 +1,5 @@
 import { GlobalReachMapSection } from "@/components/landing/global-reach-map";
+import { GetInTouchSection } from "@/components/snow-mountain-landing/GetInTouchSection";
 import { InsightsQuotesSection } from "@/components/snow-mountain-landing/InsightsQuotesSection";
 import { WhyUsSection } from "@/components/snow-mountain-landing/WhyUsSection";
 import { SnowMountainHero } from "@/components/snow-mountain-landing/snow-mountain-hero";
@@ -10,6 +11,7 @@ export default function Home() {
       <WhyUsSection />
       {/* <GlobalReachMapSection /> */}
       <InsightsQuotesSection videoSrc="/videos/TelcoRepublic_Ocean_1280x720.mp4" />
+      <GetInTouchSection />
     </main>
   );
 }
