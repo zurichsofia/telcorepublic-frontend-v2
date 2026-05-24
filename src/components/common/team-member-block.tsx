@@ -57,19 +57,7 @@ export function TeamMemberBlock({
           {role}
         </p>
         <h2 className="mt-2 font-display text-4xl text-telco-red sm:text-5xl">
-          {linkedinUrl ? (
-            <a
-              href={linkedinUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-inherit transition-opacity hover:opacity-75"
-              aria-label={`${name} on LinkedIn`}
-            >
-              {name}
-            </a>
-          ) : (
-            name
-          )}
+          {name}
         </h2>
       </header>
       <div className="min-w-0">
@@ -89,6 +77,21 @@ export function TeamMemberBlock({
               <p key={`${id}-more-${index}`}>{p}</p>
             ))}
           </div>
+        ) : null}
+
+        {expanded && linkedinUrl ? (
+          <p className="mt-8 text-base font-light leading-relaxed text-neutral-900">
+            Learn more on{" "}
+            <a
+              href={linkedinUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-normal text-telco-red transition-opacity hover:opacity-75"
+            >
+              LinkedIn
+            </a>
+            .
+          </p>
         ) : null}
 
         {hasMore ? (
