@@ -489,6 +489,38 @@ export default function FloatingLines({
 
     if (ro) ro.observe(container);
 
+    let sectionScrollTop = 0;
+    let sectionScrollHeight = 0;
+
+    const syncSectionScrollMetrics = () => {
+      if (!scrollParallaxSectionId || typeof document === "undefined") return;
+
+      const section = document.getElementById(scrollParallaxSectionId);
+      if (!section) return;
+
+      const vh = Math.max(window.innerHeight, 1);
+      sectionScrollTop = section.offsetTop;
+      sectionScrollHeight = Math.max(section.offsetHeight, vh);
+    };
+
+    if (scrollParallaxSectionId) {
+      syncSectionScrollMetrics();
+      window.addEventListener("resize", syncSectionScrollMetrics, { passive: true });
+    }
+
+    const sectionRo =
+      scrollParallaxSectionId && typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(() => {
+          if (!active) return;
+          syncSectionScrollMetrics();
+        })
+        : null;
+
+    if (sectionRo && scrollParallaxSectionId) {
+      const sectionEl = document.getElementById(scrollParallaxSectionId);
+      if (sectionEl) sectionRo.observe(sectionEl);
+    }
+
     const handlePointerMove = (event: PointerEvent) => {
       const rect = renderer.domElement.getBoundingClientRect();
       const x = event.clientX - rect.left;
@@ -520,16 +552,20 @@ export default function FloatingLines({
     const renderLoop = () => {
       if (!active) return;
 
-      uniforms.iTime.value = clock.getElapsedTime();
-
       let shouldRender = true;
-      if (scrollParallaxSectionId && typeof document !== "undefined") {
-        const section = document.getElementById(scrollParallaxSectionId);
-        if (section) {
-          const rect = section.getBoundingClientRect();
-          shouldRender = rect.bottom > 0 && rect.top < window.innerHeight;
-        }
+      if (scrollParallaxSectionId && typeof window !== "undefined") {
+        const scrollY = getLenisScrollY();
+        const vh = window.innerHeight;
+        const sectionBottom = sectionScrollTop + sectionScrollHeight;
+        shouldRender = scrollY + vh > sectionScrollTop && scrollY < sectionBottom;
       }
+
+      if (scrollParallaxSectionId && !shouldRender) {
+        raf = requestAnimationFrame(renderLoop);
+        return;
+      }
+
+      uniforms.iTime.value = clock.getElapsedTime();
 
       if (interactive) {
         currentMouseRef.current.lerp(targetMouseRef.current, mouseDamping);
@@ -547,16 +583,15 @@ export default function FloatingLines({
           const vh = Math.max(window.innerHeight, 1);
           const scrollY = getLenisScrollY();
 
+          if (scrollParallaxSectionId && sectionScrollHeight <= 0) {
+            syncSectionScrollMetrics();
+          }
+
           if (scrollParallaxSectionId) {
-            const section = document.getElementById(scrollParallaxSectionId);
-            if (section) {
-              const sectionTop = section.offsetTop;
-              const sectionHeight = Math.max(section.offsetHeight, vh);
-              const traveled = scrollY - sectionTop + vh * 0.12;
-              const progress = Math.max(0, traveled / sectionHeight);
-              scrollPx = progress * s * 0.032;
-              scrollPy = progress * s * 0.068;
-            }
+            const traveled = scrollY - sectionScrollTop + vh * 0.12;
+            const progress = Math.max(0, traveled / sectionScrollHeight);
+            scrollPx = progress * s * 0.032;
+            scrollPy = progress * s * 0.068;
           } else {
             const rawVy = scrollY / vh;
             /* Cap drift so strokes do not shear out of frame or collapse under the light-mode gate. */
@@ -647,6 +682,11 @@ export default function FloatingLines({
       cancelAnimationFrame(raf);
 
       if (ro) ro.disconnect();
+
+      if (sectionRo) sectionRo.disconnect();
+      if (scrollParallaxSectionId) {
+        window.removeEventListener("resize", syncSectionScrollMetrics);
+      }
 
       if (interactive) {
         renderer.domElement.removeEventListener('pointermove', handlePointerMove);

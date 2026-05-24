@@ -2,6 +2,8 @@
 
 import {
   motion,
+  useMotionValue,
+  type MotionValue,
   type Transition,
   type Variants,
 } from "motion/react";
@@ -9,11 +11,15 @@ import {
   createContext,
   useContext,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
+  type CSSProperties,
   type ReactNode,
   type RefObject,
 } from "react";
+
+import { useLenis } from "@/components/common/smooth-scroll-provider";
 
 export const SCROLL_REVEAL_DEFAULTS = {
   x: 28,
@@ -250,3 +256,120 @@ function ScrollRevealItem({
 export const ScrollReveal = Object.assign(ScrollRevealRoot, {
   Item: ScrollRevealItem,
 });
+
+function smoothstep01(t: number): number {
+  const u = Math.min(1, Math.max(0, t));
+  return u * u * (3 - 2 * u);
+}
+
+export type ScrollLinkedRevealOptions = {
+  /** Element center reaches full opacity at this viewport fraction (default ~center). */
+  completeAtVh?: number;
+  /** Reveal begins when element center is at or below this viewport fraction. */
+  startAtVh?: number;
+  /** Delays the ramp as a 0–1 fraction (positive = later). */
+  lead?: number;
+};
+
+/**
+ * Scroll-linked editorial reveal — maps element position to 0–1 progress.
+ * Pairs with continuous parallax backdrops (no spring snap on enter).
+ */
+export function getScrollLinkedRevealProgress(
+  rect: DOMRect,
+  vh: number,
+  {
+    completeAtVh = 0.5,
+    startAtVh = 0.94,
+    lead = 0,
+  }: ScrollLinkedRevealOptions = {},
+): number {
+  const center = rect.top + rect.height / 2;
+  const completeAt = vh * completeAtVh;
+  const startAt = vh * startAtVh;
+  const span = Math.max(startAt - completeAt, 1);
+  const raw = (startAt - center) / span - lead;
+  return smoothstep01(raw);
+}
+
+export function scrollLinkedRevealStyle(
+  progress: number,
+  driftPx = 22,
+): Pick<CSSProperties, "opacity" | "transform"> {
+  return {
+    opacity: progress,
+    transform: `translate3d(0, ${(1 - progress) * driftPx}px, 0)`,
+  };
+}
+
+export type LenisScrollLinkedMotionOptions = ScrollLinkedRevealOptions & {
+  driftPx?: number;
+  disabled?: boolean;
+};
+
+/**
+ * Lenis-synced enter reveal — maps scroll position to opacity/y MotionValues.
+ * Motion's useScroll does not track Lenis interpolation; this listens to lenis.on("scroll").
+ */
+export function useLenisScrollLinkedMotion(
+  ref: RefObject<HTMLElement | null>,
+  {
+    completeAtVh = 0.48,
+    startAtVh = 0.94,
+    lead = 0,
+    driftPx = 44,
+    disabled = false,
+  }: LenisScrollLinkedMotionOptions = {},
+): { opacity: MotionValue<number>; y: MotionValue<number>; } {
+  const lenis = useLenis();
+  const opacity = useMotionValue(disabled ? 1 : 0);
+  const y = useMotionValue(disabled ? 0 : driftPx);
+
+  useLayoutEffect(() => {
+    if (disabled) {
+      opacity.set(1);
+      y.set(0);
+      return;
+    }
+
+    const node = ref.current;
+    if (!node) return;
+
+    const sync = () => {
+      const rect = node.getBoundingClientRect();
+      const progress = getScrollLinkedRevealProgress(rect, window.innerHeight, {
+        completeAtVh,
+        startAtVh,
+        lead,
+      });
+      opacity.set(progress);
+      y.set((1 - progress) * driftPx);
+    };
+
+    sync();
+
+    const offLenis = lenis?.on("scroll", sync);
+    if (!lenis) {
+      window.addEventListener("scroll", sync, { passive: true });
+    }
+    window.addEventListener("resize", sync, { passive: true });
+
+    return () => {
+      offLenis?.();
+      window.removeEventListener("scroll", sync);
+      window.removeEventListener("resize", sync);
+    };
+  }, [
+    completeAtVh,
+    disabled,
+    driftPx,
+    lead,
+    lenis,
+    opacity,
+    ref,
+    startAtVh,
+    y,
+  ]);
+
+  return { opacity, y };
+}

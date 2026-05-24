@@ -4,10 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-import { useLenis } from "@/components/common/smooth-scroll-provider";
 import { BrandLogoSignal } from "@/components/brand-logo-signal";
 import { blogPosts } from "@/data/news";
 import { isPastMountainView } from "@/lib/hero-nav-sync";
+import { subscribeLenisScroll } from "@/lib/lenis-scroll";
 import { cn } from "@/lib/utils";
 
 export type NavItem = {
@@ -297,7 +297,6 @@ export function shellSurfaceClassName(
 }
 
 export function useOverlayPastHero(theme: "default" | "blog" | "overlay") {
-  const lenis = useLenis();
   const [pastHero, setPastHero] = useState(false);
 
   useLayoutEffect(() => {
@@ -307,19 +306,20 @@ export function useOverlayPastHero(theme: "default" | "blog" | "overlay") {
     }
 
     const sync = () => {
-      setPastHero(isPastMountainView());
+      const next = isPastMountainView();
+      setPastHero((prev) => (prev === next ? prev : next));
     };
 
     sync();
-    const off = lenis?.on("scroll", sync);
+    const offLenis = subscribeLenisScroll(sync);
     window.addEventListener("scroll", sync, { passive: true });
     window.addEventListener("resize", sync);
     return () => {
-      off?.();
+      offLenis();
       window.removeEventListener("scroll", sync);
       window.removeEventListener("resize", sync);
     };
-  }, [theme, lenis]);
+  }, [theme]);
 
   return pastHero;
 }

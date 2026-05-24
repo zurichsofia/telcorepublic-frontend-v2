@@ -8,8 +8,8 @@ import {
   useState,
 } from "react";
 
-import { useLenis } from "@/components/common/smooth-scroll-provider";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
+import { subscribeLenisScroll } from "@/lib/lenis-scroll";
 import { createScrollProgressStore } from "@/lib/scroll-progress";
 
 import type { HeroParallaxMotion } from "@/components/landing/hero-clouds-three";
@@ -25,7 +25,6 @@ import { HeroStickyLayer } from "./hero-sticky-layer";
 
 export function SnowMountainHero() {
   const reduce = usePrefersReducedMotion();
-  const lenis = useLenis();
   const heroRef = useRef<HTMLElement | null>(null);
   const heroCanvasRef = useRef<HTMLDivElement | null>(null);
   const heroParallaxMotionRef = useRef<HeroParallaxMotion>({
@@ -57,7 +56,10 @@ export function SnowMountainHero() {
     }
 
     const progress = readHeroScrollProgress(hero);
-    scrollProgress.set(progress);
+    const stepped = Math.round(progress * 240) / 240;
+    if (scrollProgress.get() === stepped) return;
+
+    scrollProgress.set(stepped);
     heroParallaxMotionRef.current = {
       x: heroPrimaryParallaxX(progress),
       y: heroPrimaryParallaxY(progress),
@@ -75,11 +77,15 @@ export function SnowMountainHero() {
   }, [reduce, scrollProgress, syncFromScroll]);
 
   useEffect(() => {
-    if (reduce || !lenis) return;
+    if (reduce) return;
     syncFromScroll();
-    const off = lenis.on("scroll", syncFromScroll);
-    return () => off();
-  }, [lenis, reduce, syncFromScroll]);
+    const offLenis = subscribeLenisScroll(syncFromScroll);
+    window.addEventListener("scroll", syncFromScroll, { passive: true });
+    return () => {
+      offLenis();
+      window.removeEventListener("scroll", syncFromScroll);
+    };
+  }, [reduce, syncFromScroll]);
 
   useEffect(() => {
     if (reduce) {

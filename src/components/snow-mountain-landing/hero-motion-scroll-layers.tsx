@@ -1,12 +1,9 @@
 "use client";
 
-import type { CSSProperties } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
 
 import { getHeroScrollLayerStyles } from "@/lib/hero-scroll-layer-styles";
-import {
-  useScrollProgress,
-  type ScrollProgressStore,
-} from "@/lib/scroll-progress";
+import type { ScrollProgressStore } from "@/lib/scroll-progress";
 import { cn } from "@/lib/utils";
 
 export type HeroMotionScrollLayersProps = {
@@ -72,18 +69,42 @@ function HeroMotionScrollLayersAnimated({
 }: {
   scrollProgress: ScrollProgressStore;
 }) {
-  const t = useScrollProgress(scrollProgress);
-  const { primary, telco, mission } = getHeroScrollLayerStyles(t);
+  const primaryRef = useRef<HTMLDivElement>(null);
+  const telcoRef = useRef<HTMLDivElement>(null);
+  const missionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const apply = () => {
+      const { primary, telco, mission } = getHeroScrollLayerStyles(
+        scrollProgress.get(),
+      );
+
+      const primaryEl = primaryRef.current;
+      if (primaryEl) {
+        primaryEl.style.opacity = String(primary.opacity);
+        primaryEl.style.transform = `translate3d(0, ${primary.y}px, 0)`;
+      }
+
+      const telcoEl = telcoRef.current;
+      if (telcoEl) {
+        telcoEl.style.opacity = String(telco.opacity);
+        telcoEl.style.transform = `translate3d(0, ${telco.y}px, 0)`;
+      }
+
+      const missionEl = missionRef.current;
+      if (missionEl) {
+        missionEl.style.opacity = String(mission.opacity);
+        missionEl.style.transform = `translate3d(0, ${mission.y}px, 0)`;
+      }
+    };
+
+    apply();
+    return scrollProgress.subscribe(apply);
+  }, [scrollProgress]);
 
   return (
     <div className="pointer-events-none relative h-full w-full">
-      <div
-        className={cn(slotLeft, "will-change-[transform,opacity]")}
-        style={{
-          opacity: primary.opacity,
-          transform: `translate3d(0, ${primary.y}px, 0)`,
-        }}
-      >
+      <div ref={primaryRef} className={cn(slotLeft, "will-change-[transform,opacity]")}>
         <p className="font-display text-xs font-medium uppercase tracking-[0.2em] text-telco-red">
           {labelWords.map((word, i) => (
             <span
@@ -101,13 +122,7 @@ function HeroMotionScrollLayersAnimated({
         </h1>
       </div>
 
-      <div
-        className={cn(slotRight, "will-change-[transform,opacity]")}
-        style={{
-          opacity: telco.opacity,
-          transform: `translate3d(0, ${telco.y}px, 0)`,
-        }}
-      >
+      <div ref={telcoRef} className={cn(slotRight, "will-change-[transform,opacity]")}>
         <p className="font-display text-xs font-medium uppercase tracking-[0.2em] text-telco-red">
           Telcorepublic
         </p>
@@ -120,13 +135,7 @@ function HeroMotionScrollLayersAnimated({
         </p>
       </div>
 
-      <div
-        className={cn(slotLeft, "will-change-[transform,opacity]")}
-        style={{
-          opacity: mission.opacity,
-          transform: `translate3d(0, ${mission.y}px, 0)`,
-        }}
-      >
+      <div ref={missionRef} className={cn(slotLeft, "will-change-[transform,opacity]")}>
         <p className="font-display text-xs font-medium uppercase tracking-[0.2em] text-telco-red">
           Telcorepublic
         </p>

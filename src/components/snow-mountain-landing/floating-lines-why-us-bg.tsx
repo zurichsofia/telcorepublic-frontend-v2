@@ -60,8 +60,8 @@ export function FloatingLinesWhyUsBg({
             interactive={false}
             parallax
             scrollParallaxSectionId={SECTION_ID}
-            scrollParallaxStrength={14}
-            animationSpeed={0.42}
+            scrollParallaxStrength={6}
+            animationSpeed={0.22}
             linesGradient={[...LINE_GRADIENT]}
             enabledWaves={["middle", "bottom"]}
             lineCount={[4, 3]}
