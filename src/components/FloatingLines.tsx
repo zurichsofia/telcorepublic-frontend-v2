@@ -13,7 +13,7 @@ import {
   WebGLRenderer
 } from 'three';
 
-import { getLenisScrollY, isLenisActive } from '@/lib/lenis-scroll';
+import { getLenisScrollY, subscribeLenisScroll } from '@/lib/lenis-scroll';
 
 const vertexShader = `
 precision highp float;
@@ -499,8 +499,11 @@ export default function FloatingLines({
       if (!section) return;
 
       const vh = Math.max(window.innerHeight, 1);
-      sectionScrollTop = section.offsetTop;
-      sectionScrollHeight = Math.max(section.offsetHeight, vh);
+      const rect = section.getBoundingClientRect();
+      const scrollY = getLenisScrollY();
+      // Document-space bounds (offsetTop breaks with negative-margin sections).
+      sectionScrollTop = scrollY + rect.top;
+      sectionScrollHeight = Math.max(rect.height, vh);
     };
 
     if (scrollParallaxSectionId) {
@@ -548,20 +551,40 @@ export default function FloatingLines({
       renderer.domElement.addEventListener('pointerleave', handlePointerLeave);
     }
 
+    /** Start the loop before the section enters view so the first visible frame is not a cold GPU hit. */
+    const PREWARM_VH = 1;
+
     let raf = 0;
+    let loopRunning = false;
+
+    const scheduleLoop = () => {
+      if (!active || loopRunning) return;
+      loopRunning = true;
+      raf = requestAnimationFrame(renderLoop);
+    };
+
+    const getSectionScrollState = () => {
+      const scrollY = getLenisScrollY();
+      const vh = Math.max(window.innerHeight, 1);
+      const sectionBottom = sectionScrollTop + sectionScrollHeight;
+      const inPrewarm =
+        scrollY + vh > sectionScrollTop - vh * PREWARM_VH &&
+        scrollY < sectionBottom + vh * 0.2;
+      return { inPrewarm };
+    };
+
     const renderLoop = () => {
+      loopRunning = false;
+
       if (!active) return;
 
-      let shouldRender = true;
+      let inPrewarm = true;
       if (scrollParallaxSectionId && typeof window !== "undefined") {
-        const scrollY = getLenisScrollY();
-        const vh = window.innerHeight;
-        const sectionBottom = sectionScrollTop + sectionScrollHeight;
-        shouldRender = scrollY + vh > sectionScrollTop && scrollY < sectionBottom;
+        if (sectionScrollHeight <= 0) syncSectionScrollMetrics();
+        inPrewarm = getSectionScrollState().inPrewarm;
       }
 
-      if (scrollParallaxSectionId && !shouldRender) {
-        raf = requestAnimationFrame(renderLoop);
+      if (scrollParallaxSectionId && !inPrewarm) {
         return;
       }
 
@@ -610,13 +633,12 @@ export default function FloatingLines({
         } else {
           const target = targetParallaxRef.current;
           target.set(scrollPx, scrollPy);
-          if (scrollParallaxSectionId && isLenisActive()) {
+          const parallaxLerp = scrollParallaxSectionId ? 0.14 : 1;
+          if (parallaxLerp >= 1) {
             uniforms.parallaxOffset.value.copy(target);
-          } else if (scrollParallaxSectionId) {
-            currentParallaxRef.current.lerp(target, 0.12);
-            uniforms.parallaxOffset.value.copy(currentParallaxRef.current);
           } else {
-            uniforms.parallaxOffset.value.copy(target);
+            currentParallaxRef.current.lerp(target, parallaxLerp);
+            uniforms.parallaxOffset.value.copy(currentParallaxRef.current);
           }
         }
       }
@@ -669,15 +691,32 @@ export default function FloatingLines({
         layoutBiasSmoothedRef.current.set(0, 0);
       }
 
-      if (shouldRender) {
+      if (inPrewarm) {
         renderer.render(scene, camera);
       }
-      raf = requestAnimationFrame(renderLoop);
+      scheduleLoop();
     };
-    renderLoop();
+
+    // Compile shaders / warm GPU before scroll reaches the section.
+    uniforms.iTime.value = 0;
+    renderer.render(scene, camera);
+    requestAnimationFrame(() => {
+      if (!active) return;
+      renderer.render(scene, camera);
+      scheduleLoop();
+    });
+
+    const offLenisScroll =
+      scrollParallaxSectionId && typeof window !== "undefined"
+        ? subscribeLenisScroll(() => {
+            const { inPrewarm } = getSectionScrollState();
+            if (inPrewarm) scheduleLoop();
+          })
+        : undefined;
 
     return () => {
       active = false;
+      offLenisScroll?.();
 
       cancelAnimationFrame(raf);
 

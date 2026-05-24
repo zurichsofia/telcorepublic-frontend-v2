@@ -185,11 +185,11 @@ export default function WorldMap({
   return (
     <div
       ref={containerRef}
-      className="relative w-full rounded-lg bg-white font-sans"
+      className="relative aspect-[1056/495] w-full rounded-lg bg-white font-sans"
     >
       <img
         src={`data:image/svg+xml;utf8,${encodeURIComponent(svgMap)}`}
-        className="h-full w-full pointer-events-none select-none"
+        className="absolute inset-0 h-full w-full pointer-events-none select-none"
         alt="world map"
         height="495"
         width="1056"

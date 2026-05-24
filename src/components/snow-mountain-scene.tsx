@@ -420,7 +420,7 @@ function SnowMountainModel({ reduceMotion }: { reduceMotion: boolean; }) {
   );
 }
 
-function PostFx({ enabled }: { enabled: boolean; }) {
+function PostFx({ enabled }: { enabled: boolean }) {
   if (!enabled) return null;
   return (
     <EffectComposer multisampling={4} enableNormalPass={false}>
@@ -457,6 +457,10 @@ export function SnowMountainScene({
   const reduceMotion = usePrefersReducedMotion();
   const parallaxMotionRef = motionRef ?? FALLBACK_PARALLAX_MOTION;
   const cameraBaselineGenerationRef = useRef(0);
+
+  useLayoutEffect(() => {
+    cameraBaselineGenerationRef.current += 1;
+  }, []);
 
   const scrollRead = useMemo((): HeroScrollRead => {
     return {

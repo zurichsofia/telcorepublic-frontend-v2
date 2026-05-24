@@ -13,6 +13,16 @@ export function readHeroScrollProgress(section: HTMLElement | null): number {
   return Math.min(1, Math.max(0, -rect.top / h));
 }
 
+/** Same progress as {@link readHeroScrollProgress} without forcing layout (Lenis scrollY). */
+export function readHeroScrollProgressFromScrollY(
+  scrollY: number,
+  heroOffsetTop: number,
+  heroHeight: number,
+): number {
+  if (heroHeight <= 0) return 0;
+  return Math.min(1, Math.max(0, (scrollY - heroOffsetTop) / heroHeight));
+}
+
 /** End of primary headline motion (used for cloud parallax vs scroll). */
 const CROSSFADE_END = 0.32;
 

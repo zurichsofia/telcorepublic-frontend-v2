@@ -8,8 +8,8 @@ export default function Home() {
   return (
     <main id="home" className="relative z-10 isolate">
       <SnowMountainHero />
+      <GlobalReachMapSection />
       <WhyUsSection />
-      {/* <GlobalReachMapSection /> */}
       <InsightsQuotesSection videoSrc="/videos/TelcoRepublic_Ocean_1280x720.mp4" />
       <GetInTouchSection />
     </main>

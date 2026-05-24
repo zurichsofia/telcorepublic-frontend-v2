@@ -1,6 +1,7 @@
 "use client";
 
 import WorldMap from "@/components/ui/world-map";
+import { HERO_RELEASE_SCROLL_VH } from "@/components/snow-mountain-landing/hero-scroll";
 
 const GLOBAL_REACH_DOTS = [
   {
@@ -33,7 +34,8 @@ export function GlobalReachMapSection() {
   return (
     <section
       id="global-reach"
-      className="relative w-full overflow-hidden bg-white py-24 sm:pb-32"
+      className="relative z-30 w-full overflow-hidden bg-white py-24 sm:pb-32"
+      style={{ marginTop: `-${HERO_RELEASE_SCROLL_VH}vh` }}
       aria-labelledby="global-reach-heading"
     >
       {/* <div className="relative mx-auto max-w-7xl px-5 text-center sm:px-8">

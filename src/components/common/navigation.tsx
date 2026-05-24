@@ -7,7 +7,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { BrandLogoSignal } from "@/components/brand-logo-signal";
 import { blogPosts } from "@/data/news";
 import { isPastMountainView } from "@/lib/hero-nav-sync";
-import { subscribeLenisScroll } from "@/lib/lenis-scroll";
+import { subscribeLenisScroll, isLenisActive } from "@/lib/lenis-scroll";
 import { cn } from "@/lib/utils";
 
 export type NavItem = {
@@ -312,11 +312,14 @@ export function useOverlayPastHero(theme: "default" | "blog" | "overlay") {
 
     sync();
     const offLenis = subscribeLenisScroll(sync);
-    window.addEventListener("scroll", sync, { passive: true });
+    const onNativeScroll = () => {
+      if (!isLenisActive()) sync();
+    };
+    window.addEventListener("scroll", onNativeScroll, { passive: true });
     window.addEventListener("resize", sync);
     return () => {
       offLenis();
-      window.removeEventListener("scroll", sync);
+      window.removeEventListener("scroll", onNativeScroll);
       window.removeEventListener("resize", sync);
     };
   }, [theme]);
