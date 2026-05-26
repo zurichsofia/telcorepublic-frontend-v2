@@ -435,7 +435,7 @@ function PostFx({ enabled }: { enabled: boolean }) {
 }
 
 const FALLBACK_PARALLAX_MOTION: MutableRefObject<HeroParallaxMotion> = {
-  current: { x: 0, y: 0, scale: 1 },
+  current: { x: 0, y: 0, scale: 1, scroll: 0 },
 };
 
 export type SnowMountainSceneProps = {

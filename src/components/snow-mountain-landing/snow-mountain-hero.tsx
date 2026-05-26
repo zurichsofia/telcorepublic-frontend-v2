@@ -31,6 +31,7 @@ export function SnowMountainHero() {
     x: 0,
     y: 0,
     scale: 1,
+    scroll: 0,
   });
   const scrollProgress = useRef(createScrollProgressStore(0)).current;
   const [heroCursor, setHeroCursor] = useState<{
@@ -50,6 +51,7 @@ export function SnowMountainHero() {
           x: heroPrimaryParallaxX(1),
           y: heroPrimaryParallaxY(1),
           scale: 1,
+          scroll: 1,
         };
       }
       return;
@@ -63,13 +65,14 @@ export function SnowMountainHero() {
       x: heroPrimaryParallaxX(progress),
       y: heroPrimaryParallaxY(progress),
       scale: 1,
+      scroll: progress,
     };
   }, [reduce, scrollProgress]);
 
   useLayoutEffect(() => {
     if (reduce) {
       scrollProgress.set(0);
-      heroParallaxMotionRef.current = { x: 0, y: 0, scale: 1 };
+      heroParallaxMotionRef.current = { x: 0, y: 0, scale: 1, scroll: 0 };
       return;
     }
     syncFromScroll();
