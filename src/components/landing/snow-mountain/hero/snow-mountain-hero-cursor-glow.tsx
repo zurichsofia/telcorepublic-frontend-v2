@@ -2,11 +2,13 @@
 
 import type { CSSProperties } from "react";
 
-type HeroCursorGlowProps = {
+type SnowMountainHeroCursorGlowProps = {
   position: { x: number; y: number } | null;
 };
 
-export function HeroCursorGlow({ position }: HeroCursorGlowProps) {
+export function SnowMountainHeroCursorGlow({
+  position,
+}: SnowMountainHeroCursorGlowProps) {
   if (position == null) return null;
 
   return (

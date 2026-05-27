@@ -1,6 +1,6 @@
 "use client";
 
-import FloatingLines from "@/components/FloatingLines";
+import FloatingLines from "@/components/common/floating-lines/floating-lines";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { cn } from "@/lib/utils";
 
@@ -14,7 +14,7 @@ const LINE_GRADIENT = [
 
 const SECTION_ID = "why-telco-republic";
 
-export type FloatingLinesWhyUsBgProps = {
+export type FloatingLinesWhyUsBackgroundProps = {
   className?: string;
   style?: React.CSSProperties;
   children?: React.ReactNode;
@@ -25,11 +25,11 @@ export type FloatingLinesWhyUsBgProps = {
  * Avoids fixed + clip-path (WebGL compositor glitches) and uses section-linear
  * scroll parallax so lines keep drifting through every chapter.
  */
-export function FloatingLinesWhyUsBg({
+export function FloatingLinesWhyUsBackground({
   className,
   style,
   children,
-}: FloatingLinesWhyUsBgProps) {
+}: FloatingLinesWhyUsBackgroundProps) {
   const reducedMotion = usePrefersReducedMotion();
 
   if (reducedMotion) {

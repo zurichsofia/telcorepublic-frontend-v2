@@ -24,27 +24,32 @@ import { setConsoleFunction } from "three";
 // migrated to THREE.Timer. Suppress that one deprecation so the console stays clean
 // while keeping all other Three.js warnings/errors visible.
 setConsoleFunction((type, message, ...params) => {
-  if (type === "warn" && typeof message === "string" && message.includes("THREE.Clock")) return;
+  if (
+    type === "warn" &&
+    typeof message === "string" &&
+    message.includes("THREE.Clock")
+  )
+    return;
   if (type === "warn") console.warn(message, ...params);
   else if (type === "error") console.error(message, ...params);
   else console.log(message, ...params);
 });
 
-import { SNOW_MOUNTAIN_FOG_COLOR } from "@/lib/snow-mountain-fog";
+import { SNOW_MOUNTAIN_FOG_COLOR } from "@/lib/snow-mountain/snow-mountain-fog";
 import {
   mapHeroScrollProgress,
   readHeroScrollProgress,
-} from "@/lib/snow-mountain-hero-scroll";
-import { applyTerrainIceStyle } from "@/lib/snow-mountain-terrain-ice";
-import { AtmosphericParticles } from "@/components/snow-mountain-atmospheric-particles";
+} from "@/lib/snow-mountain/snow-mountain-hero-scroll";
+import { applyTerrainIceStyle } from "@/lib/snow-mountain/snow-mountain-terrain-ice";
+import { SnowMountainSceneParticles } from "@/components/landing/snow-mountain/scene/snow-mountain-scene-particles";
 import { markSceneReady, registerScene } from "@/lib/scene-ready";
 
 import { cn } from "@/lib/utils";
-import type { HeroProgressRead } from "@/lib/scroll-progress";
+import type { HeroProgressRead } from "@/lib/snow-mountain/scroll-progress";
 import {
-  HeroCloudsThree,
-  type HeroParallaxMotion,
-} from "./landing/hero-clouds-three";
+  SnowMountainSceneClouds,
+  type SnowMountainParallaxMotion,
+} from "@/components/landing/snow-mountain/scene/snow-mountain-scene-clouds";
 
 /** Total azimuth swept while scrolling (rad). Camera orbits in XZ — eased scroll for cinematic pace. */
 const HERO_SCROLL_ORBIT_RAD = 0.82;
@@ -145,7 +150,10 @@ function BreathingFogExp2({ reduceMotion }: { reduceMotion: boolean; }) {
   });
 
   return (
-    <fogExp2 attach="fog" args={[new THREE.Color(SNOW_MOUNTAIN_FOG_COLOR), FOG_EXP_BASE]} />
+    <fogExp2
+      attach="fog"
+      args={[new THREE.Color(SNOW_MOUNTAIN_FOG_COLOR), FOG_EXP_BASE]}
+    />
   );
 }
 
@@ -294,8 +302,10 @@ function ParallaxWorld({
 
     // Mouse parallax — gentle; slower follow so hover doesn’t yank the scene.
     const mouseLerp = 1 - Math.pow(0.94, dt * 60);
-    smoothMouse.current.x += (mouse.current.x - smoothMouse.current.x) * mouseLerp;
-    smoothMouse.current.y += (mouse.current.y - smoothMouse.current.y) * mouseLerp;
+    smoothMouse.current.x +=
+      (mouse.current.x - smoothMouse.current.x) * mouseLerp;
+    smoothMouse.current.y +=
+      (mouse.current.y - smoothMouse.current.y) * mouseLerp;
     const parallaxScale = 1 - t * 0.35;
     mouseRig.rotation.x = smoothMouse.current.y * -0.018 * parallaxScale;
     mouseRig.rotation.y = smoothMouse.current.x * 0.02 * parallaxScale;
@@ -419,7 +429,7 @@ function SnowMountainModel({ reduceMotion }: { reduceMotion: boolean; }) {
   );
 }
 
-function PostFx({ enabled }: { enabled: boolean }) {
+function PostFx({ enabled }: { enabled: boolean; }) {
   if (!enabled) return null;
   return (
     <EffectComposer multisampling={4} enableNormalPass={false}>
@@ -433,7 +443,7 @@ function PostFx({ enabled }: { enabled: boolean }) {
   );
 }
 
-const FALLBACK_PARALLAX_MOTION: MutableRefObject<HeroParallaxMotion> = {
+const FALLBACK_PARALLAX_MOTION: MutableRefObject<SnowMountainParallaxMotion> = {
   current: { x: 0, y: 0, scale: 1, scroll: 0 },
 };
 
@@ -443,7 +453,7 @@ export type SnowMountainSceneProps = {
   /** Hero scroll progress — drives camera orbit. */
   heroProgress?: HeroProgressRead;
   /** Cloud parallax driven from hero scroll (updated in `SnowMountainHero`). */
-  motionRef?: MutableRefObject<HeroParallaxMotion>;
+  motionRef?: MutableRefObject<SnowMountainParallaxMotion>;
   className?: string;
 };
 
@@ -473,7 +483,7 @@ export function SnowMountainScene({
     };
   }, [reduceMotion, heroSectionRef, heroProgress]);
 
-  /* `HeroCloudsThree` uses its own `<Canvas>` — must not nest inside this Canvas (R3F rejects it). */
+  /* `SnowMountainSceneClouds` uses its own `<Canvas>` — must not nest inside this Canvas (R3F rejects it). */
   return (
     <div className={cn("relative h-full min-h-dvh w-full", className)}>
       <Canvas
@@ -495,10 +505,8 @@ export function SnowMountainScene({
           gl.toneMappingExposure = 0.68;
         }}
       >
-          <HeroScrollReadContext.Provider value={scrollRead}>
+        <HeroScrollReadContext.Provider value={scrollRead}>
           <BreathingFogExp2 reduceMotion={reduceMotion} />
-          {/* <SnowMountainDreiSkyClouds reduceMotion={
-        reduceMotion} /> */}
           <hemisphereLight args={["#a2acb5", "#3A3830", 0.6]} />
           {/* Warm daylight fill — brightens shadowed faces without adding hue */}
           <ambientLight intensity={0.38} color="#FFF8F0" />
@@ -517,24 +525,8 @@ export function SnowMountainScene({
           <CursorWorldLight reduceMotion={reduceMotion} />
 
           <ParallaxWorld reduceMotion={reduceMotion}>
-            <AtmosphericParticles reduceMotion={reduceMotion} />
+            <SnowMountainSceneParticles reduceMotion={reduceMotion} />
             <Suspense fallback={null}>
-              {/*
-              observe={false}: default Bounds observe refits whenever R3F `size` changes.
-              First pointer move / cursor UI can change viewport (scrollbar) or layout,
-              which retriggers reset().fit() and reads as an abrupt zoom-out.
-              Stage still refits when the model radius is known (Refit on radius).
-            */}
-              {/*
-              Bounds defaults to maxDuration=1 and lerps the camera each frame. Our
-              HeroScrollCameraFraming (useFrame priority 50) overwrites the camera from a
-              cached baseline — during that lerp it captures a mid-flight position and then
-              pulls the camera back every frame (felt as “loads then zooms back”). Snap fit.
-            */}
-              {/*
-              drei Stage always adds ambient + spot (2× intensity) + point — on top of our lights.
-              intensity={0} turns those off; we only want Bounds/Center + IBL from Environment.
-            */}
               <Stage
                 adjustCamera={0.32}
                 intensity={0}
@@ -558,10 +550,11 @@ export function SnowMountainScene({
           <PostFx enabled={!reduceMotion} />
         </HeroScrollReadContext.Provider>
       </Canvas>
-      <HeroCloudsThree
+      <SnowMountainSceneClouds
         motionRef={parallaxMotionRef}
         reducedMotion={reduceMotion}
       />
     </div>
   );
 }
+

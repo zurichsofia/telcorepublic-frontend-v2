@@ -2,11 +2,11 @@
 
 import { useEffect, useRef, type CSSProperties } from "react";
 
-import { getHeroScrollLayerStyles } from "@/lib/hero-scroll-layer-styles";
-import type { ScrollProgressStore } from "@/lib/scroll-progress";
+import { getHeroScrollLayerStyles } from "@/lib/snow-mountain/hero-scroll-layer-styles";
+import type { ScrollProgressStore } from "@/lib/snow-mountain/scroll-progress";
 import { cn } from "@/lib/utils";
 
-export type HeroMotionScrollLayersProps = {
+export type SnowMountainHeroMotionScrollLayersProps = {
   scrollProgress: ScrollProgressStore;
   reduceMotion: boolean;
 };
@@ -151,10 +151,10 @@ function HeroMotionScrollLayersAnimated({
   );
 }
 
-export function HeroMotionScrollLayers({
+export function SnowMountainHeroMotionScrollLayers({
   scrollProgress,
   reduceMotion,
-}: HeroMotionScrollLayersProps) {
+}: SnowMountainHeroMotionScrollLayersProps) {
   if (reduceMotion) return <HeroMotionScrollLayersStatic />;
   return <HeroMotionScrollLayersAnimated scrollProgress={scrollProgress} />;
 }

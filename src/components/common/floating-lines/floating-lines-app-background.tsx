@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-import FloatingLines from "@/components/FloatingLines";
+import FloatingLines from "@/components/common/floating-lines/floating-lines";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 
 const HERO_ID = "hero";
@@ -35,7 +35,7 @@ function clipPathExcludingHeroRect(
  * under `#hero` (service video hero). Editorial below the fold stays transparent
  * so this shows through `main` (z-10, no fill).
  */
-export function AppFloatingLinesBackground() {
+export function FloatingLinesAppBackground() {
   const reduceMotion = usePrefersReducedMotion();
   const rootRef = useRef<HTMLDivElement>(null);
 

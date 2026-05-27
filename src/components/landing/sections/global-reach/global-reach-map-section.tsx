@@ -1,7 +1,7 @@
 "use client";
 
-import WorldMap from "@/components/ui/world-map";
-import { HERO_RELEASE_SCROLL_VH } from "@/components/snow-mountain-landing/hero-scroll";
+import WorldMap from "./world-map";
+import { HERO_RELEASE_SCROLL_VH } from "@/components/landing/snow-mountain/hero/snow-mountain-hero-scroll";
 
 const GLOBAL_REACH_DOTS = [
   {

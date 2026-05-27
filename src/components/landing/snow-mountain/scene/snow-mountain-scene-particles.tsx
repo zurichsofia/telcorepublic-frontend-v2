@@ -54,11 +54,13 @@ const fragmentShader = /* glsl */ `
   }
 `;
 
-type AtmosphericParticlesProps = {
+type SnowMountainSceneParticlesProps = {
   reduceMotion: boolean;
 };
 
-export function AtmosphericParticles({ reduceMotion }: AtmosphericParticlesProps) {
+export function SnowMountainSceneParticles({
+  reduceMotion,
+}: SnowMountainSceneParticlesProps) {
   const { geometry, shaderMaterial } = useMemo(() => {
     const positions = new Float32Array(COUNT * 3);
     const phases = new Float32Array(COUNT);
@@ -115,3 +117,4 @@ export function AtmosphericParticles({ reduceMotion }: AtmosphericParticlesProps
     />
   );
 }
+

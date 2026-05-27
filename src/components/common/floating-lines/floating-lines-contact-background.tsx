@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 
-import FloatingLines from "./FloatingLines";
+import FloatingLines from "@/components/common/floating-lines/floating-lines";
 
 /** Cool neutrals + sparse brand red — reads as signal, not neon wallpaper. */
 const LINE_GRADIENT = [
@@ -18,19 +18,19 @@ const LINE_GRADIENT = [
 const EDGE_FADE_MASK =
   "linear-gradient(to bottom, transparent 0px, black 100px, black calc(100% - 100px), transparent 100%)";
 
-export type FloatingLinesContactBgProps = {
+export type FloatingLinesContactBackgroundProps = {
   className?: string;
   children?: React.ReactNode;
 };
 
 /**
- * Contact-page field: imports `./FloatingLines` directly. Base matches `bg-telco-dark`
- * (#191919) with the shell/header so the hero does not read as a separate color block.
+ * Contact-page field. Base matches `bg-telco-dark` (#191919) with the shell/header
+ * so the hero does not read as a separate color block.
  */
-export function FloatingLinesContactBg({
+export function FloatingLinesContactBackground({
   className,
   children,
-}: FloatingLinesContactBgProps) {
+}: FloatingLinesContactBackgroundProps) {
   const reducedMotion = usePrefersReducedMotion();
 
   if (reducedMotion) {

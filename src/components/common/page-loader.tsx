@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { BrandLogoSignal } from "@/components/brand-logo-signal";
+import { BrandLogoSignal } from "@/components/common/brand-logo-signal";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { isSceneRegistered, waitForScene } from "@/lib/scene-ready";
 

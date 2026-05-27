@@ -1,12 +1,11 @@
 "use client";
 
-import {
-  ScrollLinkedReveal,
-} from "@/components/common/scroll-reveal";
-import { FloatingLinesWhyUsBg } from "@/components/snow-mountain-landing/floating-lines-why-us-bg";
-import { HERO_RELEASE_SCROLL_VH } from "@/components/snow-mountain-landing/hero-scroll";
+import { ScrollLinkedReveal } from "@/components/common/scroll-reveal";
+import { HERO_RELEASE_SCROLL_VH } from "@/components/landing/snow-mountain/hero/snow-mountain-hero-scroll";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { cn } from "@/lib/utils";
+
+import { FloatingLinesWhyUsBackground } from "@/components/common/floating-lines/floating-lines-why-us-background";
 
 const WHY_CHAPTERS = [
   {
@@ -115,7 +114,7 @@ function WhyChapter({
 
 export function WhyUsSection() {
   return (
-    <FloatingLinesWhyUsBg
+    <FloatingLinesWhyUsBackground
       className="z-20 w-full px-6 py-12 sm:px-10 sm:py-16 lg:px-16 lg:py-20 xl:px-20"
       style={{ marginTop: `-${HERO_RELEASE_SCROLL_VH}vh` }}
     >
@@ -140,6 +139,6 @@ export function WhyUsSection() {
           />
         ))}
       </section>
-    </FloatingLinesWhyUsBg>
+    </FloatingLinesWhyUsBackground>
   );
 }

@@ -10,24 +10,24 @@ import {
 
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { subscribeLenisScroll, isLenisActive } from "@/lib/lenis-scroll";
-import { createScrollProgressStore } from "@/lib/scroll-progress";
+import { createScrollProgressStore } from "@/lib/snow-mountain/scroll-progress";
 
-import type { HeroParallaxMotion } from "@/components/landing/hero-clouds-three";
+import type { SnowMountainParallaxMotion } from "@/components/landing/snow-mountain/scene/snow-mountain-scene-clouds";
 import {
   heroPrimaryParallaxX,
   heroPrimaryParallaxY,
   readHeroScrollProgress,
-} from "@/lib/snow-mountain-hero-scroll";
-import { HERO_SECTION_VH } from "./hero-scroll";
-import { HeroCursorGlow } from "./hero-cursor-glow";
-import { HeroMotionScrollLayers } from "./hero-motion-scroll-layers";
-import { HeroStickyLayer } from "./hero-sticky-layer";
+} from "@/lib/snow-mountain/snow-mountain-hero-scroll";
+import { HERO_SECTION_VH } from "./snow-mountain-hero-scroll";
+import { SnowMountainHeroCursorGlow } from "./snow-mountain-hero-cursor-glow";
+import { SnowMountainHeroMotionScrollLayers } from "./snow-mountain-hero-motion-scroll-layers";
+import { SnowMountainHeroStickyLayer } from "./snow-mountain-hero-sticky-layer";
 
 export function SnowMountainHero() {
   const reduce = usePrefersReducedMotion();
   const heroRef = useRef<HTMLElement | null>(null);
   const heroCanvasRef = useRef<HTMLDivElement | null>(null);
-  const heroParallaxMotionRef = useRef<HeroParallaxMotion>({
+  const heroParallaxMotionRef = useRef<SnowMountainParallaxMotion>({
     x: 0,
     y: 0,
     scale: 1,
@@ -126,21 +126,21 @@ export function SnowMountainHero() {
         minHeight: `${HERO_SECTION_VH}vh`,
       }}
     >
-      <HeroStickyLayer
+      <SnowMountainHeroStickyLayer
         reduceMotion={!!reduce}
         heroCanvasRef={heroCanvasRef}
         heroSectionRef={heroRef}
         heroProgress={scrollProgress}
         motionRef={heroParallaxMotionRef}
       >
-        <HeroMotionScrollLayers
+        <SnowMountainHeroMotionScrollLayers
           scrollProgress={scrollProgress}
           reduceMotion={!!reduce}
         />
-      </HeroStickyLayer>
+      </SnowMountainHeroStickyLayer>
 
       {!reduce && heroCursor != null ? (
-        <HeroCursorGlow position={heroCursor} />
+        <SnowMountainHeroCursorGlow position={heroCursor} />
       ) : null}
 
       <div aria-hidden className="min-h-0 w-full shrink-0 grow basis-0" />

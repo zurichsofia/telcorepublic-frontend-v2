@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-import { BrandLogoSignal } from "@/components/brand-logo-signal";
+import { BrandLogoSignal } from "@/components/common/brand-logo-signal";
 import { blogPosts } from "@/data/news";
 import { isPastMountainView } from "@/lib/hero-nav-sync";
 import { subscribeLenisScroll, isLenisActive } from "@/lib/lenis-scroll";
@@ -90,11 +90,11 @@ function NewsCountBadge({
         active
           ? "bg-telco-red text-white"
           : cn(
-              onDark
-                ? "bg-white text-neutral-900"
-                : "bg-neutral-900 text-white",
-              "group-hover:bg-telco-red group-hover:text-white",
-            ),
+            onDark
+              ? "bg-white text-neutral-900"
+              : "bg-neutral-900 text-white",
+            "group-hover:bg-telco-red group-hover:text-white",
+          ),
       )}
       aria-label={`${blogPosts.length} articles`}
     >

@@ -4,9 +4,8 @@ import localFont from "next/font/local";
 import "swiper/css";
 
 import "./globals.css";
-import { AppFloatingLinesBackground } from "@/components/app-floating-lines-background";
 import { AppShell } from "@/components/common/app-shell";
-import { PageLoader } from "@/components/page-loader";
+import { PageLoader } from "@/components/common/page-loader";
 import { cn } from "@/lib/utils";
 
 const helveticaNeue = localFont({
@@ -34,7 +33,7 @@ export default function RootLayout({
       <body
         className={`${helveticaNeue.className} relative min-h-screen font-light text-black antialiased`}
       >
-        {/* <AppFloatingLinesBackground /> */}
+        {/* <FloatingLinesAppBackground /> */}
         <PageLoader />
         <AppShell>{children}</AppShell>
       </body>

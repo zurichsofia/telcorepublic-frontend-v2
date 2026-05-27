@@ -1,8 +1,8 @@
-import { GlobalReachMapSection } from "@/components/landing/global-reach-map";
-import { GetInTouchSection } from "@/components/snow-mountain-landing/GetInTouchSection";
-import { InsightsQuotesSection } from "@/components/snow-mountain-landing/InsightsQuotesSection";
-import { WhyUsSection } from "@/components/snow-mountain-landing/WhyUsSection";
-import { SnowMountainHero } from "@/components/snow-mountain-landing/snow-mountain-hero";
+import { GlobalReachMapSection } from "@/components/landing/sections/global-reach/global-reach-map-section";
+import { GetInTouchSection } from "@/components/landing/sections/get-in-touch-section";
+import { InsightsQuotesSection } from "@/components/landing/sections/insights-quotes-section";
+import { WhyUsSection } from "@/components/landing/sections/why-us/why-us-section";
+import { SnowMountainHero } from "@/components/landing/snow-mountain/hero/snow-mountain-hero";
 
 export default function Home() {
   return (

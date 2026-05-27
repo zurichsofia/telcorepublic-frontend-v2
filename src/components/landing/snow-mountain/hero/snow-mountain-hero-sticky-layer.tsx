@@ -2,28 +2,28 @@
 
 import type { MutableRefObject, ReactNode, RefObject } from "react";
 
-import type { HeroParallaxMotion } from "@/components/landing/hero-clouds-three";
-import type { ScrollProgressStore } from "@/lib/scroll-progress";
-import { SnowMountainScene } from "@/components/snow-mountain-scene";
+import type { SnowMountainParallaxMotion } from "@/components/landing/snow-mountain/scene/snow-mountain-scene-clouds";
+import type { ScrollProgressStore } from "@/lib/snow-mountain/scroll-progress";
+import { SnowMountainScene } from "@/components/landing/snow-mountain/scene/snow-mountain-scene";
 import { cn } from "@/lib/utils";
 
-type HeroStickyLayerProps = {
+type SnowMountainHeroStickyLayerProps = {
   reduceMotion: boolean;
   heroCanvasRef: RefObject<HTMLDivElement | null>;
   heroSectionRef: RefObject<HTMLElement | null>;
   heroProgress: ScrollProgressStore;
-  motionRef: MutableRefObject<HeroParallaxMotion>;
+  motionRef: MutableRefObject<SnowMountainParallaxMotion>;
   children?: ReactNode;
 };
 
-export function HeroStickyLayer({
+export function SnowMountainHeroStickyLayer({
   reduceMotion,
   heroCanvasRef,
   heroSectionRef,
   heroProgress,
   motionRef,
   children,
-}: HeroStickyLayerProps) {
+}: SnowMountainHeroStickyLayerProps) {
   return (
     <div className="sticky top-0 z-0 h-screen min-h-screen w-full shrink-0 overflow-hidden">
       <div

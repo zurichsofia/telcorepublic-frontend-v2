@@ -7,7 +7,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Cloud, Clouds } from "@react-three/drei";
 
 /** Scroll-driven motion shared with CSS parallax on the hero image (clouds stay out of transformed DOM). */
-export type HeroParallaxMotion = {
+export type SnowMountainParallaxMotion = {
   x: number;
   y: number;
   scale: number;
@@ -101,23 +101,103 @@ type CloudConfig = {
 const CLOUD_CONFIGS: CloudConfig[] = [
   // Near layer (fastest, most visible)
   // Keep this one lower so it doesn't read as a tall cloud crossing the top edge.
-  { base: [-18, -3.2, 6], preset: CLOUD_NEAR, seed: 1, color: "white", dir: 1, driftSpeed: 0.32, bobAmpY: 0.075 },
-  { base: [10, -1, 3], preset: CLOUD_NEAR, seed: 2, color: "white", dir: 1, driftSpeed: 0.36, bobAmpY: 0.08 },
+  {
+    base: [-18, -3.2, 6],
+    preset: CLOUD_NEAR,
+    seed: 1,
+    color: "white",
+    dir: 1,
+    driftSpeed: 0.32,
+    bobAmpY: 0.075,
+  },
+  {
+    base: [10, -1, 3],
+    preset: CLOUD_NEAR,
+    seed: 2,
+    color: "white",
+    dir: 1,
+    driftSpeed: 0.36,
+    bobAmpY: 0.08,
+  },
   // Keep this one lower so it doesn't read as a tall cloud crossing the top edge.
-  { base: [26, -2.1, -1], preset: CLOUD_NEAR, seed: 3, color: "white", dir: 1, driftSpeed: 0.32, bobAmpY: 0.08 },
+  {
+    base: [26, -2.1, -1],
+    preset: CLOUD_NEAR,
+    seed: 3,
+    color: "white",
+    dir: 1,
+    driftSpeed: 0.32,
+    bobAmpY: 0.08,
+  },
 
   // Mid layer (slower)
-  { base: [-22, -0.7, -6], preset: CLOUD_MID, seed: 11, color: "#f3f4f6", dir: 1, driftSpeed: 0.22, bobAmpY: 0.06 },
-  { base: [8, -0.7, -8], preset: CLOUD_MID, seed: 12, color: "#e9ecef", dir: 1, driftSpeed: 0.2, bobAmpY: 0.055 },
+  {
+    base: [-22, -0.7, -6],
+    preset: CLOUD_MID,
+    seed: 11,
+    color: "#f3f4f6",
+    dir: 1,
+    driftSpeed: 0.22,
+    bobAmpY: 0.06,
+  },
+  {
+    base: [8, -0.7, -8],
+    preset: CLOUD_MID,
+    seed: 12,
+    color: "#e9ecef",
+    dir: 1,
+    driftSpeed: 0.2,
+    bobAmpY: 0.055,
+  },
 
   // Extra bottom bank — center + left (thick, wide layer)
-  { base: [0, -1.15, -4.5], preset: CLOUD_BANK, seed: 31, color: "#f8fafc", dir: 1, driftSpeed: 0.16, bobAmpY: 0.05 },
-  { base: [12, -1.05, -5.2], preset: CLOUD_BANK, seed: 32, color: "#f1f5f9", dir: 1, driftSpeed: 0.155, bobAmpY: 0.048 },
-  { base: [-14, -1.1, -4.8], preset: CLOUD_BANK, seed: 33, color: "#f8fafc", dir: 1, driftSpeed: 0.158, bobAmpY: 0.052 },
-  { base: [-26, -1.05, -5.5], preset: CLOUD_BANK, seed: 34, color: "#eef2f6", dir: 1, driftSpeed: 0.152, bobAmpY: 0.05 },
+  {
+    base: [0, -1.15, -4.5],
+    preset: CLOUD_BANK,
+    seed: 31,
+    color: "#f8fafc",
+    dir: 1,
+    driftSpeed: 0.16,
+    bobAmpY: 0.05,
+  },
+  {
+    base: [12, -1.05, -5.2],
+    preset: CLOUD_BANK,
+    seed: 32,
+    color: "#f1f5f9",
+    dir: 1,
+    driftSpeed: 0.155,
+    bobAmpY: 0.048,
+  },
+  {
+    base: [-14, -1.1, -4.8],
+    preset: CLOUD_BANK,
+    seed: 33,
+    color: "#f8fafc",
+    dir: 1,
+    driftSpeed: 0.158,
+    bobAmpY: 0.052,
+  },
+  {
+    base: [-26, -1.05, -5.5],
+    preset: CLOUD_BANK,
+    seed: 34,
+    color: "#eef2f6",
+    dir: 1,
+    driftSpeed: 0.152,
+    bobAmpY: 0.05,
+  },
 
   // Far haze (slowest, more transparent)
-  { base: [-10, -0.5, -14], preset: CLOUD_FAR, seed: 21, color: "#cbd5e1", dir: 1, driftSpeed: 0.12, bobAmpY: 0.04 },
+  {
+    base: [-10, -0.5, -14],
+    preset: CLOUD_FAR,
+    seed: 21,
+    color: "#cbd5e1",
+    dir: 1,
+    driftSpeed: 0.12,
+    bobAmpY: 0.04,
+  },
 ];
 
 /**
@@ -135,14 +215,12 @@ function wrapCentered(value: number, width: number) {
   return ((((value + half) % width) + width) % width) - half;
 }
 
-// ---------------------------------------------------------------------------
-
 function HeroCloudScene({
   reducedMotion,
   motionRef,
 }: {
   reducedMotion: boolean;
-  motionRef: MutableRefObject<HeroParallaxMotion>;
+  motionRef: MutableRefObject<SnowMountainParallaxMotion>;
 }) {
   const parallaxRig = useRef<THREE.Group>(null);
   const heightScaleRef = useRef(1);
@@ -159,8 +237,18 @@ function HeroCloudScene({
       const scrollT = THREE.MathUtils.clamp(motionRef.current.scroll, 0, 1);
       const heightScaleTarget = 1 + scrollT * 0.85;
       // Smooth both directions (scroll down = taller, scroll up = shorter)
-      const lerp = reducedMotion ? 1 : 1 - Math.pow(0.86, Math.min(state.clock.getDelta(), 1 / 24) * 60);
-      heightScaleRef.current = THREE.MathUtils.lerp(heightScaleRef.current, heightScaleTarget, lerp);
+      const lerp = reducedMotion
+        ? 1
+        : 1 -
+          Math.pow(
+            0.86,
+            Math.min(state.clock.getDelta(), 1 / 24) * 60,
+          );
+      heightScaleRef.current = THREE.MathUtils.lerp(
+        heightScaleRef.current,
+        heightScaleTarget,
+        lerp,
+      );
       rig.scale.set(scale, scale * heightScaleRef.current, scale);
       rig.position.set(-x * PARALLAX_PX_TO_WORLD, -y * PARALLAX_PX_TO_WORLD, 0);
     }
@@ -195,7 +283,10 @@ function HeroCloudScene({
       }
 
       // Drift along X with wraparound; slight bob on Y; tiny Z flutter to keep it organic.
-      const driftX = wrapCentered(base[0] + dir * t * driftSpeed + i * 7.3, DRIFT_WRAP_WIDTH_X);
+      const driftX = wrapCentered(
+        base[0] + dir * t * driftSpeed + i * 7.3,
+        DRIFT_WRAP_WIDTH_X,
+      );
       const bobY = Math.sin(t * 0.35 + i * 1.9) * bobAmpY;
       const flutterZ = Math.sin(t * 0.18 + i * 2.4) * 0.12;
 
@@ -206,17 +297,43 @@ function HeroCloudScene({
   return (
     <>
       <ambientLight intensity={Math.PI / 1.5} />
-      <spotLight position={[0, 40, 0]} decay={0} distance={45} penumbra={1} intensity={100} />
+      <spotLight
+        position={[0, 40, 0]}
+        decay={0}
+        distance={45}
+        penumbra={1}
+        intensity={100}
+      />
       {/* Symmetric fill so Lambert billboards don't read heavier on one side */}
-      <spotLight position={[-22, -8, 12]} color="#ffffff" angle={0.17} decay={0} penumbra={-1} intensity={24} />
-      <spotLight position={[22, -8, 12]} color="#ffffff" angle={0.17} decay={0} penumbra={-1} intensity={24} />
+      <spotLight
+        position={[-22, -8, 12]}
+        color="#ffffff"
+        angle={0.17}
+        decay={0}
+        penumbra={-1}
+        intensity={24}
+      />
+      <spotLight
+        position={[22, -8, 12]}
+        color="#ffffff"
+        angle={0.17}
+        decay={0}
+        penumbra={-1}
+        intensity={24}
+      />
 
       <group ref={parallaxRig}>
-        <Clouds texture={CLOUD_TEXTURE} material={THREE.MeshLambertMaterial} limit={400}>
+        <Clouds
+          texture={CLOUD_TEXTURE}
+          material={THREE.MeshLambertMaterial}
+          limit={400}
+        >
           {CLOUD_CONFIGS.map((cfg, i) => (
             <Cloud
               key={i}
-              ref={(el) => { cloudRefs.current[i] = el; }}
+              ref={(el) => {
+                cloudRefs.current[i] = el;
+              }}
               {...cfg.preset}
               seed={cfg.seed}
               color={cfg.color}
@@ -229,11 +346,11 @@ function HeroCloudScene({
   );
 }
 
-export function HeroCloudsThree({
+export function SnowMountainSceneClouds({
   motionRef,
   reducedMotion,
 }: {
-  motionRef: MutableRefObject<HeroParallaxMotion>;
+  motionRef: MutableRefObject<SnowMountainParallaxMotion>;
   reducedMotion: boolean;
 }) {
   return (
@@ -246,7 +363,9 @@ export function HeroCloudsThree({
         gl={{ alpha: true, antialias: true, powerPreference: "high-performance" }}
         dpr={[1, 1.5]}
         style={{ width: "100%", height: "100%" }}
-        onCreated={({ gl }) => { gl.setClearColor(0x000000, 0); }}
+        onCreated={({ gl }) => {
+          gl.setClearColor(0x000000, 0);
+        }}
       >
         <Suspense fallback={null}>
           <HeroCloudScene reducedMotion={reducedMotion} motionRef={motionRef} />
@@ -255,3 +374,4 @@ export function HeroCloudsThree({
     </div>
   );
 }
+

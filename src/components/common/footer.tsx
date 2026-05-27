@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { BrandLogoSignal } from "@/components/brand-logo-signal";
+import { BrandLogoSignal } from "@/components/common/brand-logo-signal";
 import { cn } from "@/lib/utils";
 
 export type FooterLink = {

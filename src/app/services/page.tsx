@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 
 import { PageHero } from "@/components/common/page-hero";
-import { FullBleedMediaSectionList } from "@/components/sections/full-bleed-media-section";
+
 import { servicesListingSections } from "@/data/services-listing-sections";
 import { services } from "@/data/services";
+import { FullBleedMediaSectionList } from '@/components/common/full-bleed-media-section';
 
 export const metadata: Metadata = {
   title: "Services | Telcorepublic Research",

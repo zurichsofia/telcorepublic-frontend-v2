@@ -1,5 +1,5 @@
-import { getHeroCameraProgress } from "@/lib/hero-scroll-layer-styles";
-import { heroScrollEase } from "@/lib/snow-mountain-scroll-easing";
+import { getHeroCameraProgress } from "@/lib/snow-mountain/hero-scroll-layer-styles";
+import { heroScrollEase } from "@/lib/snow-mountain/snow-mountain-scroll-easing";
 
 /**
  * Progress for the hero `<section>`: 0 when its top hits the viewport top, 1 when its bottom does.

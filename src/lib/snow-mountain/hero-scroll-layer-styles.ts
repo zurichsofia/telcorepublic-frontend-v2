@@ -1,5 +1,5 @@
-import { HERO_CAMERA_END_PROGRESS } from "@/components/snow-mountain-landing/hero-scroll";
-import { heroScrollEase } from "@/lib/snow-mountain-scroll-easing";
+import { HERO_CAMERA_END_PROGRESS } from "@/components/landing/snow-mountain/hero/snow-mountain-hero-scroll";
+import { heroScrollEase } from "@/lib/snow-mountain/snow-mountain-scroll-easing";
 
 function smoothstep(edge0: number, edge1: number, x: number): number {
   if (x <= edge0) return 0;
@@ -16,9 +16,9 @@ export function getHeroCameraProgress(sectionProgress: number): number {
 }
 
 export type HeroScrollLayerStyles = {
-  primary: { opacity: number; y: number };
-  telco: { opacity: number; y: number };
-  mission: { opacity: number; y: number };
+  primary: { opacity: number; y: number; };
+  telco: { opacity: number; y: number; };
+  mission: { opacity: number; y: number; };
 };
 
 /** Eased 0–1 over the camera scroll zone — matches WebGL camera mapping. */
