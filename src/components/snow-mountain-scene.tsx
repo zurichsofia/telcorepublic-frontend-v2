@@ -36,7 +36,6 @@ import {
   readHeroScrollProgress,
 } from "@/lib/snow-mountain-hero-scroll";
 import { applyTerrainIceStyle } from "@/lib/snow-mountain-terrain-ice";
-// import { SnowMountainDreiSkyClouds } from "@/components/snow-mountain-drei-sky-clouds";
 import { AtmosphericParticles } from "@/components/snow-mountain-atmospheric-particles";
 import { markSceneReady, registerScene } from "@/lib/scene-ready";
 
