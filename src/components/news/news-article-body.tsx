@@ -18,6 +18,16 @@ const components: PortableTextComponents = {
     normal: ({ children }) => (
       <p className={cn(bodyTone, "mb-4")}>{children}</p>
     ),
+    h1: ({ children }) => (
+      <h1
+        className={cn(
+          bodyTone,
+          "mt-8 mb-4 text-[1.65rem] font-semibold tracking-[-0.03em] sm:text-[2rem]",
+        )}
+      >
+        {children}
+      </h1>
+    ),
     h2: ({ children }) => (
       <h2
         className={cn(
@@ -48,6 +58,16 @@ const components: PortableTextComponents = {
         {children}
       </h4>
     ),
+    blockquote: ({ children }) => (
+      <blockquote
+        className={cn(
+          bodyTone,
+          "my-5 border-l-2 border-white/20 pl-4 italic",
+        )}
+      >
+        {children}
+      </blockquote>
+    ),
   },
   list: {
     bullet: ({ children }) => <ul className={listClass}>{children}</ul>,
@@ -60,6 +80,13 @@ const components: PortableTextComponents = {
   marks: {
     strong: ({ children }) => <strong>{children}</strong>,
     em: ({ children }) => <em>{children}</em>,
+    underline: ({ children }) => <span className="underline">{children}</span>,
+    "strike-through": ({ children }) => <s>{children}</s>,
+    code: ({ children }) => (
+      <code className="rounded bg-white/10 px-1 py-[0.1rem] font-mono text-[0.95em]">
+        {children}
+      </code>
+    ),
     link: ({ children, value }) => {
       const href = typeof value?.href === "string" ? value.href : "#";
       return (

@@ -27,20 +27,14 @@ export const newsArticle = defineType({
     defineField({
       name: "excerpt",
       title: "Excerpt",
-      description: "Excerpt that appears on the news page card.",
+      description: "Excerpt that appears on the news card on the news page.",
       type: "text",
       rows: 3,
     }),
     defineField({
-      name: "coverImage",
-      title: "Cover image",
-      type: "image",
-      options: { hotspot: true },
-    }),
-    defineField({
       name: "publishedAt",
       title: "Published at",
-      type: "datetime",
+      type: "date",
       description: "Date that appears on the news page card and article page.",
       validation: (Rule) => Rule.required(),
     }),
@@ -61,6 +55,13 @@ export const newsArticle = defineType({
       title: "Legacy source URL",
       type: "url",
       description: "Original URL, kept for reference.",
+      readOnly: true,
+    }),
+    defineField({
+      name: "coverImage",
+      title: "Cover image",
+      type: "image",
+      options: { hotspot: true },
     }),
     defineField({
       name: "body",
@@ -75,9 +76,11 @@ export const newsArticle = defineType({
           type: "block",
           styles: [
             { title: "Normal", value: "normal" },
+            { title: "H1", value: "h1" },
             { title: "H2", value: "h2" },
             { title: "H3", value: "h3" },
             { title: "H4", value: "h4" },
+            { title: "Quote", value: "blockquote" },
           ],
           lists: [
             { title: "Bullet", value: "bullet" },
@@ -87,6 +90,9 @@ export const newsArticle = defineType({
             decorators: [
               { title: "Strong", value: "strong" },
               { title: "Emphasis", value: "em" },
+              { title: "Underline", value: "underline" },
+              { title: "Strikethrough", value: "strike-through" },
+              { title: "Code", value: "code" },
             ],
             annotations: [
               {

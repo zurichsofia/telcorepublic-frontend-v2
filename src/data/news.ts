@@ -26,7 +26,8 @@ export type NewsPostDetail = NewsPost & {
 };
 
 function formatDateLabel(iso: string): string {
-  const date = new Date(iso);
+  // Sanity `date` fields come back as `YYYY-MM-DD`. Ensure stable UTC parsing.
+  const date = new Date(iso.length === 10 ? `${iso}T00:00:00Z` : iso);
   return date
     .toLocaleDateString("en-US", {
       month: "short",
@@ -34,8 +35,7 @@ function formatDateLabel(iso: string): string {
       year: "numeric",
       timeZone: "UTC",
     })
-    .toUpperCase()
-    .replace(",", "");
+    .toUpperCase();
 }
 
 function toNewsPost(article: NewsArticleListItem): NewsPost {

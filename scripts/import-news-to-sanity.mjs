@@ -16,6 +16,33 @@ function key() {
   return Math.random().toString(36).slice(2, 10);
 }
 
+/**
+ * Sanity `date` fields must be `YYYY-MM-DD`. The legacy import data used ISO datetimes.
+ * @param {string} value
+ */
+function toSanityDate(value) {
+  if (!value) return value;
+  if (value.length >= 10 && value[4] === "-" && value[7] === "-") {
+    return value.slice(0, 10);
+  }
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return value;
+  // Use Europe/Sofia because our historical timestamps are UTC evenings which
+  // should map to the next day in EET/EEST (matching the intended published date).
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Sofia",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(d);
+
+  const year = parts.find((p) => p.type === "year")?.value;
+  const month = parts.find((p) => p.type === "month")?.value;
+  const day = parts.find((p) => p.type === "day")?.value;
+  if (!year || !month || !day) return d.toISOString().slice(0, 10);
+  return `${year}-${month}-${day}`;
+}
+
 function headingStyle(level = 4) {
   if (level <= 2) return "h2";
   if (level <= 4) return "h3";
@@ -120,7 +147,7 @@ async function importNews() {
       title: post.title,
       slug: { _type: "slug", current: post.slug },
       excerpt: post.excerpt,
-      publishedAt: post.publishedAt,
+      publishedAt: toSanityDate(post.publishedAt),
       authors: post.authors,
       metaDescription: post.metaDescription,
       sourceUrl: post.sourceUrl,
