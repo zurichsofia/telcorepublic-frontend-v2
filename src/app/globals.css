@@ -1,6 +1,5 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
-@import 'shadcn/tailwind.css';
 @import 'lenis/dist/lenis.css';
 
 @theme {
@@ -68,7 +67,7 @@ body {
 }
 
 .snow-mountain-hero-film::before {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   pointer-events: none;
