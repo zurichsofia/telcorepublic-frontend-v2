@@ -1,6 +1,7 @@
 import { defineField, defineType } from "sanity";
 
 import { TallPortableTextInput } from "../components/TallPortableTextInput";
+import { TitleWithLivePreviewInput } from "../components/TitleWithLivePreviewInput";
 
 export const newsArticle = defineType({
   name: "newsArticle",
@@ -11,6 +12,9 @@ export const newsArticle = defineType({
       name: "title",
       title: "Title",
       type: "string",
+      components: {
+        input: TitleWithLivePreviewInput,
+      },
       validation: (Rule) => Rule.required(),
     }),
     defineField({
