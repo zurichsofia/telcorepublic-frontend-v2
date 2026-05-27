@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { BrandLogoSignal } from "@/components/common/brand-logo-signal";
-import { blogPosts } from "@/data/news";
 import { isPastMountainView } from "@/lib/hero-nav-sync";
 import { subscribeLenisScroll, isLenisActive } from "@/lib/lenis-scroll";
 import { cn } from "@/lib/utils";
@@ -54,6 +53,7 @@ export type NavigationProps = {
   items?: readonly NavItem[];
   logoHref?: string;
   className?: string;
+  newsArticleCount?: number;
   /** `blog` — light links on dark shell. `overlay` — on hero: light links; below `#hero`: dark links. */
   theme?: "default" | "blog" | "overlay";
   /** Same background as `AppShell` (opaque bar; keeps nav in sync with page surface). */
@@ -77,9 +77,11 @@ function navItemActive(
 
 /** Telco red: matches brand accent (see `--color-telco-red` in globals). */
 function NewsCountBadge({
+  count,
   onDark,
   active,
 }: {
+  count: number;
   onDark: boolean;
   active: boolean;
 }) {
@@ -96,9 +98,9 @@ function NewsCountBadge({
             "group-hover:bg-telco-red group-hover:text-white",
           ),
       )}
-      aria-label={`${blogPosts.length} articles`}
+      aria-label={`${count} articles`}
     >
-      {blogPosts.length}
+      {count}
     </span>
   );
 }
@@ -331,6 +333,7 @@ export function Navigation({
   items = defaultNavItems,
   logoHref = "/",
   className,
+  newsArticleCount = 0,
   theme = "default",
   surfaceClassName,
   overlayPastHero = false,
@@ -382,7 +385,13 @@ export function Navigation({
                     )}
                   >
                     {item.label}
-                    {isNews ? <NewsCountBadge onDark={onDark} active={isActive} /> : null}
+                    {isNews ? (
+                      <NewsCountBadge
+                        count={newsArticleCount}
+                        onDark={onDark}
+                        active={isActive}
+                      />
+                    ) : null}
                   </Link>
                 </li>
               );

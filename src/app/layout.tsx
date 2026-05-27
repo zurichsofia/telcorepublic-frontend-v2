@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import "swiper/css";
 
 import "./globals.css";
+import { getNewsArticleCount } from "@/data/news";
 import { AppShell } from "@/components/common/app-shell";
 import { PageLoader } from "@/components/common/page-loader";
 import { cn } from "@/lib/utils";
@@ -20,11 +21,13 @@ export const metadata: Metadata = {
     "Independent telecom research - spectrum, infrastructure, and the systems that connect the world.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const newsArticleCount = await getNewsArticleCount();
+
   return (
     <html
       lang="en"
@@ -35,7 +38,7 @@ export default function RootLayout({
       >
         {/* <FloatingLinesAppBackground /> */}
         <PageLoader />
-        <AppShell>{children}</AppShell>
+        <AppShell newsArticleCount={newsArticleCount}>{children}</AppShell>
       </body>
     </html>
   );

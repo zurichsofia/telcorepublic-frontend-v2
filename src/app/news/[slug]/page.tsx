@@ -7,7 +7,7 @@ import {
   getAllNewsSlugs,
   getNewsPostBySlug,
 } from "@/data/news";
-import { NewsArticleContent } from "@/components/news/news-article-content";
+import { NewsArticleBody } from "@/components/news/news-article-body";
 
 const defaultMetadata: Metadata = {
   title: "News | Telcorepublic Research",
@@ -18,15 +18,18 @@ type NewsArticleProps = {
   params: Promise<{ slug: string; }>;
 };
 
-export function generateStaticParams() {
-  return getAllNewsSlugs().map((slug) => ({ slug }));
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const slugs = await getAllNewsSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
   params,
 }: NewsArticleProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = getNewsPostBySlug(slug);
+  const post = await getNewsPostBySlug(slug);
   if (!post) return defaultMetadata;
   return {
     title: `${post.title} | Telcorepublic Research`,
@@ -36,7 +39,7 @@ export async function generateMetadata({
 
 export default async function NewsArticlePage({ params }: NewsArticleProps) {
   const { slug } = await params;
-  const post = getNewsPostBySlug(slug);
+  const post = await getNewsPostBySlug(slug);
   if (!post) notFound();
 
   return (
@@ -67,21 +70,25 @@ export default async function NewsArticlePage({ params }: NewsArticleProps) {
       ) : null}
 
       <div className="mt-12 sm:mt-16">
-        <NewsArticleContent content={post.content} />
+        <NewsArticleBody value={post.body} />
       </div>
 
       <p className="mt-16 border-t border-white/10 pt-12 text-sm font-light text-white/50 sm:mt-20 sm:pt-14">
-        <a
-          href={post.sourceUrl}
-          className="text-white/80 underline decoration-white/30 underline-offset-4 hover:decoration-white/60"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          View original
-        </a>
-        <span className="mx-2 text-white/30" aria-hidden>
-          ·
-        </span>
+        {post.sourceUrl ? (
+          <>
+            <a
+              href={post.sourceUrl}
+              className="text-white/80 underline decoration-white/30 underline-offset-4 hover:decoration-white/60"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              View original
+            </a>
+            <span className="mx-2 text-white/30" aria-hidden>
+              ·
+            </span>
+          </>
+        ) : null}
         <Link
           href="/news"
           className="text-white/80 transition hover:text-white"

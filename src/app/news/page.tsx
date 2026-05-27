@@ -10,8 +10,10 @@ export const metadata: Metadata = {
     "Latest news, research updates, and industry perspectives from Telco Republic.",
 };
 
-export default function NewsIndexPage() {
-  const posts = getAllNewsPosts();
+export const revalidate = 60;
+
+export default async function NewsIndexPage() {
+  const posts = await getAllNewsPosts();
   const [first, second, ...rest] = posts;
   const gridPosts = rest;
 

@@ -18,13 +18,20 @@ function scrollViewToTop() {
   window.scrollTo(0, 0);
 }
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+export function AppShell({
+  children,
+  newsArticleCount,
+}: {
+  children: React.ReactNode;
+  newsArticleCount: number;
+}) {
   const pathname = usePathname() ?? "";
   const isServiceDetail = /^\/services\/[^/]+$/.test(pathname);
   const isHome = pathname === "/" || pathname === "";
   const immersiveHero = isServiceDetail || isHome;
   const isNews = pathname === "/news" || pathname.startsWith("/news/");
   const isContact = pathname === "/contact";
+  const isStudio = pathname.startsWith("/studio");
   const darkShell = isNews || isContact;
   const theme = darkShell ? "blog" : immersiveHero ? "overlay" : "default";
   const overlayPastHero = useOverlayPastHero(theme);
@@ -54,6 +61,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     };
   }, [pathname]);
 
+  if (isStudio) {
+    return <>{children}</>;
+  }
+
   return (
     <SmoothScrollProvider enabled={isHome || isServiceDetail}>
       <div
@@ -63,6 +74,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         )}
       >
         <Navigation
+          newsArticleCount={newsArticleCount}
           className={
             immersiveHero ? "fixed top-0 right-0 left-0 z-50 w-full" : undefined
           }

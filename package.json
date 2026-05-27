@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "import:news": "sanity exec scripts/import-news-to-sanity.mjs --with-user-token"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
