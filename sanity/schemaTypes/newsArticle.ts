@@ -1,5 +1,7 @@
 import { defineField, defineType } from "sanity";
 
+import { TallPortableTextInput } from "../components/TallPortableTextInput";
+
 export const newsArticle = defineType({
   name: "newsArticle",
   title: "News Article",
@@ -15,6 +17,7 @@ export const newsArticle = defineType({
       name: "slug",
       title: "Slug",
       type: "slug",
+      description: "Slug that appears in the URL. Automatically generated from the title. Do not edit manually e.g. https://telcorepublic.com/news/csps-need-to-master-technology ",
       options: {
         source: "title",
         maxLength: 200,
@@ -24,6 +27,7 @@ export const newsArticle = defineType({
     defineField({
       name: "excerpt",
       title: "Excerpt",
+      description: "Excerpt that appears on the news page card.",
       type: "text",
       rows: 3,
     }),
@@ -37,6 +41,7 @@ export const newsArticle = defineType({
       name: "publishedAt",
       title: "Published at",
       type: "datetime",
+      description: "Date that appears on the news page card and article page.",
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -47,6 +52,7 @@ export const newsArticle = defineType({
     defineField({
       name: "metaDescription",
       title: "Meta description",
+      description: "Description that appears in the Google search results. Keep it under 155 characters.",
       type: "text",
       rows: 2,
     }),
@@ -54,12 +60,16 @@ export const newsArticle = defineType({
       name: "sourceUrl",
       title: "Legacy source URL",
       type: "url",
-      description: "Original WordPress URL, kept for reference.",
+      description: "Original URL, kept for reference.",
     }),
     defineField({
       name: "body",
       title: "Body",
       type: "array",
+      description: "Main article content. This editor is not a pixel‑perfect preview; the website controls the final formatting, so it might render slightly differently.",
+      components: {
+        input: TallPortableTextInput,
+      },
       of: [
         {
           type: "block",
