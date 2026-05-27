@@ -1,8 +1,8 @@
 "use client";
 
-import { CustomResearchRadialDiagram } from "@/components/landing/service-editorial-panel/custom-research-radial-diagram";
-import { EditorialInlineList } from "@/components/landing/service-editorial-panel/editorial-inline-list";
-import { EditorialPillarsSection } from "@/components/landing/service-editorial-panel/editorial-pillars-section";
+import { CustomResearchRadialDiagram } from "@/components/service/service-details/editorial/custom-research-radial-diagram";
+import { EditorialInlineList } from "@/components/service/service-details/editorial/editorial-inline-list";
+import { EditorialPillarsSection } from "@/components/service/service-details/editorial/editorial-pillars-section";
 import type { ServiceContentBlock } from "@/data/service-content-types";
 import type { ServiceEntry } from "@/data/services";
 import { cn } from "@/lib/utils";
@@ -10,15 +10,6 @@ import { cn } from "@/lib/utils";
 /** Vertical rhythm between major blocks on `/services/[slug]` (Tailwind gap scale). */
 const detailBlockStack =
   "flex w-full flex-col gap-y-28 md:gap-y-36 lg:gap-y-44";
-
-/**
- * Content under the video hero on `/services/[slug]`.
- *
- * Copy: `service.desc`, optional `intro`, then `service.content` blocks in order
- * (`pillarLines`, `paragraph`, `offers`, … — see `services-v2.ts`).
- */
-
-// --- Body: one block type → one piece of UI ---
 
 function ServiceDetailContentBlocks({
   slug,
@@ -55,9 +46,7 @@ function ServiceDetailContentBlocks({
                 )}
               >
                 {block.subheading ? (
-                  <h3
-                    className="text-pretty font-sans text-lg font-medium leading-snug tracking-tight text-telco-red sm:text-xl"
-                  >
+                  <h3 className="text-pretty font-sans text-lg font-medium leading-snug tracking-tight text-telco-red sm:text-xl">
                     {block.subheading}
                   </h3>
                 ) : null}
@@ -149,7 +138,10 @@ function ServiceDetailContentBlocks({
             return (
               <EditorialInlineList
                 key={key}
-                className={cn(blockClass, "service-detail-block--simpleList-inline")}
+                className={cn(
+                  blockClass,
+                  "service-detail-block--simpleList-inline",
+                )}
                 heading={block.heading}
                 items={block.items}
               />
@@ -171,13 +163,11 @@ function ServiceDetailContentBlocks({
   );
 }
 
-// --- Page section ---
-
-export type ServiceDetailPanelProps = {
+export type ServiceDetailsProps = {
   service: ServiceEntry;
 };
 
-export function ServiceDetailPanel({ service }: ServiceDetailPanelProps) {
+export function ServiceDetails({ service }: ServiceDetailsProps) {
   return (
     <div className="relative w-full bg-white pb-28 text-black md:pb-36 lg:pb-44">
       <div className={cn("w-full", detailBlockStack)}>
@@ -197,3 +187,4 @@ export function ServiceDetailPanel({ service }: ServiceDetailPanelProps) {
     </div>
   );
 }
+

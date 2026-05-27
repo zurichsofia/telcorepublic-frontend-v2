@@ -25,7 +25,7 @@ export function ServiceVideoSlide({
     }
 
     if (isActive) {
-      void v.play().catch(() => { });
+      void v.play().catch(() => {});
     } else {
       v.pause();
     }
@@ -51,3 +51,4 @@ export function ServiceVideoSlide({
     </article>
   );
 }
+

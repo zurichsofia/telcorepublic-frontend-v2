@@ -134,9 +134,8 @@ export function ServiceVideoHeroV2({
             </SwiperSlide>
           ))}
         </Swiper>
-
-
       </div>
     </section>
   );
 }
+

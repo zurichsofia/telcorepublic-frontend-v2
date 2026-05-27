@@ -2,9 +2,9 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { ServiceVideoHeroV2 } from "@/components/landing/service-video-hero/service-video-hero-v2";
-import { ServiceDetailPanel } from "@/components/landing/service-detail-panel/service-detail-panel";
+import { ServiceDetails } from "@/components/service/service-details/service-details";
 import { getServiceBySlug } from "@/data/services";
+import { ServiceVideoHeroV2 } from "@/components/service/service-video-hero/service-video-hero-v2";
 
 function slugFromPathname(pathname: string): string | undefined {
   const m = pathname.match(/^\/services\/([^/]+)/);
@@ -16,16 +16,16 @@ function slugFromPathname(pathname: string): string | undefined {
   }
 }
 
-export type ServiceSlugShellProps = {
+export type ServiceWrapperProps = {
   initialSlug: string;
 };
 
 /**
- * Keeps the video hero and editorial scroll on the active service when the URL
+ * Keeps the video hero and detail panel on the active service when the URL
  * updates via `history.replaceState` or browser history (no App Router navigation
  * — avoids a full-tree flash).
  */
-export function ServiceSlugShell({ initialSlug }: ServiceSlugShellProps) {
+export function ServiceWrapper({ initialSlug }: ServiceWrapperProps) {
   const [activeSlug, setActiveSlug] = useState(initialSlug);
   const lastServerSlugRef = useRef(initialSlug);
 
@@ -46,13 +46,15 @@ export function ServiceSlugShell({ initialSlug }: ServiceSlugShellProps) {
     return () => window.removeEventListener("popstate", onPopState);
   }, []);
 
-  const onActiveServiceChange = useCallback((slug: string) => {
-    if (slug === activeSlug) return;
-    setActiveSlug(slug);
-  }, [activeSlug]);
+  const onActiveServiceChange = useCallback(
+    (slug: string) => {
+      if (slug === activeSlug) return;
+      setActiveSlug(slug);
+    },
+    [activeSlug],
+  );
 
-  const service =
-    getServiceBySlug(activeSlug) ?? getServiceBySlug(initialSlug);
+  const service = getServiceBySlug(activeSlug) ?? getServiceBySlug(initialSlug);
 
   if (!service) return null;
 
@@ -63,8 +65,9 @@ export function ServiceSlugShell({ initialSlug }: ServiceSlugShellProps) {
         onActiveServiceChange={onActiveServiceChange}
       />
       <div id="service-detail" className="relative isolate w-full">
-        <ServiceDetailPanel service={service} />
+        <ServiceDetails service={service} />
       </div>
     </>
   );
 }
+

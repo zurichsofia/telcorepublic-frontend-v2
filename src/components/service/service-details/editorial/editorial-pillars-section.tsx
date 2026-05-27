@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 
-function DotRow({ count }: { count: number; }) {
+function DotRow({ count }: { count: number }) {
   const n = Math.min(Math.max(count, 1), 3);
   return (
     <div className="flex justify-center gap-1.5 pb-4" aria-hidden>
@@ -64,3 +64,4 @@ export function EditorialPillarsSection({
     </section>
   );
 }
+

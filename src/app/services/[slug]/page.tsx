@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { getServiceBySlug } from "@/data/services";
-import { ServiceSlugShell } from "@/components/landing/service-slug-shell";
+import { ServiceWrapper } from "@/components/service/service-wrapper";
 
 const defaultMetadata: Metadata = {
   title: "Telcorepublic Research",
@@ -32,7 +32,7 @@ export default async function ServiceLanding({ params }: ServiceLandingProps) {
 
   return (
     <main id="home" className="relative z-10 isolate">
-      <ServiceSlugShell initialSlug={slug} />
+      <ServiceWrapper initialSlug={slug} />
     </main>
   );
 }
