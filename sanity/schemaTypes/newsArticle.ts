@@ -74,7 +74,7 @@ export const newsArticle = defineType({
       title: "Body",
       type: "array",
       description:
-        "Main article content. Use “Import from Word (.docx)” button for drafts from Word or edit directly below. This editor is not a pixel‑perfect preview. The live site controls the final formatting, so it might render slightly differently.",
+        "Main article content. Use “Import from Word (.docx)” button for drafts from Word or edit directly below. This editor is not a pixel-perfect preview. The live site controls the final formatting, so it might render slightly differently.",
       components: {
         input: ArticleBodyInput,
       },

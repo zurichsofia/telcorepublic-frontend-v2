@@ -156,7 +156,7 @@ export function ArticleBodyInput(props: ArrayOfObjectsInputProps) {
         <p style={hintStyle}>
           Headings,
           lists, links, and basic formatting are supported.
-          <br />!Important: Inline images are not supported.
+          <br />! Importing images is not supported. Add images to the article body as a separate block. !
         </p>
       </div>
 

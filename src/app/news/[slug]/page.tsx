@@ -43,10 +43,20 @@ export default async function NewsArticlePage({ params }: NewsArticleProps) {
   if (!post) notFound();
 
   return (
-    <main className="mx-auto w-full max-w-4xl flex-1 px-6 pb-16 pt-36 sm:px-10 sm:pb-20 sm:pt-48">
-      <p className="text-[10px] font-normal tracking-[0.2em] text-white/90 sm:text-xs">
-        {post.dateLabel}
-      </p>
+    <main className="mx-auto w-full max-w-6xl flex-1 px-8 pb-16 pt-36 sm:px-12 sm:pb-20 sm:pt-48 lg:px-16">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-[10px] font-normal uppercase tracking-[0.2em] text-white/90 sm:text-xs">
+        <span>{post.dateLabel}</span>
+        {post.sourceUrl ? (
+          <a
+            href={post.sourceUrl}
+            className="text-telco-red underline decoration-telco-red underline-offset-4 transition-colors hover:text-white hover:decoration-white"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            View original
+          </a>
+        ) : null}
+      </div>
       <h1 className="mt-6 font-display text-3xl font-medium leading-tight tracking-tight text-white sm:text-4xl md:text-5xl">
         {post.title}
       </h1>
@@ -57,14 +67,14 @@ export default async function NewsArticlePage({ params }: NewsArticleProps) {
       ) : null}
 
       {post.coverImage ? (
-        <div className="relative mt-12 aspect-21/9 w-full max-w-4xl overflow-hidden bg-neutral-900 sm:mt-14 sm:aspect-2/1">
+        <div className="relative mt-12 aspect-21/9 w-full overflow-hidden bg-neutral-900 sm:mt-14 sm:aspect-2/1">
           <Image
             src={post.coverImage}
             alt={post.title}
             fill
             className="object-cover"
             priority
-            sizes="(max-width: 1024px) 100vw, 896px"
+            sizes="(max-width: 1280px) 100vw, 1152px"
           />
         </div>
       ) : null}
@@ -74,21 +84,6 @@ export default async function NewsArticlePage({ params }: NewsArticleProps) {
       </div>
 
       <p className="mt-16 border-t border-white/10 pt-12 text-sm font-light text-white/50 sm:mt-20 sm:pt-14">
-        {post.sourceUrl ? (
-          <>
-            <a
-              href={post.sourceUrl}
-              className="text-white/80 underline decoration-white/30 underline-offset-4 hover:decoration-white/60"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              View original
-            </a>
-            <span className="mx-2 text-white/30" aria-hidden>
-              ·
-            </span>
-          </>
-        ) : null}
         <Link
           href="/news"
           className="text-white/80 transition hover:text-white"

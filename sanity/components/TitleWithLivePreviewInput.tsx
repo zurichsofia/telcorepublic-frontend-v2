@@ -47,7 +47,7 @@ function LivePreviewLink({ href, disabled }: { href: string; disabled: boolean; 
     ? "Set NEXT_PUBLIC_LIVE_SITE_URL to enable live previews"
     : "Add a slug to enable live previews";
 
-  const content = <>Live site →</>;
+  const content = <>Live article →</>;
 
   if (disabled) {
     return (
