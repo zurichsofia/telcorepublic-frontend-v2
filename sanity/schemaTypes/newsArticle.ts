@@ -1,6 +1,6 @@
 import { defineField, defineType } from "sanity";
 
-import { TallPortableTextInput } from "../components/TallPortableTextInput";
+import { ArticleBodyInput } from "../components/ArticleBodyInput";
 import { TitleWithLivePreviewInput } from "../components/TitleWithLivePreviewInput";
 
 export const newsArticle = defineType({
@@ -21,7 +21,8 @@ export const newsArticle = defineType({
       name: "slug",
       title: "Slug",
       type: "slug",
-      description: "Slug that appears in the URL. Automatically generated from the title. Do not edit manually e.g. https://telcorepublic.com/news/csps-need-to-master-technology ",
+      description:
+        "Slug that appears in the URL. Automatically generated from the title. Do not edit manually e.g. https://telcorepublic.com/news/csps-need-to-master-technology ",
       options: {
         source: "title",
         maxLength: 200,
@@ -50,7 +51,8 @@ export const newsArticle = defineType({
     defineField({
       name: "metaDescription",
       title: "Meta description",
-      description: "Description that appears in the Google search results. Keep it under 155 characters.",
+      description:
+        "Description that appears in the Google search results. Keep it under 155 characters.",
       type: "text",
       rows: 2,
     }),
@@ -71,9 +73,10 @@ export const newsArticle = defineType({
       name: "body",
       title: "Body",
       type: "array",
-      description: "Main article content. This editor is not a pixel‑perfect preview; the website controls the final formatting, so it might render slightly differently.",
+      description:
+        "Main article content. Use “Import from Word (.docx)” button for drafts from Word or edit directly below. This editor is not a pixel‑perfect preview. The live site controls the final formatting, so it might render slightly differently.",
       components: {
-        input: TallPortableTextInput,
+        input: ArticleBodyInput,
       },
       of: [
         {
