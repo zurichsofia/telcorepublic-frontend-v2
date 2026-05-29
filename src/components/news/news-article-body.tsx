@@ -10,19 +10,41 @@ type NewsArticleBodyProps = {
 };
 
 const bodyTone = "text-white/88";
-const listClass = cn(bodyTone, "mt-3 mb-5 pl-5");
-const liClass = cn(bodyTone, "my-[0.4rem]");
+/** Single-weight Helvetica — use medium for body; avoid semibold (reads too heavy). */
+const bodyWeight = "font-medium";
+const bodyText = cn(bodyTone, bodyWeight);
+const decorationLine = "decoration-1 decoration-white";
+const underlineMark = cn(
+  bodyTone,
+  bodyWeight,
+  "underline underline-offset-[0.2em]",
+  decorationLine,
+);
+const strikethroughMark = cn(bodyTone, bodyWeight, "line-through", decorationLine);
+const linkMark = cn(
+  bodyWeight,
+  "text-telco-red underline underline-offset-[0.2em] decoration-1 decoration-telco-red transition-colors hover:text-white hover:decoration-white",
+);
+const ulClass = cn(
+  bodyText,
+  "mt-3 mb-5 list-disc pl-6 marker:text-white/70",
+);
+const olClass = cn(
+  bodyText,
+  "mt-3 mb-5 list-decimal pl-6 marker:text-white/70",
+);
+const liClass = cn(bodyText, "my-[0.4rem] pl-1");
 
 const components: PortableTextComponents = {
   block: {
     normal: ({ children }) => (
-      <p className={cn(bodyTone, "mb-4")}>{children}</p>
+      <p className={cn(bodyText, "mb-4")}>{children}</p>
     ),
     h1: ({ children }) => (
       <h1
         className={cn(
           bodyTone,
-          "mt-8 mb-4 text-[1.65rem] font-semibold tracking-[-0.03em] sm:text-[2rem]",
+          "mt-8 mb-4 text-[50px]",
         )}
       >
         {children}
@@ -32,7 +54,7 @@ const components: PortableTextComponents = {
       <h2
         className={cn(
           bodyTone,
-          "mt-7 mb-[0.85rem] text-[1.4rem] font-medium tracking-[-0.02em] sm:text-[1.65rem]",
+          "mt-7 mb-[0.85rem] text-[40px]",
         )}
       >
         {children}
@@ -41,8 +63,8 @@ const components: PortableTextComponents = {
     h3: ({ children }) => (
       <h3
         className={cn(
-          bodyTone,
-          "mt-[1.4rem] mb-3 text-[1.2rem] font-medium tracking-[-0.02em] sm:text-[1.3rem]",
+          bodyText,
+          "mt-[1.4rem] mb-3 text-[34px]",
         )}
       >
         {children}
@@ -51,8 +73,8 @@ const components: PortableTextComponents = {
     h4: ({ children }) => (
       <h4
         className={cn(
-          bodyTone,
-          "mt-6 mb-3 text-[1.1rem] font-medium tracking-[-0.02em]",
+          bodyText,
+          "mt-6 mb-3 text-[26px]",
         )}
       >
         {children}
@@ -61,7 +83,7 @@ const components: PortableTextComponents = {
     blockquote: ({ children }) => (
       <blockquote
         className={cn(
-          bodyTone,
+          bodyText,
           "my-5 border-l-2 border-white/20 pl-4 italic",
         )}
       >
@@ -70,20 +92,30 @@ const components: PortableTextComponents = {
     ),
   },
   list: {
-    bullet: ({ children }) => <ul className={listClass}>{children}</ul>,
-    number: ({ children }) => <ol className={listClass}>{children}</ol>,
+    bullet: ({ children }) => <ul className={ulClass}>{children}</ul>,
+    number: ({ children }) => <ol className={olClass}>{children}</ol>,
   },
   listItem: {
     bullet: ({ children }) => <li className={liClass}>{children}</li>,
     number: ({ children }) => <li className={liClass}>{children}</li>,
   },
   marks: {
-    strong: ({ children }) => <strong>{children}</strong>,
-    em: ({ children }) => <em>{children}</em>,
-    underline: ({ children }) => <span className="underline">{children}</span>,
-    "strike-through": ({ children }) => <s>{children}</s>,
+    strong: ({ children }) => (
+      <strong className="font-bold tracking-[-0.01em] text-white">
+        {children}
+      </strong>
+    ),
+    em: ({ children }) => (
+      <em className="font-medium italic">{children}</em>
+    ),
+    underline: ({ children }) => (
+      <span className={underlineMark}>{children}</span>
+    ),
+    "strike-through": ({ children }) => (
+      <s className={strikethroughMark}>{children}</s>
+    ),
     code: ({ children }) => (
-      <code className="rounded bg-white/10 px-1 py-[0.1rem] font-mono text-[0.95em]">
+      <code className="rounded bg-white/10 px-1 py-[0.1rem] font-mono text-[0.95em] font-normal">
         {children}
       </code>
     ),
@@ -92,7 +124,7 @@ const components: PortableTextComponents = {
       return (
         <a
           href={href}
-          className="text-white underline decoration-white/30 underline-offset-4 hover:decoration-white/60"
+          className={linkMark}
           rel="noopener noreferrer"
           target="_blank"
         >
@@ -125,7 +157,7 @@ export function NewsArticleBody({ value }: NewsArticleBodyProps) {
   if (!value?.length) return null;
 
   return (
-    <div className="max-w-none text-sm leading-[1.65] text-white/88 sm:text-base">
+    <div className="max-w-none text-[22px] leading-[1.65] font-medium text-white/88">
       <PortableText value={value} components={components} />
     </div>
   );
