@@ -5,5 +5,7 @@ import type { StructureBuilder } from "sanity/structure";
  * This removes the extra "Content" root navigation column.
  */
 export const structure = (S: StructureBuilder) =>
-  S.documentTypeList("newsArticle").title("News Articles");
+  S.documentTypeList("newsArticle")
+    .title("News Articles")
+    .defaultOrdering([{ field: "publishedAt", direction: "desc" }]);
 
