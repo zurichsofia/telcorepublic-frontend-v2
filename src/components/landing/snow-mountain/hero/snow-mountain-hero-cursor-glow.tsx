@@ -13,7 +13,7 @@ export function SnowMountainHeroCursorGlow({
 
   return (
     <div
-      className="pointer-events-none fixed z-[25] size-[min(22vw,9.5rem)] -translate-x-1/2 -translate-y-1/2 rounded-full"
+      className="pointer-events-none absolute z-[25] size-[min(22vw,9.5rem)] -translate-x-1/2 -translate-y-1/2 rounded-full"
       style={
         {
           left: position.x,

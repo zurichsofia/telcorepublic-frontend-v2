@@ -9,6 +9,7 @@ import {
 } from "react";
 
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
+import { isPastMountainView } from "@/lib/hero-nav-sync";
 import { subscribeLenisScroll, isLenisActive } from "@/lib/lenis-scroll";
 import { createScrollProgressStore } from "@/lib/snow-mountain/scroll-progress";
 
@@ -19,9 +20,14 @@ import {
   readHeroScrollProgress,
 } from "@/lib/snow-mountain/snow-mountain-hero-scroll";
 import { HERO_SECTION_VH } from "./snow-mountain-hero-scroll";
-import { SnowMountainHeroCursorGlow } from "./snow-mountain-hero-cursor-glow";
 import { SnowMountainHeroMotionScrollLayers } from "./snow-mountain-hero-motion-scroll-layers";
 import { SnowMountainHeroStickyLayer } from "./snow-mountain-hero-sticky-layer";
+
+function isCursorGlowActive(canvas: HTMLDivElement | null): boolean {
+  if (!canvas || isPastMountainView()) return false;
+  const rect = canvas.getBoundingClientRect();
+  return rect.bottom > 0 && rect.top < window.innerHeight;
+}
 
 export function SnowMountainHero() {
   const reduce = usePrefersReducedMotion();
@@ -42,6 +48,10 @@ export function SnowMountainHero() {
   const syncFromScroll = useCallback(() => {
     const hero = heroRef.current;
     if (!hero || reduce) return;
+
+    if (!isCursorGlowActive(heroCanvasRef.current)) {
+      setHeroCursor(null);
+    }
 
     const rect = hero.getBoundingClientRect();
     if (rect.bottom < 0) {
@@ -99,7 +109,10 @@ export function SnowMountainHero() {
     }
     const onMove = (e: MouseEvent) => {
       const el = heroCanvasRef.current;
-      if (!el) return;
+      if (!el || !isCursorGlowActive(el)) {
+        setHeroCursor(null);
+        return;
+      }
       const r = el.getBoundingClientRect();
       if (
         e.clientX < r.left ||
@@ -110,7 +123,10 @@ export function SnowMountainHero() {
         setHeroCursor(null);
         return;
       }
-      setHeroCursor({ x: e.clientX, y: e.clientY });
+      setHeroCursor({
+        x: e.clientX - r.left,
+        y: e.clientY - r.top,
+      });
     };
     window.addEventListener("mousemove", onMove, { passive: true });
     return () => window.removeEventListener("mousemove", onMove);
@@ -132,16 +148,13 @@ export function SnowMountainHero() {
         heroSectionRef={heroRef}
         heroProgress={scrollProgress}
         motionRef={heroParallaxMotionRef}
+        cursorGlowPosition={heroCursor}
       >
         <SnowMountainHeroMotionScrollLayers
           scrollProgress={scrollProgress}
           reduceMotion={!!reduce}
         />
       </SnowMountainHeroStickyLayer>
-
-      {!reduce && heroCursor != null ? (
-        <SnowMountainHeroCursorGlow position={heroCursor} />
-      ) : null}
 
       <div aria-hidden className="min-h-0 w-full shrink-0 grow basis-0" />
     </section>

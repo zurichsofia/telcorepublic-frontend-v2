@@ -7,12 +7,15 @@ import type { ScrollProgressStore } from "@/lib/snow-mountain/scroll-progress";
 import { SnowMountainScene } from "@/components/landing/snow-mountain/scene/snow-mountain-scene";
 import { cn } from "@/lib/utils";
 
+import { SnowMountainHeroCursorGlow } from "./snow-mountain-hero-cursor-glow";
+
 type SnowMountainHeroStickyLayerProps = {
   reduceMotion: boolean;
   heroCanvasRef: RefObject<HTMLDivElement | null>;
   heroSectionRef: RefObject<HTMLElement | null>;
   heroProgress: ScrollProgressStore;
   motionRef: MutableRefObject<SnowMountainParallaxMotion>;
+  cursorGlowPosition?: { x: number; y: number } | null;
   children?: ReactNode;
 };
 
@@ -22,6 +25,7 @@ export function SnowMountainHeroStickyLayer({
   heroSectionRef,
   heroProgress,
   motionRef,
+  cursorGlowPosition = null,
   children,
 }: SnowMountainHeroStickyLayerProps) {
   return (
@@ -39,6 +43,9 @@ export function SnowMountainHeroStickyLayer({
           motionRef={motionRef}
           className={!reduceMotion ? "cursor-none" : undefined}
         />
+        {!reduceMotion && cursorGlowPosition != null ? (
+          <SnowMountainHeroCursorGlow position={cursorGlowPosition} />
+        ) : null}
       </div>
 
       <div className="snow-mountain-hero-film" aria-hidden />
