@@ -23,8 +23,8 @@ export function readHeroScrollProgressFromScrollY(
   return Math.min(1, Math.max(0, (scrollY - heroOffsetTop) / heroHeight));
 }
 
-/** End of primary headline motion (used for cloud parallax vs scroll). */
-const CROSSFADE_END = 0.32;
+/** End of primary headline motion (first copy beat — matches layer section 1). */
+const CROSSFADE_END = 1 / 3;
 
 /** Map section progress to eased cinematic progress (camera + parallax). */
 export function mapHeroScrollProgress(sectionProgress: number): number {

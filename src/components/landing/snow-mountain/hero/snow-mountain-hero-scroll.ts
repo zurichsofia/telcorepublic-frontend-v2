@@ -1,5 +1,5 @@
-/** Mountain camera orbit + copy sequence (ends when orbit completes). */
-export const HERO_CAMERA_SCROLL_VH = 280;
+/** Mountain camera orbit + copy sequence — one viewport per copy beat (3 × 100vh). */
+export const HERO_CAMERA_SCROLL_VH = 300;
 
 /** Pinned hold — “Our Mission” stays on screen, camera frozen at final pose. */
 export const HERO_MISSION_HOLD_VH = 56;
