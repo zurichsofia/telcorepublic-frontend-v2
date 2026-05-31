@@ -66,7 +66,7 @@ export function AppShell({
   }
 
   return (
-    <SmoothScrollProvider enabled={isHome || isServiceDetail}>
+    <SmoothScrollProvider enabled={isServiceDetail}>
       <div
         className={cn(
           "relative z-10 flex min-h-screen flex-col",

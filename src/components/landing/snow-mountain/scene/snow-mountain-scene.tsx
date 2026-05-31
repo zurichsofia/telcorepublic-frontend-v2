@@ -8,15 +8,15 @@ import {
   useMemo,
   useRef,
   useEffect,
+  useState,
   type MutableRefObject,
-  type RefObject,
   type ReactNode,
+  type RefObject,
 } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Stage, useGLTF } from "@react-three/drei";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
-
 import * as THREE from "three";
 import { setConsoleFunction } from "three";
 
@@ -36,16 +36,14 @@ setConsoleFunction((type, message, ...params) => {
 });
 
 import { SNOW_MOUNTAIN_FOG_COLOR } from "@/lib/snow-mountain/snow-mountain-fog";
-import {
-  mapHeroScrollProgress,
-  readHeroScrollProgress,
-} from "@/lib/snow-mountain/snow-mountain-hero-scroll";
+import { mapHeroScrollProgress } from "@/lib/snow-mountain/snow-mountain-hero-scroll";
+import type { HeroScrollState } from "@/lib/snow-mountain/hero-scroll-state";
 import { applyTerrainIceStyle } from "@/lib/snow-mountain/snow-mountain-terrain-ice";
+import { HeroScrollLayoutSync } from "@/components/landing/snow-mountain/scene/hero-scroll-layout-sync";
 import { SnowMountainSceneParticles } from "@/components/landing/snow-mountain/scene/snow-mountain-scene-particles";
 import { markSceneReady, registerScene } from "@/lib/scene-ready";
 
 import { cn } from "@/lib/utils";
-import type { HeroProgressRead } from "@/lib/snow-mountain/scroll-progress";
 import {
   SnowMountainSceneClouds,
   type SnowMountainParallaxMotion,
@@ -68,16 +66,10 @@ useGLTF.preload("/scene/snow_mountain.glb");
 registerScene();
 
 type HeroScrollRead = {
-  getRawProgress: () => number;
-  /**
-   * Increment (via ref) so `HeroScrollCameraFraming` drops its cached baseline and
-   * re-snaps to whatever `Stage`/`Bounds` last fitted — avoids locking FOV/position
-   * before drei's post-GLB `Refit` runs (felt as an extra zoom-out on load).
-   */
+  getProgress: () => number;
   cameraBaselineGenerationRef: MutableRefObject<number>;
 };
 
-/** `getRawProgress()` inside `useFrame` — reads hero layout (same formula as CSS scroll sync). */
 const HeroScrollReadContext = createContext<HeroScrollRead | null>(null);
 
 function clamp01(p: number): number {
@@ -86,11 +78,33 @@ function clamp01(p: number): number {
   return p;
 }
 
-/** Map raw hero progress to eased cinematic t (matches mont-fort-style scroll curves). */
 function heroCameraProgress(raw: number, reduceMotion: boolean): number {
   const clamped = clamp01(raw);
   if (reduceMotion) return 0;
   return mapHeroScrollProgress(clamped);
+}
+
+/** Invert scroll orbit so Stage fit can be re-locked after GLB load at any scroll t. */
+function captureOrbitCameraBaseline(
+  camera: THREE.PerspectiveCamera,
+  t: number,
+  outBasePos: THREE.Vector3,
+): number {
+  const px = CAMERA_ORBIT_PIVOT.x;
+  const pz = CAMERA_ORBIT_PIVOT.z;
+  const yArc = HERO_ORBIT_HEIGHT_ARC * Math.sin(t * Math.PI);
+  const cx = camera.position.x - t * CAMERA_SCROLL_OFFSET_X;
+  const cy = camera.position.y - t * CAMERA_SCROLL_OFFSET_Y - yArc;
+  const cz = camera.position.z - t * CAMERA_SCROLL_OFFSET_Z;
+
+  const theta = Math.atan2(cx - px, cz - pz);
+  const theta0 = theta - t * HERO_SCROLL_ORBIT_RAD;
+  const rBreathe = 1 + HERO_ORBIT_RADIUS_BREATHE * Math.sin(t * Math.PI);
+  const rEff = Math.hypot(cx - px, cz - pz);
+  const r = rEff / Math.max(rBreathe, 1e-6);
+
+  outBasePos.set(px + r * Math.sin(theta0), cy, pz + r * Math.cos(theta0));
+  return camera.fov - t * HERO_SCROLL_ZOOM_FOV_DELTA;
 }
 
 /** Keeps exponential smoothers stable after visibility/background throttling (large `delta`). */
@@ -120,7 +134,6 @@ const CAMERA_SCROLL_OFFSET_X = 0;
 const CAMERA_SCROLL_OFFSET_Y = 0.14;
 const CAMERA_SCROLL_OFFSET_Z = 0;
 
-/** Sky/clouds opt out of fog; terrain shaders still carry haze — a touch more = softer horizon blend. */
 const FOG_EXP_BASE = 0.026;
 const FOG_EXP_BREATH = 0.0028;
 
@@ -188,24 +201,18 @@ function HeroScrollCameraFraming({ reduceMotion }: { reduceMotion: boolean; }) {
       basePosRef.current = null;
     }
 
-    const p = scrollRead?.getRawProgress() ?? 0;
+    const p = scrollRead?.getProgress() ?? 0;
     const t = heroCameraProgress(p, reduceMotion);
     const te = t;
 
-    /*
-     * Bounds uses `observe={false}`, so the fitted camera is not reset when the canvas resizes.
-     * This component already bakes scroll into `camera` each frame; naïvely cloning position/FOV
-     * after a resize would treat “scrolled” state as the new base and double-apply offsets.
-     * Recover the Stage baseline by reversing the scroll-driven deltas.
-     */
-    if (baseFovRef.current === null) {
-      baseFovRef.current = camera.fov - te * HERO_SCROLL_ZOOM_FOV_DELTA;
-    }
-    if (basePosRef.current === null) {
-      basePosRef.current = new THREE.Vector3(
-        camera.position.x - t * CAMERA_SCROLL_OFFSET_X,
-        camera.position.y - t * CAMERA_SCROLL_OFFSET_Y,
-        camera.position.z - t * CAMERA_SCROLL_OFFSET_Z,
+    if (baseFovRef.current === null || basePosRef.current === null) {
+      if (basePosRef.current === null) {
+        basePosRef.current = new THREE.Vector3();
+      }
+      baseFovRef.current = captureOrbitCameraBaseline(
+        camera,
+        t,
+        basePosRef.current,
       );
     }
 
@@ -285,7 +292,7 @@ function ParallaxWorld({
     const yaw = yawRigRef.current;
     if (!scrollRig || !mouseRig || !yaw) return;
 
-    const p = scrollRead?.getRawProgress() ?? 0;
+    const p = scrollRead?.getProgress() ?? 0;
     const t = heroCameraProgress(p, reduceMotion);
     const dt = clampFrameDelta(delta);
 
@@ -411,7 +418,7 @@ function SnowMountainModel({ reduceMotion }: { reduceMotion: boolean; }) {
   }, [baselineGenRef]);
 
   useFrame(() => {
-    const p = scrollRead?.getRawProgress() ?? 0;
+    const p = scrollRead?.getProgress() ?? 0;
     const t = heroCameraProgress(p, reduceMotion);
     if (rigRef.current) {
       rigRef.current.rotation.set(
@@ -429,8 +436,30 @@ function SnowMountainModel({ reduceMotion }: { reduceMotion: boolean; }) {
   );
 }
 
-function PostFx({ enabled }: { enabled: boolean; }) {
-  if (!enabled) return null;
+function PostFx({ enabled }: { enabled: boolean }) {
+  const size = useThree((s) => s.size);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    if (!enabled) {
+      setReady(false);
+      return;
+    }
+    let cancelled = false;
+    const id = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (!cancelled) setReady(true);
+      });
+    });
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(id);
+      setReady(false);
+    };
+  }, [enabled]);
+
+  if (!enabled || !ready || size.width === 0) return null;
+
   return (
     <EffectComposer multisampling={4} enableNormalPass={false}>
       <Bloom
@@ -448,18 +477,15 @@ const FALLBACK_PARALLAX_MOTION: MutableRefObject<SnowMountainParallaxMotion> = {
 };
 
 export type SnowMountainSceneProps = {
-  /** Hero `<section>` ref — progress is read from layout every R3F frame. */
-  heroSectionRef?: RefObject<HTMLElement | null>;
-  /** Hero scroll progress — drives camera orbit. */
-  heroProgress?: HeroProgressRead;
-  /** Cloud parallax driven from hero scroll (updated in `SnowMountainHero`). */
+  scrollState: HeroScrollState;
+  heroSectionRef: RefObject<HTMLElement | null>;
   motionRef?: MutableRefObject<SnowMountainParallaxMotion>;
   className?: string;
 };
 
 export function SnowMountainScene({
+  scrollState,
   heroSectionRef,
-  heroProgress,
   motionRef,
   className,
 }: SnowMountainSceneProps) {
@@ -467,21 +493,12 @@ export function SnowMountainScene({
   const parallaxMotionRef = motionRef ?? FALLBACK_PARALLAX_MOTION;
   const cameraBaselineGenerationRef = useRef(0);
 
-  useLayoutEffect(() => {
-    cameraBaselineGenerationRef.current += 1;
-  }, []);
-
   const scrollRead = useMemo((): HeroScrollRead => {
     return {
-      getRawProgress: () => {
-        if (reduceMotion) return 0;
-        if (heroProgress) return heroProgress.get();
-        const el = heroSectionRef?.current ?? null;
-        return readHeroScrollProgress(el);
-      },
+      getProgress: () => (reduceMotion ? 0 : scrollState.get()),
       cameraBaselineGenerationRef,
     };
-  }, [reduceMotion, heroSectionRef, heroProgress]);
+  }, [reduceMotion, scrollState]);
 
   /* `SnowMountainSceneClouds` uses its own `<Canvas>` — must not nest inside this Canvas (R3F rejects it). */
   return (
@@ -489,7 +506,7 @@ export function SnowMountainScene({
       <Canvas
         className="absolute inset-0 h-full w-full touch-none"
         camera={{ fov: 28, near: 0.1, far: 500 }}
-        dpr={[1, 2]}
+        dpr={[1, 1.5]}
         resize={{
           scroll: false,
           debounce: { scroll: 0, resize: 0 },
@@ -506,6 +523,12 @@ export function SnowMountainScene({
         }}
       >
         <HeroScrollReadContext.Provider value={scrollRead}>
+          <HeroScrollLayoutSync
+            sectionRef={heroSectionRef}
+            scrollState={scrollState}
+            motionRef={parallaxMotionRef}
+            reduceMotion={reduceMotion}
+          />
           <BreathingFogExp2 reduceMotion={reduceMotion} />
           <hemisphereLight args={["#a2acb5", "#3A3830", 0.6]} />
           {/* Warm daylight fill — brightens shadowed faces without adding hue */}
@@ -544,14 +567,14 @@ export function SnowMountainScene({
               >
                 <SnowMountainModel reduceMotion={reduceMotion} />
               </Stage>
+              <PostFx enabled={!reduceMotion} />
             </Suspense>
           </ParallaxWorld>
-
-          <PostFx enabled={!reduceMotion} />
         </HeroScrollReadContext.Provider>
       </Canvas>
       <SnowMountainSceneClouds
-        motionRef={parallaxMotionRef}
+        scrollState={scrollState}
+        sectionRef={heroSectionRef}
         reducedMotion={reduceMotion}
       />
     </div>

@@ -3,11 +3,11 @@
 import { useEffect, useRef, type CSSProperties } from "react";
 
 import { getHeroScrollLayerStyles } from "@/lib/snow-mountain/hero-scroll-layer-styles";
-import type { ScrollProgressStore } from "@/lib/snow-mountain/scroll-progress";
+import type { HeroScrollState } from "@/lib/snow-mountain/hero-scroll-state";
 import { cn } from "@/lib/utils";
 
 export type SnowMountainHeroMotionScrollLayersProps = {
-  scrollProgress: ScrollProgressStore;
+  scrollState: HeroScrollState;
   reduceMotion: boolean;
 };
 
@@ -65,9 +65,9 @@ function HeroMotionScrollLayersStatic() {
 }
 
 function HeroMotionScrollLayersAnimated({
-  scrollProgress,
+  scrollState,
 }: {
-  scrollProgress: ScrollProgressStore;
+  scrollState: HeroScrollState;
 }) {
   const primaryRef = useRef<HTMLDivElement>(null);
   const telcoRef = useRef<HTMLDivElement>(null);
@@ -75,9 +75,7 @@ function HeroMotionScrollLayersAnimated({
 
   useEffect(() => {
     const apply = () => {
-      const { primary, telco, mission } = getHeroScrollLayerStyles(
-        scrollProgress.get(),
-      );
+      const { primary, telco, mission } = getHeroScrollLayerStyles(scrollState.get());
 
       const primaryEl = primaryRef.current;
       if (primaryEl) {
@@ -99,8 +97,8 @@ function HeroMotionScrollLayersAnimated({
     };
 
     apply();
-    return scrollProgress.subscribe(apply);
-  }, [scrollProgress]);
+    return scrollState.subscribe(apply);
+  }, [scrollState]);
 
   return (
     <div className="pointer-events-none relative h-full w-full">
@@ -152,9 +150,9 @@ function HeroMotionScrollLayersAnimated({
 }
 
 export function SnowMountainHeroMotionScrollLayers({
-  scrollProgress,
+  scrollState,
   reduceMotion,
 }: SnowMountainHeroMotionScrollLayersProps) {
   if (reduceMotion) return <HeroMotionScrollLayersStatic />;
-  return <HeroMotionScrollLayersAnimated scrollProgress={scrollProgress} />;
+  return <HeroMotionScrollLayersAnimated scrollState={scrollState} />;
 }

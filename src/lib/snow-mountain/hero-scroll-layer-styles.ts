@@ -27,7 +27,6 @@ export type HeroScrollLayerStyles = {
   mission: { opacity: number; y: number; };
 };
 
-/** Linear 0–1 over the camera zone — equal vh per copy beat (not eased). */
 function getHeroScrollLayerT(sectionProgress: number): number {
   return getHeroCameraProgress(sectionProgress);
 }
@@ -37,9 +36,7 @@ export function getHeroScrollLayerStyles(sectionProgress: number): HeroScrollLay
   const fade = HERO_COPY_CROSSFADE;
 
   const primaryOpacity = 1 - smoothstep(HERO_COPY_S1_END - fade, HERO_COPY_S1_END, t);
-  const primaryY =
-    (1 - smoothstep(0, HERO_COPY_S1_END * 0.18, t)) * 56 +
-    smoothstep(HERO_COPY_S1_END - fade * 0.75, HERO_COPY_S1_END, t) * -36;
+  const primaryY = smoothstep(HERO_COPY_S1_END - fade * 0.75, HERO_COPY_S1_END, t) * -36;
 
   const telcoIn = smoothstep(HERO_COPY_S1_END - fade, HERO_COPY_S1_END, t);
   const telcoOut = smoothstep(HERO_COPY_S2_END - fade, HERO_COPY_S2_END, t);
@@ -50,9 +47,7 @@ export function getHeroScrollLayerStyles(sectionProgress: number): HeroScrollLay
 
   const missionIn = smoothstep(HERO_COPY_S2_END - fade, HERO_COPY_S2_END, t);
   const missionOpacity = missionIn;
-  const missionY =
-    (1 - smoothstep(HERO_COPY_S2_END - fade, HERO_COPY_S2_END, t)) * 60 +
-    smoothstep(HERO_COPY_S2_END + (1 - HERO_COPY_S2_END) * 0.55, 1 - 0.04, t) * -32;
+  const missionY = (1 - smoothstep(HERO_COPY_S2_END - fade, HERO_COPY_S2_END, t)) * 60;
 
   return {
     primary: { opacity: primaryOpacity, y: primaryY },

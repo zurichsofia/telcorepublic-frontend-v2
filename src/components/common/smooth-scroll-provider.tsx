@@ -24,10 +24,7 @@ type SmoothScrollProviderProps = {
   enabled?: boolean;
 };
 
-/**
- * Lenis smooth scroll — matches the feel of mont-fort.com and other Awwwards 3D landings.
- * Hero progress is read from layout on each Lenis scroll frame (see `readHeroScrollProgress`).
- */
+/** Lenis smooth scroll for immersive service detail routes. */
 export function SmoothScrollProvider({
   children,
   enabled = true,

@@ -87,6 +87,10 @@ export function PageLoader() {
       if (cleanedUp) return;
       setPhase("gone");
     };
+    if (!anim) {
+      onFinish();
+      return;
+    }
     anim.addEventListener("finish", onFinish);
     return () => {
       cleanedUp = true;

@@ -300,22 +300,31 @@ export function shellSurfaceClassName(
 
 export function useOverlayPastHero(theme: "default" | "blog" | "overlay") {
   const [pastHero, setPastHero] = useState(false);
+  const pastRef = useRef(false);
 
   useLayoutEffect(() => {
     if (theme !== "overlay") {
+      pastRef.current = false;
       setPastHero(false);
       return;
     }
 
     const sync = () => {
-      const next = isPastMountainView();
+      const next = isPastMountainView(pastRef.current);
+      pastRef.current = next;
       setPastHero((prev) => (prev === next ? prev : next));
     };
 
     sync();
     const offLenis = subscribeLenisScroll(sync);
+    let rafId = 0;
     const onNativeScroll = () => {
-      if (!isLenisActive()) sync();
+      if (isLenisActive()) return;
+      if (rafId !== 0) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        sync();
+      });
     };
     window.addEventListener("scroll", onNativeScroll, { passive: true });
     window.addEventListener("resize", sync);
@@ -323,6 +332,7 @@ export function useOverlayPastHero(theme: "default" | "blog" | "overlay") {
       offLenis();
       window.removeEventListener("scroll", onNativeScroll);
       window.removeEventListener("resize", sync);
+      if (rafId !== 0) cancelAnimationFrame(rafId);
     };
   }, [theme]);
 

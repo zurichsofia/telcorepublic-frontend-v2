@@ -1,15 +1,24 @@
-/** Nav switches when a light post-hero section reaches this viewport offset (px). */
-export const NAV_MOUNTAIN_EXIT_TOP_PX = 80;
+/** Nav switches to light surface when a post-hero section crosses this line (scroll down). */
+export const NAV_MOUNTAIN_ENTER_TOP_PX = 80;
+
+/** Nav returns to hero overlay when sections fall below this line (scroll up). */
+export const NAV_MOUNTAIN_EXIT_TOP_PX = 168;
 
 const LIGHT_SECTION_IDS = ["global-reach", "why-us-first-screen"] as const;
 
-export function isPastMountainView(
-  navOffsetPx = NAV_MOUNTAIN_EXIT_TOP_PX,
-): boolean {
+/**
+ * Whether the primary nav should use the post-hero (light) treatment.
+ * Hysteresis avoids a flip-flop / scroll “snap” feel at the hero boundary.
+ */
+export function isPastMountainView(currentlyPast = false): boolean {
+  const threshold = currentlyPast
+    ? NAV_MOUNTAIN_EXIT_TOP_PX
+    : NAV_MOUNTAIN_ENTER_TOP_PX;
+
   for (const id of LIGHT_SECTION_IDS) {
     const screen = document.getElementById(id);
     if (!screen) continue;
-    if (screen.getBoundingClientRect().top <= navOffsetPx) return true;
+    if (screen.getBoundingClientRect().top <= threshold) return true;
   }
   return false;
 }

@@ -1,10 +1,16 @@
 "use client";
 
 import * as THREE from "three";
-import type { MutableRefObject } from "react";
+import type { RefObject } from "react";
 import { Suspense, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Cloud, Clouds } from "@react-three/drei";
+import type { HeroScrollState } from "@/lib/snow-mountain/hero-scroll-state";
+import {
+  heroPrimaryParallaxX,
+  heroPrimaryParallaxY,
+  readHeroScrollProgress,
+} from "@/lib/snow-mountain/snow-mountain-hero-scroll";
 
 /** Scroll-driven motion shared with CSS parallax on the hero image (clouds stay out of transformed DOM). */
 export type SnowMountainParallaxMotion = {
@@ -217,56 +223,46 @@ function wrapCentered(value: number, width: number) {
 
 function HeroCloudScene({
   reducedMotion,
-  motionRef,
+  scrollState,
+  sectionRef,
 }: {
   reducedMotion: boolean;
-  motionRef: MutableRefObject<SnowMountainParallaxMotion>;
+  scrollState: HeroScrollState;
+  sectionRef: RefObject<HTMLElement | null>;
 }) {
   const parallaxRig = useRef<THREE.Group>(null);
-  const heightScaleRef = useRef(1);
+  const lastScrollYRef = useRef(-1);
   const cloudRefs = useRef<(THREE.Group | null)[]>(
     CLOUD_CONFIGS.map(() => null),
   );
 
   useFrame((state) => {
+    let scrollT = THREE.MathUtils.clamp(scrollState.get(), 0, 1);
+    const scrollY = window.scrollY;
+    if (scrollY !== lastScrollYRef.current) {
+      lastScrollYRef.current = scrollY;
+      const section = sectionRef.current;
+      if (section) {
+        scrollT = THREE.MathUtils.clamp(readHeroScrollProgress(section), 0, 1);
+      }
+    }
+
     const rig = parallaxRig.current;
     if (rig) {
-      const { x, y, scale } = motionRef.current;
-      // As you scroll down the hero, make the cloud band progressively taller (Y only).
-      // Keep X/Z scale stable so it reads as "rising/thickening" instead of zooming.
-      const scrollT = THREE.MathUtils.clamp(motionRef.current.scroll, 0, 1);
-      const heightScaleTarget = 1 + scrollT * 0.85;
-      // Smooth both directions (scroll down = taller, scroll up = shorter)
-      const lerp = reducedMotion
-        ? 1
-        : 1 -
-          Math.pow(
-            0.86,
-            Math.min(state.clock.getDelta(), 1 / 24) * 60,
-          );
-      heightScaleRef.current = THREE.MathUtils.lerp(
-        heightScaleRef.current,
-        heightScaleTarget,
-        lerp,
-      );
-      rig.scale.set(scale, scale * heightScaleRef.current, scale);
+      const x = heroPrimaryParallaxX(scrollT);
+      const y = heroPrimaryParallaxY(scrollT);
+      const heightScale = 1 + scrollT * 0.85;
+      rig.scale.set(1, heightScale, 1);
       rig.position.set(-x * PARALLAX_PX_TO_WORLD, -y * PARALLAX_PX_TO_WORLD, 0);
     }
 
-    // Scroll-driven atmosphere: as you scroll away from the hero, slightly soften + fade clouds.
-    // This is intentionally subtle so it reads as haze rather than a "CSS effect".
-    const scroll = motionRef.current.scroll;
+    const scroll = scrollT;
+    const canvas = state.gl.domElement;
     if (reducedMotion) {
-      state.gl.domElement.style.filter = "";
-      state.gl.domElement.style.opacity = "1";
+      canvas.style.opacity = "1";
     } else {
       const t = THREE.MathUtils.clamp(scroll, 0, 1);
-      const blurPx = 0.15 + t * 1.05;
-      const sat = 1 - t * 0.12;
-      const contrast = 1 - t * 0.04;
-      const opacity = 1 - t * 0.22;
-      state.gl.domElement.style.filter = `blur(${blurPx.toFixed(2)}px) saturate(${sat.toFixed(3)}) contrast(${contrast.toFixed(3)})`;
-      state.gl.domElement.style.opacity = opacity.toFixed(3);
+      canvas.style.opacity = (1 - t * 0.22).toFixed(3);
     }
 
     const t = state.clock.elapsedTime;
@@ -347,10 +343,12 @@ function HeroCloudScene({
 }
 
 export function SnowMountainSceneClouds({
-  motionRef,
+  scrollState,
+  sectionRef,
   reducedMotion,
 }: {
-  motionRef: MutableRefObject<SnowMountainParallaxMotion>;
+  scrollState: HeroScrollState;
+  sectionRef: RefObject<HTMLElement | null>;
   reducedMotion: boolean;
 }) {
   return (
@@ -368,7 +366,11 @@ export function SnowMountainSceneClouds({
         }}
       >
         <Suspense fallback={null}>
-          <HeroCloudScene reducedMotion={reducedMotion} motionRef={motionRef} />
+          <HeroCloudScene
+            reducedMotion={reducedMotion}
+            scrollState={scrollState}
+            sectionRef={sectionRef}
+          />
         </Suspense>
       </Canvas>
     </div>

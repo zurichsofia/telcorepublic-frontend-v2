@@ -1,7 +1,6 @@
-"use client";
+import { HERO_RELEASE_SCROLL_VH } from "@/components/landing/snow-mountain/hero/snow-mountain-hero-scroll";
 
 import WorldMap from "./world-map";
-import { HERO_RELEASE_SCROLL_VH } from "@/components/landing/snow-mountain/hero/snow-mountain-hero-scroll";
 
 const GLOBAL_REACH_DOTS = [
   {
@@ -35,7 +34,11 @@ export function GlobalReachMapSection() {
     <section
       id="global-reach"
       className="relative z-30 w-full overflow-hidden bg-white px-6 py-24 sm:px-10 sm:pb-36 lg:px-16 xl:px-20"
-      style={{ marginTop: `-${HERO_RELEASE_SCROLL_VH}vh` }}
+      style={
+        HERO_RELEASE_SCROLL_VH > 0
+          ? { marginTop: `-${HERO_RELEASE_SCROLL_VH}vh` }
+          : undefined
+      }
       aria-labelledby="global-reach-heading"
     >
       {/* <div className="relative mx-auto max-w-7xl px-5 text-center sm:px-8">
