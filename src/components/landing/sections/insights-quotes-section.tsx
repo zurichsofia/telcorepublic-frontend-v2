@@ -94,6 +94,13 @@ const exitTransition = {
   mass: 0.75,
 };
 
+/** Fixed bubble heights sized to fit the tallest quote at each slot (with lg variants). */
+const BUBBLE_HEIGHT_CLASS: Record<BubbleSize, string> = {
+  large: "h-[11rem] lg:h-[12rem]",
+  medium: "h-[9.25rem] lg:h-[10rem]",
+  small: "h-[7rem] lg:h-[9.5rem]",
+};
+
 const INITIAL_CARDS: StackCard[] = [
   { id: 0, quoteIndex: 0 },
   { id: 1, quoteIndex: 1 },
@@ -148,7 +155,8 @@ function MessageBubble({
   return (
     <div
       className={cn(
-        "relative w-full rounded-[18px] bg-[#1c1c1c] shadow-[0_20px_50px_rgba(0,0,0,0.55)]",
+        "relative flex w-full flex-col justify-center rounded-[18px] bg-[#1c1c1c] shadow-[0_20px_50px_rgba(0,0,0,0.55)]",
+        BUBBLE_HEIGHT_CLASS[size],
         size === "large" && "px-7 py-6 sm:px-8 sm:py-7",
         size === "medium" && "px-6 py-5 sm:px-7 sm:py-6",
         size === "small" && "px-5 py-4 sm:px-6 sm:py-5",
