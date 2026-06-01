@@ -60,14 +60,16 @@ export function FloatingLinesWhyUsBackground({
             interactive={false}
             parallax
             scrollParallaxSectionId={SECTION_ID}
-            scrollParallaxStrength={6}
-            animationSpeed={0.22}
+            scrollParallaxStrength={15}
+            maxPixelRatio={1.5}
+            animationFps={24}
+            animationSpeed={1}
             linesGradient={[...LINE_GRADIENT]}
-            enabledWaves={["middle", "bottom"]}
+            enabledWaves={["top", "bottom"]}
             lineCount={[4, 3]}
             lineDistance={[24, 30]}
-            middleWavePosition={{ x: -0.8, y: -0.6, rotate: 0.45 }}
-            bottomWavePosition={{ x: 1.4, y: -1.0, rotate: -0.35 }}
+            topWavePosition={{ x: 3, y: -0.95, rotate: 0.72 }}
+            bottomWavePosition={{ x: 1.8, y: -0.4, rotate: -0.45 }}
           />
         </div>
       </div>

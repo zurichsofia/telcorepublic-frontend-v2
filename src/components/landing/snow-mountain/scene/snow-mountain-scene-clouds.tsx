@@ -346,10 +346,12 @@ export function SnowMountainSceneClouds({
   scrollState,
   sectionRef,
   reducedMotion,
+  sceneActive = true,
 }: {
   scrollState: HeroScrollState;
   sectionRef: RefObject<HTMLElement | null>;
   reducedMotion: boolean;
+  sceneActive?: boolean;
 }) {
   return (
     <div
@@ -357,6 +359,7 @@ export function SnowMountainSceneClouds({
       aria-hidden
     >
       <Canvas
+        frameloop={sceneActive && !reducedMotion ? "always" : "never"}
         camera={{ position: [0, -10, 10], fov: 75 }}
         gl={{ alpha: true, antialias: true, powerPreference: "high-performance" }}
         dpr={[1, 1.5]}

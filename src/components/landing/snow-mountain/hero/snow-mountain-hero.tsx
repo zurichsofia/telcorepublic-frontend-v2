@@ -43,6 +43,7 @@ export function SnowMountainHero() {
     x: number;
     y: number;
   } | null>(null);
+  const [sceneActive, setSceneActive] = useState(true);
 
   const syncProgress = useCallback(() => {
     const hero = heroRef.current;
@@ -70,6 +71,24 @@ export function SnowMountainHero() {
     }
     syncProgress();
   }, [reduce, scrollState, syncProgress]);
+
+  useEffect(() => {
+    if (reduce) {
+      setSceneActive(false);
+      return;
+    }
+    const canvas = heroCanvasRef.current;
+    if (!canvas) return;
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        setSceneActive(entry?.isIntersecting ?? false);
+      },
+      { root: null, rootMargin: "0px", threshold: 0 },
+    );
+    io.observe(canvas);
+    return () => io.disconnect();
+  }, [reduce]);
 
   useEffect(() => {
     if (reduce) {
@@ -113,6 +132,7 @@ export function SnowMountainHero() {
     >
       <SnowMountainHeroStickyLayer
         reduceMotion={!!reduce}
+        sceneActive={sceneActive}
         heroSectionRef={heroRef}
         heroCanvasRef={heroCanvasRef}
         scrollState={scrollState}

@@ -11,6 +11,7 @@ import { SnowMountainHeroCursorGlow } from "./snow-mountain-hero-cursor-glow";
 
 type SnowMountainHeroStickyLayerProps = {
   reduceMotion: boolean;
+  sceneActive?: boolean;
   heroSectionRef: RefObject<HTMLElement | null>;
   heroCanvasRef: RefObject<HTMLDivElement | null>;
   scrollState: HeroScrollState;
@@ -21,6 +22,7 @@ type SnowMountainHeroStickyLayerProps = {
 
 export function SnowMountainHeroStickyLayer({
   reduceMotion,
+  sceneActive = true,
   heroSectionRef,
   heroCanvasRef,
   scrollState,
@@ -41,6 +43,7 @@ export function SnowMountainHeroStickyLayer({
           scrollState={scrollState}
           heroSectionRef={heroSectionRef}
           motionRef={motionRef}
+          sceneActive={sceneActive}
           className={!reduceMotion ? "cursor-none" : undefined}
         />
         {!reduceMotion && cursorGlowPosition != null ? (

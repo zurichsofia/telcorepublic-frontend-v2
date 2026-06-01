@@ -480,6 +480,7 @@ export type SnowMountainSceneProps = {
   scrollState: HeroScrollState;
   heroSectionRef: RefObject<HTMLElement | null>;
   motionRef?: MutableRefObject<SnowMountainParallaxMotion>;
+  sceneActive?: boolean;
   className?: string;
 };
 
@@ -487,6 +488,7 @@ export function SnowMountainScene({
   scrollState,
   heroSectionRef,
   motionRef,
+  sceneActive = true,
   className,
 }: SnowMountainSceneProps) {
   const reduceMotion = usePrefersReducedMotion();
@@ -505,6 +507,7 @@ export function SnowMountainScene({
     <div className={cn("relative h-full min-h-dvh w-full", className)}>
       <Canvas
         className="absolute inset-0 h-full w-full touch-none"
+        frameloop={sceneActive && !reduceMotion ? "always" : "never"}
         camera={{ fov: 28, near: 0.1, far: 500 }}
         dpr={[1, 1.5]}
         resize={{
@@ -576,6 +579,7 @@ export function SnowMountainScene({
         scrollState={scrollState}
         sectionRef={heroSectionRef}
         reducedMotion={reduceMotion}
+        sceneActive={sceneActive}
       />
     </div>
   );

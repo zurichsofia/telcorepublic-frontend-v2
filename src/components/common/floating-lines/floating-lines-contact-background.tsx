@@ -59,7 +59,7 @@ export function FloatingLinesContactBackground({
     >
       {/* Edge mask: top/bottom show parent `bg-telco-dark` only (same as nav/footer), so plus-lighter output never abuts the flat shell. */}
       <div
-        className="pointer-events-auto absolute inset-0 z-0 opacity-40 sm:opacity-50"
+        className="pointer-events-none absolute inset-0 z-0 opacity-40 sm:opacity-50"
         style={{
           maskImage: EDGE_FADE_MASK,
           WebkitMaskImage: EDGE_FADE_MASK,
@@ -72,15 +72,10 @@ export function FloatingLinesContactBackground({
           enabledWaves={["top", "middle", "bottom"]}
           lineCount={[2, 3, 2]}
           lineDistance={[26, 20, 26]}
-          bendRadius={5.5}
-          bendStrength={-0.55}
-          mouseDamping={0.1}
-          interactive
-          parallax
-          parallaxStrength={0.1}
+          interactive={false}
+          parallax={false}
           animationSpeed={0.38}
           linesGradient={[...LINE_GRADIENT]}
-          lightBackground={false}
           mixBlendMode="plus-lighter"
         />
       </div>

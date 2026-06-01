@@ -114,20 +114,45 @@ function OceanStrip({
   videoSrc: string;
   reduceMotion: boolean;
 }) {
+  const stripRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
+    const strip = stripRef.current;
     const v = videoRef.current;
-    if (!v) return;
+    if (!strip || !v) return;
+
     if (reduceMotion) {
       v.pause();
       return;
     }
-    void v.play().catch(() => { });
+
+    const syncPlayback = (inView: boolean) => {
+      if (inView) {
+        void v.play().catch(() => {});
+      } else {
+        v.pause();
+      }
+    };
+
+    if (typeof IntersectionObserver === "undefined") {
+      syncPlayback(true);
+      return;
+    }
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry) syncPlayback(entry.isIntersecting);
+      },
+      { root: null, rootMargin: "0px", threshold: 0.05 },
+    );
+    io.observe(strip);
+    return () => io.disconnect();
   }, [reduceMotion, videoSrc]);
 
   return (
     <div
+      ref={stripRef}
       className="relative h-[min(50vw,480px)] min-h-[240px] w-full overflow-hidden bg-black sm:min-h-[280px] lg:min-h-[320px]"
       aria-hidden
     >
@@ -139,7 +164,6 @@ function OceanStrip({
         playsInline
         loop={!reduceMotion}
         preload="metadata"
-        autoPlay={!reduceMotion}
       />
     </div>
   );

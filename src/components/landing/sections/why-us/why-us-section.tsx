@@ -113,7 +113,7 @@ function WhyChapter({
 
 export function WhyUsSection() {
   return (
-    <FloatingLinesWhyUsBackground className="z-20 w-full px-6 py-12 sm:px-10 sm:py-16 lg:px-16 lg:py-20 xl:px-20">
+    <FloatingLinesWhyUsBackground className="z-20 w-full px-6 pt-12 pb-20 sm:px-10 sm:pt-16 sm:pb-24 lg:px-16 lg:pt-20 lg:pb-28 xl:px-20">
       <section
         className="mx-auto w-full max-w-7xl overflow-x-clip"
         aria-label="Why Telco Republic"
@@ -127,13 +127,17 @@ export function WhyUsSection() {
             headingId={i === 0 ? "why-us-entry" : undefined}
             sectionClassName={
               i === 0
-                ? "min-h-[min(100svh,56rem)] pt-20 sm:pt-28"
-                : "py-24 sm:py-28 md:py-32"
+                ? "min-h-[min(75svh,44rem)] pt-12 pb-16 sm:pt-16 sm:pb-20 md:pb-24"
+                : "py-16 sm:py-20 md:py-24"
             }
             sectionId={i === 0 ? "why-us-first-screen" : undefined}
             labelledBy={i === 0 ? "why-us-entry" : undefined}
           />
         ))}
+        <div
+          className="pointer-events-none h-[min(24svh,18rem)] shrink-0 sm:h-[min(28svh,22rem)]"
+          aria-hidden
+        />
       </section>
     </FloatingLinesWhyUsBackground>
   );

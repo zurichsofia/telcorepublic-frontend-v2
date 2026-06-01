@@ -13,7 +13,7 @@ import {
   WebGLRenderer
 } from 'three';
 
-import { getLenisScrollY, subscribeLenisScroll } from '@/lib/lenis-scroll';
+import { getLenisScrollY, isLenisActive, subscribeLenisScroll } from '@/lib/lenis-scroll';
 
 const vertexShader = `
 precision highp float;
@@ -60,10 +60,6 @@ uniform vec3 lineGradient[8];
 uniform int lineGradientCount;
 
 uniform float uLightBackground;
-uniform float uAlphaTop;
-uniform float uAlphaMiddle;
-uniform float uAlphaBottom;
-uniform vec2 uLayoutBias;
 
 const vec3 BLACK = vec3(0.0);
 const vec3 PINK  = vec3(233.0, 71.0, 245.0) / 255.0;
@@ -120,13 +116,12 @@ vec3 getLineColor(float t, vec3 baseColor) {
 
   if (shouldBend) {
     vec2 d = screenUv - mouseUv;
-    float influence = exp(-dot(d, d) * bendRadius); // radial falloff around cursor
+    float influence = exp(-dot(d, d) * bendRadius);
     float bendOffset = (mouseUv.y - screenUv.y) * influence * bendStrength * bendInfluence;
     y += bendOffset;
   }
 
   float m = uv.y - y;
-  /* Default: soft ribbons. Light mode: tighter core + much lower tail so red does not bloom across white. */
   if (uLightBackground > 0.5) {
     return 0.0108 / max(abs(m) + 0.0046, 1e-4) + 0.0034;
   }
@@ -140,8 +135,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
   if (parallax) {
     baseUv += parallaxOffset;
   }
-  /* Scroll-driven framing: bias shifts where ribbons read on screen (e.g. right → mid / lower-right). */
-  baseUv += uLayoutBias;
 
   vec3 col = vec3(0.0);
 
@@ -168,7 +161,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         baseUv,
         mouseUv,
         interactive
-      ) * bottomGain * uAlphaBottom;
+      ) * bottomGain;
     }
   }
 
@@ -180,7 +173,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
       
       float angle = middleWavePosition.z * log(length(baseUv) + 1.0);
       vec2 ruv = baseUv * rotate(angle);
-      /* Default middle uses implicit 1.0 gain — much stronger than top/bottom in React Bits. */
       float middleGain = mix(1.0, 0.26, step(0.5, uLightBackground));
       col += lineCol * wave(
         ruv + vec2(middleLineDistance * fi + middleWavePosition.x, middleWavePosition.y),
@@ -188,7 +180,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         baseUv,
         mouseUv,
         interactive
-      ) * middleGain * uAlphaMiddle;
+      ) * middleGain;
     }
   }
 
@@ -208,15 +200,13 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         baseUv,
         mouseUv,
         interactive
-      ) * topGain * uAlphaTop;
+      ) * topGain;
     }
   }
 
-  /* Light mode: gate on energy + luminance; cap tint so strokes stay crisp, not neon smear. */
   if (uLightBackground > 0.5) {
     float energy = length(col);
     float lum = dot(col, vec3(0.2126, 0.7152, 0.0722));
-    /* Keep very light gradient stops (e.g. first line) visible after UV scroll-shift. */
     float floorEnergy = 0.058;
     if (energy < floorEnergy && lum < 0.028) {
       fragColor = vec4(1.0, 1.0, 1.0, 1.0);
@@ -260,31 +250,25 @@ type FloatingLinesProps = {
   bendRadius?: number;
   bendStrength?: number;
   mouseDamping?: number;
+  /**
+   * Enables parallax UV shift. When false, both mouse and scroll parallax are off.
+   * When true and `scrollParallaxStrength` > 0, only scroll parallax runs (mouse is skipped).
+   */
   parallax?: boolean;
   parallaxStrength?: number;
   /**
-   * When > 0, maps page scroll to `parallaxOffset` so the field drifts with scroll
-   * (useful with `interactive={false}` for a site backdrop).
+   * Scroll-driven UV shift strength (requires `parallax={true}`). Maps scroll progress to
+   * `parallaxOffset` (use with `scrollParallaxSectionId` on long sections).
    */
   scrollParallaxStrength?: number;
-  /**
-   * When set, parallax follows linear progress through this element (0 at section
-   * entry → increases through its full height). Keeps drift continuous on long sections.
-   */
   scrollParallaxSectionId?: string;
   mixBlendMode?: React.CSSProperties['mixBlendMode'];
-  /** Map the shader’s additive strokes onto a white field (avoids graying the whole canvas). */
+  /** Map additive strokes onto a white field (Why Us / app backdrop). */
   lightBackground?: boolean;
-  /**
-   * After `#hero`’s fold, fade top/middle so only the bottom wave remains for long editorial
-   * scroll (parallax still applies to the surviving field).
-   */
-  consolidateWavesOnEditorialScroll?: boolean;
-  /**
-   * Nudges the field toward the **right** when scroll is low, then eases toward **center + lower-right**
-   * as `scrollY` increases (pairs well with `consolidateWavesOnEditorialScroll`).
-   */
-  scrollBiasedFieldLayout?: boolean;
+  /** Cap device pixel ratio (default 2). */
+  maxPixelRatio?: number;
+  /** Max render rate for non-interactive backgrounds (default 24). */
+  animationFps?: number;
 };
 
 function hexToVec3(hex: string): Vector3 {
@@ -330,9 +314,11 @@ export default function FloatingLines({
   scrollParallaxSectionId,
   mixBlendMode = 'screen',
   lightBackground = false,
-  consolidateWavesOnEditorialScroll = false,
-  scrollBiasedFieldLayout = false
+  maxPixelRatio = 2,
+  animationFps = 24,
 }: FloatingLinesProps) {
+  const useScrollParallax = parallax && scrollParallaxStrength > 0;
+  const useMouseParallax = parallax && scrollParallaxStrength <= 0;
   const containerRef = useRef<HTMLDivElement | null>(null);
   const targetMouseRef = useRef<Vector2>(new Vector2(-1000, -1000));
   const currentMouseRef = useRef<Vector2>(new Vector2(-1000, -1000));
@@ -340,8 +326,6 @@ export default function FloatingLines({
   const currentInfluenceRef = useRef<number>(0);
   const targetParallaxRef = useRef<Vector2>(new Vector2(0, 0));
   const currentParallaxRef = useRef<Vector2>(new Vector2(0, 0));
-  const waveAlphaSmoothedRef = useRef({ top: 1, middle: 1, bottom: 1 });
-  const layoutBiasSmoothedRef = useRef(new Vector2(-0.38, -0.05));
 
   const getLineCount = (waveType: 'top' | 'middle' | 'bottom'): number => {
     if (typeof lineCount === 'number') return lineCount;
@@ -378,7 +362,7 @@ export default function FloatingLines({
 
     const renderer = new WebGLRenderer({ antialias: true, alpha: false });
     renderer.setPixelRatio(
-      Math.min(window.devicePixelRatio || 1, scrollParallaxSectionId ? 1.5 : 2),
+      Math.min(window.devicePixelRatio || 1, maxPixelRatio),
     );
     renderer.domElement.style.width = '100%';
     renderer.domElement.style.height = '100%';
@@ -425,7 +409,7 @@ export default function FloatingLines({
       bendStrength: { value: bendStrength },
       bendInfluence: { value: 0 },
 
-      parallax: { value: parallax },
+      parallax: { value: useMouseParallax || useScrollParallax },
       parallaxStrength: { value: parallaxStrength },
       parallaxOffset: { value: new Vector2(0, 0) },
 
@@ -434,13 +418,7 @@ export default function FloatingLines({
       },
       lineGradientCount: { value: 0 },
 
-      uLightBackground: { value: lightBackground ? 1 : 0 },
-
-      uAlphaTop: { value: 1 },
-      uAlphaMiddle: { value: 1 },
-      uAlphaBottom: { value: 1 },
-
-      uLayoutBias: { value: new Vector2(0, 0) }
+      uLightBackground: { value: lightBackground ? 1 : 0 }
     };
 
     if (linesGradient && linesGradient.length > 0) {
@@ -493,7 +471,7 @@ export default function FloatingLines({
     let sectionScrollHeight = 0;
 
     const syncSectionScrollMetrics = () => {
-      if (!scrollParallaxSectionId || typeof document === "undefined") return;
+      if (!scrollParallaxSectionId || typeof document === 'undefined') return;
 
       const section = document.getElementById(scrollParallaxSectionId);
       if (!section) return;
@@ -501,92 +479,115 @@ export default function FloatingLines({
       const vh = Math.max(window.innerHeight, 1);
       const rect = section.getBoundingClientRect();
       const scrollY = getLenisScrollY();
-      // Document-space bounds (offsetTop breaks with negative-margin sections).
       sectionScrollTop = scrollY + rect.top;
       sectionScrollHeight = Math.max(rect.height, vh);
     };
 
     if (scrollParallaxSectionId) {
       syncSectionScrollMetrics();
-      window.addEventListener("resize", syncSectionScrollMetrics, { passive: true });
+      window.addEventListener('resize', syncSectionScrollMetrics, { passive: true });
     }
 
-    const sectionRo =
-      scrollParallaxSectionId && typeof ResizeObserver !== "undefined"
+    const sectionMetricsRo =
+      scrollParallaxSectionId && typeof ResizeObserver !== 'undefined'
         ? new ResizeObserver(() => {
           if (!active) return;
           syncSectionScrollMetrics();
         })
         : null;
 
-    if (sectionRo && scrollParallaxSectionId) {
+    if (sectionMetricsRo && scrollParallaxSectionId) {
       const sectionEl = document.getElementById(scrollParallaxSectionId);
-      if (sectionEl) sectionRo.observe(sectionEl);
+      if (sectionEl) sectionMetricsRo.observe(sectionEl);
     }
 
-    const handlePointerMove = (event: PointerEvent) => {
+    const applyPointer = (clientX: number, clientY: number) => {
       const rect = renderer.domElement.getBoundingClientRect();
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
       const dpr = renderer.getPixelRatio();
 
-      targetMouseRef.current.set(x * dpr, (rect.height - y) * dpr);
-      targetInfluenceRef.current = 1.0;
+      if (interactive) {
+        targetMouseRef.current.set(x * dpr, (rect.height - y) * dpr);
+        targetInfluenceRef.current = 1.0;
+      }
 
-      if (parallax) {
+      if (useMouseParallax) {
         const centerX = rect.width / 2;
         const centerY = rect.height / 2;
         const offsetX = (x - centerX) / rect.width;
         const offsetY = -(y - centerY) / rect.height;
-        targetParallaxRef.current.set(offsetX * parallaxStrength, offsetY * parallaxStrength);
+        targetParallaxRef.current.set(
+          offsetX * parallaxStrength,
+          offsetY * parallaxStrength,
+        );
       }
+    };
+
+    const handlePointerMove = (event: PointerEvent) => {
+      applyPointer(event.clientX, event.clientY);
+    };
+
+    const handleWindowPointerMove = (event: PointerEvent) => {
+      applyPointer(event.clientX, event.clientY);
     };
 
     const handlePointerLeave = () => {
       targetInfluenceRef.current = 0.0;
+      if (useMouseParallax) {
+        targetParallaxRef.current.set(0, 0);
+      }
     };
 
-    if (interactive) {
+    const trackPointerOnWindow = useMouseParallax && !interactive;
+
+    if (trackPointerOnWindow) {
+      window.addEventListener('pointermove', handleWindowPointerMove, {
+        passive: true,
+      });
+    } else if (interactive || useMouseParallax) {
       renderer.domElement.addEventListener('pointermove', handlePointerMove);
       renderer.domElement.addEventListener('pointerleave', handlePointerLeave);
     }
 
-    /** Start the loop before the section enters view so the first visible frame is not a cold GPU hit. */
     const PREWARM_VH = 1;
+    let sectionVisible = !scrollParallaxSectionId;
 
     let raf = 0;
     let loopRunning = false;
+    let lastRenderMs = 0;
+    const minFrameMs = 1000 / Math.max(animationFps, 1);
 
     const scheduleLoop = () => {
       if (!active || loopRunning) return;
+      if (scrollParallaxSectionId && !sectionVisible) return;
       loopRunning = true;
       raf = requestAnimationFrame(renderLoop);
     };
 
-    const getSectionScrollState = () => {
+    const getSectionInView = () => {
       const scrollY = getLenisScrollY();
       const vh = Math.max(window.innerHeight, 1);
       const sectionBottom = sectionScrollTop + sectionScrollHeight;
-      const inPrewarm =
+      return (
         scrollY + vh > sectionScrollTop - vh * PREWARM_VH &&
-        scrollY < sectionBottom + vh * 0.2;
-      return { inPrewarm };
+        scrollY < sectionBottom
+      );
     };
 
-    const renderLoop = () => {
-      loopRunning = false;
-
-      if (!active) return;
-
-      let inPrewarm = true;
-      if (scrollParallaxSectionId && typeof window !== "undefined") {
-        if (sectionScrollHeight <= 0) syncSectionScrollMetrics();
-        inPrewarm = getSectionScrollState().inPrewarm;
+    const shouldAnimate = () => {
+      if (!active) return false;
+      if (scrollParallaxSectionId && !sectionVisible) return false;
+      if (scrollParallaxSectionId && typeof window !== 'undefined') {
+        return getSectionInView();
       }
+      return true;
+    };
 
-      if (scrollParallaxSectionId && !inPrewarm) {
-        return;
-      }
+    const renderFrame = (now: number) => {
+      if (!shouldAnimate()) return;
+      if (now - lastRenderMs < minFrameMs) return;
+      lastRenderMs = now;
 
       uniforms.iTime.value = clock.getElapsedTime();
 
@@ -598,136 +599,124 @@ export default function FloatingLines({
         uniforms.bendInfluence.value = currentInfluenceRef.current;
       }
 
-      if (parallax) {
+      let scrollPx = 0;
+      let scrollPy = 0;
+
+      if (useScrollParallax && typeof window !== 'undefined') {
         const s = scrollParallaxStrength;
-        let scrollPx = 0;
-        let scrollPy = 0;
-        if (s > 0 && typeof window !== "undefined") {
-          const vh = Math.max(window.innerHeight, 1);
-          const scrollY = getLenisScrollY();
+        const vh = Math.max(window.innerHeight, 1);
+        const scrollY = getLenisScrollY();
 
-          if (scrollParallaxSectionId && sectionScrollHeight <= 0) {
-            syncSectionScrollMetrics();
-          }
-
-          if (scrollParallaxSectionId) {
-            const traveled = scrollY - sectionScrollTop + vh * 0.12;
-            const progress = Math.max(0, traveled / sectionScrollHeight);
-            scrollPx = progress * s * 0.032;
-            scrollPy = progress * s * 0.068;
-          } else {
-            const rawVy = scrollY / vh;
-            /* Cap drift so strokes do not shear out of frame or collapse under the light-mode gate. */
-            const vy = Math.tanh(rawVy / 2.6) * 4.2;
-            scrollPx = vy * s * 0.028;
-            scrollPy = vy * s * 0.058;
-          }
-        }
-
-        if (interactive) {
-          currentParallaxRef.current.lerp(targetParallaxRef.current, mouseDamping);
-          uniforms.parallaxOffset.value.set(
-            currentParallaxRef.current.x + scrollPx,
-            currentParallaxRef.current.y + scrollPy,
-          );
+        if (scrollParallaxSectionId) {
+          if (sectionScrollHeight <= 0) syncSectionScrollMetrics();
+          const traveled = scrollY - sectionScrollTop + vh * 0.12;
+          const progress = Math.max(0, traveled / sectionScrollHeight);
+          scrollPx = progress * s * 0.032;
+          scrollPy = progress * s * 0.068;
         } else {
-          const target = targetParallaxRef.current;
-          target.set(scrollPx, scrollPy);
-          const parallaxLerp = scrollParallaxSectionId ? 0.14 : 1;
-          if (parallaxLerp >= 1) {
-            uniforms.parallaxOffset.value.copy(target);
-          } else {
-            currentParallaxRef.current.lerp(target, parallaxLerp);
-            uniforms.parallaxOffset.value.copy(currentParallaxRef.current);
-          }
+          const rawVy = scrollY / vh;
+          const vy = Math.tanh(rawVy / 2.6) * 4.2;
+          scrollPx = vy * s * 0.028;
+          scrollPy = vy * s * 0.058;
         }
       }
 
-      if (consolidateWavesOnEditorialScroll && typeof document !== "undefined") {
-        const hero = document.getElementById("hero");
-        const vh = Math.max(window.innerHeight, 1);
-        let t = 0;
-        if (hero) {
-          const foldY = hero.offsetTop + hero.offsetHeight;
-          const rel = getLenisScrollY() - foldY + vh * 0.06;
-          t = Math.min(1, Math.max(0, rel / (vh * 2.15)));
+      if (useMouseParallax) {
+        currentParallaxRef.current.lerp(targetParallaxRef.current, mouseDamping);
+        uniforms.parallaxOffset.value.set(
+          currentParallaxRef.current.x + scrollPx,
+          currentParallaxRef.current.y + scrollPy,
+        );
+      } else if (useScrollParallax) {
+        const target = targetParallaxRef.current;
+        target.set(scrollPx, scrollPy);
+        const lerp = scrollParallaxSectionId ? 0.14 : 1;
+        if (lerp >= 1) {
+          uniforms.parallaxOffset.value.copy(target);
+        } else {
+          currentParallaxRef.current.lerp(target, lerp);
+          uniforms.parallaxOffset.value.copy(currentParallaxRef.current);
         }
-        const smoothstep = (e0: number, e1: number, x: number) => {
-          const u = Math.min(1, Math.max(0, (x - e0) / Math.max(1e-6, e1 - e0)));
-          return u * u * (3 - 2 * u);
-        };
-        const targetTop = 1 - smoothstep(0, 0.5, t);
-        const targetMiddle = 1 - smoothstep(0.08, 0.58, t);
-        const w = waveAlphaSmoothedRef.current;
-        const k = 0.11;
-        w.top += (targetTop - w.top) * k;
-        w.middle += (targetMiddle - w.middle) * k;
-        w.bottom = 1;
-        uniforms.uAlphaTop.value = w.top;
-        uniforms.uAlphaMiddle.value = w.middle;
-        uniforms.uAlphaBottom.value = w.bottom;
-      } else {
-        uniforms.uAlphaTop.value = 1;
-        uniforms.uAlphaMiddle.value = 1;
-        uniforms.uAlphaBottom.value = 1;
-        waveAlphaSmoothedRef.current.top = 1;
-        waveAlphaSmoothedRef.current.middle = 1;
-        waveAlphaSmoothedRef.current.bottom = 1;
       }
 
-      if (scrollBiasedFieldLayout && typeof window !== "undefined") {
-        const vh = Math.max(window.innerHeight, 1);
-        const raw = getLenisScrollY() / vh;
-        const t = Math.min(1, Math.tanh(raw / 1.72));
-        /* Negative x pulls dominant ribbons to the viewport right early; ease toward center + down for lower-right read. */
-        const targetX = -0.44 * (1.0 - t) + 0.06 * t;
-        const targetY = -0.05 * (1.0 - t) + 0.24 * t;
-        const lb = layoutBiasSmoothedRef.current;
-        lb.x += (targetX - lb.x) * 0.1;
-        lb.y += (targetY - lb.y) * 0.1;
-        uniforms.uLayoutBias.value.copy(lb);
-      } else {
-        uniforms.uLayoutBias.value.set(0, 0);
-        layoutBiasSmoothedRef.current.set(0, 0);
-      }
+      renderer.render(scene, camera);
+    };
 
-      if (inPrewarm) {
-        renderer.render(scene, camera);
-      }
+    const renderLoop = (now: number) => {
+      loopRunning = false;
+      if (!shouldAnimate()) return;
+      renderFrame(now);
       scheduleLoop();
     };
 
-    // Compile shaders / warm GPU before scroll reaches the section.
     uniforms.iTime.value = 0;
     renderer.render(scene, camera);
-    requestAnimationFrame(() => {
-      if (!active) return;
-      renderer.render(scene, camera);
-      scheduleLoop();
-    });
+    lastRenderMs = performance.now();
+    scheduleLoop();
 
-    const offLenisScroll =
-      scrollParallaxSectionId && typeof window !== "undefined"
-        ? subscribeLenisScroll(() => {
-            const { inPrewarm } = getSectionScrollState();
-            if (inPrewarm) scheduleLoop();
-          })
-        : undefined;
+    let sectionIo: IntersectionObserver | undefined;
+    if (scrollParallaxSectionId && typeof IntersectionObserver !== 'undefined') {
+      const sectionEl = document.getElementById(scrollParallaxSectionId);
+      if (sectionEl) {
+        sectionIo = new IntersectionObserver(
+          (entries) => {
+            const entry = entries[0];
+            if (!entry || !active) return;
+            sectionVisible = entry.isIntersecting;
+            renderer.domElement.style.visibility = sectionVisible
+              ? 'visible'
+              : 'hidden';
+            if (sectionVisible) scheduleLoop();
+          },
+          {
+            root: null,
+            rootMargin: `${PREWARM_VH * 100}% 0px 0px 0px`,
+            threshold: 0,
+          },
+        );
+        sectionIo.observe(sectionEl);
+      }
+    }
+
+    const wakeLoop = useScrollParallax && scrollParallaxSectionId
+      ? () => {
+          if (sectionScrollHeight <= 0) syncSectionScrollMetrics();
+          if (sectionVisible || getSectionInView()) {
+            lastRenderMs = 0;
+            scheduleLoop();
+          }
+        }
+      : undefined;
+
+    const offLenisScroll = wakeLoop
+      ? subscribeLenisScroll(wakeLoop)
+      : undefined;
+
+    if (wakeLoop && !isLenisActive()) {
+      window.addEventListener('scroll', wakeLoop, { passive: true });
+    }
 
     return () => {
       active = false;
-      offLenisScroll?.();
 
       cancelAnimationFrame(raf);
 
       if (ro) ro.disconnect();
+      sectionMetricsRo?.disconnect();
+      sectionIo?.disconnect();
 
-      if (sectionRo) sectionRo.disconnect();
       if (scrollParallaxSectionId) {
-        window.removeEventListener("resize", syncSectionScrollMetrics);
+        window.removeEventListener('resize', syncSectionScrollMetrics);
       }
 
-      if (interactive) {
+      offLenisScroll?.();
+      if (wakeLoop) {
+        window.removeEventListener('scroll', wakeLoop);
+      }
+
+      if (trackPointerOnWindow) {
+        window.removeEventListener('pointermove', handleWindowPointerMove);
+      } else if (interactive || useMouseParallax) {
         renderer.domElement.removeEventListener('pointermove', handlePointerMove);
         renderer.domElement.removeEventListener('pointerleave', handlePointerLeave);
       }
@@ -740,7 +729,6 @@ export default function FloatingLines({
         renderer.domElement.parentElement.removeChild(renderer.domElement);
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- React Bits vendor effect
   }, [
     linesGradient,
     enabledWaves,
@@ -759,8 +747,8 @@ export default function FloatingLines({
     scrollParallaxStrength,
     scrollParallaxSectionId,
     lightBackground,
-    consolidateWavesOnEditorialScroll,
-    scrollBiasedFieldLayout
+    maxPixelRatio,
+    animationFps,
   ]);
 
   return (

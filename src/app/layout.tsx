@@ -36,7 +36,6 @@ export default async function RootLayout({
       <body
         className={`${helveticaNeue.className} relative min-h-screen font-light text-black antialiased`}
       >
-        {/* <FloatingLinesAppBackground /> */}
         <PageLoader />
         <AppShell newsArticleCount={newsArticleCount}>{children}</AppShell>
       </body>
