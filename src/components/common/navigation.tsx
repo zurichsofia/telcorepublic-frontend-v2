@@ -121,13 +121,6 @@ function navLinkClass(
       active ? "text-telco-red" : "text-white hover:text-telco-red",
     );
   }
-  if (theme === "overlay" && !overlayPastHero) {
-    return cn(
-      type,
-      "text-shadow-sm",
-      active ? "text-telco-red" : "text-white hover:text-telco-red",
-    );
-  }
   return cn(
     type,
     active
@@ -349,8 +342,7 @@ export function Navigation({
   overlayPastHero = false,
 }: NavigationProps) {
   const pathname = usePathname() ?? "";
-  const onDark =
-    theme === "blog" || (theme === "overlay" && !overlayPastHero);
+  const onDark = theme === "blog";
 
   return (
     <header

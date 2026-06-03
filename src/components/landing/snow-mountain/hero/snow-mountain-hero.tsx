@@ -9,7 +9,6 @@ import {
 } from "react";
 
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
-import { isPastMountainView } from "@/lib/hero-nav-sync";
 import { createHeroScrollState } from "@/lib/snow-mountain/hero-scroll-state";
 import {
   heroPrimaryParallaxX,
@@ -22,12 +21,6 @@ import { HERO_SECTION_VH } from "./snow-mountain-hero-scroll";
 import { SnowMountainHeroMotionScrollLayers } from "./snow-mountain-hero-motion-scroll-layers";
 import { SnowMountainHeroStickyLayer } from "./snow-mountain-hero-sticky-layer";
 
-function isCursorGlowActive(canvas: HTMLDivElement | null): boolean {
-  if (!canvas || isPastMountainView()) return false;
-  const rect = canvas.getBoundingClientRect();
-  return rect.bottom > 0 && rect.top < window.innerHeight;
-}
-
 export function SnowMountainHero() {
   const reduce = usePrefersReducedMotion();
   const heroRef = useRef<HTMLElement | null>(null);
@@ -39,10 +32,6 @@ export function SnowMountainHero() {
     scale: 1,
     scroll: 0,
   });
-  const [heroCursor, setHeroCursor] = useState<{
-    x: number;
-    y: number;
-  } | null>(null);
   const [sceneActive, setSceneActive] = useState(true);
 
   const syncProgress = useCallback(() => {
@@ -57,10 +46,6 @@ export function SnowMountainHero() {
       scale: 1,
       scroll: progress,
     };
-
-    if (!isCursorGlowActive(heroCanvasRef.current)) {
-      setHeroCursor(null);
-    }
   }, [reduce, scrollState]);
 
   useLayoutEffect(() => {
@@ -90,36 +75,6 @@ export function SnowMountainHero() {
     return () => io.disconnect();
   }, [reduce]);
 
-  useEffect(() => {
-    if (reduce) {
-      setHeroCursor(null);
-      return;
-    }
-    const onMove = (e: MouseEvent) => {
-      const el = heroCanvasRef.current;
-      if (!el || !isCursorGlowActive(el)) {
-        setHeroCursor(null);
-        return;
-      }
-      const r = el.getBoundingClientRect();
-      if (
-        e.clientX < r.left ||
-        e.clientX > r.right ||
-        e.clientY < r.top ||
-        e.clientY > r.bottom
-      ) {
-        setHeroCursor(null);
-        return;
-      }
-      setHeroCursor({
-        x: e.clientX - r.left,
-        y: e.clientY - r.top,
-      });
-    };
-    window.addEventListener("mousemove", onMove, { passive: true });
-    return () => window.removeEventListener("mousemove", onMove);
-  }, [reduce]);
-
   return (
     <section
       ref={heroRef}
@@ -137,7 +92,6 @@ export function SnowMountainHero() {
         heroCanvasRef={heroCanvasRef}
         scrollState={scrollState}
         motionRef={heroParallaxMotionRef}
-        cursorGlowPosition={heroCursor}
       >
         <SnowMountainHeroMotionScrollLayers
           scrollState={scrollState}

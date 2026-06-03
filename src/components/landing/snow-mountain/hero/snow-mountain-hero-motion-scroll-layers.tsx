@@ -13,12 +13,12 @@ export type SnowMountainHeroMotionScrollLayersProps = {
 
 const labelWords = ["Independent", "telecom", "research"] as const;
 
-const bodyClass = "text-base font-light leading-relaxed text-white/95 sm:text-lg";
+const bodyClass = "text-base font-light leading-relaxed text-black/95 sm:text-lg";
 
 const base =
   "pointer-events-auto absolute inset-y-0 z-1 flex max-w-[min(100%,52rem)] flex-col justify-center sm:max-w-[52rem]";
 
-const slotLeft = cn(base, "left-5 sm:left-8 lg:left-12");
+const slotLeft = cn(base, "left-2");
 const slotRight = cn(
   base,
   "right-5 items-end text-right sm:right-8 lg:right-12",
@@ -26,24 +26,24 @@ const slotRight = cn(
 
 function HeroMotionScrollLayersStatic() {
   return (
-    <div className="pointer-events-auto absolute inset-x-5 inset-y-0 flex flex-col justify-center gap-16 py-12 sm:inset-x-8 lg:inset-x-12">
+    <div className="pointer-events-auto absolute inset-x-5 inset-y-0 flex flex-col justify-center gap-12 py-12 sm:inset-x-8 lg:inset-x-12">
       <div className="max-w-4xl">
         <p className="font-display text-xs font-medium uppercase tracking-[0.2em] text-telco-red">
           {labelWords.join(" ")}
         </p>
-        <h1 className="mt-6 font-display text-2xl font-normal leading-[1.05] tracking-tight text-white">
+        <h1 className="mt-2 font-display text-2xl font-normal text-black">
           Navigating the shift.
-          <span className="mt-2 block sm:mt-3">Leading the Techco Revolution</span>
+          <span className="mt-1 block sm:mt-1.5">Leading the Techco Revolution.</span>
         </h1>
       </div>
       <div className="ml-auto max-w-md text-right">
         <p className="font-display text-xs font-medium uppercase tracking-[0.2em] text-telco-red">
           Telcorepublic
         </p>
-        <p className="mt-6 font-display text-[clamp(1.75rem,4.5vw,3rem)] font-normal leading-tight tracking-tight text-white">
+        <p className="mt-2 font-display text-[clamp(1.75rem,4.5vw,3rem)] font-normal leading-tight tracking-tight text-black">
           Crossing the Telco Chasm
         </p>
-        <p className={cn("mt-6 max-w-prose", bodyClass)}>
+        <p className={cn("max-w-prose", bodyClass)}>
           We are the go-to, thought-provoking market research and advisory firm in the new
           telecommunications software market.
         </p>
@@ -52,10 +52,10 @@ function HeroMotionScrollLayersStatic() {
         <p className="font-display text-xs font-medium uppercase tracking-[0.2em] text-telco-red">
           Telcorepublic
         </p>
-        <p className="mt-6 font-display text-[clamp(1.75rem,4.5vw,3rem)] font-normal leading-tight tracking-tight text-white">
+        <p className="mt-2 font-display text-[clamp(1.75rem,4.5vw,3rem)] font-normal leading-tight tracking-tight text-black">
           Our Mission
         </p>
-        <p className={cn("mt-6 max-w-prose", bodyClass)}>
+        <p className={cn("mt-2 max-w-prose", bodyClass)}>
           We track ongoing disruption and innovation related to telecommunications business and
           operations.
         </p>
@@ -114,33 +114,33 @@ function HeroMotionScrollLayersAnimated({
             </span>
           ))}
         </p>
-        <h1 className="mt-6 font-display text-[clamp(2.25rem,6vw,4.5rem)] font-normal leading-[1.05] tracking-tight text-white">
+        <h1 className="mt-2 font-display text-[clamp(2.25rem,6vw,4.5rem)] font-normal leading-[1.05] tracking-tight text-black">
           <span className="block text-shadow-lg">Navigating the shift.</span>
-          <span className="mt-2 block sm:mt-3 text-shadow-lg">Leading the Techco Revolution</span>
+          <span className="mt-1 block sm:mt-1.5 text-shadow-lg">Leading the Techco Revolution.</span>
         </h1>
       </div>
 
       <div ref={telcoRef} className={cn(slotRight, "will-change-[transform,opacity]")}>
-        <p className="font-display text-xs font-medium uppercase tracking-[0.2em] text-telco-red">
+        {/* <p className="font-display text-xs font-medium uppercase tracking-[0.2em] text-telco-red">
           Telcorepublic
-        </p>
-        <p className="mt-6 font-display text-[clamp(1.75rem,4.5vw,3rem)] font-normal leading-tight tracking-tight text-white text-shadow-lg">
+        </p> */}
+        <p className="mt-2 font-display text-[clamp(1.75rem,4.5vw,3rem)] font-normal leading-tight tracking-tight text-black text-shadow-lg">
           Crossing the Telco Chasm
         </p>
-        <p className={cn("mt-6 max-w-2xl text-shadow-lg", bodyClass)}>
+        <p className={cn("mt-2 max-w-2xl text-shadow-lg", bodyClass)}>
           We are the go-to, thought-provoking market research and advisory firm in the new
           telecommunications software market.
         </p>
       </div>
 
       <div ref={missionRef} className={cn(slotLeft, "will-change-[transform,opacity]")}>
-        <p className="font-display text-xs font-medium uppercase tracking-[0.2em] text-telco-red">
+        {/* <p className="font-display text-xs font-medium uppercase tracking-[0.2em] text-telco-red">
           Telcorepublic
-        </p>
-        <p className="mt-6 font-display text-[clamp(1.75rem,4.5vw,3rem)] font-normal leading-tight tracking-tight text-white text-shadow-lg">
+        </p> */}
+        <p className="mt-2 font-display text-[clamp(1.75rem,4.5vw,3rem)] font-normal leading-tight tracking-tight text-black text-shadow-lg">
           Our Mission
         </p>
-        <p className={cn("mt-6 max-w-2xl text-shadow-lg", bodyClass)}>
+        <p className={cn("mt-2 max-w-2xl text-shadow-lg", bodyClass)}>
           We track ongoing disruption and innovation related to telecommunications business and
           operations.
         </p>

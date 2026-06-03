@@ -72,15 +72,13 @@ body {
   inset: 0;
   pointer-events: none;
   /*
-    Bottom fog bank — strongest at the very bottom, feathering upward.
-    Use the same tint as the scene fog (`SNOW_MOUNTAIN_FOG_COLOR` = #b6bfc7).
+    Bottom fog bank — light tint so 3D clouds (layered above) stay readable as puffs.
   */
   background: linear-gradient(
     to top,
-    rgba(182, 191, 199, 0.92) 0%,
-    rgba(182, 191, 199, 0.62) 14%,
-    rgba(182, 191, 199, 0.24) 34%,
-    rgba(182, 191, 199, 0) 58%
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.04) 12%,
+    rgba(255, 255, 255, 0) 30%
   );
   /* Slight soften so it reads like air, not a hard overlay. */
   filter: blur(0.2px);

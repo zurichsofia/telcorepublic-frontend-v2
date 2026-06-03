@@ -7,6 +7,17 @@ function smoothstep(edge0: number, edge1: number, x: number): number {
   return t * t * (3 - 2 * t);
 }
 
+/**
+ * Quintic ease (6t⁵ − 15t⁴ + 10t³): zero velocity *and* zero acceleration at
+ * both edges, so beat transitions ease in/out far more gently than smoothstep.
+ */
+function smootherstep(edge0: number, edge1: number, x: number): number {
+  if (x <= edge0) return 0;
+  if (x >= edge1) return 1;
+  const t = (x - edge0) / (edge1 - edge0);
+  return t * t * t * (t * (t * 6 - 15) + 10);
+}
+
 /** Map full-section progress to 0–1 over the camera scroll zone only. */
 export function getHeroCameraProgress(sectionProgress: number): number {
   if (sectionProgress <= 0) return 0;
@@ -18,8 +29,8 @@ export function getHeroCameraProgress(sectionProgress: number): number {
 const HERO_COPY_SECTIONS = 3;
 const HERO_COPY_S1_END = 1 / HERO_COPY_SECTIONS;
 const HERO_COPY_S2_END = 2 / HERO_COPY_SECTIONS;
-/** Crossfade width at section boundaries (linear camera progress). */
-const HERO_COPY_CROSSFADE = 0.07;
+/** Transition width at section boundaries (linear camera progress). Wider = gentler. */
+const HERO_COPY_CROSSFADE = 0.13;
 
 export type HeroScrollLayerStyles = {
   primary: { opacity: number; y: number; };
@@ -34,20 +45,23 @@ function getHeroScrollLayerT(sectionProgress: number): number {
 export function getHeroScrollLayerStyles(sectionProgress: number): HeroScrollLayerStyles {
   const t = getHeroScrollLayerT(sectionProgress);
   const fade = HERO_COPY_CROSSFADE;
+  const slide = 28;
 
-  const primaryOpacity = 1 - smoothstep(HERO_COPY_S1_END - fade, HERO_COPY_S1_END, t);
-  const primaryY = smoothstep(HERO_COPY_S1_END - fade * 0.75, HERO_COPY_S1_END, t) * -36;
+  // Beat 1 (primary): visible from the top, fades + lifts out by the S1 boundary.
+  const primaryOut = smootherstep(HERO_COPY_S1_END - fade, HERO_COPY_S1_END, t);
+  const primaryOpacity = 1 - primaryOut;
+  const primaryY = primaryOut * -slide;
 
-  const telcoIn = smoothstep(HERO_COPY_S1_END - fade, HERO_COPY_S1_END, t);
-  const telcoOut = smoothstep(HERO_COPY_S2_END - fade, HERO_COPY_S2_END, t);
+  // Beat 2 (telco): enters only *after* beat 1 has fully left, exits before beat 3.
+  const telcoIn = smootherstep(HERO_COPY_S1_END, HERO_COPY_S1_END + fade, t);
+  const telcoOut = smootherstep(HERO_COPY_S2_END - fade, HERO_COPY_S2_END, t);
   const telcoOpacity = telcoIn * (1 - telcoOut);
-  const telcoY =
-    (1 - smoothstep(HERO_COPY_S1_END - fade, HERO_COPY_S1_END + fade * 0.45, t)) * 60 +
-    smoothstep(HERO_COPY_S2_END - fade, HERO_COPY_S2_END, t) * -40;
+  const telcoY = (1 - telcoIn) * slide + telcoOut * -slide;
 
-  const missionIn = smoothstep(HERO_COPY_S2_END - fade, HERO_COPY_S2_END, t);
+  // Beat 3 (mission): enters only after beat 2 has fully left.
+  const missionIn = smootherstep(HERO_COPY_S2_END, HERO_COPY_S2_END + fade, t);
   const missionOpacity = missionIn;
-  const missionY = (1 - smoothstep(HERO_COPY_S2_END - fade, HERO_COPY_S2_END, t)) * 60;
+  const missionY = (1 - missionIn) * slide;
 
   return {
     primary: { opacity: primaryOpacity, y: primaryY },

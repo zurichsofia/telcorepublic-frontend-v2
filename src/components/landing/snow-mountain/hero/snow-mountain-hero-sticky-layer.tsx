@@ -5,9 +5,8 @@ import type { MutableRefObject, ReactNode, RefObject } from "react";
 import type { SnowMountainParallaxMotion } from "@/components/landing/snow-mountain/scene/snow-mountain-scene-clouds";
 import type { HeroScrollState } from "@/lib/snow-mountain/hero-scroll-state";
 import { SnowMountainScene } from "@/components/landing/snow-mountain/scene/snow-mountain-scene";
+import { SnowMountainSceneClouds } from "@/components/landing/snow-mountain/scene/snow-mountain-scene-clouds";
 import { cn } from "@/lib/utils";
-
-import { SnowMountainHeroCursorGlow } from "./snow-mountain-hero-cursor-glow";
 
 type SnowMountainHeroStickyLayerProps = {
   reduceMotion: boolean;
@@ -16,7 +15,6 @@ type SnowMountainHeroStickyLayerProps = {
   heroCanvasRef: RefObject<HTMLDivElement | null>;
   scrollState: HeroScrollState;
   motionRef: MutableRefObject<SnowMountainParallaxMotion>;
-  cursorGlowPosition?: { x: number; y: number } | null;
   children?: ReactNode;
 };
 
@@ -27,7 +25,6 @@ export function SnowMountainHeroStickyLayer({
   heroCanvasRef,
   scrollState,
   motionRef,
-  cursorGlowPosition = null,
   children,
 }: SnowMountainHeroStickyLayerProps) {
   return (
@@ -46,12 +43,16 @@ export function SnowMountainHeroStickyLayer({
           sceneActive={sceneActive}
           className={!reduceMotion ? "cursor-none" : undefined}
         />
-        {!reduceMotion && cursorGlowPosition != null ? (
-          <SnowMountainHeroCursorGlow position={cursorGlowPosition} />
-        ) : null}
       </div>
 
       <div className="snow-mountain-hero-film" aria-hidden />
+
+      <SnowMountainSceneClouds
+        scrollState={scrollState}
+        sectionRef={heroSectionRef}
+        reducedMotion={reduceMotion}
+        sceneActive={sceneActive}
+      />
 
       {children != null ? (
         <div className="pointer-events-none absolute inset-0 z-20 bg-transparent">
