@@ -9,7 +9,7 @@ import { isSceneRegistered, waitForScene } from "@/lib/scene-ready";
 /** Minimum time the loader stays visible so it does not feel like a glitch. */
 const MIN_MS = 720;
 /** Safety cap if load/fonts hang. */
-const MAX_MS = 8000;
+const MAX_MS = 5000;
 
 export function PageLoader() {
   const [phase, setPhase] = useState<"loading" | "exit" | "gone">("loading");
@@ -105,7 +105,7 @@ export function PageLoader() {
     <div
       ref={rootRef}
       className="fixed inset-0 z-100 flex flex-col items-center justify-center px-6"
-      style={{ backgroundColor: "#b6bfc7" }}
+      style={{ backgroundColor: "#191919" }}
       role="status"
       aria-live="polite"
       aria-busy={phase === "loading"}
