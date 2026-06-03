@@ -28,10 +28,11 @@ export function AppShell({
   const pathname = usePathname() ?? "";
   const isServiceDetail = /^\/services\/[^/]+$/.test(pathname);
   const isHome = pathname === "/" || pathname === "";
-  const immersiveHero = isServiceDetail || isHome;
   const isNews = pathname === "/news" || pathname.startsWith("/news/");
   const isContact = pathname === "/contact";
   const isStudio = pathname.startsWith("/studio");
+  const isScenePreview = pathname.startsWith("/scene/");
+  const immersiveHero = isServiceDetail || isHome || isScenePreview;
   const darkShell = isNews || isContact;
   const theme = darkShell ? "blog" : immersiveHero ? "overlay" : "default";
   const overlayPastHero = useOverlayPastHero(theme);
@@ -83,7 +84,7 @@ export function AppShell({
           overlayPastHero={overlayPastHero}
         />
         <div className="relative z-0 flex min-h-0 flex-1 flex-col">{children}</div>
-        <Footer className="mt-auto" />
+        {!isScenePreview ? <Footer className="mt-auto" /> : null}
       </div>
     </SmoothScrollProvider>
   );

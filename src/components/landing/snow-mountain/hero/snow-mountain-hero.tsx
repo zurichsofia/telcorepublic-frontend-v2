@@ -19,9 +19,16 @@ import {
 import type { SnowMountainParallaxMotion } from "@/components/landing/snow-mountain/scene/snow-mountain-scene-clouds";
 import { HERO_SECTION_VH } from "./snow-mountain-hero-scroll";
 import { SnowMountainHeroMotionScrollLayers } from "./snow-mountain-hero-motion-scroll-layers";
-import { SnowMountainHeroStickyLayer } from "./snow-mountain-hero-sticky-layer";
+import {
+  SnowMountainHeroStickyLayer,
+  type SnowMountainHeroSceneVariant,
+} from "./snow-mountain-hero-sticky-layer";
 
-export function SnowMountainHero() {
+export type SnowMountainHeroProps = {
+  sceneVariant?: SnowMountainHeroSceneVariant;
+};
+
+export function SnowMountainHero({ sceneVariant = "v1" }: SnowMountainHeroProps) {
   const reduce = usePrefersReducedMotion();
   const heroRef = useRef<HTMLElement | null>(null);
   const heroCanvasRef = useRef<HTMLDivElement | null>(null);
@@ -86,6 +93,7 @@ export function SnowMountainHero() {
       }}
     >
       <SnowMountainHeroStickyLayer
+        sceneVariant={sceneVariant}
         reduceMotion={!!reduce}
         sceneActive={sceneActive}
         heroSectionRef={heroRef}

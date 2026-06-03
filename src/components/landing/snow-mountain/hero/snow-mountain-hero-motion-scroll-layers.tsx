@@ -13,7 +13,9 @@ export type SnowMountainHeroMotionScrollLayersProps = {
 
 const labelWords = ["Independent", "telecom", "research"] as const;
 
-const bodyClass = "text-base font-light leading-relaxed text-black/95 sm:text-lg";
+const bodyClass = "text-lg font-light leading-relaxed text-black/95 sm:text-xl";
+
+const layerVerticalOffset = "-translate-y-16";
 
 const base =
   "pointer-events-auto absolute inset-y-0 z-1 flex max-w-[min(100%,52rem)] flex-col justify-center sm:max-w-[52rem]";
@@ -26,21 +28,26 @@ const slotRight = cn(
 
 function HeroMotionScrollLayersStatic() {
   return (
-    <div className="pointer-events-auto absolute inset-x-5 inset-y-0 flex flex-col justify-center gap-12 py-12 sm:inset-x-8 lg:inset-x-12">
+    <div
+      className={cn(
+        "pointer-events-auto absolute inset-x-5 inset-y-0 flex flex-col justify-center gap-12 py-12 sm:inset-x-8 lg:inset-x-12",
+        layerVerticalOffset,
+      )}
+    >
       <div className="max-w-4xl">
-        <p className="font-display text-xs font-medium uppercase tracking-[0.2em] text-telco-red">
+        <p className="font-display text-sm font-medium uppercase tracking-[0.2em] text-telco-red">
           {labelWords.join(" ")}
         </p>
-        <h1 className="mt-2 font-display text-2xl font-normal text-black">
+        <h1 className="mt-2 font-display text-3xl font-normal text-black">
           Navigating the shift.
           <span className="mt-1 block sm:mt-1.5">Leading the Techco Revolution.</span>
         </h1>
       </div>
       <div className="ml-auto max-w-md text-right">
-        <p className="font-display text-xs font-medium uppercase tracking-[0.2em] text-telco-red">
+        <p className="font-display text-sm font-medium uppercase tracking-[0.2em] text-telco-red">
           Telcorepublic
         </p>
-        <p className="mt-2 font-display text-[clamp(1.75rem,4.5vw,3rem)] font-normal leading-tight tracking-tight text-black">
+        <p className="mt-2 font-display text-[clamp(2rem,5vw,3.25rem)] font-normal leading-tight tracking-tight text-black">
           Crossing the Telco Chasm
         </p>
         <p className={cn("max-w-prose", bodyClass)}>
@@ -49,10 +56,10 @@ function HeroMotionScrollLayersStatic() {
         </p>
       </div>
       <div className="max-w-lg">
-        <p className="font-display text-xs font-medium uppercase tracking-[0.2em] text-telco-red">
+        <p className="font-display text-sm font-medium uppercase tracking-[0.2em] text-telco-red">
           Telcorepublic
         </p>
-        <p className="mt-2 font-display text-[clamp(1.75rem,4.5vw,3rem)] font-normal leading-tight tracking-tight text-black">
+        <p className="mt-2 font-display text-[clamp(2rem,5vw,3.25rem)] font-normal leading-tight tracking-tight text-black">
           Our Mission
         </p>
         <p className={cn("mt-2 max-w-prose", bodyClass)}>
@@ -101,20 +108,9 @@ function HeroMotionScrollLayersAnimated({
   }, [scrollState]);
 
   return (
-    <div className="pointer-events-none relative h-full w-full">
+    <div className={cn("pointer-events-none relative h-full w-full", layerVerticalOffset)}>
       <div ref={primaryRef} className={cn(slotLeft, "will-change-[transform,opacity]")}>
-        <p className="font-display text-xs font-medium uppercase tracking-[0.2em] text-telco-red">
-          {labelWords.map((word, i) => (
-            <span
-              key={word}
-              className={cn("mr-[0.35em] inline-block last:mr-0", "snow-mountain-hero-clip")}
-              style={{ "--clip-delay": `${0.08 + i * 0.06}s` } as CSSProperties}
-            >
-              {word}
-            </span>
-          ))}
-        </p>
-        <h1 className="mt-2 font-display text-[clamp(2.25rem,6vw,4.5rem)] font-normal leading-[1.05] tracking-tight text-black">
+        <h1 className="mt-2 font-display text-7xl font-normal leading-[1.05] tracking-tight text-black">
           <span className="block text-shadow-lg">Navigating the shift.</span>
           <span className="mt-1 block sm:mt-1.5 text-shadow-lg">Leading the Techco Revolution.</span>
         </h1>
@@ -124,7 +120,7 @@ function HeroMotionScrollLayersAnimated({
         {/* <p className="font-display text-xs font-medium uppercase tracking-[0.2em] text-telco-red">
           Telcorepublic
         </p> */}
-        <p className="mt-2 font-display text-[clamp(1.75rem,4.5vw,3rem)] font-normal leading-tight tracking-tight text-black text-shadow-lg">
+        <p className="mt-2 font-display text-[clamp(2rem,5vw,3.25rem)] font-normal leading-tight tracking-tight text-black text-shadow-lg">
           Crossing the Telco Chasm
         </p>
         <p className={cn("mt-2 max-w-2xl text-shadow-lg", bodyClass)}>
@@ -137,7 +133,7 @@ function HeroMotionScrollLayersAnimated({
         {/* <p className="font-display text-xs font-medium uppercase tracking-[0.2em] text-telco-red">
           Telcorepublic
         </p> */}
-        <p className="mt-2 font-display text-[clamp(1.75rem,4.5vw,3rem)] font-normal leading-tight tracking-tight text-black text-shadow-lg">
+        <p className="mt-2 font-display text-[clamp(2rem,5vw,3.25rem)] font-normal leading-tight tracking-tight text-black text-shadow-lg">
           Our Mission
         </p>
         <p className={cn("mt-2 max-w-2xl text-shadow-lg", bodyClass)}>
