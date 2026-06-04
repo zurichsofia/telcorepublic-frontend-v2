@@ -17,7 +17,7 @@
 }
 
 html {
-  /* Lenis owns scroll interpolation on immersive routes — keep native behavior elsewhere. */
+  /* Lenis owns scroll interpolation site-wide — keep native smooth-scroll off. */
   scroll-behavior: auto;
   min-height: 100%;
   background-color: #ffffff;

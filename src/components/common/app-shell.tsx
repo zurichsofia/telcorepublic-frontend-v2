@@ -10,13 +10,11 @@ import {
   shellSurfaceClassName,
   useOverlayPastHero,
 } from "@/components/common/navigation";
-import { SmoothScrollProvider } from "@/components/common/smooth-scroll-provider";
+import {
+  LenisScrollToTopOnNavigate,
+  SmoothScrollProvider,
+} from "@/components/common/smooth-scroll-provider";
 import { cn } from "@/lib/utils";
-
-function scrollViewToTop() {
-  (document.scrollingElement ?? document.documentElement).scrollTo(0, 0);
-  window.scrollTo(0, 0);
-}
 
 export function AppShell({
   children,
@@ -39,8 +37,8 @@ export function AppShell({
 
   // Browsers can restore/apply scroll after a client navigation, which (with a long view
   // e.g. /services or /services/slug) leaves a high scroll offset that clamps to the
-  // bottom of the next, shorter page. `manual` lets us own scroll position; we also reset
-  // again on the next frame so it wins over App Router’s pass.
+  // bottom of the next, shorter page. `manual` lets us own scroll position; Lenis/native
+  // reset runs in LenisScrollToTopOnNavigate.
   useEffect(() => {
     if ("scrollRestoration" in history) {
       history.scrollRestoration = "manual";
@@ -48,43 +46,36 @@ export function AppShell({
   }, []);
 
   useLayoutEffect(() => {
-    scrollViewToTop();
+    // Runs before Lenis mounts; LenisScrollToTopOnNavigate handles the steady state.
+    (document.scrollingElement ?? document.documentElement).scrollTo(0, 0);
+    window.scrollTo(0, 0);
   }, [pathname]);
-
-  useEffect(() => {
-    scrollViewToTop();
-    const t = setTimeout(() => {
-      scrollViewToTop();
-    }, 0);
-    return () => {
-      clearTimeout(t);
-    };
-  }, [pathname]);
-
-  if (isStudio) {
-    return <>{children}</>;
-  }
 
   return (
-    <SmoothScrollProvider enabled={isServiceDetail}>
-      <div
-        className={cn(
-          "relative z-10 flex min-h-screen flex-col",
-          surfaceClassName,
-        )}
-      >
-        <Navigation
-          newsArticleCount={newsArticleCount}
-          className={
-            immersiveHero ? "fixed top-0 right-0 left-0 z-50 w-full" : undefined
-          }
-          theme={theme}
-          surfaceClassName={surfaceClassName}
-          overlayPastHero={overlayPastHero}
-        />
-        <div className="relative z-0 flex min-h-0 flex-1 flex-col">{children}</div>
-        <Footer className="mt-auto" />
-      </div>
+    <SmoothScrollProvider>
+      <LenisScrollToTopOnNavigate pathname={pathname} />
+      {isStudio ? (
+        children
+      ) : (
+        <div
+          className={cn(
+            "relative z-10 flex min-h-screen flex-col",
+            surfaceClassName,
+          )}
+        >
+          <Navigation
+            newsArticleCount={newsArticleCount}
+            className={
+              immersiveHero ? "fixed top-0 right-0 left-0 z-50 w-full" : undefined
+            }
+            theme={theme}
+            surfaceClassName={surfaceClassName}
+            overlayPastHero={overlayPastHero}
+          />
+          <div className="relative z-0 flex min-h-0 flex-1 flex-col">{children}</div>
+          <Footer className="mt-auto" />
+        </div>
+      )}
     </SmoothScrollProvider>
   );
 }

@@ -5,6 +5,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useLayoutEffect,
   useState,
   type ReactNode,
 } from "react";
@@ -20,11 +21,11 @@ export function useLenis(): Lenis | null {
 
 type SmoothScrollProviderProps = {
   children: ReactNode;
-  /** Disable Lenis on routes that do not need cinematic scroll (e.g. contact forms). */
+  /** Opt out of Lenis (e.g. isolated previews). Defaults to on for the whole site. */
   enabled?: boolean;
 };
 
-/** Lenis smooth scroll for immersive service detail routes. */
+/** Site-wide Lenis smooth scroll (respects prefers-reduced-motion). */
 export function SmoothScrollProvider({
   children,
   enabled = true,
@@ -40,11 +41,11 @@ export function SmoothScrollProvider({
     }
 
     const instance = new Lenis({
-      lerp: 0.085,
+      lerp: 0.06,
       smoothWheel: true,
       syncTouch: false,
-      wheelMultiplier: 0.92,
-      touchMultiplier: 1.25,
+      wheelMultiplier: 0.78,
+      touchMultiplier: 1.1,
       autoRaf: false,
     });
 
@@ -75,4 +76,34 @@ export function SmoothScrollProvider({
   }, [reduceMotion, enabled]);
 
   return <LenisContext.Provider value={lenis}>{children}</LenisContext.Provider>;
+}
+
+function scrollViewToTopNative() {
+  (document.scrollingElement ?? document.documentElement).scrollTo(0, 0);
+  window.scrollTo(0, 0);
+}
+
+/** Resets scroll on client navigations — uses Lenis when active. */
+export function LenisScrollToTopOnNavigate({ pathname }: { pathname: string }) {
+  const lenis = useLenis();
+
+  useLayoutEffect(() => {
+    if (lenis) {
+      lenis.scrollTo(0, { immediate: true });
+      return;
+    }
+    scrollViewToTopNative();
+  }, [pathname, lenis]);
+
+  useEffect(() => {
+    if (lenis) {
+      lenis.scrollTo(0, { immediate: true });
+      return;
+    }
+    scrollViewToTopNative();
+    const t = setTimeout(scrollViewToTopNative, 0);
+    return () => clearTimeout(t);
+  }, [pathname, lenis]);
+
+  return null;
 }

@@ -17,6 +17,28 @@ export function readHeroScrollProgress(section: HTMLElement | null): number {
   return Math.min(1, Math.max(0, -top / pinPx));
 }
 
+/**
+ * Lags the 3D camera / copy behind layout scroll so fast wheel flicks do not
+ * whip through orbit beats. Lenis smooths page scroll; this smooths hero progress.
+ */
+export const HERO_CAMERA_PROGRESS_DAMPING = 1;
+
+const PROGRESS_SNAP_EPSILON = 1e-4;
+
+export function dampHeroScrollProgress(
+  current: number,
+  target: number,
+  deltaSeconds: number,
+): number {
+  if (target <= 0) return 0;
+  if (target >= 1) return 1;
+  if (Math.abs(target - current) < PROGRESS_SNAP_EPSILON) return target;
+
+  const dt = Math.min(Math.max(deltaSeconds, 0), 0.1);
+  const alpha = 1 - Math.exp(-HERO_CAMERA_PROGRESS_DAMPING * dt);
+  return current + (target - current) * alpha;
+}
+
 /** Camera orbit progress — linear for smooth scroll up/down. */
 export function mapHeroScrollProgress(sectionProgress: number): number {
   return getHeroCameraProgress(sectionProgress);
