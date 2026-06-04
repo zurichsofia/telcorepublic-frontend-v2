@@ -11,7 +11,7 @@ import {
   readHeroScrollProgress,
 } from "@/lib/snow-mountain/snow-mountain-hero-scroll";
 
-import type { SnowMountainParallaxMotion } from "./snow-mountain-scene-clouds";
+import type { SnowMountainParallaxMotion } from "@/lib/snow-mountain/snow-mountain-parallax-motion";
 
 type HeroScrollLayoutSyncProps = {
   sectionRef: RefObject<HTMLElement | null>;

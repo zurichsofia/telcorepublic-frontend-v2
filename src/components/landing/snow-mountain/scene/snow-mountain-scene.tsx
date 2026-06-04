@@ -1,138 +1,91 @@
 "use client";
 
-import {
-  Suspense,
-  createContext,
-  useContext,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useEffect,
-  useState,
-  type MutableRefObject,
-  type ReactNode,
-  type RefObject,
-} from "react";
+import type { MutableRefObject, RefObject } from "react";
+import { Suspense, useEffect, useMemo, useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Stage, useGLTF } from "@react-three/drei";
-import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
-import { EffectComposer, Bloom } from "@react-three/postprocessing";
+import { Sky, Stage, useBounds, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
-import { setConsoleFunction } from "three";
 
-// @react-three/fiber 9.x creates `new THREE.Clock()` internally and hasn't yet
-// migrated to THREE.Timer. Suppress that one deprecation so the console stays clean
-// while keeping all other Three.js warnings/errors visible.
-setConsoleFunction((type, message, ...params) => {
-  if (
-    type === "warn" &&
-    typeof message === "string" &&
-    message.includes("THREE.Clock")
-  )
-    return;
-  if (type === "warn") console.warn(message, ...params);
-  else if (type === "error") console.error(message, ...params);
-  else console.log(message, ...params);
-});
-
-import { SNOW_MOUNTAIN_FOG_COLOR } from "@/lib/snow-mountain/snow-mountain-fog";
-import { mapHeroScrollProgress } from "@/lib/snow-mountain/snow-mountain-hero-scroll";
-import type { HeroScrollState } from "@/lib/snow-mountain/hero-scroll-state";
-import { applyTerrainIceStyle } from "@/lib/snow-mountain/snow-mountain-terrain-ice";
 import { HeroScrollLayoutSync } from "@/components/landing/snow-mountain/scene/hero-scroll-layout-sync";
-import { SnowMountainSceneParticles } from "@/components/landing/snow-mountain/scene/snow-mountain-scene-particles";
+import type { HeroScrollState } from "@/lib/snow-mountain/hero-scroll-state";
+import type { SnowMountainParallaxMotion } from "@/lib/snow-mountain/snow-mountain-parallax-motion";
 import { markSceneReady, registerScene } from "@/lib/scene-ready";
-
+import { mapHeroScrollProgress } from "@/lib/snow-mountain/snow-mountain-hero-scroll";
 import { cn } from "@/lib/utils";
-import type { SnowMountainParallaxMotion } from "@/components/landing/snow-mountain/scene/snow-mountain-scene-clouds";
 
-/** Total azimuth swept while scrolling (rad). Camera orbits in XZ — eased scroll for cinematic pace. */
-const HERO_SCROLL_ORBIT_RAD = 0.82;
+const SKY_COLOR = "#acb5bc";
+const MODEL_PATH = "/scene/snow_mountain.glb";
 
-/** Extra terrain Y at t=1 — small; camera orbit carries most of the turn. */
-const HERO_SCROLL_TERRAIN_YAW_EXTRA = 0.08;
+/**
+ * Applied after Stage Bounds fit — look above center (drops mass), camera up
+ * (reinforces), look left of center (mass reads right in frame).
+ */
+const FRAME_LOOK_AT_Y = 0.2;
+const FRAME_LOOK_AT_X = -0.10;
+const FRAME_CAMERA_Y = 0.12;
+const CAMERA_ADJUST = 0.48;
 
-/** Subtle radius breathe on the orbit (sin(π·t) scale). */
-const HERO_ORBIT_RADIUS_BREATHE = 0.3;
+/** Copy-beat centers on camera progress (primary / telco / mission). */
+const SECTION_CENTER_1 = 1 / 6;
+const SECTION_CENTER_2 = 1 / 2;
+const SECTION_CENTER_3 = 5 / 6;
 
-/** Mid-scroll vertical arc (world). Kept at 0 so the summit holds a constant height. */
-const HERO_ORBIT_HEIGHT_ARC = 0;
+/**
+ * Horizontal orbit (rad) at each copy beat — tune by hand.
+ * Keep all three monotonic (all increasing OR all decreasing) so spin never reverses
+ * mid-scroll; use LOOK_AT_X / YAW for left-vs-right copy framing.
+ */
+const ORBIT_SECTION_1 = 0.3;
+const ORBIT_SECTION_2 = -0.1;
+const ORBIT_SECTION_3 = -1;
 
-useGLTF.preload("/scene/snow_mountain.glb");
-// Tell the PageLoader it must wait for this scene before dismissing.
-registerScene();
+/**
+ * Extra camera height per beat — fraction of model height (like FRAME_CAMERA_Y).
+ * Raises the viewpoint; mountain sits lower in frame.
+ */
+const LIFT_SECTION_1 = 0.1;
+const LIFT_SECTION_2 = -0.1;
+const LIFT_SECTION_3 = 0;
 
-type HeroScrollRead = {
-  getProgress: () => number;
-  cameraBaselineGenerationRef: MutableRefObject<number>;
-};
+/**
+ * Look-at shifts up per beat — fraction of model height (like FRAME_LOOK_AT_Y).
+ * Tilts gaze toward the sky / horizon so you see more “beyond” the mass.
+ */
+const LOOK_UP_SECTION_1 = 0.1;
+const LOOK_UP_SECTION_2 = 0.1;
+const LOOK_UP_SECTION_3 = 0;
 
-const HeroScrollReadContext = createContext<HeroScrollRead | null>(null);
+/**
+ * Pivot X shift per beat — fraction of model width (like FRAME_LOOK_AT_X).
+ * Positive = look-at moves right = mountain mass reads LEFT (clears right-aligned telco copy).
+ */
+const LOOK_AT_X_SECTION_1 = 0;
+const LOOK_AT_X_SECTION_2 = 0.14;
+const LOOK_AT_X_SECTION_3 = 0;
 
-function clamp01(p: number): number {
-  if (p <= 0) return 0;
-  if (p >= 1) return 1;
-  return p;
-}
+/**
+ * Small post-orbit yaw (rad) — framing nudge without huge orbit swings (v1-style).
+ * Positive = mountain drifts right in frame; negative = left.
+ */
+const YAW_SECTION_1 = 0.14;
+const YAW_SECTION_2 = -0.15;
+const YAW_SECTION_3 = 0;
 
-function heroCameraProgress(raw: number, reduceMotion: boolean): number {
-  const clamped = clamp01(raw);
-  if (reduceMotion) return 0;
-  return mapHeroScrollProgress(clamped);
-}
-
-/** Invert scroll orbit so Stage fit can be re-locked after GLB load at any scroll t. */
-function captureOrbitCameraBaseline(
-  camera: THREE.PerspectiveCamera,
-  t: number,
-  outBasePos: THREE.Vector3,
-): number {
-  const px = CAMERA_ORBIT_PIVOT.x;
-  const pz = CAMERA_ORBIT_PIVOT.z;
-  const yArc = HERO_ORBIT_HEIGHT_ARC * Math.sin(t * Math.PI);
-  const cx = camera.position.x - t * CAMERA_SCROLL_OFFSET_X;
-  const cy = camera.position.y - t * CAMERA_SCROLL_OFFSET_Y - yArc;
-  const cz = camera.position.z - t * CAMERA_SCROLL_OFFSET_Z;
-
-  const theta = Math.atan2(cx - px, cz - pz);
-  const theta0 = theta - t * HERO_SCROLL_ORBIT_RAD;
-  const rBreathe = 1 + HERO_ORBIT_RADIUS_BREATHE * Math.sin(t * Math.PI);
-  const rEff = Math.hypot(cx - px, cz - pz);
-  const r = rEff / Math.max(rBreathe, 1e-6);
-
-  outBasePos.set(px + r * Math.sin(theta0), cy, pz + r * Math.cos(theta0));
-  return camera.fov - t * HERO_SCROLL_ZOOM_FOV_DELTA;
-}
-
-/** Keeps exponential smoothers stable after visibility/background throttling (large `delta`). */
-function clampFrameDelta(delta: number): number {
-  return Math.min(delta, 1 / 24);
-}
-
-/** Base Y rotation (rad) for the terrain rig; scroll adds a small delta on top. */
-const BASE_TERRAIN_YAW_RAD = 1;
-
-/** Pivot / look-at in Stage space — keep stable so orbit stays centered on the mass. */
-const CAMERA_ORBIT_PIVOT = new THREE.Vector3(0, 0.22, 0);
-
-/** World up — used to yaw the camera horizontally without any vertical drift. */
 const WORLD_UP = new THREE.Vector3(0, 1, 0);
 
 /**
- * Scroll-driven horizontal camera yaw (rad) so the mountain mass clears the overlaid
- * copy in each section. Positive = right, negative = left. Tuned per copy beat
- * (t ≈ 0–1/3 left copy, 1/3–2/3 right-aligned copy, 2/3–1 left copy): sit right on
- * landing to clear the left headline, slide left through the right-aligned section,
- * then swing back right for the final left-aligned section.
+ * Orbit radius scale per beat (1 = baseline). >1 pulls the camera back (zoom out).
  */
-const MOUNTAIN_YAW_SECTION_1 = 0.14;
-const MOUNTAIN_YAW_SECTION_2 = -0.15;
-const MOUNTAIN_YAW_SECTION_3 = 0;
+const DOLLY_SECTION_1 = 1;
+const DOLLY_SECTION_2 = 1;
+const DOLLY_SECTION_3 = 0.5;
 
-/** Scroll position (t) where each copy beat is fully centered. */
-const MOUNTAIN_YAW_CENTER_1 = 1 / 6;
-const MOUNTAIN_YAW_CENTER_2 = 1 / 2;
-const MOUNTAIN_YAW_CENTER_3 = 5 / 6;
+/**
+ * FOV delta (degrees) per beat on top of the Canvas base FOV. Positive = wider = zoom out.
+ */
+const FOV_SECTION_1 = 0;
+const FOV_SECTION_2 = 0;
+const FOV_SECTION_3 = 0;
 
 function smoothstep(edge0: number, edge1: number, x: number): number {
   if (x <= edge0) return 0;
@@ -141,435 +94,191 @@ function smoothstep(edge0: number, edge1: number, x: number): number {
   return u * u * (3 - 2 * u);
 }
 
-/**
- * Continuous horizontal yaw: the mountain eases across the *entire* distance between
- * one section's center and the next, so it drifts gently rather than snapping near a
- * boundary. Holds steady before the first center and after the last.
- */
-function heroMountainYaw(t: number): number {
-  if (t <= MOUNTAIN_YAW_CENTER_1) return MOUNTAIN_YAW_SECTION_1;
-  if (t <= MOUNTAIN_YAW_CENTER_2) {
-    const u = smoothstep(MOUNTAIN_YAW_CENTER_1, MOUNTAIN_YAW_CENTER_2, t);
-    return MOUNTAIN_YAW_SECTION_1 + (MOUNTAIN_YAW_SECTION_2 - MOUNTAIN_YAW_SECTION_1) * u;
+/** Smooth blend between three hand-tuned section values. */
+function v2SectionBlend(t: number, v1: number, v2: number, v3: number): number {
+  if (t <= SECTION_CENTER_1) return v1;
+  if (t <= SECTION_CENTER_2) {
+    const u = smoothstep(SECTION_CENTER_1, SECTION_CENTER_2, t);
+    return v1 + (v2 - v1) * u;
   }
-  if (t <= MOUNTAIN_YAW_CENTER_3) {
-    const u = smoothstep(MOUNTAIN_YAW_CENTER_2, MOUNTAIN_YAW_CENTER_3, t);
-    return MOUNTAIN_YAW_SECTION_2 + (MOUNTAIN_YAW_SECTION_3 - MOUNTAIN_YAW_SECTION_2) * u;
+  if (t <= SECTION_CENTER_3) {
+    const u = smoothstep(SECTION_CENTER_2, SECTION_CENTER_3, t);
+    return v2 + (v3 - v2) * u;
   }
-  return MOUNTAIN_YAW_SECTION_3;
+  return v3;
 }
 
-/** Look-at stays on the pivot’s vertical line so the mass doesn’t slide left/right in frame. */
-const CAMERA_LOOK_AT_X_START = 0;
-const CAMERA_LOOK_AT_X_END = 0;
-const CAMERA_LOOK_AT_Y_START = 0;
-const CAMERA_LOOK_AT_Y_END = 0;
+useGLTF.preload(MODEL_PATH);
+registerScene();
 
-/**
- * Upward look-at shift applied progressively on scroll. Kept at 0 so the camera's
- * gaze stays level across the whole scroll — the summit holds a constant vertical
- * height between sections. Applied to the look direction only (no orbit/baseline
- * feedback) when non-zero.
- */
-const CAMERA_LOOK_UP_SCROLL_END = 0;
+function SnowMountainV2Model() {
+  const { scene } = useGLTF(MODEL_PATH);
 
-/** FOV tighten by end of hero — eased. */
-const HERO_SCROLL_ZOOM_FOV_DELTA = -0.95;
+  useEffect(() => {
+    markSceneReady();
+  }, []);
 
-/**
- * Small vertical drift only — no X/Z scroll slide (those skewed center vs camera orbit).
- */
-const CAMERA_SCROLL_OFFSET_X = 0;
-const CAMERA_SCROLL_OFFSET_Y = 0;
-const CAMERA_SCROLL_OFFSET_Z = 0;
-
-const FOG_EXP_BASE = 0.026;
-const FOG_EXP_BREATH = 0.0028;
-
-function BreathingFogExp2({ reduceMotion }: { reduceMotion: boolean; }) {
-  const scene = useThree((s) => s.scene);
-  const gl = useThree((s) => s.gl);
-  const iceFog = useMemo(() => new THREE.Color(SNOW_MOUNTAIN_FOG_COLOR), []);
-  const clearScratch = useMemo(() => new THREE.Color(), []);
-
-  useFrame(({ clock }) => {
-    const fog = scene.fog;
-    if (!fog || !(fog instanceof THREE.FogExp2)) return;
-
-    if (reduceMotion) {
-      fog.density = FOG_EXP_BASE;
-      fog.color.copy(iceFog);
-      clearScratch.copy(iceFog);
-      gl.setClearColor(clearScratch, 1);
-      return;
-    }
-
-    const breath = Math.sin(clock.elapsedTime * 0.11) * FOG_EXP_BREATH;
-    fog.density = FOG_EXP_BASE + breath;
-    fog.color.copy(iceFog);
-    clearScratch.copy(iceFog);
-    gl.setClearColor(clearScratch, 1);
-  });
-
-  return (
-    <fogExp2
-      attach="fog"
-      args={[new THREE.Color(SNOW_MOUNTAIN_FOG_COLOR), FOG_EXP_BASE]}
-    />
-  );
+  return <primitive object={scene} />;
 }
 
-/**
- * After Bounds fit: orbit, eased FOV, look-at, and small layered offsets (see `observe={false}` note).
- */
-function HeroScrollCameraFraming({ reduceMotion }: { reduceMotion: boolean; }) {
+/** Frame nudge once, then orbit camera in XZ around the look-at pivot on scroll. */
+function V2ScrollCamera({
+  scrollState,
+  reduceMotion,
+}: {
+  scrollState?: HeroScrollState;
+  reduceMotion: boolean;
+}) {
+  const bounds = useBounds();
   const camera = useThree((s) => s.camera);
-  const size = useThree((s) => s.size);
-  const scrollRead = useContext(HeroScrollReadContext);
-  const baseFovRef = useRef<number | null>(null);
+  const framed = useRef(false);
+  const waitFrames = useRef(0);
+  const pivotRef = useRef<THREE.Vector3 | null>(null);
   const basePosRef = useRef<THREE.Vector3 | null>(null);
-  const lastSizeRef = useRef({ w: 0, h: 0 });
+  const baseFovRef = useRef<number | null>(null);
+  const modelHeightRef = useRef(1);
+  const modelWidthRef = useRef(1);
   const lookAt = useMemo(() => new THREE.Vector3(), []);
   const posScratch = useMemo(() => new THREE.Vector3(), []);
-  const lastBaselineGenRef = useRef(-1);
 
   useFrame(() => {
     if (!(camera instanceof THREE.PerspectiveCamera)) return;
 
-    const { width, height } = size;
-    if (width !== lastSizeRef.current.w || height !== lastSizeRef.current.h) {
-      lastSizeRef.current = { w: width, h: height };
-      baseFovRef.current = null;
-      basePosRef.current = null;
+    const { center, size } = bounds.getSize();
+    if (size.y < 1e-6) return;
+
+    if (!framed.current) {
+      waitFrames.current += 1;
+      if (waitFrames.current < 4) return;
+
+      const target = center.clone();
+      target.y += size.y * FRAME_LOOK_AT_Y;
+      target.x += size.x * FRAME_LOOK_AT_X;
+      bounds.lookAt({ target });
+      camera.position.y += size.y * FRAME_CAMERA_Y;
+      camera.updateProjectionMatrix();
+
+      pivotRef.current = target;
+      basePosRef.current = camera.position.clone();
+      baseFovRef.current = camera.fov;
+      modelHeightRef.current = size.y;
+      modelWidthRef.current = size.x;
+      framed.current = true;
+      return;
     }
 
-    const gen = scrollRead?.cameraBaselineGenerationRef.current;
-    if (gen !== undefined && gen !== lastBaselineGenRef.current) {
-      lastBaselineGenRef.current = gen;
-      baseFovRef.current = null;
-      basePosRef.current = null;
-    }
+    const pivot = pivotRef.current;
+    const base = basePosRef.current;
+    const baseFov = baseFovRef.current;
+    if (!pivot || !base || baseFov == null) return;
 
-    const p = scrollRead?.getProgress() ?? 0;
-    const t = heroCameraProgress(p, reduceMotion);
-    const te = t;
+    const raw = scrollState?.get() ?? 0;
+    const t = reduceMotion ? 0 : mapHeroScrollProgress(raw);
+    const h = modelHeightRef.current;
+    const w = modelWidthRef.current;
 
-    if (baseFovRef.current === null || basePosRef.current === null) {
-      if (basePosRef.current === null) {
-        basePosRef.current = new THREE.Vector3();
-      }
-      baseFovRef.current = captureOrbitCameraBaseline(
-        camera,
-        t,
-        basePosRef.current,
-      );
-    }
+    const orbitRad = v2SectionBlend(t, ORBIT_SECTION_1, ORBIT_SECTION_2, ORBIT_SECTION_3);
+    const liftY = v2SectionBlend(t, LIFT_SECTION_1, LIFT_SECTION_2, LIFT_SECTION_3) * h;
+    const lookUpY =
+      v2SectionBlend(t, LOOK_UP_SECTION_1, LOOK_UP_SECTION_2, LOOK_UP_SECTION_3) * h;
+    const lookAtX =
+      v2SectionBlend(t, LOOK_AT_X_SECTION_1, LOOK_AT_X_SECTION_2, LOOK_AT_X_SECTION_3) * w;
+    const yaw = v2SectionBlend(t, YAW_SECTION_1, YAW_SECTION_2, YAW_SECTION_3);
+    const dolly = v2SectionBlend(t, DOLLY_SECTION_1, DOLLY_SECTION_2, DOLLY_SECTION_3);
+    const fovDelta = v2SectionBlend(t, FOV_SECTION_1, FOV_SECTION_2, FOV_SECTION_3);
 
-    const base = baseFovRef.current;
-    const B = basePosRef.current;
-    const px = CAMERA_ORBIT_PIVOT.x;
-    const pz = CAMERA_ORBIT_PIVOT.z;
-    const dx = B.x - px;
-    const dz = B.z - pz;
+    const dx = base.x - pivot.x;
+    const dz = base.z - pivot.z;
     let r = Math.hypot(dx, dz);
+    if (r < 0.02) r = 0.02;
+    r *= dolly;
+
     const theta0 = Math.atan2(dx, dz);
-    if (r < 0.02) {
-      r = 0.02;
-    }
-    const rBreathe = 1 + HERO_ORBIT_RADIUS_BREATHE * Math.sin(t * Math.PI);
-    const rEff = r * rBreathe;
-    const theta = theta0 + t * HERO_SCROLL_ORBIT_RAD;
-    const yArc = HERO_ORBIT_HEIGHT_ARC * Math.sin(t * Math.PI);
+    const theta = theta0 + orbitRad;
     posScratch.set(
-      px + rEff * Math.sin(theta) + t * CAMERA_SCROLL_OFFSET_X,
-      B.y + t * CAMERA_SCROLL_OFFSET_Y + yArc,
-      pz + rEff * Math.cos(theta) + t * CAMERA_SCROLL_OFFSET_Z,
+      pivot.x + r * Math.sin(theta),
+      base.y + liftY,
+      pivot.z + r * Math.cos(theta),
     );
     camera.position.copy(posScratch);
-
-    camera.fov = base + te * HERO_SCROLL_ZOOM_FOV_DELTA;
-    camera.updateProjectionMatrix();
-    lookAt.set(
-      CAMERA_ORBIT_PIVOT.x +
-      THREE.MathUtils.lerp(CAMERA_LOOK_AT_X_START, CAMERA_LOOK_AT_X_END, te),
-      CAMERA_ORBIT_PIVOT.y +
-      THREE.MathUtils.lerp(CAMERA_LOOK_AT_Y_START, CAMERA_LOOK_AT_Y_END, te) +
-      te * CAMERA_LOOK_UP_SCROLL_END,
-      CAMERA_ORBIT_PIVOT.z,
-    );
+    lookAt.set(pivot.x + lookAtX, pivot.y + lookUpY, pivot.z);
     camera.lookAt(lookAt);
+    if (yaw !== 0) camera.rotateOnWorldAxis(WORLD_UP, yaw);
+    camera.fov = baseFov + fovDelta;
+    camera.updateProjectionMatrix();
+  });
 
-    // Nudge the mountain toward the right of the frame so it clears the hero copy.
-    // Yaw around the WORLD up axis — horizontal only, orientation only (never feeds
-    // the orbit baseline inversion, which reads camera.position).
-    camera.rotateOnWorldAxis(WORLD_UP, heroMountainYaw(t));
-  }, 50);
   return null;
 }
 
-/**
- * Two-rig design keeps scroll-preset positions and mouse tracking completely
- * independent so they never fight each other's lerp targets:
- *
- *   scrollRigRef  – kept at identity; scroll motion is camera orbit only (avoids lateral drift).
- *     mouseRigRef – mouse parallax only (subtle).
- *       yawRigRef – identity; avoids stacking yaw with camera orbit.
- *
- * Separating them means scrolling never causes mouse lag artefacts and vice-versa.
- */
-function ParallaxWorld({
-  reduceMotion,
-  children,
-}: {
-  reduceMotion: boolean;
-  children: ReactNode;
-}) {
-  const scrollRigRef = useRef<THREE.Group>(null);
-  const mouseRigRef = useRef<THREE.Group>(null);
-  const yawRigRef = useRef<THREE.Group>(null);
-
-  const mouse = useRef({ x: 0, y: 0 });
-  const smoothMouse = useRef({ x: 0, y: 0 });
-  const scrollRead = useContext(HeroScrollReadContext);
-
-  useEffect(() => {
-    const onMove = (e: MouseEvent) => {
-      mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1;
-      mouse.current.y = (e.clientY / window.innerHeight) * 2 - 1;
-    };
-    window.addEventListener("mousemove", onMove, { passive: true });
-    return () => window.removeEventListener("mousemove", onMove);
-  }, []);
-
-  useFrame((_, delta) => {
-    const scrollRig = scrollRigRef.current;
-    const mouseRig = mouseRigRef.current;
-    const yaw = yawRigRef.current;
-    if (!scrollRig || !mouseRig || !yaw) return;
-
-    const p = scrollRead?.getProgress() ?? 0;
-    const t = heroCameraProgress(p, reduceMotion);
-    const dt = clampFrameDelta(delta);
-
-    if (reduceMotion) {
-      scrollRig.rotation.set(0, 0, 0);
-      mouseRig.rotation.set(0, 0, 0);
-      yaw.rotation.y = 0;
-      return;
-    }
-
-    /* No scroll yaw/tilt on the world rig — camera orbit already turns the mountain; extra yaw read as off-center drift. */
-    scrollRig.rotation.set(0, 0, 0);
-    yaw.rotation.y = 0;
-
-    // Mouse parallax — gentle; slower follow so hover doesn’t yank the scene.
-    const mouseLerp = 1 - Math.pow(0.94, dt * 60);
-    smoothMouse.current.x +=
-      (mouse.current.x - smoothMouse.current.x) * mouseLerp;
-    smoothMouse.current.y +=
-      (mouse.current.y - smoothMouse.current.y) * mouseLerp;
-    const parallaxScale = 1 - t * 0.35;
-    mouseRig.rotation.x = smoothMouse.current.y * -0.018 * parallaxScale;
-    mouseRig.rotation.y = smoothMouse.current.x * 0.02 * parallaxScale;
-  });
-
-  return (
-    <group ref={scrollRigRef}>
-      <group ref={mouseRigRef}>
-        <group ref={yawRigRef}>{children}</group>
-      </group>
-    </group>
-  );
-}
-
-function SnowMountainModel({ reduceMotion }: { reduceMotion: boolean; }) {
-  const gltf = useGLTF("/scene/snow_mountain.glb");
-  const rigRef = useRef<THREE.Group>(null);
-  const scrollRead = useContext(HeroScrollReadContext);
-  const baselineGenRef = scrollRead?.cameraBaselineGenerationRef;
-
-  useLayoutEffect(() => {
-    applyTerrainIceStyle(gltf.scene);
-  }, [gltf]);
-
-  // Signal the PageLoader that the GLB has loaded and the model is mounted.
-  useEffect(() => {
-    markSceneReady();
-    if (!baselineGenRef) return;
-    let cancelled = false;
-    let raf1 = 0;
-    let raf2 = 0;
-    /* After drei's Stage `Refit` effect + a frame, re-lock scroll framing to fitted camera. */
-    raf1 = requestAnimationFrame(() => {
-      raf2 = requestAnimationFrame(() => {
-        if (!cancelled) baselineGenRef.current += 1;
-      });
-    });
-    return () => {
-      cancelled = true;
-      cancelAnimationFrame(raf1);
-      cancelAnimationFrame(raf2);
-    };
-  }, [baselineGenRef]);
-
-  useFrame(() => {
-    const p = scrollRead?.getProgress() ?? 0;
-    const t = heroCameraProgress(p, reduceMotion);
-    if (rigRef.current) {
-      rigRef.current.rotation.set(
-        t * 0.008,
-        BASE_TERRAIN_YAW_RAD + t * HERO_SCROLL_TERRAIN_YAW_EXTRA,
-        t * -0.005,
-      );
-    }
-  });
-
-  return (
-    <group ref={rigRef}>
-      <primitive object={gltf.scene} />
-    </group>
-  );
-}
-
-function PostFx({ enabled }: { enabled: boolean; }) {
-  const size = useThree((s) => s.size);
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    if (!enabled) {
-      setReady(false);
-      return;
-    }
-    let cancelled = false;
-    const id = requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        if (!cancelled) setReady(true);
-      });
-    });
-    return () => {
-      cancelled = true;
-      cancelAnimationFrame(id);
-      setReady(false);
-    };
-  }, [enabled]);
-
-  if (!enabled || !ready || size.width === 0) return null;
-
-  return (
-    <EffectComposer multisampling={4} enableNormalPass={false}>
-      <Bloom
-        luminanceThreshold={0.985}
-        luminanceSmoothing={0.14}
-        intensity={0.004}
-        mipmapBlur
-      />
-    </EffectComposer>
-  );
-}
-
-const FALLBACK_PARALLAX_MOTION: MutableRefObject<SnowMountainParallaxMotion> = {
-  current: { x: 0, y: 0, scale: 1, scroll: 0 },
-};
-
-export type SnowMountainSceneProps = {
-  scrollState: HeroScrollState;
-  heroSectionRef: RefObject<HTMLElement | null>;
-  motionRef?: MutableRefObject<SnowMountainParallaxMotion>;
-  sceneActive?: boolean;
+export type SnowMountainV2SimpleSceneProps = {
   className?: string;
+  scrollState?: HeroScrollState;
+  heroSectionRef?: RefObject<HTMLElement | null>;
+  motionRef?: MutableRefObject<SnowMountainParallaxMotion>;
+  reduceMotion?: boolean;
 };
 
-export function SnowMountainScene({
+/** Minimal preview: blue sky, Stage auto-fit, model centered on camera. */
+export function SnowMountainV2SimpleScene({
+  className,
   scrollState,
   heroSectionRef,
   motionRef,
-  sceneActive = true,
-  className,
-}: SnowMountainSceneProps) {
-  const reduceMotion = usePrefersReducedMotion();
-  const parallaxMotionRef = motionRef ?? FALLBACK_PARALLAX_MOTION;
-  const cameraBaselineGenerationRef = useRef(0);
+  reduceMotion = false,
+}: SnowMountainV2SimpleSceneProps) {
+  const syncScroll =
+    scrollState != null && heroSectionRef != null && motionRef != null;
 
-  const scrollRead = useMemo((): HeroScrollRead => {
-    return {
-      getProgress: () => (reduceMotion ? 0 : scrollState.get()),
-      cameraBaselineGenerationRef,
-    };
-  }, [reduceMotion, scrollState]);
-
-  /* Clouds render in `SnowMountainHeroStickyLayer` (above the film overlay). */
   return (
-    <div className={cn("relative h-full min-h-dvh w-full", className)}>
+    <div className={cn("relative h-full w-full", className)}>
       <Canvas
         className="absolute inset-0 h-full w-full touch-none"
-        frameloop={sceneActive && !reduceMotion ? "always" : "never"}
-        camera={{ fov: 28, near: 0.1, far: 500 }}
+        camera={{ fov: 40, near: 0.1, far: 500 }}
         dpr={[1, 1.5]}
-        resize={{
-          scroll: false,
-          debounce: { scroll: 0, resize: 0 },
-        }}
-        gl={{
-          antialias: true,
-          powerPreference: "high-performance",
-        }}
+        gl={{ antialias: true, powerPreference: "high-performance" }}
         onCreated={({ gl }) => {
-          gl.setClearColor(new THREE.Color(SNOW_MOUNTAIN_FOG_COLOR), 1);
+          gl.setClearColor(new THREE.Color(SKY_COLOR), 1);
           gl.toneMapping = THREE.ACESFilmicToneMapping;
-          /* Exposure after fixing drei Stage stacking its own spot (2× intensity) on top of scene lights. */
-          gl.toneMappingExposure = 0.68;
+          gl.toneMappingExposure = 1;
         }}
       >
-        <HeroScrollReadContext.Provider value={scrollRead}>
+        <Sky sunPosition={[1, 200, 1]} />
+        {syncScroll ? (
           <HeroScrollLayoutSync
             sectionRef={heroSectionRef}
             scrollState={scrollState}
-            motionRef={parallaxMotionRef}
+            motionRef={motionRef}
             reduceMotion={reduceMotion}
           />
-          <BreathingFogExp2 reduceMotion={reduceMotion} />
-          <hemisphereLight args={["#a2acb5", "#3A3830", 0.6]} />
-          {/* Warm daylight fill — brightens shadowed faces without adding hue */}
-          <ambientLight intensity={0.38} color="#FFF8F0" />
-          <directionalLight
-            position={[22, 38, 18]}
-            intensity={0.46}
-            color="#FFE8C8"
-          />
-          <directionalLight
-            position={[-16, 8, -22]}
-            intensity={0.18}
-            color="#C8C0B0"
-          />
+        ) : null}
+        <hemisphereLight args={["#b8d4f0", "#5a6a7a", 0.95]} />
+        <ambientLight intensity={0.50} color="#f0f6ff" />
+        <directionalLight
+          position={[14, 28, 12]}
+          intensity={0.75}
+          color="#fff4e6"
+        />
 
-          <HeroScrollCameraFraming reduceMotion={reduceMotion} />
-
-          <ParallaxWorld reduceMotion={reduceMotion}>
-            <SnowMountainSceneParticles reduceMotion={reduceMotion} />
-            <Suspense fallback={null}>
-              <Stage
-                adjustCamera={0.32}
-                intensity={0}
-                environment={{
-                  preset: "apartment",
-                  background: false,
-                  environmentIntensity: 0.32,
-                }}
-                preset="soft"
-                shadows={false}
-                // Forwarded to Bounds via Stage ...props; not declared on StageProps.
-                // @ts-expect-error Bounds props forwarded from Stage
-                observe={false}
-                maxDuration={0}
-              >
-                <SnowMountainModel reduceMotion={reduceMotion} />
-              </Stage>
-              <PostFx enabled={!reduceMotion} />
-            </Suspense>
-          </ParallaxWorld>
-        </HeroScrollReadContext.Provider>
+        <Suspense fallback={null}>
+          <Stage
+            adjustCamera={CAMERA_ADJUST}
+            intensity={0.55}
+            shadows={false}
+            environment={null}
+            preset="soft"
+            // @ts-expect-error Bounds props forwarded from Stage
+            observe={false}
+            maxDuration={0}
+          >
+            <SnowMountainV2Model />
+            <V2ScrollCamera
+              scrollState={scrollState}
+              reduceMotion={reduceMotion}
+            />
+          </Stage>
+        </Suspense>
       </Canvas>
     </div>
   );
 }
-

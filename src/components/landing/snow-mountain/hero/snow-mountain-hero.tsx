@@ -2,33 +2,24 @@
 
 import {
   useCallback,
-  useEffect,
   useLayoutEffect,
   useRef,
-  useState,
 } from "react";
 
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { createHeroScrollState } from "@/lib/snow-mountain/hero-scroll-state";
+import type { SnowMountainParallaxMotion } from "@/lib/snow-mountain/snow-mountain-parallax-motion";
 import {
   heroPrimaryParallaxX,
   heroPrimaryParallaxY,
   readHeroScrollProgress,
 } from "@/lib/snow-mountain/snow-mountain-hero-scroll";
 
-import type { SnowMountainParallaxMotion } from "@/components/landing/snow-mountain/scene/snow-mountain-scene-clouds";
 import { HERO_SECTION_VH } from "./snow-mountain-hero-scroll";
 import { SnowMountainHeroMotionScrollLayers } from "./snow-mountain-hero-motion-scroll-layers";
-import {
-  SnowMountainHeroStickyLayer,
-  type SnowMountainHeroSceneVariant,
-} from "./snow-mountain-hero-sticky-layer";
+import { SnowMountainHeroStickyLayer } from "./snow-mountain-hero-sticky-layer";
 
-export type SnowMountainHeroProps = {
-  sceneVariant?: SnowMountainHeroSceneVariant;
-};
-
-export function SnowMountainHero({ sceneVariant = "v1" }: SnowMountainHeroProps) {
+export function SnowMountainHero() {
   const reduce = usePrefersReducedMotion();
   const heroRef = useRef<HTMLElement | null>(null);
   const heroCanvasRef = useRef<HTMLDivElement | null>(null);
@@ -39,7 +30,6 @@ export function SnowMountainHero({ sceneVariant = "v1" }: SnowMountainHeroProps)
     scale: 1,
     scroll: 0,
   });
-  const [sceneActive, setSceneActive] = useState(true);
 
   const syncProgress = useCallback(() => {
     const hero = heroRef.current;
@@ -64,24 +54,6 @@ export function SnowMountainHero({ sceneVariant = "v1" }: SnowMountainHeroProps)
     syncProgress();
   }, [reduce, scrollState, syncProgress]);
 
-  useEffect(() => {
-    if (reduce) {
-      setSceneActive(false);
-      return;
-    }
-    const canvas = heroCanvasRef.current;
-    if (!canvas) return;
-
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        setSceneActive(entry?.isIntersecting ?? false);
-      },
-      { root: null, rootMargin: "0px", threshold: 0 },
-    );
-    io.observe(canvas);
-    return () => io.disconnect();
-  }, [reduce]);
-
   return (
     <section
       ref={heroRef}
@@ -93,9 +65,7 @@ export function SnowMountainHero({ sceneVariant = "v1" }: SnowMountainHeroProps)
       }}
     >
       <SnowMountainHeroStickyLayer
-        sceneVariant={sceneVariant}
         reduceMotion={!!reduce}
-        sceneActive={sceneActive}
         heroSectionRef={heroRef}
         heroCanvasRef={heroCanvasRef}
         scrollState={scrollState}

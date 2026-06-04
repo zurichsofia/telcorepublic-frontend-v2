@@ -1,5 +1,4 @@
 import { getHeroCameraProgress } from "@/lib/snow-mountain/hero-scroll-layer-styles";
-import { heroCloudLiftFactor } from "@/lib/snow-mountain/snow-mountain-cloud-scroll";
 
 /**
  * Progress (0–1) over the hero pin distance — 0 when the section top hits the
@@ -39,13 +38,4 @@ export function heroPrimaryParallaxX(progress: number): number {
   if (t >= CROSSFADE_END) return 12;
   const u = t / CROSSFADE_END;
   return 12 * (1 - (1 - u) * (1 - u));
-}
-
-/** Cloud band vertical slide (px) at lift factor 1 — reversible on scroll up/down. */
-export const HERO_CLOUD_SCROLL_SLIDE_PX = 90;
-
-export function heroCloudParallaxY(progress: number): number {
-  const t = mapHeroScrollProgress(progress);
-  if (t <= 0) return 0;
-  return -heroCloudLiftFactor(t) * HERO_CLOUD_SCROLL_SLIDE_PX;
 }
