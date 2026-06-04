@@ -3,7 +3,10 @@
 import type { MutableRefObject, RefObject } from "react";
 import { Suspense, useEffect, useMemo, useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Sky, Stage, useBounds, useGLTF } from "@react-three/drei";
+import { Stage, useBounds, useGLTF } from "@react-three/drei";
+
+import { SnowMountainForegroundClouds } from "@/components/landing/snow-mountain/scene/snow-mountain-foreground-clouds";
+import { SnowMountainSky } from "@/components/landing/snow-mountain/scene/snow-mountain-sky";
 import * as THREE from "three";
 
 import { HeroScrollLayoutSync } from "@/components/landing/snow-mountain/scene/hero-scroll-layout-sync";
@@ -13,7 +16,7 @@ import { markSceneReady, registerScene } from "@/lib/scene-ready";
 import { mapHeroScrollProgress } from "@/lib/snow-mountain/snow-mountain-hero-scroll";
 import { cn } from "@/lib/utils";
 
-const SKY_COLOR = "#acb5bc";
+const SKY_COLOR = "#e8e8e8";
 const MODEL_PATH = "/scene/snow_mountain.glb";
 
 /**
@@ -243,7 +246,8 @@ export function SnowMountainV2SimpleScene({
           gl.toneMappingExposure = 1;
         }}
       >
-        <Sky sunPosition={[1, 200, 1]} />
+        <SnowMountainSky reduceMotion={reduceMotion} />
+
         {syncScroll ? (
           <HeroScrollLayoutSync
             sectionRef={heroSectionRef}
@@ -252,13 +256,14 @@ export function SnowMountainV2SimpleScene({
             reduceMotion={reduceMotion}
           />
         ) : null}
-        <hemisphereLight args={["#b8d4f0", "#5a6a7a", 0.95]} />
+        <hemisphereLight args={["#b8d4f0", "#5a6a7a", 3]} />
         <ambientLight intensity={0.50} color="#f0f6ff" />
         <directionalLight
           position={[14, 28, 12]}
           intensity={0.75}
           color="#fff4e6"
         />
+
 
         <Suspense fallback={null}>
           <Stage
@@ -276,6 +281,7 @@ export function SnowMountainV2SimpleScene({
               scrollState={scrollState}
               reduceMotion={reduceMotion}
             />
+            {/* <SnowMountainForegroundClouds reduceMotion={reduceMotion} /> */}
           </Stage>
         </Suspense>
       </Canvas>
