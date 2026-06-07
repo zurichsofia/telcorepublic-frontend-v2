@@ -25,6 +25,26 @@ export type NewsPostDetail = NewsPost & {
   body: NewsArticle["body"];
 };
 
+export type InsightQuote = {
+  date: string;
+  text: string;
+  href: string;
+  title: string;
+};
+
+export function newsPostsToInsightQuotes(
+  posts: readonly NewsPost[],
+): InsightQuote[] {
+  return posts
+    .filter((post) => post.excerpt || post.title)
+    .map((post) => ({
+      date: post.dateLabel,
+      text: post.excerpt || post.title,
+      href: `/news/${post.slug}`,
+      title: post.title,
+    }));
+}
+
 function formatDateLabel(iso: string): string {
   // Sanity `date` fields come back as `YYYY-MM-DD`. Ensure stable UTC parsing.
   const date = new Date(iso.length === 10 ? `${iso}T00:00:00Z` : iso);

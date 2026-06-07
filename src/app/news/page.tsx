@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 
+import { InsightsQuotesSection } from "@/components/landing/sections/insights-quotes-section";
 import { NewsHeroStackedTitle } from "@/components/news/news-hero-stacked-title";
 import { NewsList } from "@/components/news/news-list";
-import { getAllNewsPosts } from "@/data/news";
+import { getAllNewsPosts, newsPostsToInsightQuotes } from "@/data/news";
 
 export const metadata: Metadata = {
   title: "News | Telcorepublic Research",
@@ -16,6 +17,7 @@ export default async function NewsIndexPage() {
   const posts = await getAllNewsPosts();
   const [first, second, ...rest] = posts;
   const gridPosts = rest;
+  const quotes = newsPostsToInsightQuotes(posts);
 
   return (
     <div>
@@ -30,6 +32,7 @@ export default async function NewsIndexPage() {
           gridPosts={gridPosts}
         />
       </div>
+      <InsightsQuotesSection quotes={quotes} showOceanStrip={false} />
     </div>
   );
 }

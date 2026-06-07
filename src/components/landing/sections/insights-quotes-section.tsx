@@ -1,9 +1,11 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
+import type { InsightQuote } from "@/data/news";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { cn } from "@/lib/utils";
 
@@ -13,34 +15,7 @@ export const INSIGHTS_QUOTES_VIDEO_SRC =
 /** Pause between stack updates */
 const SWAP_INTERVAL_MS = 4000;
 
-const QUOTES = [
-  {
-    date: "MAY 15, 2026",
-    text: "AI-native BSS platforms are becoming the new operating layer of telecom transformation. Legacy stacks can no longer support the speed of modern service ecosystems.",
-  },
-  {
-    date: "JUN 05, 2025",
-    text: "Modular OSS architectures are enabling operators to decouple network functions and accelerate innovation without wholesale infrastructure replacement.",
-  },
-  {
-    date: "JUL 18, 2024",
-    text: "The shift from infrastructure ownership to platform orchestration is redefining how telecom operators compete in cloud-native ecosystems.",
-  },
-  {
-    date: "MAY 15, 2026",
-    text: "AI-native BSS platforms are becoming the new operating layer of telecom transformation. Legacy stacks can no longer support the speed of modern service ecosystems.",
-  },
-  {
-    date: "JUN 05, 2025",
-    text: "Modular OSS architectures are enabling operators to decouple network functions and accelerate innovation without wholesale infrastructure replacement.",
-  },
-  {
-    date: "JUL 18, 2024",
-    text: "The shift from infrastructure ownership to platform orchestration is redefining how telecom operators compete in cloud-native ecosystems.",
-  },
-] as const;
-
-type Quote = (typeof QUOTES)[number];
+type Quote = InsightQuote;
 type BubbleSize = "large" | "medium" | "small";
 
 type StackCard = {
@@ -101,18 +76,21 @@ const BUBBLE_HEIGHT_CLASS: Record<BubbleSize, string> = {
   small: "h-[7rem] lg:h-[9.5rem]",
 };
 
-const INITIAL_CARDS: StackCard[] = [
-  { id: 0, quoteIndex: 0 },
-  { id: 1, quoteIndex: 1 },
-  { id: 2, quoteIndex: 2 },
-];
+function createInitialCards(quotes: readonly Quote[]): StackCard[] {
+  return Array.from({ length: Math.min(3, quotes.length) }, (_, i) => ({
+    id: i,
+    quoteIndex: i % quotes.length,
+  }));
+}
 
 function OceanStrip({
   videoSrc,
   reduceMotion,
+  preload = "metadata",
 }: {
   videoSrc: string;
   reduceMotion: boolean;
+  preload?: "metadata" | "none";
 }) {
   const stripRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -129,7 +107,7 @@ function OceanStrip({
 
     const syncPlayback = (inView: boolean) => {
       if (inView) {
-        void v.play().catch(() => {});
+        void v.play().catch(() => { });
       } else {
         v.pause();
       }
@@ -163,7 +141,7 @@ function OceanStrip({
         muted
         playsInline
         loop={!reduceMotion}
-        preload="metadata"
+        preload={preload}
       />
     </div>
   );
@@ -177,9 +155,12 @@ function MessageBubble({
   size: BubbleSize;
 }) {
   return (
-    <div
+    <Link
+      href={quote.href}
+      aria-label={`Read article: ${quote.title}`}
       className={cn(
         "relative flex w-full flex-col justify-center rounded-[18px] bg-[#1c1c1c] shadow-[0_20px_50px_rgba(0,0,0,0.55)]",
+        "transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/40",
         BUBBLE_HEIGHT_CLASS[size],
         size === "large" && "px-7 py-6 sm:px-8 sm:py-7",
         size === "medium" && "px-6 py-5 sm:px-7 sm:py-6",
@@ -200,11 +181,11 @@ function MessageBubble({
         className={cn(
           "text-pretty font-sans text-white",
           size === "large" &&
-            "mt-4 text-lg font-semibold leading-[1.35] sm:text-xl lg:text-2xl",
+          "mt-4 text-lg font-semibold leading-[1.35] sm:text-xl lg:text-2xl",
           size === "medium" &&
-            "mt-3 text-sm font-medium leading-[1.35] sm:text-base lg:text-lg",
+          "mt-3 text-sm font-medium leading-[1.35] sm:text-base lg:text-lg",
           size === "small" &&
-            "mt-2.5 text-sm font-medium leading-snug sm:text-base lg:text-[0.9rem]",
+          "mt-2.5 text-sm font-medium leading-snug sm:text-base lg:text-[0.9rem]",
         )}
       >
         <span className="text-white/90">&ldquo;</span>
@@ -220,34 +201,44 @@ function MessageBubble({
         )}
         aria-hidden
       />
-    </div>
+    </Link>
   );
 }
 
-function NotificationStack({ reduceMotion }: { reduceMotion: boolean; }) {
-  const [cards, setCards] = useState<StackCard[]>(INITIAL_CARDS);
+function NotificationStack({
+  quotes,
+  reduceMotion,
+}: {
+  quotes: readonly Quote[];
+  reduceMotion: boolean;
+}) {
+  const initialCards = createInitialCards(quotes);
+  const [cards, setCards] = useState<StackCard[]>(initialCards);
   const [enteringId, setEnteringId] = useState<number | null>(null);
-  const nextId = useRef(INITIAL_CARDS.length);
-  const quoteCursor = useRef(INITIAL_CARDS.length);
+  const nextId = useRef(initialCards.length);
+  const quoteCursor = useRef(initialCards.length);
 
   useEffect(() => {
-    if (reduceMotion) return;
+    if (reduceMotion || quotes.length === 0) return;
 
     const id = window.setInterval(() => {
       const newId = nextId.current++;
       const newCard: StackCard = {
         id: newId,
-        quoteIndex: quoteCursor.current++ % QUOTES.length,
+        quoteIndex: quoteCursor.current++ % quotes.length,
       };
 
       setEnteringId(newId);
-      setCards((prev) => [prev[1]!, prev[2]!, newCard]);
+      setCards((prev) => {
+        if (prev.length < 3) return [...prev, newCard];
+        return [prev[1]!, prev[2]!, newCard];
+      });
 
       window.setTimeout(() => setEnteringId(null), 550);
     }, SWAP_INTERVAL_MS);
 
     return () => window.clearInterval(id);
-  }, [reduceMotion]);
+  }, [reduceMotion, quotes.length]);
 
   if (reduceMotion) {
     return (
@@ -258,10 +249,10 @@ function NotificationStack({ reduceMotion }: { reduceMotion: boolean; }) {
           STACK_TAIL_PADDING,
         )}
       >
-        {INITIAL_CARDS.map((card, slotIndex) => (
+        {initialCards.map((card, slotIndex) => (
           <div key={card.id} className={STACK_SLOTS[slotIndex]!.className}>
             <MessageBubble
-              quote={QUOTES[card.quoteIndex]!}
+              quote={quotes[card.quoteIndex]!}
               size={STACK_SLOTS[slotIndex]!.size}
             />
           </div>
@@ -306,19 +297,19 @@ function NotificationStack({ reduceMotion }: { reduceMotion: boolean; }) {
                     layout: layoutSpring,
                     ...(isEntering
                       ? {
-                        y: enterSpring,
-                        opacity: enterSpring,
-                        scale: enterSpring,
-                      }
+                          y: enterSpring,
+                          opacity: enterSpring,
+                          scale: enterSpring,
+                        }
                       : {
-                        y: layoutSpring,
-                        opacity: { duration: 0.35 },
-                        scale: layoutSpring,
-                      }),
+                          y: layoutSpring,
+                          opacity: { duration: 0.35 },
+                          scale: layoutSpring,
+                        }),
                   }}
                 >
                   <MessageBubble
-                    quote={QUOTES[card.quoteIndex]!}
+                    quote={quotes[card.quoteIndex]!}
                     size={slot.size}
                   />
                 </motion.div>
@@ -330,7 +321,7 @@ function NotificationStack({ reduceMotion }: { reduceMotion: boolean; }) {
       <p className="sr-only">
         {cards
           .map((card) => {
-            const q = QUOTES[card.quoteIndex]!;
+            const q = quotes[card.quoteIndex]!;
             return `${q.date}: ${q.text}`;
           })
           .join(". ")}
@@ -340,11 +331,17 @@ function NotificationStack({ reduceMotion }: { reduceMotion: boolean; }) {
 }
 
 export function InsightsQuotesSection({
+  quotes,
   videoSrc = INSIGHTS_QUOTES_VIDEO_SRC,
+  showOceanStrip = true,
 }: {
+  quotes: readonly InsightQuote[];
   videoSrc?: string;
+  showOceanStrip?: boolean;
 }) {
   const reduceMotion = usePrefersReducedMotion();
+
+  if (quotes.length === 0) return null;
 
   return (
     <section
@@ -352,7 +349,9 @@ export function InsightsQuotesSection({
       className="relative isolate w-full"
       aria-label="Insights and perspectives"
     >
-      <OceanStrip videoSrc={videoSrc} reduceMotion={reduceMotion} />
+      {showOceanStrip ? (
+        <OceanStrip videoSrc={videoSrc} reduceMotion={reduceMotion} />
+      ) : null}
 
       <div className="relative bg-black px-4 py-14 sm:px-8 sm:py-16 lg:px-10 lg:py-20 xl:px-12">
         <div className="relative mx-auto w-full max-w-6xl overflow-visible">
@@ -373,12 +372,18 @@ export function InsightsQuotesSection({
             aria-live="polite"
             aria-label="Industry insights"
           >
-            <NotificationStack reduceMotion={reduceMotion} />
+            <NotificationStack quotes={quotes} reduceMotion={reduceMotion} />
           </div>
         </div>
       </div>
 
-      <OceanStrip videoSrc={videoSrc} reduceMotion={reduceMotion} />
+      {showOceanStrip ? (
+        <OceanStrip
+          videoSrc={videoSrc}
+          reduceMotion={reduceMotion}
+          preload="none"
+        />
+      ) : null}
     </section>
   );
 }

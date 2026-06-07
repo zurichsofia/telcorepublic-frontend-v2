@@ -3,14 +3,21 @@ import { GetInTouchSection } from "@/components/landing/sections/get-in-touch-se
 import { InsightsQuotesSection } from "@/components/landing/sections/insights-quotes-section";
 import { WhyUsSection } from "@/components/landing/sections/why-us/why-us-section";
 import { SnowMountainHero } from "@/components/landing/snow-mountain/hero/snow-mountain-hero";
+import { getAllNewsPosts, newsPostsToInsightQuotes } from "@/data/news";
 
-export default function Home() {
+export default async function Home() {
+  const posts = await getAllNewsPosts();
+  const quotes = newsPostsToInsightQuotes(posts);
+
   return (
     <main id="home" className="relative z-10 isolate overflow-x-clip bg-white">
       <SnowMountainHero />
       <GlobalReachMapSection />
       <WhyUsSection />
-      <InsightsQuotesSection videoSrc="/videos/TelcoRepublic_Ocean_1280x720.mp4" />
+      <InsightsQuotesSection
+        quotes={quotes}
+        videoSrc="/videos/TelcoRepublic_Ocean_1280x720.mp4"
+      />
       <GetInTouchSection />
     </main>
   );
