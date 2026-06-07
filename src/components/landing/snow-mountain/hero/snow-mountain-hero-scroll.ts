@@ -1,8 +1,8 @@
-/** Mountain camera orbit + copy sequence (~140vh per copy beat at 3 beats). */
-export const HERO_CAMERA_SCROLL_VH = 300;
+/** Mountain camera orbit + copy sequence (~160vh per copy beat at 3 beats). */
+export const HERO_CAMERA_SCROLL_VH = 480;
 
 /** Extra pinned scroll on the last copy beat before the hero unpins. */
-export const HERO_LAST_SECTION_HOLD_VH = 50;
+export const HERO_LAST_SECTION_HOLD_VH = 80;
 
 /** Scroll distance while the sticky canvas stays pinned. */
 export const HERO_STICKY_SCROLL_VH =

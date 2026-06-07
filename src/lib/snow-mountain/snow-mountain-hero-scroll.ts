@@ -30,13 +30,15 @@ export function dampHeroScrollProgress(
   target: number,
   deltaSeconds: number,
 ): number {
-  if (target <= 0) return 0;
-  if (target >= 1) return 1;
-  if (Math.abs(target - current) < PROGRESS_SNAP_EPSILON) return target;
+  const clampedTarget = Math.min(1, Math.max(0, target));
+  if (Math.abs(clampedTarget - current) < PROGRESS_SNAP_EPSILON) {
+    return clampedTarget;
+  }
 
   const dt = Math.min(Math.max(deltaSeconds, 0), 0.1);
   const alpha = 1 - Math.exp(-HERO_CAMERA_PROGRESS_DAMPING * dt);
-  return current + (target - current) * alpha;
+  const next = current + (clampedTarget - current) * alpha;
+  return Math.min(1, Math.max(0, next));
 }
 
 /** Camera orbit progress — linear for smooth scroll up/down. */
