@@ -1,44 +1,15 @@
-import { HERO_RELEASE_SCROLL_VH } from "@/components/landing/snow-mountain/hero/snow-mountain-hero-scroll";
-
 import WorldMap from "./world-map";
 
-const GLOBAL_REACH_DOTS = [
-  {
-    start: { lat: 47.3769, lng: 8.5417, pulse: true as const },
-    end: { lat: 51.5074, lng: -0.1278 },
-  },
-  {
-    start: { lat: 51.5074, lng: -0.1278 },
-    end: { lat: 40.7128, lng: -74.006 },
-  },
-  {
-    start: { lat: 51.5074, lng: -0.1278 },
-    end: { lat: 25.2048, lng: 55.2708 },
-  },
-  {
-    start: { lat: 28.6139, lng: 77.209 },
-    end: { lat: 1.3521, lng: 103.8198 },
-  },
-  {
-    start: { lat: 1.3521, lng: 103.8198 },
-    end: { lat: 35.6762, lng: 139.6503 },
-  },
-  {
-    start: { lat: 40.7128, lng: -74.006 },
-    end: { lat: -23.5505, lng: -46.6333 },
-  },
+const MISSION_BENEFITS = [
+  "World-class insights",
+  "Local market knowledge",
 ] as const;
 
 export function GlobalReachMapSection() {
   return (
     <section
       id="global-reach"
-      className="relative z-30 w-full overflow-hidden bg-white px-6 py-24 sm:px-10 sm:pb-36 lg:px-16 xl:px-20"
-      style={
-        HERO_RELEASE_SCROLL_VH > 0
-          ? { marginTop: `-${HERO_RELEASE_SCROLL_VH}vh` }
-          : undefined
-      }
+      className="relative z-30 w-full overflow-hidden bg-white px-6 py-40 sm:px-10 sm:pb-36 lg:px-16 xl:px-20"
       aria-labelledby="global-reach-heading"
     >
       {/* <div className="relative mx-auto max-w-7xl px-5 text-center sm:px-8">
@@ -49,9 +20,56 @@ export function GlobalReachMapSection() {
         market reach.
       </p>
     </div> */}
-      <div className="text-center text-telco-red text-5xl my-16">TR MISSION</div>
-      <div className="relative mx-auto mt-14 max-w-6xl">
-        <WorldMap dots={GLOBAL_REACH_DOTS} />
+      <div className="mx-auto flex max-w-4xl flex-col items-center px-5 text-center sm:px-8">
+        {/* <p className="font-display text-xs font-medium uppercase tracking-[0.2em] text-telco-red">
+          TR Mission
+        </p> */}
+
+        <h2
+          id="global-reach-heading"
+          className="mt-8 text-pretty font-display text-[clamp(1.75rem,4.5vw,3rem)] font-normal leading-[1.2] tracking-tight text-black"
+        >
+          We bring together
+          <br />
+          global industry experts and
+          <br />
+          <span className="text-telco-red">cutting-edge innovation at scale</span>
+        </h2>
+
+        <p className="mt-8 max-w-2xl text-pretty text-base font-light leading-relaxed text-black/90 sm:text-lg lg:text-xl">
+          ensuring that every project benefits from:
+        </p>
+
+        <ul className="mt-6 flex flex-col items-center gap-3 sm:mt-8 sm:gap-4" role="list">
+          {MISSION_BENEFITS.map((benefit) => (
+            <li
+              key={benefit}
+              className="flex items-center gap-3 text-base font-light text-black sm:text-lg"
+            >
+              <span
+                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-telco-red/10 text-telco-red"
+                aria-hidden
+              >
+                <svg
+                  viewBox="0 0 12 12"
+                  className="h-3 w-3"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M2 6l3 3 5-5" />
+                </svg>
+              </span>
+              {benefit}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="relative mx-auto mt-14 max-w-6xl sm:mt-20">
+        <WorldMap />
       </div>
     </section >
   );
