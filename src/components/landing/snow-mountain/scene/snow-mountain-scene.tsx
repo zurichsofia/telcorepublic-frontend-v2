@@ -5,7 +5,7 @@ import { Suspense, useEffect, useMemo, useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Stage, useBounds, useGLTF } from "@react-three/drei";
 
-import { SnowMountainForegroundClouds } from "@/components/landing/snow-mountain/scene/snow-mountain-foreground-clouds";
+// import { SnowMountainForegroundClouds } from "@/components/landing/snow-mountain/scene/snow-mountain-foreground-clouds";
 import { SnowMountainSky } from "@/components/landing/snow-mountain/scene/snow-mountain-sky";
 import * as THREE from "three";
 
