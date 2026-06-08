@@ -138,6 +138,14 @@ body {
   animation-fill-mode: backwards;
 }
 
+.brand-signal-dots-on-dark {
+  --signal-dot-color: var(--color-white);
+}
+
+.brand-signal-dots-on-light {
+  --signal-dot-color: var(--color-telco-dark);
+}
+
 /* Smaller dots when the lockup uses `size="compact"` (e.g. main nav). */
 .brand-signal-dots-compact .brand-signal-dot {
   width: 3.8px;

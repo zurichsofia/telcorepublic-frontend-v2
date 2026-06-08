@@ -41,6 +41,9 @@ export const defaultNavItems: readonly NavItem[] = [
   { href: "/contact", label: "Contact" },
 ];
 
+const dropdownPanelClass =
+  "absolute left-0 top-full z-20 -mt-1 min-w-56 py- pl pt-3 text-left invisible opacity-0 transition group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100";
+
 /** Drop `group-focus-within` on the parent so the flyout hides after choosing a sublink. */
 function closeNavDropdown() {
   requestAnimationFrame(() => {
@@ -343,6 +346,8 @@ export function Navigation({
 }: NavigationProps) {
   const pathname = usePathname() ?? "";
   const onDark = theme === "blog";
+  const logoVariant =
+    onDark ? "onDark" : theme === "overlay" && !overlayPastHero ? "brand" : "onLight";
 
   return (
     <header
@@ -355,7 +360,7 @@ export function Navigation({
       <div className="mx-auto flex items-center justify-between gap-8">
         <BrandLogoSignal
           href={logoHref}
-          variant={onDark ? "onDark" : "onLight"}
+          variant={logoVariant}
           size="compact"
         />
 
