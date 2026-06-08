@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect } from "react";
+import { useEffect } from "react";
 
 import { usePathname } from "next/navigation";
 
@@ -8,6 +8,7 @@ import { Footer } from "@/components/common/footer";
 import {
   Navigation,
   shellSurfaceClassName,
+  shellSurfaceTransitionClass,
   useOverlayPastHero,
 } from "@/components/common/navigation";
 import {
@@ -32,7 +33,7 @@ export function AppShell({
   const immersiveHero = isServiceDetail || isHome;
   const darkShell = isNews || isContact;
   const theme = darkShell ? "blog" : immersiveHero ? "overlay" : "default";
-  const overlayPastHero = useOverlayPastHero(theme);
+  const overlayPastHero = useOverlayPastHero(theme, pathname);
   const surfaceClassName = shellSurfaceClassName(theme, overlayPastHero);
 
   // Browsers can restore/apply scroll after a client navigation, which (with a long view
@@ -45,12 +46,6 @@ export function AppShell({
     }
   }, []);
 
-  useLayoutEffect(() => {
-    // Runs before Lenis mounts; LenisScrollToTopOnNavigate handles the steady state.
-    (document.scrollingElement ?? document.documentElement).scrollTo(0, 0);
-    window.scrollTo(0, 0);
-  }, [pathname]);
-
   return (
     <SmoothScrollProvider>
       <LenisScrollToTopOnNavigate pathname={pathname} />
@@ -60,6 +55,7 @@ export function AppShell({
         <div
           className={cn(
             "relative z-10 flex min-h-screen flex-col",
+            immersiveHero && shellSurfaceTransitionClass,
             surfaceClassName,
           )}
         >

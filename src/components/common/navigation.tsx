@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { BrandLogoSignal } from "@/components/common/brand-logo-signal";
-import { isPastMountainView } from "@/lib/hero-nav-sync";
+import { isPastHeroView } from "@/lib/hero-nav-sync";
 import { subscribeLenisScroll, isLenisActive } from "@/lib/lenis-scroll";
 import { cn } from "@/lib/utils";
 
@@ -57,11 +57,11 @@ export type NavigationProps = {
   logoHref?: string;
   className?: string;
   newsArticleCount?: number;
-  /** `blog` — light links on dark shell. `overlay` — on hero: light links; below `#hero`: dark links. */
+  /** `overlay`: light links on hero, dark below. */
   theme?: "default" | "blog" | "overlay";
-  /** Same background as `AppShell` (opaque bar; keeps nav in sync with page surface). */
+  /** Matches `AppShell` surface (nav + shell stay in sync). */
   surfaceClassName: string;
-  /** Passed from `AppShell` when `theme === "overlay"`. */
+  /** `true` when scrolled past `#hero` (overlay theme only). */
   overlayPastHero?: boolean;
 };
 
@@ -122,6 +122,18 @@ function navLinkClass(
     return cn(
       type,
       active ? "text-telco-red" : "text-white hover:text-telco-red",
+    );
+  }
+  if (theme === "overlay") {
+    return cn(
+      type,
+      overlayPastHero
+        ? active
+          ? "text-telco-red"
+          : "text-neutral-900 hover:text-telco-red"
+        : active
+          ? "text-telco-red"
+          : "text-white hover:text-telco-red",
     );
   }
   return cn(
@@ -283,18 +295,30 @@ function NavItemWithSubmenu({
   );
 }
 
+/** Hero ↔ post-hero background fade (overlay routes). */
+export const shellSurfaceTransitionClass =
+  "transition-colors duration-200 ease-out motion-reduce:transition-none";
+
 export function shellSurfaceClassName(
   theme: "default" | "blog" | "overlay",
   overlayPastHero: boolean,
 ): string {
   if (theme === "blog") return "bg-telco-dark";
   if (theme === "overlay") {
-    return overlayPastHero ? "bg-white" : "bg-transparent";
+    return overlayPastHero ? "bg-white" : "bg-white/0"; // `/0` fades; `transparent` does not
   }
   return "bg-white";
 }
 
-export function useOverlayPastHero(theme: "default" | "blog" | "overlay") {
+function resetViewportScroll() {
+  (document.scrollingElement ?? document.documentElement).scrollTo(0, 0);
+  window.scrollTo(0, 0);
+}
+
+export function useOverlayPastHero(
+  theme: "default" | "blog" | "overlay",
+  pathname: string,
+) {
   const [pastHero, setPastHero] = useState(false);
   const pastRef = useRef(false);
 
@@ -306,12 +330,15 @@ export function useOverlayPastHero(theme: "default" | "blog" | "overlay") {
     }
 
     const sync = () => {
-      const next = isPastMountainView(pastRef.current);
+      const next = isPastHeroView(pastRef.current);
       pastRef.current = next;
       setPastHero((prev) => (prev === next ? prev : next));
     };
 
+    resetViewportScroll(); // avoid white nav flash from stale scroll on route change
     sync();
+    const postResetRaf = requestAnimationFrame(sync);
+
     const offLenis = subscribeLenisScroll(sync);
     let rafId = 0;
     const onNativeScroll = () => {
@@ -325,12 +352,13 @@ export function useOverlayPastHero(theme: "default" | "blog" | "overlay") {
     window.addEventListener("scroll", onNativeScroll, { passive: true });
     window.addEventListener("resize", sync);
     return () => {
+      cancelAnimationFrame(postResetRaf);
       offLenis();
       window.removeEventListener("scroll", onNativeScroll);
       window.removeEventListener("resize", sync);
       if (rafId !== 0) cancelAnimationFrame(rafId);
     };
-  }, [theme]);
+  }, [theme, pathname]);
 
   return pastHero;
 }
@@ -353,6 +381,7 @@ export function Navigation({
     <header
       className={cn(
         "sticky top-0 z-50 isolate w-full shrink-0 px-5 py-6 sm:px-8",
+        theme === "overlay" && shellSurfaceTransitionClass,
         surfaceClassName,
         className,
       )}
