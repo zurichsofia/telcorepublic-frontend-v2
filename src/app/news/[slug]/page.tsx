@@ -8,11 +8,10 @@ import {
   getNewsPostBySlug,
 } from "@/data/news";
 import { NewsArticleBody } from "@/components/news/news-article-body";
-
-const defaultMetadata: Metadata = {
-  title: "News | Telcorepublic Research",
-  description: "News and updates from Telco Republic.",
-};
+import {
+  defaultMetadata,
+  getNewsArticlePageMetadata,
+} from "@/lib/page-metadata";
 
 type NewsArticleProps = {
   params: Promise<{ slug: string; }>;
@@ -31,10 +30,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = await getNewsPostBySlug(slug);
   if (!post) return defaultMetadata;
-  return {
-    title: `${post.title} | Telcorepublic Research`,
-    description: post.metaDescription || post.excerpt,
-  };
+  return getNewsArticlePageMetadata(post);
 }
 
 export default async function NewsArticlePage({ params }: NewsArticleProps) {

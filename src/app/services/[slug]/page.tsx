@@ -3,12 +3,7 @@ import { notFound } from "next/navigation";
 
 import { getServiceBySlug } from "@/data/services";
 import { ServiceWrapper } from "@/components/service/service-wrapper";
-
-const defaultMetadata: Metadata = {
-  title: "Telcorepublic Research",
-  description:
-    "Premium telecom research-spectrum, infrastructure, and intelligence with clarity.",
-};
+import { defaultMetadata, getServicePageMetadata } from "@/lib/page-metadata";
 
 type ServiceLandingProps = {
   params: Promise<{ slug: string; }>;
@@ -20,10 +15,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const service = getServiceBySlug(slug);
   if (!service) return defaultMetadata;
-  return {
-    title: `${service.title} | Telcorepublic Research`,
-    description: service.desc,
-  };
+  return getServicePageMetadata(service);
 }
 
 export default async function ServiceLanding({ params }: ServiceLandingProps) {

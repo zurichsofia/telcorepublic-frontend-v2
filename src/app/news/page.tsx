@@ -1,15 +1,10 @@
-import type { Metadata } from "next";
-
 import { InsightsQuotesSection } from "@/components/landing/sections/insights-quotes-section";
 import { NewsHeroStackedTitle } from "@/components/news/news-hero-stacked-title";
 import { NewsList } from "@/components/news/news-list";
 import { getAllNewsPosts, newsPostsToInsightQuotes } from "@/data/news";
+import { pageMetadata } from "@/lib/page-metadata";
 
-export const metadata: Metadata = {
-  title: "News | Telcorepublic Research",
-  description:
-    "Latest news, research updates, and industry perspectives from Telco Republic.",
-};
+export const metadata = pageMetadata.news;
 
 export const revalidate = 60;
 

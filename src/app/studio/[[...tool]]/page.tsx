@@ -1,9 +1,11 @@
-"use client";
+import type { Metadata } from "next";
 
-import { NextStudio } from "next-sanity/studio";
+import { pageMetadata } from "@/lib/page-metadata";
 
-import config from "../../../../sanity.config";
+import StudioPageClient from "./studio-page-client";
+
+export const metadata: Metadata = pageMetadata.studio;
 
 export default function StudioPage() {
-  return <NextStudio config={config} />;
+  return <StudioPageClient />;
 }

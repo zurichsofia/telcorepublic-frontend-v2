@@ -1,12 +1,7 @@
-import type { Metadata } from "next";
-
 import { ContactPageContent } from "@/components/contact/contact-page-content";
+import { pageMetadata } from "@/lib/page-metadata";
 
-export const metadata: Metadata = {
-  title: "Contact | Telcorepublic Research",
-  description:
-    "Reach Telco Republic for research inquiries, subscriptions, and custom telecom OSS and BSS coverage.",
-};
+export const metadata = pageMetadata.contact;
 
 export default function ContactPage() {
   return <ContactPageContent />;

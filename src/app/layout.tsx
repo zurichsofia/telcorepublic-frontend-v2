@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import localFont from "next/font/local";
 
 import "swiper/css";
@@ -7,6 +6,7 @@ import "./globals.css";
 import { getNewsArticleCount } from "@/data/news";
 import { AppShell } from "@/components/common/app-shell";
 import { PageLoader } from "@/components/common/page-loader";
+import { defaultMetadata } from "@/lib/page-metadata";
 import { cn } from "@/lib/utils";
 
 const helveticaNeue = localFont({
@@ -15,11 +15,7 @@ const helveticaNeue = localFont({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "Telcorepublic Research | Networks, signals, insight",
-  description:
-    "Independent telecom research - spectrum, infrastructure, and the systems that connect the world.",
-};
+export const metadata = defaultMetadata;
 
 export default async function RootLayout({
   children,

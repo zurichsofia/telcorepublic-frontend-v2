@@ -1,14 +1,9 @@
-import type { Metadata } from "next";
-
 import { PageHero } from "@/components/common/page-hero";
 import { TeamMemberBlock } from "@/components/common/team-member-block";
 import { operationTeamMembers } from "@/data/operation-team";
+import { pageMetadata } from "@/lib/page-metadata";
 
-export const metadata: Metadata = {
-  title: "Operation Team | Telcorepublic Research",
-  description:
-    "Our core team consists of renowned OSS and BSS market analysts, uniquely qualified to cover next-generation telecoms operations and business management systems.",
-};
+export const metadata = pageMetadata.operationTeam;
 
 export default function OperationTeamPage() {
   return (
