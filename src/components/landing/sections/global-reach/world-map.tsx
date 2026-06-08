@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useMemo, useRef } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import DottedMap from "dotted-map";
 import proj4 from "proj4";
 
@@ -101,9 +101,11 @@ export default function WorldMap({
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const pathRefs = useRef<(SVGPathElement | null)[]>([]);
+  const drawStartedRef = useRef(false);
   const reduceMotion = usePrefersReducedMotion();
+  const [inView, setInView] = useState(false);
+  const [arcsVisible, setArcsVisible] = useState(false);
   const gradientId = `wm-${useId().replace(/:/g, "")}`;
-  const arcGlowFilterId = `wm-arc-glow-${useId().replace(/:/g, "")}`;
 
   const map = useMemo(
     () => new DottedMap({ height: 100, grid: "diagonal" }),
@@ -123,13 +125,15 @@ export default function WorldMap({
     };
   }, [map]);
 
-  // Fixed colors so SVG → data URL is identical on server and client (hydration-safe).
-  const svgMap = map.getSVG({
-    radius: 0.24,
-    color: LAND_DOT_COLOR,
-    shape: "circle",
-    backgroundColor: "#ffffff",
-  });
+  const mapImageSrc = useMemo(() => {
+    const svgMap = map.getSVG({
+      radius: 0.24,
+      color: LAND_DOT_COLOR,
+      shape: "circle",
+      backgroundColor: "#ffffff",
+    });
+    return `data:image/svg+xml;utf8,${encodeURIComponent(svgMap)}`;
+  }, [map]);
 
   const createCurvedPath = (
     start: { x: number; y: number },
@@ -149,55 +153,57 @@ export default function WorldMap({
     const container = containerRef.current;
     if (!container || dots.length === 0) return;
 
-    const paths = pathRefs.current.filter(Boolean) as SVGPathElement[];
-    if (paths.length === 0) return;
-
-    const preparePath = (path: SVGPathElement) => {
-      const len = path.getTotalLength();
-      path.setAttribute("stroke-dasharray", String(len));
-      path.setAttribute("stroke-dashoffset", String(len));
-    };
-
-    paths.forEach((path) => {
-      preparePath(path);
-      if (reduceMotion) {
-        path.setAttribute("stroke-dashoffset", "0");
-      }
-    });
-
-    if (reduceMotion) return;
-
     const pathAnimations: Animation[] = [];
 
-    const runDraw = () => {
-      paths.forEach((path, index) => {
+    const startArcDraw = () => {
+      if (drawStartedRef.current) return;
+
+      const paths = pathRefs.current.filter(Boolean) as SVGPathElement[];
+      if (paths.length === 0) return;
+
+      drawStartedRef.current = true;
+
+      const preparePath = (path: SVGPathElement) => {
         const len = path.getTotalLength();
-        const i = Math.floor(index / 2);
-        pathAnimations.push(
-          path.animate(
-            [
-              { strokeDashoffset: len },
-              { strokeDashoffset: 0 },
-            ],
-            {
-              duration: 1000,
-              delay: 450 * i,
-              fill: "forwards",
-              easing: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-            },
-          ),
-        );
+        path.setAttribute("stroke-dasharray", String(len));
+        path.setAttribute("stroke-dashoffset", String(len));
+      };
+
+      // Defer layout reads out of the intersection callback.
+      requestAnimationFrame(() => {
+        paths.forEach(preparePath);
+        setArcsVisible(true);
+
+        if (reduceMotion) {
+          paths.forEach((path) => path.setAttribute("stroke-dashoffset", "0"));
+          return;
+        }
+
+        requestAnimationFrame(() => {
+          paths.forEach((path, index) => {
+            const len = path.getTotalLength();
+            const i = Math.floor(index / 2);
+            pathAnimations.push(
+              path.animate(
+                [{ strokeDashoffset: len }, { strokeDashoffset: 0 }],
+                {
+                  duration: 1000,
+                  delay: 450 * i,
+                  fill: "forwards",
+                  easing: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+                },
+              ),
+            );
+          });
+        });
       });
     };
 
     const obs = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          obs.disconnect();
-          runDraw();
-          return;
-        }
+      ([entry]) => {
+        setInView(entry?.isIntersecting ?? false);
+        if (!entry?.isIntersecting || drawStartedRef.current) return;
+        startArcDraw();
       },
       { root: null, rootMargin: "0px 0px -35% 0px", threshold: 0 },
     );
@@ -205,9 +211,9 @@ export default function WorldMap({
 
     return () => {
       obs.disconnect();
-      pathAnimations.forEach((a) => a.cancel());
+      pathAnimations.forEach((animation) => animation.cancel());
     };
-  }, [dots, reduceMotion]);
+  }, [dots.length, reduceMotion]);
 
   return (
     <div
@@ -215,7 +221,7 @@ export default function WorldMap({
       className="relative aspect-[1056/495] w-full rounded-lg bg-white font-sans"
     >
       <img
-        src={`data:image/svg+xml;utf8,${encodeURIComponent(svgMap)}`}
+        src={mapImageSrc}
         className="absolute inset-0 h-full w-full pointer-events-none select-none"
         alt="world map"
         height="495"
@@ -229,20 +235,6 @@ export default function WorldMap({
         className="absolute inset-0 h-full w-full pointer-events-none select-none"
       >
         <defs>
-          <filter
-            id={arcGlowFilterId}
-            x="-80%"
-            y="-80%"
-            width="260%"
-            height="260%"
-            filterUnits="objectBoundingBox"
-          >
-            <feGaussianBlur in="SourceGraphic" stdDeviation="1.35" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
           <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="#ffffff" stopOpacity="0" />
             <stop offset="5%" stopColor={lineColor} stopOpacity="1" />
@@ -251,43 +243,44 @@ export default function WorldMap({
           </linearGradient>
         </defs>
 
-        {dots.map((dot, i) => {
-          const startPoint = projectLatLng(
-            dot.start.lat,
-            dot.start.lng,
-            layout
-          );
-          const endPoint = projectLatLng(dot.end.lat, dot.end.lng, layout);
-          const d = createCurvedPath(startPoint, endPoint, layout.height);
-          return (
-            <g key={`path-group-${i}`}>
-              <path
-                ref={(el) => {
-                  pathRefs.current[i * 2] = el;
-                }}
-                d={d}
-                fill="none"
-                stroke={`url(#${gradientId})`}
-                strokeWidth="1.3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                opacity={0.38}
-                filter={`url(#${arcGlowFilterId})`}
-              />
-              <path
-                ref={(el) => {
-                  pathRefs.current[i * 2 + 1] = el;
-                }}
-                d={d}
-                fill="none"
-                stroke={`url(#${gradientId})`}
-                strokeWidth="0.38"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </g>
-          );
-        })}
+        <g opacity={arcsVisible ? 1 : 0}>
+          {dots.map((dot, i) => {
+            const startPoint = projectLatLng(
+              dot.start.lat,
+              dot.start.lng,
+              layout
+            );
+            const endPoint = projectLatLng(dot.end.lat, dot.end.lng, layout);
+            const d = createCurvedPath(startPoint, endPoint, layout.height);
+            return (
+              <g key={`path-group-${i}`}>
+                <path
+                  ref={(el) => {
+                    pathRefs.current[i * 2] = el;
+                  }}
+                  d={d}
+                  fill="none"
+                  stroke={`url(#${gradientId})`}
+                  strokeWidth="1.3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  opacity={0.32}
+                />
+                <path
+                  ref={(el) => {
+                    pathRefs.current[i * 2 + 1] = el;
+                  }}
+                  d={d}
+                  fill="none"
+                  stroke={`url(#${gradientId})`}
+                  strokeWidth="0.38"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </g>
+            );
+          })}
+        </g>
 
         {dots.map((dot, i) => {
           const start = projectLatLng(dot.start.lat, dot.start.lng, layout);
@@ -301,7 +294,7 @@ export default function WorldMap({
                   r={dot.start.pulse ? DOT_R_PULSE : DOT_R}
                   fill={dot.start.pulse ? accentColor : markerColor}
                 />
-                {dot.start.pulse ? (
+                {dot.start.pulse && inView ? (
                   <g aria-hidden>
                     <circle
                       cx={start.x}

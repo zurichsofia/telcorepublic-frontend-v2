@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 
 import type { InsightQuote } from "@/data/news";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
+import { isLenisActive, subscribeLenisScroll } from "@/lib/lenis-scroll";
 import { cn } from "@/lib/utils";
 
 export const INSIGHTS_QUOTES_IMAGE_SRC =
@@ -65,6 +66,37 @@ const enterSpring = {
   mass: 0.8,
 };
 
+const SCROLL_IDLE_MS = 150;
+
+/** Disable layout measurements while the page is moving — keeps Lenis scroll smooth. */
+function useScrollIdle() {
+  const [idle, setIdle] = useState(true);
+  const idleTimerRef = useRef(0);
+
+  useEffect(() => {
+    const markActive = () => {
+      setIdle(false);
+      window.clearTimeout(idleTimerRef.current);
+      idleTimerRef.current = window.setTimeout(() => {
+        setIdle(true);
+      }, SCROLL_IDLE_MS);
+    };
+
+    const offLenis = subscribeLenisScroll(markActive);
+    if (!isLenisActive()) {
+      window.addEventListener("scroll", markActive, { passive: true });
+    }
+
+    return () => {
+      offLenis();
+      window.removeEventListener("scroll", markActive);
+      window.clearTimeout(idleTimerRef.current);
+    };
+  }, []);
+
+  return idle;
+}
+
 const exitTransition = {
   type: "spring" as const,
   stiffness: 520,
@@ -87,7 +119,7 @@ function createInitialCards(quotes: readonly Quote[]): StackCard[] {
 }
 
 const MEDIA_STRIP_CLASS =
-  "relative h-[100vh] w-full overflow-hidden bg-black";
+  "relative h-[100vh] w-full overflow-hidden bg-black [content-visibility:auto] [contain-intrinsic-size:100vh]";
 
 function MountainImageStrip({ imageSrc }: { imageSrc: string }) {
   return (
@@ -97,7 +129,8 @@ function MountainImageStrip({ imageSrc }: { imageSrc: string }) {
         alt=""
         fill
         sizes="100vw"
-        quality={90}
+        quality={75}
+        fetchPriority="low"
         className="object-cover object-center"
         priority={false}
       />
@@ -116,20 +149,35 @@ function OceanStrip({
 }) {
   const stripRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const playRafRef = useRef(0);
 
   useEffect(() => {
     const strip = stripRef.current;
     const v = videoRef.current;
     if (!strip || !v) return;
 
+    const cancelDeferredPlay = () => {
+      if (playRafRef.current !== 0) {
+        cancelAnimationFrame(playRafRef.current);
+        playRafRef.current = 0;
+      }
+    };
+
     if (reduceMotion) {
       v.pause();
-      return;
+      return cancelDeferredPlay;
     }
 
     const syncPlayback = (inView: boolean) => {
+      cancelDeferredPlay();
       if (inView) {
-        void v.play().catch(() => { });
+        // Defer play until after scroll/layout settles to avoid main-thread spikes.
+        playRafRef.current = requestAnimationFrame(() => {
+          playRafRef.current = requestAnimationFrame(() => {
+            playRafRef.current = 0;
+            void v.play().catch(() => { });
+          });
+        });
       } else {
         v.pause();
       }
@@ -137,7 +185,7 @@ function OceanStrip({
 
     if (typeof IntersectionObserver === "undefined") {
       syncPlayback(true);
-      return;
+      return cancelDeferredPlay;
     }
 
     const io = new IntersectionObserver(
@@ -147,7 +195,10 @@ function OceanStrip({
       { root: null, rootMargin: "0px", threshold: 0.05 },
     );
     io.observe(strip);
-    return () => io.disconnect();
+    return () => {
+      io.disconnect();
+      cancelDeferredPlay();
+    };
   }, [reduceMotion, videoSrc]);
 
   return (
@@ -223,59 +274,131 @@ function MessageBubble({
   );
 }
 
+function StaticStack({ cards, quotes }: { cards: StackCard[]; quotes: readonly Quote[] }) {
+  return (
+    <div
+      className={cn(
+        "relative flex flex-col",
+        STACK_GAP_CLASS,
+        STACK_TAIL_PADDING,
+      )}
+    >
+      {cards.map((card, slotIndex) => (
+        <div key={card.id} className={STACK_SLOTS[slotIndex]!.className}>
+          <MessageBubble
+            quote={quotes[card.quoteIndex]!}
+            size={STACK_SLOTS[slotIndex]!.size}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function NotificationStack({
   quotes,
   reduceMotion,
+  paused = false,
 }: {
   quotes: readonly Quote[];
   reduceMotion: boolean;
+  paused?: boolean;
 }) {
+  const scrollIdle = useScrollIdle();
+  const scrollIdleRef = useRef(scrollIdle);
   const initialCards = createInitialCards(quotes);
   const [cards, setCards] = useState<StackCard[]>(initialCards);
   const [enteringId, setEnteringId] = useState<number | null>(null);
+  const [animationsReady, setAnimationsReady] = useState(false);
   const nextId = useRef(initialCards.length);
   const quoteCursor = useRef(initialCards.length);
+  const pendingSwapRef = useRef(false);
+  const enteringTimeoutRef = useRef(0);
 
   useEffect(() => {
-    if (reduceMotion || quotes.length === 0) return;
+    scrollIdleRef.current = scrollIdle;
+  }, [scrollIdle]);
+
+  // Let Framer Motion measure slot positions before the first popLayout swap.
+  useEffect(() => {
+    if (paused || reduceMotion) {
+      setAnimationsReady(false);
+      return;
+    }
+
+    let cancelled = false;
+    const warmUpRaf = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (!cancelled) setAnimationsReady(true);
+      });
+    });
+
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(warmUpRaf);
+    };
+  }, [paused, reduceMotion]);
+
+  const canSwap =
+    !paused && !reduceMotion && animationsReady && scrollIdle;
+
+  const runSwap = () => {
+    if (!scrollIdleRef.current || paused || reduceMotion || !animationsReady) {
+      pendingSwapRef.current = true;
+      return;
+    }
+
+    const newId = nextId.current++;
+    const newCard: StackCard = {
+      id: newId,
+      quoteIndex: quoteCursor.current++ % quotes.length,
+    };
+
+    setEnteringId(newId);
+    setCards((prev) => {
+      if (prev.length < 3) return [...prev, newCard];
+      return [prev[1]!, prev[2]!, newCard];
+    });
+
+    window.clearTimeout(enteringTimeoutRef.current);
+    enteringTimeoutRef.current = window.setTimeout(() => {
+      setEnteringId(null);
+    }, 550);
+    pendingSwapRef.current = false;
+  };
+
+  useEffect(() => {
+    if (!canSwap) return;
 
     const id = window.setInterval(() => {
-      const newId = nextId.current++;
-      const newCard: StackCard = {
-        id: newId,
-        quoteIndex: quoteCursor.current++ % quotes.length,
-      };
-
-      setEnteringId(newId);
-      setCards((prev) => {
-        if (prev.length < 3) return [...prev, newCard];
-        return [prev[1]!, prev[2]!, newCard];
-      });
-
-      window.setTimeout(() => setEnteringId(null), 550);
+      runSwap();
     }, SWAP_INTERVAL_MS);
 
     return () => window.clearInterval(id);
-  }, [reduceMotion, quotes.length]);
+  }, [canSwap, quotes.length]);
 
-  if (reduceMotion) {
+  useEffect(() => {
+    if (!pendingSwapRef.current || !canSwap) return;
+    runSwap();
+  }, [canSwap]);
+
+  useEffect(() => {
+    return () => window.clearTimeout(enteringTimeoutRef.current);
+  }, []);
+
+  if (reduceMotion || paused) {
     return (
-      <div
-        className={cn(
-          "relative flex flex-col",
-          STACK_GAP_CLASS,
-          STACK_TAIL_PADDING,
-        )}
-      >
-        {initialCards.map((card, slotIndex) => (
-          <div key={card.id} className={STACK_SLOTS[slotIndex]!.className}>
-            <MessageBubble
-              quote={quotes[card.quoteIndex]!}
-              size={STACK_SLOTS[slotIndex]!.size}
-            />
-          </div>
-        ))}
-      </div>
+      <>
+        <StaticStack cards={cards} quotes={quotes} />
+        <p className="sr-only">
+          {cards
+            .map((card) => {
+              const q = quotes[card.quoteIndex]!;
+              return `${q.date}: ${q.text}`;
+            })
+            .join(". ")}
+        </p>
+      </>
     );
   }
 
@@ -360,11 +483,33 @@ export function InsightsQuotesSection({
   showOceanStrip?: boolean;
 }) {
   const reduceMotion = usePrefersReducedMotion();
+  const sectionRef = useRef<HTMLElement>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    if (typeof IntersectionObserver === "undefined") {
+      setInView(true);
+      return;
+    }
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        setInView(entry?.isIntersecting ?? false);
+      },
+      { root: null, rootMargin: "20% 0px", threshold: 0 },
+    );
+    io.observe(section);
+    return () => io.disconnect();
+  }, []);
 
   if (quotes.length === 0) return null;
 
   return (
     <section
+      ref={sectionRef}
       id="insights-quotes"
       className="relative isolate w-full"
       aria-label="Insights and perspectives"
@@ -390,7 +535,11 @@ export function InsightsQuotesSection({
             aria-live="polite"
             aria-label="Industry insights"
           >
-            <NotificationStack quotes={quotes} reduceMotion={reduceMotion} />
+            <NotificationStack
+              quotes={quotes}
+              reduceMotion={reduceMotion}
+              paused={!inView}
+            />
           </div>
         </div>
       </div>

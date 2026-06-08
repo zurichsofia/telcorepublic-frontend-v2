@@ -1,7 +1,7 @@
 "use client";
 
 import type { MutableRefObject, RefObject } from "react";
-import { Suspense, useEffect, useMemo, useRef } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Stage, useBounds, useGLTF } from "@react-three/drei";
 
@@ -232,6 +232,31 @@ export function SnowMountainV2SimpleScene({
 }: SnowMountainV2SimpleSceneProps) {
   const syncScroll =
     scrollState != null && heroSectionRef != null && motionRef != null;
+  const [frameloop, setFrameloop] = useState<"always" | "never">("always");
+
+  useEffect(() => {
+    if (reduceMotion) {
+      setFrameloop("never");
+      return;
+    }
+
+    const section = heroSectionRef?.current;
+    if (!section) return;
+
+    if (typeof IntersectionObserver === "undefined") {
+      setFrameloop("always");
+      return;
+    }
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        setFrameloop(entry?.isIntersecting ? "always" : "never");
+      },
+      { root: null, rootMargin: "0px", threshold: 0 },
+    );
+    io.observe(section);
+    return () => io.disconnect();
+  }, [heroSectionRef, reduceMotion]);
 
   return (
     <div className={cn("relative h-full w-full", className)}>
@@ -239,6 +264,7 @@ export function SnowMountainV2SimpleScene({
         className="absolute inset-0 h-full w-full touch-none"
         camera={{ fov: 40, near: 0.1, far: 500 }}
         dpr={[1, 1.5]}
+        frameloop={frameloop}
         gl={{ antialias: true, powerPreference: "high-performance" }}
         onCreated={({ gl }) => {
           gl.setClearColor(new THREE.Color(SKY_COLOR), 1);
