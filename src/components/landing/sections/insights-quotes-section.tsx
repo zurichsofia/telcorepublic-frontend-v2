@@ -9,6 +9,9 @@ import type { InsightQuote } from "@/data/news";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { cn } from "@/lib/utils";
 
+export const INSIGHTS_QUOTES_IMAGE_SRC =
+  "/images/TelcoRepublic_Mountain.jpg";
+
 export const INSIGHTS_QUOTES_VIDEO_SRC =
   "/videos/TelcoRepublic_Ocean_1280x720.mp4";
 
@@ -83,6 +86,25 @@ function createInitialCards(quotes: readonly Quote[]): StackCard[] {
   }));
 }
 
+const MEDIA_STRIP_CLASS =
+  "relative h-[100vh] w-full overflow-hidden bg-black";
+
+function MountainImageStrip({ imageSrc }: { imageSrc: string }) {
+  return (
+    <div className={MEDIA_STRIP_CLASS} aria-hidden>
+      <Image
+        src={imageSrc}
+        alt=""
+        fill
+        sizes="100vw"
+        quality={90}
+        className="object-cover object-center"
+        priority={false}
+      />
+    </div>
+  );
+}
+
 function OceanStrip({
   videoSrc,
   reduceMotion,
@@ -129,14 +151,10 @@ function OceanStrip({
   }, [reduceMotion, videoSrc]);
 
   return (
-    <div
-      ref={stripRef}
-      className="relative h-[min(50vw,480px)] min-h-[240px] w-full overflow-hidden bg-black sm:min-h-[280px] lg:min-h-[320px]"
-      aria-hidden
-    >
+    <div ref={stripRef} className={MEDIA_STRIP_CLASS} aria-hidden>
       <video
         ref={videoRef}
-        className="absolute inset-0 h-full w-full object-cover object-center grayscale"
+        className="absolute inset-0 h-full w-full object-cover object-center"
         src={videoSrc}
         muted
         playsInline
@@ -332,10 +350,12 @@ function NotificationStack({
 
 export function InsightsQuotesSection({
   quotes,
+  imageSrc = INSIGHTS_QUOTES_IMAGE_SRC,
   videoSrc = INSIGHTS_QUOTES_VIDEO_SRC,
   showOceanStrip = true,
 }: {
   quotes: readonly InsightQuote[];
+  imageSrc?: string;
   videoSrc?: string;
   showOceanStrip?: boolean;
 }) {
@@ -349,9 +369,7 @@ export function InsightsQuotesSection({
       className="relative isolate w-full"
       aria-label="Insights and perspectives"
     >
-      {showOceanStrip ? (
-        <OceanStrip videoSrc={videoSrc} reduceMotion={reduceMotion} />
-      ) : null}
+      {showOceanStrip ? <MountainImageStrip imageSrc={imageSrc} /> : null}
 
       <div className="relative bg-black px-4 py-14 sm:px-8 sm:py-16 lg:px-10 lg:py-20 xl:px-12">
         <div className="relative mx-auto w-full max-w-6xl overflow-visible">

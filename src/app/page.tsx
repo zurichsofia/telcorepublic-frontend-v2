@@ -14,10 +14,7 @@ export default async function Home() {
       <SnowMountainHero />
       <GlobalReachMapSection />
       <WhyUsSection />
-      <InsightsQuotesSection
-        quotes={quotes}
-        videoSrc="/videos/TelcoRepublic_Ocean_1280x720.mp4"
-      />
+      <InsightsQuotesSection quotes={quotes} />
       <GetInTouchSection />
     </main>
   );
