@@ -310,11 +310,6 @@ export function shellSurfaceClassName(
   return "bg-white";
 }
 
-function resetViewportScroll() {
-  (document.scrollingElement ?? document.documentElement).scrollTo(0, 0);
-  window.scrollTo(0, 0);
-}
-
 export function useOverlayPastHero(
   theme: "default" | "blog" | "overlay",
   pathname: string,
@@ -335,24 +330,25 @@ export function useOverlayPastHero(
       setPastHero((prev) => (prev === next ? prev : next));
     };
 
-    resetViewportScroll(); // avoid white nav flash from stale scroll on route change
     sync();
-    const postResetRaf = requestAnimationFrame(sync);
 
-    const offLenis = subscribeLenisScroll(sync);
     let rafId = 0;
-    const onNativeScroll = () => {
-      if (isLenisActive()) return;
+    const scheduleSync = () => {
       if (rafId !== 0) return;
       rafId = requestAnimationFrame(() => {
         rafId = 0;
         sync();
       });
     };
+
+    const offLenis = subscribeLenisScroll(scheduleSync);
+    const onNativeScroll = () => {
+      if (isLenisActive()) return;
+      scheduleSync();
+    };
     window.addEventListener("scroll", onNativeScroll, { passive: true });
     window.addEventListener("resize", sync);
     return () => {
-      cancelAnimationFrame(postResetRaf);
       offLenis();
       window.removeEventListener("scroll", onNativeScroll);
       window.removeEventListener("resize", sync);

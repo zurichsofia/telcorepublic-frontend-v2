@@ -23,7 +23,7 @@ export default async function ServiceLanding({ params }: ServiceLandingProps) {
   if (!getServiceBySlug(slug)) notFound();
 
   return (
-    <main id="home" className="relative z-10 isolate">
+    <main>
       <ServiceWrapper initialSlug={slug} />
     </main>
   );

@@ -39,10 +39,25 @@ export function ServiceVideoHeroV2({
   }, [initialSlug]);
 
   const [chromeIndex, setChromeIndex] = useState(initialSlide);
+  const [heroInView, setHeroInView] = useState(true);
 
   useEffect(() => {
     setChromeIndex(initialSlide);
   }, [initialSlide]);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setHeroInView(entry.isIntersecting);
+      },
+      { root: null, threshold: 0 },
+    );
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
 
   const syncUrl = useCallback(
     (index: number) => {
@@ -120,15 +135,15 @@ export function ServiceVideoHeroV2({
               <ServiceVideoSlide
                 title={service.title}
                 videoSrc={serviceSlugHeroVideoUrlForSlide(index)}
-                isActive={index === chromeIndex}
+                isActive={index === chromeIndex && heroInView}
                 reduceMotion={!!reduceMotion}
               />
               <div
                 className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center px-8"
                 aria-hidden
               >
-                <h2 className="font-display text-center  font-normal uppercase leading-tight tracking-wide text-white text-2xl lg:text-7xl">
-                  {activeTitle}
+                <h2 className="font-display text-center text-2xl font-normal leading-tight tracking-wide text-white lg:text-8xl">
+                  {service.title}
                 </h2>
               </div>
             </SwiperSlide>

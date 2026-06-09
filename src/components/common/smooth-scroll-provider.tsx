@@ -23,12 +23,17 @@ type SmoothScrollProviderProps = {
   children: ReactNode;
   /** Opt out of Lenis (e.g. isolated previews). Defaults to on for the whole site. */
   enabled?: boolean;
+  /** Scroll easing — lower = smoother/slower. Default tuned for scroll-linked hero motion. */
+  lerp?: number;
 };
+
+const DEFAULT_LERP = 0.06;
 
 /** Site-wide Lenis smooth scroll (respects prefers-reduced-motion). */
 export function SmoothScrollProvider({
   children,
   enabled = true,
+  lerp = DEFAULT_LERP,
 }: SmoothScrollProviderProps) {
   const reduceMotion = usePrefersReducedMotion();
   const [lenis, setLenis] = useState<Lenis | null>(null);
@@ -41,7 +46,7 @@ export function SmoothScrollProvider({
     }
 
     const instance = new Lenis({
-      lerp: 0.06,
+      lerp,
       smoothWheel: true,
       syncTouch: false,
       wheelMultiplier: 0.78,
@@ -73,7 +78,7 @@ export function SmoothScrollProvider({
       resetLenisScrollY();
       setLenis(null);
     };
-  }, [reduceMotion, enabled]);
+  }, [reduceMotion, enabled, lerp]);
 
   return <LenisContext.Provider value={lenis}>{children}</LenisContext.Provider>;
 }
@@ -83,24 +88,26 @@ function scrollViewToTopNative() {
   window.scrollTo(0, 0);
 }
 
+/** Keep Lenis and native scroll in sync — never call `window.scrollTo` alone when Lenis is active. */
+export function resetScrollPosition(lenis: Lenis | null) {
+  if (lenis) {
+    lenis.scrollTo(0, { immediate: true });
+    return;
+  }
+  scrollViewToTopNative();
+}
+
 /** Resets scroll on client navigations — uses Lenis when active. */
 export function LenisScrollToTopOnNavigate({ pathname }: { pathname: string }) {
   const lenis = useLenis();
 
   useLayoutEffect(() => {
-    if (lenis) {
-      lenis.scrollTo(0, { immediate: true });
-      return;
-    }
-    scrollViewToTopNative();
+    resetScrollPosition(lenis);
   }, [pathname, lenis]);
 
   useEffect(() => {
-    if (lenis) {
-      lenis.scrollTo(0, { immediate: true });
-      return;
-    }
-    scrollViewToTopNative();
+    resetScrollPosition(lenis);
+    if (lenis) return;
     const t = setTimeout(scrollViewToTopNative, 0);
     return () => clearTimeout(t);
   }, [pathname, lenis]);

@@ -1,42 +1,37 @@
-"use client";
-
 import { cn } from "@/lib/utils";
 
-function DotRow({ count }: { count: number }) {
+function DotRow({ count }: { count: number; }) {
   const n = Math.min(Math.max(count, 1), 3);
   return (
     <div className="flex justify-center gap-1.5 pb-4" aria-hidden>
       {Array.from({ length: n }, (_, i) => (
-        <span key={i} className="size-1.5 rounded-full bg-black" />
+        <span key={i} className="size-2.5 rounded-full bg-black" />
       ))}
     </div>
   );
 }
 
-export type EditorialPillarItem = {
+export type PillarItem = {
   /** Optional title row (e.g. role name) above the body. */
   label?: string;
   text: string;
 };
 
-export type EditorialPillarsSectionProps = {
-  items: readonly EditorialPillarItem[];
+export type PillarsSectionProps = {
+  items: readonly PillarItem[];
   className?: string;
 };
 
 /**
  * Centered dot pillars: 1–3 dots by row index, optional label + body or body only.
  */
-export function EditorialPillarsSection({
-  items,
-  className,
-}: EditorialPillarsSectionProps) {
+export function PillarsSection({ items, className }: PillarsSectionProps) {
   if (items.length === 0) return null;
 
   return (
     <section
       className={cn(
-        "mx-auto max-w-2xl space-y-16 px-5 py-0 text-center sm:px-8 md:space-y-20",
+        "mx-auto max-w-xl space-y-16 px-5 text-center sm:px-8 md:space-y-20",
         className,
       )}
     >
@@ -47,15 +42,15 @@ export function EditorialPillarsSection({
           <DotRow count={i + 1} />
           {item.label ? (
             <>
-              <p className="text-pretty font-sans text-base font-semibold leading-snug text-black sm:text-lg">
+              <p className="font-semibold leading-snug text-black text-base sm:text-xl">
                 {item.label}
               </p>
-              <p className="mt-4 text-pretty font-sans text-sm font-light leading-relaxed text-black sm:text-base">
+              <p className="mt-4 font-light leading-relaxed text-black text-sm sm:text-xl">
                 {item.text}
               </p>
             </>
           ) : (
-            <p className="text-pretty font-sans text-sm font-light leading-relaxed text-black sm:text-base">
+            <p className="font-normal leading-relaxed text-black text-sm sm:text-xl">
               {item.text}
             </p>
           )}
@@ -64,4 +59,3 @@ export function EditorialPillarsSection({
     </section>
   );
 }
-

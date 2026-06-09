@@ -47,7 +47,7 @@ export function AppShell({
   }, []);
 
   return (
-    <SmoothScrollProvider>
+    <SmoothScrollProvider lerp={isServiceDetail ? 0.1 : 0.06}>
       <LenisScrollToTopOnNavigate pathname={pathname} />
       {isStudio ? (
         children

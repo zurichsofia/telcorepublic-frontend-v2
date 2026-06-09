@@ -3,27 +3,31 @@
  */
 
 export type ServiceContentBlock =
-  | { type: "paragraph"; text: string; }
-  /** Multiple paragraphs shown as one block with tighter vertical rhythm than separate `paragraph` entries. */
+  /** Multiple paragraphs shown as one block with tighter vertical rhythm than separate entries. */
   | {
     type: "paragraphGroup";
     /** Optional heading rendered above paragraphs with the same tight spacing as within the group. */
     subheading?: string;
     paragraphs: readonly string[];
   }
-  | { type: "subheading"; text: string; }
-  /** Short lines under `intro`, same layout as dotted pillars on the detail page. */
-  | { type: "pillarLines"; lines: readonly string[]; }
+  | { type: "paragraph"; text: string; }
+  /** Centered dot pillars with optional label above each line. */
   | {
-    type: "roleCallouts";
-    items: readonly { role: string; text: string; }[];
+    type: "pillars";
+    items: readonly { label?: string; text: string; }[];
   }
+  /** Named highlights — e.g. tools, capabilities, or approach qualities. */
   | {
-    type: "offers";
+    type: "highlights";
     heading?: string;
     items: readonly { name: string; description: string; }[];
   }
-  | { type: "simpleList"; heading?: string; items: readonly string[]; };
+  | {
+    type: "inlineList";
+    heading?: string;
+    items: readonly string[];
+  }
+  | { type: "customResearchDiagram"; };
 
 export type ServiceRecord = {
   readonly slug: string;
