@@ -27,7 +27,13 @@ export type ServiceContentBlock =
     heading?: string;
     items: readonly string[];
   }
-  | { type: "customResearchDiagram"; };
+  | {
+    type: "diagram";
+    src: string;
+    alt: string;
+    width: number;
+    height: number;
+  };
 
 export type ServiceRecord = {
   readonly slug: string;

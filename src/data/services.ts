@@ -45,6 +45,13 @@ export const services = [
           "Disrupter Quintants are based on a rigorous and in-depth selection, evaluation and analysis of leading and emerging vendors.",
         ],
       },
+      // {
+      //   type: "diagram",
+      //   src: "/images/disrupter-quintants-diagram.png",
+      //   alt: "Disrupter Quintants diagram showing strategy and execution positioning across vendor segments.",
+      //   width: 522,
+      //   height: 504,
+      // },
     ] as const satisfies readonly ServiceContentBlock[],
   },
   {
@@ -165,6 +172,13 @@ export const services = [
           },
         ],
       },
+      {
+        type: "diagram",
+        src: "/images/competitive-positioning-diagram.png",
+        alt: "Competitive positioning diagram with vendor evaluation, SWOT, benchmarks, product assessment, roadmap evaluation, and target positioning capabilities.",
+        width: 1351,
+        height: 759,
+      },
     ] as const satisfies readonly ServiceContentBlock[],
   },
   {
@@ -209,6 +223,13 @@ export const services = [
               "Telco Republic leverages its market reach and industry expertise to generate high-quality leads for clients, accelerating business development efforts. This targeted approach increases visibility and connects you with relevant opportunities in the telecom ecosystem.",
           },
         ],
+      },
+      {
+        type: "diagram",
+        src: "/images/go-to-market-diagram.png",
+        alt: "Go-to-market diagram covering strategy workshops, partner matchmaking, briefings, go-to-market advice, RFP and RFI support, and lead generation.",
+        width: 1443,
+        height: 696,
       },
     ] as const satisfies readonly ServiceContentBlock[],
   },
@@ -283,6 +304,13 @@ export const services = [
           },
         ],
       },
+      {
+        type: "diagram",
+        src: "/images/market-assessment-diagram.png",
+        alt: "Market assessment diagram covering strategic analysis, market entry, segmentation, disruptive technology, emerging vendors, investment assessment, and addressable market planning.",
+        width: 1357,
+        height: 767,
+      },
     ] as const satisfies readonly ServiceContentBlock[],
   },
   {
@@ -341,7 +369,13 @@ export const services = [
           },
         ],
       },
-      { type: "customResearchDiagram" },
+      {
+        type: "diagram",
+        src: "/images/custom-research-diagram.png",
+        alt: "Custom research values diagram: Personalized, Collaborative, Unbiased, Disruptive, In Depth High Quality, and Leading Edge.",
+        width: 1246,
+        height: 485,
+      },
     ] as const satisfies readonly ServiceContentBlock[],
   },
 ] as const satisfies readonly ServiceRecord[];

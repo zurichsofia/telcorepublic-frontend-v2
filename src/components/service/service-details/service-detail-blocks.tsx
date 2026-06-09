@@ -1,4 +1,4 @@
-import { CustomResearchRadialDiagram } from "@/components/service/service-details/editorial/custom-research-radial-diagram";
+import { ServiceDetailDiagram } from "@/components/service/service-details/service-detail-diagram";
 import { InlineList } from "@/components/service/service-details/inline-list";
 import { HighlightsGrid } from "@/components/service/service-details/highlights-grid";
 import { PillarsSection } from "@/components/service/service-details/pillars-section";
@@ -56,11 +56,14 @@ export function ServiceDetailBlock({ block }: ServiceDetailBlockProps) {
     case "inlineList":
       return <InlineList heading={block.heading} items={block.items} />;
 
-    case "customResearchDiagram":
+    case "diagram":
       return (
-        <section className="mx-auto max-w-4xl px-5 sm:px-8">
-          <CustomResearchRadialDiagram />
-        </section>
+        <ServiceDetailDiagram
+          src={block.src}
+          alt={block.alt}
+          width={block.width}
+          height={block.height}
+        />
       );
 
     default: {
