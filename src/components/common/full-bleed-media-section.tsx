@@ -67,22 +67,21 @@ export function FullBleedMediaSection({
           aria-hidden
         />
       )}
-
       {/* TODO: Remove overlay */}
       <div
-        className="absolute inset-0 z-1 bg-linear-to-t from-black/75 via-black/50 to-black/35"
+        className="absolute inset-0 z-1 bg-linear-to-t from-black/45 via-black/25 to-black/15"
         aria-hidden
       />
 
       <div
         className={cn(
-          "relative z-10 flex min-h-[min(100dvh,920px)] w-full max-w-7xl mx-auto items-end",
+          "relative z-10 flex min-h-[min(100dvh,920px)] w-full mx-auto items-end",
           alignRight ? "justify-end" : "justify-start",
         )}
       >
         <div
           className={cn(
-            "max-w-2xl py-24",
+            "max-w-3xl py-24",
             alignRight
               ? "pr-5 pl-8 sm:pr-10 sm:pl-14 lg:pr-16"
               : "pl-5 pr-8 sm:pl-10 sm:pr-14 lg:pl-16",
@@ -90,11 +89,11 @@ export function FullBleedMediaSection({
         >
           <h2
             id={`${id}-heading`}
-            className="font-display text-4xl tracking-tight text-white sm:text-5xl lg:text-4xl"
+            className="font-display text-4xl tracking-tight text-white lg:text-5xl"
           >
             {title}
           </h2>
-          <p className="mt-5 text-base font-light leading-relaxed text-white/90 sm:text-lg">
+          <p className="mt-5 text-base font-light leading-relaxed text-white lg:text-xl">
             {description}
           </p>
         </div>

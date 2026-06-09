@@ -17,6 +17,9 @@ export type PageHeroProps = {
   links?: readonly PageHeroLink[];
 };
 
+const linkClassName =
+  "font-display text-2xl font-medium tracking-tight text-telco-red transition sm:text-[2.5rem] leading-tight";
+
 export function PageHero({
   title,
   subtitle,
@@ -26,78 +29,45 @@ export function PageHero({
   links,
 }: PageHeroProps) {
   const hasLinks = links != null;
+  const linkRows = links ? Math.ceil(links.length / 2) : 0;
 
   return (
     <section
       id={id}
       className={cn(
-        "mx-auto px-5 sm:px-8 min-h-[calc(100dvh-6rem)] w-full mb-20",
-        hasLinks
-          ? "max-w-7xl pb-14 pt-32 text-center sm:pb-20 sm:pt-44"
-          : "flex max-w-4xl flex-col justify-center pb-14 pt-32 text-center sm:pb-20 sm:pt-44",
+        "mx-auto mb-20 w-full px-5 pb-14 pt-32 text-center sm:px-8 sm:pb-20 sm:pt-44",
+        hasLinks ? "max-w-7xl" : "flex max-w-4xl flex-col justify-center",
         className,
       )}
     >
-      <h1
-        className={cn(
-          "font-display text-5xl tracking-tight text-telco-red sm:text-7xl lg:text-8xl",
-        )}
-      >
+      <h1 className="font-display text-5xl text-telco-red sm:text-7xl lg:text-8xl">
         {title}
       </h1>
 
       {subtitle && (
-        <p
-          className={cn(
-            "mx-auto text-lg leading-snug mt-24 max-w-4xl font-normal text-telco-red sm:text-4xl",
-          )}
-        >
+        <p className="mx-auto mt-24 max-w-4xl text-lg font-normal leading-snug text-telco-red sm:text-4xl">
           {subtitle}
         </p>
       )}
 
       {links && (
-        <div className="mt-16 flex w-full min-w-0 justify-center sm:mt-20">
-          <div className="grid w-max min-w-0 max-w-full grid-cols-1 gap-x-30 gap-y-6 text-left sm:grid-cols-[max-content_max-content] sm:gap-y-8">
-            <ul className="space-y-1" role="list">
-              {links
-                .slice(0, Math.ceil(links.length / 2))
-                .map((item) => (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      className="font-display text-2xl font-medium tracking-tight text-telco-red transition sm:text-4xl"
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-            </ul>
-            <ul className="space-y-1" role="list">
-              {links
-                .slice(Math.ceil(links.length / 2))
-                .map((item) => (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      className="font-display text-2xl font-medium tracking-tight text-telco-red sm:text-4xl"
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-            </ul>
-          </div>
-        </div>
+        <ul
+          role="list"
+          className="mx-auto w-max max-w-full space-y-1 text-left sm:mt-28 sm:grid sm:auto-cols-max sm:grid-flow-col sm:gap-x-48 sm:space-y-0"
+          style={{ gridTemplateRows: `repeat(${linkRows}, auto)` }}
+        >
+          {links.map((item) => (
+            <li key={item.href}>
+              <Link href={item.href} className={linkClassName}>
+                {item.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
       )}
 
       {description && (
-        <p
-          className={cn(
-            "mx-auto text-base font-light leading-relaxed sm:text-lg mt-8 max-w-3xl text-neutral-900",
-
-          )}
-        >
+        <p className="mx-auto mt-8 max-w-3xl text-base font-light leading-relaxed text-black sm:text-lg">
           {description}
         </p>
       )}
