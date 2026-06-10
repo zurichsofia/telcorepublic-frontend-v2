@@ -33,7 +33,7 @@ export function InlineList({
       )}
       <p
         className={cn(
-          "text-center font-light leading-relaxed text-black text-sm sm:text-xl",
+          "text-center font-light leading-relaxed text-telco-dark text-sm sm:text-xl",
           dense && "leading-relaxed",
         )}
       >
@@ -41,7 +41,7 @@ export function InlineList({
           <span key={`inline-list-${i}`}>
             {i > 0 && (
               <span
-                className="mx-4 inline-block size-1.5 shrink-0 rounded-full bg-black align-middle"
+                className="mx-4 inline-block size-1.5 shrink-0 rounded-full bg-telco-dark align-middle"
                 aria-hidden
               />
             )}

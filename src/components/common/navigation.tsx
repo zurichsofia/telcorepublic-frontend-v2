@@ -95,8 +95,8 @@ function NewsCountBadge({
           ? "bg-telco-red text-white"
           : cn(
             onDark
-              ? "bg-white text-black"
-              : "bg-neutral-900 text-white",
+              ? "bg-white text-telco-dark"
+              : "bg-telco-dark text-white",
             "group-hover:bg-telco-red group-hover:text-white",
           ),
       )}
@@ -129,7 +129,7 @@ function navLinkClass(
       overlayPastHero
         ? active
           ? "text-telco-red"
-          : "text-black hover:text-telco-red"
+          : "text-telco-dark hover:text-telco-red"
         : active
           ? "text-telco-red"
           : "text-white hover:text-telco-red",
@@ -139,7 +139,7 @@ function navLinkClass(
     type,
     active
       ? "text-telco-red"
-      : "text-black hover:text-telco-red",
+      : "text-telco-dark hover:text-telco-red",
   );
 }
 
@@ -211,7 +211,7 @@ function NavItemWithSubmenu({
                   ? "text-telco-red"
                   : onDarkNav
                     ? "text-white hover:text-telco-red"
-                    : "text-black hover:text-telco-red",
+                    : "text-telco-dark hover:text-telco-red",
             );
             return (
               <li key={sub.label} className="min-w-0">

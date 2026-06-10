@@ -48,7 +48,7 @@ export function FullBleedMediaSection({
     <section
       id={id}
       aria-labelledby={`${id}-heading`}
-      className="relative isolate min-h-[min(100dvh,920px)] w-full overflow-hidden bg-neutral-950"
+      className="relative isolate min-h-[min(100dvh,920px)] w-full overflow-hidden bg-telco-dark"
     >
       {videoSrc ? (
         <video

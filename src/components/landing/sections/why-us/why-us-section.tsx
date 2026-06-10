@@ -100,7 +100,7 @@ function WhyChapter({
           >
             {title}
           </h3>
-          <div className="space-y-4 text-pretty font-sans text-base leading-tight tracking-wide text-black lg:text-xl">
+          <div className="space-y-4 text-pretty font-sans text-base leading-tight tracking-wide text-telco-dark lg:text-xl">
             {paragraphs.map((text) => (
               <p key={text}>{text}</p>
             ))}

@@ -8,7 +8,7 @@ export function GetInTouchSection() {
       aria-labelledby="get-in-touch-heading"
     >
       <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
-        <p className="text-xs font-normal uppercase tracking-widest text-black">
+        <p className="text-xs font-normal uppercase tracking-widest text-telco-dark">
           Get in touch
         </p>
 
@@ -21,7 +21,7 @@ export function GetInTouchSection() {
           next research brief
         </h2>
 
-        <p className="mt-10 max-w-3xl text-pretty font-sans text-base leading-tight tracking-wide text-black sm:mt-12 sm:text-lg lg:text-xl">
+        <p className="mt-10 max-w-3xl text-pretty font-sans text-base leading-tight tracking-wide text-telco-dark sm:mt-12 sm:text-lg lg:text-xl">
           Subscriptions, custom OSS and BSS coverage, or a one-off question
           <br className="hidden sm:inline" />
           {" "}

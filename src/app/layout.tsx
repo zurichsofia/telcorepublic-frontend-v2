@@ -30,7 +30,7 @@ export default async function RootLayout({
       className={cn(helveticaNeue.variable, "font-sans")}
     >
       <body
-        className={`${helveticaNeue.className} relative min-h-screen font-light text-black antialiased`}
+        className={`${helveticaNeue.className} relative min-h-screen font-light text-telco-dark antialiased`}
       >
         <PageLoader />
         <AppShell newsArticleCount={newsArticleCount}>{children}</AppShell>

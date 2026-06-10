@@ -67,7 +67,7 @@ export function PageHero({
       )}
 
       {description && (
-        <p className="mx-auto mt-8 max-w-3xl text-base font-light leading-relaxed text-black sm:text-lg">
+        <p className="mx-auto mt-8 max-w-3xl text-base font-light leading-relaxed text-telco-dark sm:text-lg">
           {description}
         </p>
       )}

@@ -7,7 +7,7 @@ export const serviceDetailColumn =
 export const serviceDetailStack = "flex flex-col gap-y-6 md:gap-y-8";
 
 export const serviceDetailBody =
-  "font-light leading-relaxed text-black text-sm sm:text-xl";
+  "font-light leading-relaxed text-telco-dark text-sm sm:text-xl";
 
 export const serviceDetailHeading =
   "font-medium leading-snug text-telco-red text-lg sm:text-xl";
@@ -21,7 +21,7 @@ export const serviceDetailHighlightsTitleCell =
 export const serviceDetailHighlightsBodyCell = "md:col-start-3 md:text-left";
 
 export const serviceDetailHighlightTitle =
-  "m-0 font-medium leading-tight text-black text-2xl md:text-3xl lg:text-4xl";
+  "m-0 font-medium leading-tight text-telco-dark text-2xl md:text-3xl lg:text-4xl";
 
 export const serviceDetailHighlightBody =
-  "m-0 font-light leading-relaxed text-black text-sm sm:text-xl";
+  "m-0 font-light leading-relaxed text-telco-dark text-sm sm:text-xl";

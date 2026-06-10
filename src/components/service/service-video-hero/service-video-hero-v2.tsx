@@ -95,12 +95,12 @@ export function ServiceVideoHeroV2({
       ref={sectionRef}
       id="hero"
       aria-label="Featured services"
-      className="relative isolate flex min-h-0 w-full min-w-0 max-w-full flex-col overflow-x-clip bg-black text-white"
+      className="relative isolate flex min-h-0 w-full min-w-0 max-w-full flex-col overflow-x-clip bg-telco-dark text-white"
     >
       <div
         role="region"
         aria-label={`Service highlights: slide ${chromeIndex + 1} of ${sectionCount}, ${activeTitle}`}
-        className="relative z-10 h-dvh min-h-0 w-full min-w-0 max-w-full shrink-0 overflow-x-clip overflow-y-hidden bg-black"
+        className="relative z-10 h-dvh min-h-0 w-full min-w-0 max-w-full shrink-0 overflow-x-clip overflow-y-hidden bg-telco-dark"
       >
         <span className="sr-only">
           {multi

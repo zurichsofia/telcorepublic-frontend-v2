@@ -5,7 +5,7 @@ function DotRow({ count }: { count: number; }) {
   return (
     <div className="flex justify-center gap-1.5 pb-4" aria-hidden>
       {Array.from({ length: n }, (_, i) => (
-        <span key={i} className="size-2.5 rounded-full bg-black" />
+        <span key={i} className="size-2.5 rounded-full bg-telco-dark" />
       ))}
     </div>
   );
@@ -42,15 +42,15 @@ export function PillarsSection({ items, className }: PillarsSectionProps) {
           <DotRow count={i + 1} />
           {item.label ? (
             <>
-              <p className="font-semibold leading-snug text-black text-base sm:text-xl">
+              <p className="font-semibold leading-snug text-telco-dark text-base sm:text-xl">
                 {item.label}
               </p>
-              <p className="mt-4 font-light leading-relaxed text-black text-sm sm:text-xl">
+              <p className="mt-4 font-light leading-relaxed text-telco-dark text-sm sm:text-xl">
                 {item.text}
               </p>
             </>
           ) : (
-            <p className="font-normal leading-relaxed text-black text-sm sm:text-xl">
+            <p className="font-normal leading-relaxed text-telco-dark text-sm sm:text-xl">
               {item.text}
             </p>
           )}

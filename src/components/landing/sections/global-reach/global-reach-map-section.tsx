@@ -14,7 +14,7 @@ export function GlobalReachMapSection() {
     >
       {/* <div className="relative mx-auto max-w-7xl px-5 text-center sm:px-8">
        
-      <p className="mx-auto mt-5 max-w-2xl text-sm font-light leading-relaxed text-black md:text-xl">
+      <p className="mx-auto mt-5 max-w-2xl text-sm font-light leading-relaxed text-telco-dark md:text-xl">
         Leverage Telco Republic&apos;s network to connect with industry leaders and
         emerging technology solutions, fostering co-innovation and expanding your
         market reach.
@@ -27,7 +27,7 @@ export function GlobalReachMapSection() {
 
         <h2
           id="global-reach-heading"
-          className="mt-8 text-pretty font-display text-[clamp(1.75rem,4.5vw,3rem)] font-normal leading-[1.2] tracking-tight text-black"
+          className="mt-8 text-pretty font-display text-[clamp(1.75rem,4.5vw,3rem)] font-normal leading-[1.2] tracking-tight text-telco-dark"
         >
           We bring together
           <br />
@@ -36,7 +36,7 @@ export function GlobalReachMapSection() {
           <span className="text-telco-red">cutting-edge innovation at scale</span>
         </h2>
 
-        <p className="mt-8 max-w-2xl text-pretty text-base font-light leading-relaxed text-black/90 sm:text-lg lg:text-xl">
+        <p className="mt-8 max-w-2xl text-pretty text-base font-light leading-relaxed text-telco-dark/90 sm:text-lg lg:text-xl">
           ensuring that every project benefits from:
         </p>
 
@@ -44,7 +44,7 @@ export function GlobalReachMapSection() {
           {MISSION_BENEFITS.map((benefit) => (
             <li
               key={benefit}
-              className="flex items-center gap-3 text-base font-light text-black sm:text-lg"
+              className="flex items-center gap-3 text-base font-light text-telco-dark sm:text-lg"
             >
               <span
                 className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-telco-red/10 text-telco-red"

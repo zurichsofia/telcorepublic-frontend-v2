@@ -63,7 +63,7 @@ export default async function NewsArticlePage({ params }: NewsArticleProps) {
       ) : null}
 
       {post.coverImage ? (
-        <div className="relative mt-12 aspect-21/9 w-full overflow-hidden bg-neutral-900 sm:mt-14 sm:aspect-2/1">
+        <div className="relative mt-12 aspect-21/9 w-full overflow-hidden bg-telco-dark sm:mt-14 sm:aspect-2/1">
           <Image
             src={post.coverImage}
             alt={post.title}

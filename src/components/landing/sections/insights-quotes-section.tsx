@@ -119,7 +119,7 @@ function createInitialCards(quotes: readonly Quote[]): StackCard[] {
 }
 
 const MEDIA_STRIP_CLASS =
-  "relative h-[100vh] w-full overflow-hidden bg-black [content-visibility:auto] [contain-intrinsic-size:100vh]";
+  "relative h-[100vh] w-full overflow-hidden bg-telco-dark [content-visibility:auto] [contain-intrinsic-size:100vh]";
 
 function MountainImageStrip({ imageSrc }: { imageSrc: string; }) {
   return (
@@ -263,7 +263,7 @@ function MessageBubble({
       </p>
       <span
         className={cn(
-          "absolute rotate-45 bg-[#1c1c1c]",
+          "absolute rotate-45 bg-message-bubble",
           size === "large" && "-bottom-[10px] left-8 size-6",
           size === "medium" && "-bottom-[9px] left-6 size-5",
           size === "small" && "-bottom-[7px] left-5 size-4",

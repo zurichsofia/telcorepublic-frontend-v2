@@ -61,7 +61,7 @@ export function TeamMemberBlock({
         </h2>
       </header>
       <div className="min-w-0">
-        <div className="space-y-5 text-xl font-light  text-black">
+        <div className="space-y-5 text-xl font-light  text-telco-dark">
           {previewParagraphs.map((p, index) => (
             <p key={`${id}-preview-${index}`}>{p}</p>
           ))}
@@ -71,7 +71,7 @@ export function TeamMemberBlock({
           <div
             id={regionId}
             hidden={!expanded}
-            className="mt-5 space-y-5 pt-5 text-xl font-light leading-relaxed text-black"
+            className="mt-5 space-y-5 pt-5 text-xl font-light leading-relaxed text-telco-dark"
           >
             {moreParagraphs.map((p, index) => (
               <p key={`${id}-more-${index}`}>{p}</p>
@@ -80,7 +80,7 @@ export function TeamMemberBlock({
         ) : null}
 
         {expanded && linkedinUrl ? (
-          <p className="mt-8 text-xl font-light leading-relaxed text-black">
+          <p className="mt-8 text-xl font-light leading-relaxed text-telco-dark">
             Learn more on{" "}
             <a
               href={linkedinUrl}
