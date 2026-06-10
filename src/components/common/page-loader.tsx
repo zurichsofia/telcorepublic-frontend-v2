@@ -104,8 +104,7 @@ export function PageLoader() {
   return (
     <div
       ref={rootRef}
-      className="fixed inset-0 z-100 flex flex-col items-center justify-center px-6"
-      style={{ backgroundColor: "#191919" }}
+      className="fixed inset-0 z-100 flex flex-col items-center justify-center px-6 bg-telco-dark"
       role="status"
       aria-live="polite"
       aria-busy={phase === "loading"}

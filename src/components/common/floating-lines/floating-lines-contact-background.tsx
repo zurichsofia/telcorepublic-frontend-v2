@@ -24,7 +24,7 @@ export type FloatingLinesContactBackgroundProps = {
 };
 
 /**
- * Contact-page field. Base matches `bg-telco-dark` (#191919) with the shell/header
+ * Contact-page field. Base matches `bg-telco-dark` with the shell/header
  * so the hero does not read as a separate color block.
  */
 export function FloatingLinesContactBackground({

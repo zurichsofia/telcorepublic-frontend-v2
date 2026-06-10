@@ -16,10 +16,17 @@ export default async function NewsIndexPage() {
 
   return (
     <div>
+      <InsightsQuotesSection
+        quotes={quotes}
+        showOceanStrip={false}
+        heroTitle
+      />
+
       <div
         className="mx-auto max-w-7xl px-6 pb-28 pt-36 sm:px-10 sm:pb-32 sm:pt-48"
         aria-labelledby="news-hero-title"
       >
+
         <NewsList
           hero={<NewsHeroStackedTitle className="max-w-lg lg:top-6" />}
           first={first}
@@ -27,7 +34,6 @@ export default async function NewsIndexPage() {
           gridPosts={gridPosts}
         />
       </div>
-      <InsightsQuotesSection quotes={quotes} showOceanStrip={false} />
     </div>
   );
 }

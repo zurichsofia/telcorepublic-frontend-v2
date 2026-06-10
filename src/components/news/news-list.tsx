@@ -62,7 +62,7 @@ export function NewsList({
           onClick={() =>
             setVisible((v) => Math.min(v + PAGE_SIZE, gridPosts.length))
           }
-          className="text-xs font-light tracking-[0.45em] text-white transition hover:text-white/80 sm:text-xs cursor-pointer"
+          className="text-xs font-light text-white transition hover:text-white/80 sm:text-xl cursor-pointer"
         >
           LOAD MORE
         </button>
@@ -128,7 +128,7 @@ export function NewsList({
               <NewsPostCard key={post.slug} post={post} />
             ))}
           </div>
-            <div
+          <div
             className={cn(
               "flex min-w-0 flex-col gap-32 sm:gap-36 lg:gap-40",
               "lg:pl-2",

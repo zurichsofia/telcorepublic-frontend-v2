@@ -3,17 +3,19 @@
 @import 'lenis/dist/lenis.css';
 
 @theme {
-  --color-telco-dark: #191919;
+  --color-telco-dark: #150f0f;
   --color-telco-red: #eb1e25;
   --color-clouds: #b5bec7;
+  --color-message-bubble: #211b1b;
 }
 
 :root {
-  --color-telco-dark: #191919;
+  --color-telco-dark: #150f0f;
   --color-telco-red: #eb1e25;
   --color-clouds: #b5bec7;
   --color-white: #ffffff;
   --color-black: #000000;
+  --color-message-bubble: #211b1b;
 }
 
 html {

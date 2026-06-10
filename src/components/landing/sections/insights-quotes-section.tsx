@@ -121,7 +121,7 @@ function createInitialCards(quotes: readonly Quote[]): StackCard[] {
 const MEDIA_STRIP_CLASS =
   "relative h-[100vh] w-full overflow-hidden bg-black [content-visibility:auto] [contain-intrinsic-size:100vh]";
 
-function MountainImageStrip({ imageSrc }: { imageSrc: string }) {
+function MountainImageStrip({ imageSrc }: { imageSrc: string; }) {
   return (
     <div className={MEDIA_STRIP_CLASS} aria-hidden>
       <Image
@@ -228,7 +228,7 @@ function MessageBubble({
       href={quote.href}
       aria-label={`Read article: ${quote.title}`}
       className={cn(
-        "relative flex w-full flex-col justify-center rounded-[18px] bg-[#1c1c1c] shadow-[0_20px_50px_rgba(0,0,0,0.55)]",
+        "relative flex w-full flex-col justify-center rounded-[18px] bg-message-bubble shadow-[0_20px_50px_rgba(0,0,0,0.55)]",
         "transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/40",
         BUBBLE_HEIGHT_CLASS[size],
         size === "large" && "px-7 py-6 sm:px-8 sm:py-7",
@@ -274,7 +274,7 @@ function MessageBubble({
   );
 }
 
-function StaticStack({ cards, quotes }: { cards: StackCard[]; quotes: readonly Quote[] }) {
+function StaticStack({ cards, quotes }: { cards: StackCard[]; quotes: readonly Quote[]; }) {
   return (
     <div
       className={cn(
@@ -438,15 +438,15 @@ function NotificationStack({
                     layout: layoutSpring,
                     ...(isEntering
                       ? {
-                          y: enterSpring,
-                          opacity: enterSpring,
-                          scale: enterSpring,
-                        }
+                        y: enterSpring,
+                        opacity: enterSpring,
+                        scale: enterSpring,
+                      }
                       : {
-                          y: layoutSpring,
-                          opacity: { duration: 0.35 },
-                          scale: layoutSpring,
-                        }),
+                        y: layoutSpring,
+                        opacity: { duration: 0.35 },
+                        scale: layoutSpring,
+                      }),
                   }}
                 >
                   <MessageBubble
@@ -476,11 +476,14 @@ export function InsightsQuotesSection({
   imageSrc = INSIGHTS_QUOTES_IMAGE_SRC,
   videoSrc = INSIGHTS_QUOTES_VIDEO_SRC,
   showOceanStrip = true,
+  heroTitle = false,
 }: {
   quotes: readonly InsightQuote[];
   imageSrc?: string;
   videoSrc?: string;
   showOceanStrip?: boolean;
+  /** Large centered page title (e.g. news index). */
+  heroTitle?: boolean;
 }) {
   const reduceMotion = usePrefersReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
@@ -516,8 +519,25 @@ export function InsightsQuotesSection({
     >
       {showOceanStrip ? <MountainImageStrip imageSrc={imageSrc} /> : null}
 
-      <div className="relative bg-black px-4 py-14 sm:px-8 sm:py-16 lg:px-10 lg:py-20 xl:px-12">
+      <div
+        className={cn(
+          "relative bg-telco-dark px-4 sm:px-8 lg:px-10 xl:px-12",
+          heroTitle
+            ? "pb-14 pt-32 sm:pb-16 sm:pt-44 lg:pb-20 lg:pt-48"
+            : "py-14 sm:py-16 lg:py-20 xl:py-20",
+        )}
+      >
+        {heroTitle ? (
+          <h1 className="mx-auto mb-16 text-center font-display text-5xl uppercase text-telco-red sm:mb-12 sm:text-6xl lg:text-7xl">
+            Insights
+          </h1>
+        ) : (
+          <p className="mb-4 text-4xl font-light uppercase leading-relaxed text-telco-red">
+            Insights
+          </p>
+        )}
         <div className="relative mx-auto w-full max-w-6xl overflow-visible">
+
           <div className="mb-10 flex justify-center lg:absolute lg:-left-6 lg:top-1/2 lg:mb-0 lg:-translate-y-1/2 lg:justify-start xl:-left-10">
             <Image
               src="/images/TR_Bird_Icon.svg"
