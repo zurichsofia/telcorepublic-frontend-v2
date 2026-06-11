@@ -1,5 +1,3 @@
-"use client";
-
 import { ServiceDetailBlock } from "@/components/service/service-details/service-detail-blocks";
 import { ServiceDetailLead } from "@/components/service/service-details/service-detail-lead";
 import { serviceDetailBlockStack } from "@/components/service/service-details/service-detail-styles";

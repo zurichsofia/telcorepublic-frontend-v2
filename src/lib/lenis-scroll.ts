@@ -3,16 +3,29 @@ let smoothScrollY = 0;
 let lenisActive = false;
 
 const scrollSubscribers = new Set<() => void>();
+let notifyRafId = 0;
+
+function notifySubscribers(): void {
+  if (notifyRafId !== 0) return;
+  notifyRafId = requestAnimationFrame(() => {
+    notifyRafId = 0;
+    scrollSubscribers.forEach((listener) => listener());
+  });
+}
 
 export function setLenisScrollY(y: number): void {
   smoothScrollY = y;
   lenisActive = true;
-  scrollSubscribers.forEach((listener) => listener());
+  notifySubscribers();
 }
 
 export function resetLenisScrollY(): void {
   smoothScrollY = 0;
   lenisActive = false;
+  if (notifyRafId !== 0) {
+    cancelAnimationFrame(notifyRafId);
+    notifyRafId = 0;
+  }
 }
 
 export function isLenisActive(): boolean {

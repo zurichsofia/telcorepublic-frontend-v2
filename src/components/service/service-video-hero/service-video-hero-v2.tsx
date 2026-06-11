@@ -20,17 +20,14 @@ export type ServiceVideoHeroV2Props = {
   onActiveServiceChange?: (slug: string) => void;
 };
 
-/**
- * Service hero: Swiper loop, pagination, navigation, keyboard.
- */
 export function ServiceVideoHeroV2({
   initialSlug,
   onActiveServiceChange,
 }: ServiceVideoHeroV2Props) {
   const reduceMotion = usePrefersReducedMotion();
-  const sectionCount = services.length;
   const swiperRef = useRef<SwiperType | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
+  const [inView, setInView] = useState(true);
 
   const initialSlide = useMemo(() => {
     if (!initialSlug) return 0;
@@ -38,22 +35,18 @@ export function ServiceVideoHeroV2({
     return i >= 0 ? i : 0;
   }, [initialSlug]);
 
-  const [chromeIndex, setChromeIndex] = useState(initialSlide);
-  const [heroInView, setHeroInView] = useState(true);
+  const [activeIndex, setActiveIndex] = useState(initialSlide);
 
   useEffect(() => {
-    setChromeIndex(initialSlide);
+    setActiveIndex(initialSlide);
   }, [initialSlide]);
 
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
-
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        setHeroInView(entry.isIntersecting);
-      },
-      { root: null, threshold: 0 },
+      ([entry]) => setInView(entry.isIntersecting),
+      { threshold: 0 },
     );
     observer.observe(section);
     return () => observer.disconnect();
@@ -62,8 +55,7 @@ export function ServiceVideoHeroV2({
   const syncUrl = useCallback(
     (index: number) => {
       const slug = services[index]?.slug;
-      if (!slug) return;
-      if (typeof window === "undefined") return;
+      if (!slug || typeof window === "undefined") return;
       const next = `/services/${encodeURIComponent(slug)}`;
       const current = `${window.location.pathname}${window.location.search}`;
       if (current !== next) {
@@ -75,12 +67,11 @@ export function ServiceVideoHeroV2({
   );
 
   const speed = reduceMotion ? 0 : 480;
-  const multi = sectionCount > 1;
+  const multi = services.length > 1;
 
   useEffect(() => {
     const sw = swiperRef.current;
-    if (!sw || sw.destroyed) return;
-    if (sw.realIndex === initialSlide) return;
+    if (!sw || sw.destroyed || sw.realIndex === initialSlide) return;
     if (multi && sw.params.loop) {
       sw.slideToLoop(initialSlide, speed);
     } else {
@@ -88,29 +79,29 @@ export function ServiceVideoHeroV2({
     }
   }, [initialSlide, multi, speed]);
 
-  const activeTitle = services[chromeIndex]?.title ?? "";
+  const activeTitle = services[activeIndex]?.title ?? "";
 
   return (
     <section
       ref={sectionRef}
       id="hero"
       aria-label="Featured services"
-      className="relative isolate flex min-h-0 w-full min-w-0 max-w-full flex-col overflow-x-clip bg-telco-dark text-white"
+      className="relative isolate h-svh w-full overflow-x-clip bg-telco-dark text-white"
     >
+      <span className="sr-only">
+        {multi
+          ? "Several services are shown here. Use the arrow controls, pagination dots, or keyboard arrows to change slides. "
+          : null}
+        Scroll down the page to continue past this section.
+      </span>
+
       <div
         role="region"
-        aria-label={`Service highlights: slide ${chromeIndex + 1} of ${sectionCount}, ${activeTitle}`}
-        className="relative z-10 h-dvh min-h-0 w-full min-w-0 max-w-full shrink-0 overflow-x-clip overflow-y-hidden bg-telco-dark"
+        aria-label={`Service highlights: slide ${activeIndex + 1} of ${services.length}, ${activeTitle}`}
+        className="h-full w-full"
       >
-        <span className="sr-only">
-          {multi
-            ? "Several services are shown here. Use the arrow controls, pagination dots, or keyboard arrows to change slides. "
-            : null}
-          Scroll down the page to continue past this section.
-        </span>
-
         <Swiper
-          className="service-hero-swiper-v2 h-full w-full min-w-0 max-w-full"
+          className="service-hero-swiper-v2 h-full w-full"
           modules={[Pagination, Navigation, Keyboard]}
           slidesPerView={1}
           spaceBetween={0}
@@ -124,33 +115,32 @@ export function ServiceVideoHeroV2({
             swiperRef.current = s;
           }}
           onSlideChange={(s) => {
-            setChromeIndex(s.realIndex);
+            setActiveIndex(s.realIndex);
           }}
           onSlideChangeTransitionEnd={(s) => {
             syncUrl(s.realIndex);
           }}
         >
-          {services.map((service, index) => (
-            <SwiperSlide key={service.slug} className="h-full">
-              <ServiceVideoSlide
-                title={service.title}
-                videoSrc={serviceSlugHeroVideoUrlForSlide(index)}
-                isActive={index === chromeIndex && heroInView}
-                reduceMotion={!!reduceMotion}
-              />
-              <div
-                className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center px-8"
-                aria-hidden
-              >
-                <h2 className="font-display text-center text-2xl font-normal leading-tight tracking-wide text-white lg:text-8xl">
-                  {service.title}
-                </h2>
-              </div>
-            </SwiperSlide>
-          ))}
+        {services.map((service, index) => (
+          <SwiperSlide key={service.slug} className="h-full">
+            <ServiceVideoSlide
+              title={service.title}
+              videoSrc={serviceSlugHeroVideoUrlForSlide(index)}
+              isActive={index === activeIndex && inView}
+              reduceMotion={!!reduceMotion}
+            />
+            <div
+              className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center px-8"
+              aria-hidden
+            >
+              <h2 className="font-display text-center text-2xl font-normal leading-tight tracking-wide text-white lg:text-8xl">
+                {service.title}
+              </h2>
+            </div>
+          </SwiperSlide>
+        ))}
         </Swiper>
       </div>
     </section>
   );
 }
-

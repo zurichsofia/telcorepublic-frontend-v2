@@ -50,7 +50,7 @@ export function AppShell({
   }, []);
 
   return (
-    <SmoothScrollProvider enabled={!isStudio} {...(isHome ? { lerp: 0.06 } : { lerp: 0.1 })}>
+    <SmoothScrollProvider enabled={!isStudio && !isContact}>
       {isStudio ? null : <LenisScrollToTopOnNavigate pathname={pathname} />}
       {isHome ? <HeroSceneLoader ready={sceneReady} /> : null}
       {isStudio ? (

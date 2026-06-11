@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useLayoutEffect,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -21,19 +22,25 @@ export function useLenis(): Lenis | null {
 
 type SmoothScrollProviderProps = {
   children: ReactNode;
-  /** Opt out of Lenis (e.g. isolated previews). Defaults to on for the whole site. */
+  /** Opt out of Lenis (e.g. Sanity Studio). Defaults to on for the whole site. */
   enabled?: boolean;
-  /** Scroll easing — lower = smoother/slower. Default tuned for scroll-linked hero motion. */
-  lerp?: number;
 };
 
-const DEFAULT_LERP = 0.06;
+/** Site-wide scroll smoothing — lower = slower/butterier. */
+export const LENIS_LERP = 0.05;
+
+const LENIS_BASE_OPTIONS = {
+  lerp: LENIS_LERP,
+  smoothWheel: true,
+  syncTouch: false,
+  wheelMultiplier: 1.4,
+  autoRaf: false,
+} as const satisfies ConstructorParameters<typeof Lenis>[0];
 
 /** Site-wide Lenis smooth scroll (respects prefers-reduced-motion). */
 export function SmoothScrollProvider({
   children,
   enabled = true,
-  lerp = DEFAULT_LERP,
 }: SmoothScrollProviderProps) {
   const reduceMotion = usePrefersReducedMotion();
   const [lenis, setLenis] = useState<Lenis | null>(null);
@@ -45,14 +52,7 @@ export function SmoothScrollProvider({
       return;
     }
 
-    const instance = new Lenis({
-      lerp,
-      smoothWheel: true,
-      syncTouch: false,
-      wheelMultiplier: 0.78,
-      touchMultiplier: 1.1,
-      autoRaf: false,
-    });
+    const instance = new Lenis(LENIS_BASE_OPTIONS);
 
     const syncScrollY = () => {
       setLenisScrollY(instance.scroll);
@@ -78,7 +78,7 @@ export function SmoothScrollProvider({
       resetLenisScrollY();
       setLenis(null);
     };
-  }, [reduceMotion, enabled, lerp]);
+  }, [reduceMotion, enabled]);
 
   return <LenisContext.Provider value={lenis}>{children}</LenisContext.Provider>;
 }
@@ -98,19 +98,19 @@ export function resetScrollPosition(lenis: Lenis | null) {
 }
 
 /** Resets scroll on client navigations — uses Lenis when active. */
-export function LenisScrollToTopOnNavigate({ pathname }: { pathname: string }) {
+export function LenisScrollToTopOnNavigate({ pathname }: { pathname: string; }) {
   const lenis = useLenis();
+  const lenisRef = useRef(lenis);
+  lenisRef.current = lenis;
 
   useLayoutEffect(() => {
-    resetScrollPosition(lenis);
-  }, [pathname, lenis]);
+    resetScrollPosition(lenisRef.current);
+  }, [pathname]);
 
   useEffect(() => {
+    if (!lenis) return;
     resetScrollPosition(lenis);
-    if (lenis) return;
-    const t = setTimeout(scrollViewToTopNative, 0);
-    return () => clearTimeout(t);
-  }, [pathname, lenis]);
+  }, [lenis]);
 
   return null;
 }
