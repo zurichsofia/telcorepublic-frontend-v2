@@ -114,12 +114,12 @@ function v2SectionBlend(t: number, v1: number, v2: number, v3: number): number {
 useGLTF.preload(MODEL_PATH);
 registerScene();
 
-function SnowMountainV2Model() {
+function SnowMountainV2Model({ reduceMotion }: { reduceMotion: boolean }) {
   const { scene } = useGLTF(MODEL_PATH);
 
   useEffect(() => {
-    markSceneReady();
-  }, []);
+    if (reduceMotion) markSceneReady();
+  }, [reduceMotion]);
 
   return <primitive object={scene} />;
 }
@@ -167,6 +167,7 @@ function V2ScrollCamera({
       modelHeightRef.current = size.y;
       modelWidthRef.current = size.x;
       framed.current = true;
+      markSceneReady();
       return;
     }
 
@@ -302,7 +303,7 @@ export function SnowMountainV2SimpleScene({
             observe={false}
             maxDuration={0}
           >
-            <SnowMountainV2Model />
+            <SnowMountainV2Model reduceMotion={reduceMotion} />
             <V2ScrollCamera
               scrollState={scrollState}
               reduceMotion={reduceMotion}

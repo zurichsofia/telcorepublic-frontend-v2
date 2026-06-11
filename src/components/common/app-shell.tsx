@@ -15,6 +15,8 @@ import {
   LenisScrollToTopOnNavigate,
   SmoothScrollProvider,
 } from "@/components/common/smooth-scroll-provider";
+import { HeroSceneLoader } from "@/components/landing/snow-mountain/hero/hero-scene-loader";
+import { useSceneReady } from "@/hooks/use-scene-ready";
 import { cn } from "@/lib/utils";
 
 export function AppShell({
@@ -35,6 +37,7 @@ export function AppShell({
   const theme = darkShell ? "blog" : immersiveHero ? "overlay" : "default";
   const overlayPastHero = useOverlayPastHero(theme, pathname);
   const surfaceClassName = shellSurfaceClassName(theme, overlayPastHero);
+  const sceneReady = useSceneReady();
 
   // Browsers can restore/apply scroll after a client navigation, which (with a long view
   // e.g. /services or /services/slug) leaves a high scroll offset that clamps to the
@@ -49,6 +52,7 @@ export function AppShell({
   return (
     <SmoothScrollProvider lerp={isServiceDetail ? 0.1 : 0.06}>
       <LenisScrollToTopOnNavigate pathname={pathname} />
+      {isHome ? <HeroSceneLoader ready={sceneReady} /> : null}
       {isStudio ? (
         children
       ) : (

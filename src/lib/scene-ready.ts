@@ -1,14 +1,12 @@
 /**
- * Opt-in signal so the PageLoader waits until the Three.js scene has actually
- * rendered rather than dismissing as soon as fonts + window.load are done.
+ * Signal used by the landing hero loader to wait until the Three.js scene is
+ * framed and ready to reveal.
  *
  * Usage:
- *   1. Call `registerScene()` at module level in the scene file — this must
- *      happen synchronously during JS evaluation, before any React effects run.
- *   2. Call `markSceneReady()` inside a `useEffect` in the innermost model
- *      component (fires after Suspense resolves and the GLB is mounted).
- *   3. The PageLoader calls `isSceneRegistered()` to decide whether to include
- *      `waitForScene()` in its Promise.all.
+ *   1. Call `registerScene()` at module level in the scene file.
+ *   2. Call `markSceneReady()` once the model is mounted and the first frame
+ *      is composed (or immediately for reduced-motion fallbacks).
+ *   3. The hero loader calls `waitForScene()` via `useSceneReady()`.
  */
 
 let _registered = false;
@@ -31,9 +29,14 @@ export function markSceneReady(): void {
   _resolve?.();
 }
 
-/** True if a scene has called registerScene() — loader uses this to opt in. */
+/** True if a scene has called registerScene(). */
 export function isSceneRegistered(): boolean {
   return _registered;
+}
+
+/** True once markSceneReady() has been called. */
+export function isSceneReady(): boolean {
+  return _resolved;
 }
 
 /** Promise that resolves when markSceneReady() is called. */

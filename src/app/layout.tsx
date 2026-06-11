@@ -5,7 +5,6 @@ import "swiper/css";
 import "./globals.css";
 import { getNewsArticleCount } from "@/data/news";
 import { AppShell } from "@/components/common/app-shell";
-import { PageLoader } from "@/components/common/page-loader";
 import { defaultMetadata } from "@/lib/page-metadata";
 import { cn } from "@/lib/utils";
 
@@ -32,7 +31,6 @@ export default async function RootLayout({
       <body
         className={`${helveticaNeue.className} relative min-h-screen font-light text-telco-dark antialiased`}
       >
-        <PageLoader />
         <AppShell newsArticleCount={newsArticleCount}>{children}</AppShell>
       </body>
     </html>
