@@ -30,6 +30,14 @@ interface MapProps {
 /** Landmass grid: grey dots on white. */
 const LAND_DOT_COLOR = "#6b7379";
 
+/** proj4 can differ slightly between Node (SSR) and the browser — round for stable SVG attrs. */
+const SVG_COORD_PRECISION = 8;
+
+function roundSvgCoord(value: number): number {
+  const factor = 10 ** SVG_COORD_PRECISION;
+  return Math.round(value * factor) / factor;
+}
+
 const DOT_R = 1;
 const DOT_R_PULSE = 1.15;
 /** Expanding ring - viewBox height is ~100; keep ripple large enough to read on screen. */
@@ -89,7 +97,7 @@ function projectLatLng(
   }
   const x = (layout.width * (projX - layout.X_MIN)) / layout.X_RANGE;
   const y = (layout.height * (layout.Y_MAX - projY)) / layout.Y_RANGE;
-  return { x, y };
+  return { x: roundSvgCoord(x), y: roundSvgCoord(y) };
 }
 
 export default function WorldMap({
@@ -140,12 +148,14 @@ export default function WorldMap({
     end: { x: number; y: number },
     mapHeight: number
   ) => {
-    const midX = (start.x + end.x) / 2;
-    const arcLift = Math.min(
-      mapHeight * 0.35,
-      Math.max(mapHeight * 0.08, Math.abs(end.x - start.x) * 0.12)
+    const midX = roundSvgCoord((start.x + end.x) / 2);
+    const arcLift = roundSvgCoord(
+      Math.min(
+        mapHeight * 0.35,
+        Math.max(mapHeight * 0.08, Math.abs(end.x - start.x) * 0.12),
+      ),
     );
-    const midY = Math.min(start.y, end.y) - arcLift;
+    const midY = roundSvgCoord(Math.min(start.y, end.y) - arcLift);
     return `M ${start.x} ${start.y} Q ${midX} ${midY} ${end.x} ${end.y}`;
   };
 

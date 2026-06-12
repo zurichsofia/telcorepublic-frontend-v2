@@ -12,6 +12,7 @@ import {
 } from "react";
 
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
+import { isMobileDevice } from "@/lib/device/is-coarse-pointer";
 import { resetLenisScrollY, setLenisScrollY } from "@/lib/lenis-scroll";
 
 const LenisContext = createContext<Lenis | null>(null);
@@ -47,6 +48,13 @@ export function SmoothScrollProvider({
 
   useEffect(() => {
     if (reduceMotion || !enabled) {
+      resetLenisScrollY();
+      setLenis(null);
+      return;
+    }
+
+    // Lenis + position:sticky jitter on iOS — native scroll on mobile only.
+    if (typeof window !== "undefined" && isMobileDevice()) {
       resetLenisScrollY();
       setLenis(null);
       return;

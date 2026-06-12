@@ -1,121 +1,49 @@
 "use client";
 
 import type { MutableRefObject, RefObject } from "react";
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Suspense,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Stage, useBounds, useGLTF } from "@react-three/drei";
-
-// import { SnowMountainForegroundClouds } from "@/components/landing/snow-mountain/scene/snow-mountain-foreground-clouds";
-import { SnowMountainSky } from "@/components/landing/snow-mountain/scene/snow-mountain-sky";
 import * as THREE from "three";
 
 import { HeroScrollLayoutSync } from "@/components/landing/snow-mountain/scene/hero-scroll-layout-sync";
+import { SnowMountainSky } from "@/components/landing/snow-mountain/scene/snow-mountain-sky";
+import { useSceneQuality } from "@/hooks/use-scene-quality";
 import type { HeroScrollState } from "@/lib/snow-mountain/hero-scroll-state";
 import type { SnowMountainParallaxMotion } from "@/lib/snow-mountain/snow-mountain-parallax-motion";
-import { markSceneReady, registerScene } from "@/lib/scene-ready";
+import {
+  applyMountainScrollCamera,
+  BASE_CAMERA_FOV,
+  CAMERA_ADJUST,
+  frameMountainCameraDesktop,
+  frameMountainCameraPortrait,
+  type ApplyMountainScrollCameraScratch,
+  type MountainCameraFrame,
+} from "@/lib/snow-mountain/snow-mountain-camera-rig";
+import { SNOW_MOUNTAIN_SOURCE_MODEL } from "@/lib/snow-mountain/snow-mountain-model";
+import { getCanvasDprRange } from "@/lib/snow-mountain/scene-quality";
+import {
+  isSceneReady,
+  markSceneReady,
+  registerScene,
+  waitForScene,
+} from "@/lib/scene-ready";
 import { mapHeroScrollProgress } from "@/lib/snow-mountain/snow-mountain-hero-scroll";
 import { cn } from "@/lib/utils";
 
 const SKY_COLOR = "#e8e8e8";
-const MODEL_PATH = "/scene/snow_mountain.glb";
 
-/**
- * Applied after Stage Bounds fit — look above center (drops mass), camera up
- * (reinforces), look left of center (mass reads right in frame).
- */
-const FRAME_LOOK_AT_Y = 0.2;
-const FRAME_LOOK_AT_X = -0.10;
-const FRAME_CAMERA_Y = 0.12;
-const CAMERA_ADJUST = 0.48;
-
-/** Copy-beat centers on camera progress (primary / telco / mission). */
-const SECTION_CENTER_1 = 1 / 6;
-const SECTION_CENTER_2 = 1 / 2;
-const SECTION_CENTER_3 = 5 / 6;
-
-/**
- * Horizontal orbit (rad) at each copy beat — tune by hand.
- * Keep all three monotonic (all increasing OR all decreasing) so spin never reverses
- * mid-scroll; use LOOK_AT_X / YAW for left-vs-right copy framing.
- */
-const ORBIT_SECTION_1 = 0.3;
-const ORBIT_SECTION_2 = -0.1;
-const ORBIT_SECTION_3 = -1;
-
-/**
- * Extra camera height per beat — fraction of model height (like FRAME_CAMERA_Y).
- * Raises the viewpoint; mountain sits lower in frame.
- */
-const LIFT_SECTION_1 = 0.1;
-const LIFT_SECTION_2 = -0.1;
-const LIFT_SECTION_3 = 0;
-
-/**
- * Look-at shifts up per beat — fraction of model height (like FRAME_LOOK_AT_Y).
- * Tilts gaze toward the sky / horizon so you see more “beyond” the mass.
- */
-const LOOK_UP_SECTION_1 = 0.1;
-const LOOK_UP_SECTION_2 = 0.1;
-const LOOK_UP_SECTION_3 = 0;
-
-/**
- * Pivot X shift per beat — fraction of model width (like FRAME_LOOK_AT_X).
- * Positive = look-at moves right = mountain mass reads LEFT (clears right-aligned telco copy).
- */
-const LOOK_AT_X_SECTION_1 = 0;
-const LOOK_AT_X_SECTION_2 = 0.14;
-const LOOK_AT_X_SECTION_3 = 0;
-
-/**
- * Small post-orbit yaw (rad) — framing nudge without huge orbit swings (v1-style).
- * Positive = mountain drifts right in frame; negative = left.
- */
-const YAW_SECTION_1 = 0.14;
-const YAW_SECTION_2 = -0.15;
-const YAW_SECTION_3 = 0;
-
-const WORLD_UP = new THREE.Vector3(0, 1, 0);
-
-/**
- * Orbit radius scale per beat (1 = baseline). >1 pulls the camera back (zoom out).
- */
-const DOLLY_SECTION_1 = 1;
-const DOLLY_SECTION_2 = 1;
-const DOLLY_SECTION_3 = 0.5;
-
-/**
- * FOV delta (degrees) per beat on top of the Canvas base FOV. Positive = wider = zoom out.
- */
-const FOV_SECTION_1 = 0;
-const FOV_SECTION_2 = 0;
-const FOV_SECTION_3 = 0;
-
-function smoothstep(edge0: number, edge1: number, x: number): number {
-  if (x <= edge0) return 0;
-  if (x >= edge1) return 1;
-  const u = (x - edge0) / (edge1 - edge0);
-  return u * u * (3 - 2 * u);
-}
-
-/** Smooth blend between three hand-tuned section values. */
-function v2SectionBlend(t: number, v1: number, v2: number, v3: number): number {
-  if (t <= SECTION_CENTER_1) return v1;
-  if (t <= SECTION_CENTER_2) {
-    const u = smoothstep(SECTION_CENTER_1, SECTION_CENTER_2, t);
-    return v1 + (v2 - v1) * u;
-  }
-  if (t <= SECTION_CENTER_3) {
-    const u = smoothstep(SECTION_CENTER_2, SECTION_CENTER_3, t);
-    return v2 + (v3 - v2) * u;
-  }
-  return v3;
-}
-
-useGLTF.preload(MODEL_PATH);
+useGLTF.preload(SNOW_MOUNTAIN_SOURCE_MODEL);
 registerScene();
 
 function SnowMountainV2Model({ reduceMotion }: { reduceMotion: boolean }) {
-  const { scene } = useGLTF(MODEL_PATH);
+  const { scene } = useGLTF(SNOW_MOUNTAIN_SOURCE_MODEL);
 
   useEffect(() => {
     if (reduceMotion) markSceneReady();
@@ -124,7 +52,6 @@ function SnowMountainV2Model({ reduceMotion }: { reduceMotion: boolean }) {
   return <primitive object={scene} />;
 }
 
-/** Frame nudge once, then orbit camera in XZ around the look-at pivot on scroll. */
 function V2ScrollCamera({
   scrollState,
   reduceMotion,
@@ -134,82 +61,85 @@ function V2ScrollCamera({
 }) {
   const bounds = useBounds();
   const camera = useThree((s) => s.camera);
+  const size = useThree((s) => s.size);
   const framed = useRef(false);
   const waitFrames = useRef(0);
-  const pivotRef = useRef<THREE.Vector3 | null>(null);
-  const basePosRef = useRef<THREE.Vector3 | null>(null);
-  const baseFovRef = useRef<number | null>(null);
-  const modelHeightRef = useRef(1);
-  const modelWidthRef = useRef(1);
-  const lookAt = useMemo(() => new THREE.Vector3(), []);
-  const posScratch = useMemo(() => new THREE.Vector3(), []);
+  const frameRef = useRef<MountainCameraFrame | null>(null);
+  const scratch = useRef<ApplyMountainScrollCameraScratch>({
+    lookAt: new THREE.Vector3(),
+    position: new THREE.Vector3(),
+    lastFov: null,
+  });
+  const modelCenterRef = useRef(new THREE.Vector3());
+  const modelSizeRef = useRef(new THREE.Vector3());
+  const canvasSizeRef = useRef({ width: 0, height: 0 });
+
+  useEffect(() => {
+    let timer = 0;
+    const resetFraming = () => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        framed.current = false;
+        waitFrames.current = 0;
+        frameRef.current = null;
+        scratch.current.lastFov = null;
+      }, 250);
+    };
+    window.addEventListener("resize", resetFraming);
+    window.addEventListener("orientationchange", resetFraming);
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener("resize", resetFraming);
+      window.removeEventListener("orientationchange", resetFraming);
+    };
+  }, []);
 
   useFrame(() => {
     if (!(camera instanceof THREE.PerspectiveCamera)) return;
 
-    const { center, size } = bounds.getSize();
-    if (size.y < 1e-6) return;
+    const { center, size: modelSize } = framed.current
+      ? { center: modelCenterRef.current, size: modelSizeRef.current }
+      : bounds.getSize();
+    if (modelSize.y < 1e-6) return;
+
+    const widthDelta = Math.abs(size.width - canvasSizeRef.current.width);
+    const heightDelta = Math.abs(size.height - canvasSizeRef.current.height);
+    if (canvasSizeRef.current.width === 0) {
+      canvasSizeRef.current = { width: size.width, height: size.height };
+    } else if (widthDelta > 48 || heightDelta > 48) {
+      canvasSizeRef.current = { width: size.width, height: size.height };
+      framed.current = false;
+      waitFrames.current = 0;
+      frameRef.current = null;
+      scratch.current.lastFov = null;
+    }
 
     if (!framed.current) {
       waitFrames.current += 1;
       if (waitFrames.current < 4) return;
 
-      const target = center.clone();
-      target.y += size.y * FRAME_LOOK_AT_Y;
-      target.x += size.x * FRAME_LOOK_AT_X;
-      bounds.lookAt({ target });
-      camera.position.y += size.y * FRAME_CAMERA_Y;
-      camera.updateProjectionMatrix();
+      const usePortrait = size.width < size.height;
+      frameRef.current = usePortrait
+        ? frameMountainCameraPortrait(camera, center, modelSize)
+        : frameMountainCameraDesktop(bounds, camera, center, modelSize);
 
-      pivotRef.current = target;
-      basePosRef.current = camera.position.clone();
-      baseFovRef.current = camera.fov;
-      modelHeightRef.current = size.y;
-      modelWidthRef.current = size.x;
+      modelCenterRef.current.copy(center);
+      modelSizeRef.current.copy(modelSize);
       framed.current = true;
       markSceneReady();
       return;
     }
 
-    const pivot = pivotRef.current;
-    const base = basePosRef.current;
-    const baseFov = baseFovRef.current;
-    if (!pivot || !base || baseFov == null) return;
+    const frame = frameRef.current;
+    if (!frame || reduceMotion) return;
 
     const raw = scrollState?.get() ?? 0;
-    const t = reduceMotion ? 0 : mapHeroScrollProgress(raw);
-    const h = modelHeightRef.current;
-    const w = modelWidthRef.current;
-
-    const orbitRad = v2SectionBlend(t, ORBIT_SECTION_1, ORBIT_SECTION_2, ORBIT_SECTION_3);
-    const liftY = v2SectionBlend(t, LIFT_SECTION_1, LIFT_SECTION_2, LIFT_SECTION_3) * h;
-    const lookUpY =
-      v2SectionBlend(t, LOOK_UP_SECTION_1, LOOK_UP_SECTION_2, LOOK_UP_SECTION_3) * h;
-    const lookAtX =
-      v2SectionBlend(t, LOOK_AT_X_SECTION_1, LOOK_AT_X_SECTION_2, LOOK_AT_X_SECTION_3) * w;
-    const yaw = v2SectionBlend(t, YAW_SECTION_1, YAW_SECTION_2, YAW_SECTION_3);
-    const dolly = v2SectionBlend(t, DOLLY_SECTION_1, DOLLY_SECTION_2, DOLLY_SECTION_3);
-    const fovDelta = v2SectionBlend(t, FOV_SECTION_1, FOV_SECTION_2, FOV_SECTION_3);
-
-    const dx = base.x - pivot.x;
-    const dz = base.z - pivot.z;
-    let r = Math.hypot(dx, dz);
-    if (r < 0.02) r = 0.02;
-    r *= dolly;
-
-    const theta0 = Math.atan2(dx, dz);
-    const theta = theta0 + orbitRad;
-    posScratch.set(
-      pivot.x + r * Math.sin(theta),
-      base.y + liftY,
-      pivot.z + r * Math.cos(theta),
+    applyMountainScrollCamera(
+      camera,
+      frame,
+      mapHeroScrollProgress(raw),
+      scratch.current,
     );
-    camera.position.copy(posScratch);
-    lookAt.set(pivot.x + lookAtX, pivot.y + lookUpY, pivot.z);
-    camera.lookAt(lookAt);
-    if (yaw !== 0) camera.rotateOnWorldAxis(WORLD_UP, yaw);
-    camera.fov = baseFov + fovDelta;
-    camera.updateProjectionMatrix();
   });
 
   return null;
@@ -223,7 +153,7 @@ export type SnowMountainV2SimpleSceneProps = {
   reduceMotion?: boolean;
 };
 
-/** Minimal preview: blue sky, Stage auto-fit, model centered on camera. */
+/** Desktop hero scene — Stage auto-fit, Lenis scroll, demand frameloop off-screen. */
 export function SnowMountainV2SimpleScene({
   className,
   scrollState,
@@ -233,11 +163,28 @@ export function SnowMountainV2SimpleScene({
 }: SnowMountainV2SimpleSceneProps) {
   const syncScroll =
     scrollState != null && heroSectionRef != null && motionRef != null;
-  const [frameloop, setFrameloop] = useState<"always" | "never">("always");
+  const quality = useSceneQuality();
+  const canvasDpr = useMemo(() => getCanvasDprRange(quality), [quality]);
+  const [sceneReady, setSceneReady] = useState(isSceneReady);
+  const [frameloop, setFrameloop] = useState<"always" | "demand">("always");
+
+  useEffect(() => {
+    if (sceneReady) return;
+    if (isSceneReady()) {
+      setSceneReady(true);
+      return;
+    }
+    void waitForScene().then(() => setSceneReady(true));
+  }, [sceneReady]);
 
   useEffect(() => {
     if (reduceMotion) {
-      setFrameloop("never");
+      setFrameloop("demand");
+      return;
+    }
+
+    if (!sceneReady) {
+      setFrameloop("always");
       return;
     }
 
@@ -251,29 +198,37 @@ export function SnowMountainV2SimpleScene({
 
     const io = new IntersectionObserver(
       ([entry]) => {
-        setFrameloop(entry?.isIntersecting ? "always" : "never");
+        setFrameloop(entry?.isIntersecting ? "always" : "demand");
       },
       { root: null, rootMargin: "0px", threshold: 0 },
     );
     io.observe(section);
     return () => io.disconnect();
-  }, [heroSectionRef, reduceMotion]);
+  }, [heroSectionRef, reduceMotion, sceneReady]);
+
+  const glOptions = useMemo(
+    () => ({
+      antialias: quality !== "low",
+      powerPreference: "high-performance" as const,
+    }),
+    [quality],
+  );
 
   return (
     <div className={cn("relative h-full w-full", className)}>
       <Canvas
-        className="absolute inset-0 h-full w-full touch-none"
-        camera={{ fov: 40, near: 0.1, far: 500 }}
-        dpr={[1, 1.5]}
+        className="pointer-events-none absolute inset-0 h-full w-full"
+        camera={{ fov: BASE_CAMERA_FOV, near: 0.1, far: 500 }}
+        dpr={canvasDpr}
         frameloop={frameloop}
-        gl={{ antialias: true, powerPreference: "high-performance" }}
+        gl={glOptions}
         onCreated={({ gl }) => {
           gl.setClearColor(new THREE.Color(SKY_COLOR), 1);
           gl.toneMapping = THREE.ACESFilmicToneMapping;
           gl.toneMappingExposure = 1;
         }}
       >
-        <SnowMountainSky reduceMotion={reduceMotion} />
+        <SnowMountainSky quality={quality} reduceMotion={reduceMotion} />
 
         {syncScroll ? (
           <HeroScrollLayoutSync
@@ -283,14 +238,14 @@ export function SnowMountainV2SimpleScene({
             reduceMotion={reduceMotion}
           />
         ) : null}
+
         <hemisphereLight args={["#b8d4f0", "#5a6a7a", 3]} />
-        <ambientLight intensity={0.50} color="#f0f6ff" />
+        <ambientLight intensity={0.5} color="#f0f6ff" />
         <directionalLight
           position={[14, 28, 12]}
           intensity={0.75}
           color="#fff4e6"
         />
-
 
         <Suspense fallback={null}>
           <Stage
@@ -308,7 +263,6 @@ export function SnowMountainV2SimpleScene({
               scrollState={scrollState}
               reduceMotion={reduceMotion}
             />
-            {/* <SnowMountainForegroundClouds reduceMotion={reduceMotion} /> */}
           </Stage>
         </Suspense>
       </Canvas>

@@ -9,6 +9,10 @@ export function useSceneReady(): boolean {
 
   useEffect(() => {
     if (ready) return;
+    if (isSceneReady()) {
+      setReady(true);
+      return;
+    }
     void waitForScene().then(() => setReady(true));
   }, [ready]);
 

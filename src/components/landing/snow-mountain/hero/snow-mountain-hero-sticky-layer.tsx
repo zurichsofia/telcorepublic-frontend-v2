@@ -3,14 +3,14 @@
 import type { MutableRefObject, ReactNode, RefObject } from "react";
 
 import { SnowMountainV2SimpleScene } from "@/components/landing/snow-mountain/scene/snow-mountain-scene";
-import type { SnowMountainParallaxMotion } from "@/lib/snow-mountain/snow-mountain-parallax-motion";
 import type { HeroScrollState } from "@/lib/snow-mountain/hero-scroll-state";
+import type { SnowMountainParallaxMotion } from "@/lib/snow-mountain/snow-mountain-parallax-motion";
 import { cn } from "@/lib/utils";
 
 type SnowMountainHeroStickyLayerProps = {
   reduceMotion: boolean;
   heroSectionRef: RefObject<HTMLElement | null>;
-  heroCanvasRef: RefObject<HTMLDivElement | null>;
+  stickyRef: RefObject<HTMLDivElement | null>;
   scrollState: HeroScrollState;
   motionRef: MutableRefObject<SnowMountainParallaxMotion>;
   children?: ReactNode;
@@ -19,15 +19,17 @@ type SnowMountainHeroStickyLayerProps = {
 export function SnowMountainHeroStickyLayer({
   reduceMotion,
   heroSectionRef,
-  heroCanvasRef,
+  stickyRef,
   scrollState,
   motionRef,
   children,
 }: SnowMountainHeroStickyLayerProps) {
   return (
-    <div className="sticky top-0 z-0 h-screen min-h-screen w-full shrink-0 overflow-hidden">
+    <div
+      ref={stickyRef}
+      className="sticky top-0 z-0 h-screen min-h-screen w-full shrink-0 overflow-hidden"
+    >
       <div
-        ref={heroCanvasRef}
         className={cn(
           "absolute inset-0 z-0 min-h-screen contain-paint",
           !reduceMotion && "cursor-none",

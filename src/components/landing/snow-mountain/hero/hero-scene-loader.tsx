@@ -5,11 +5,14 @@ import { useEffect, useState } from "react";
 import { BrandLogoSignal } from "@/components/common/brand-logo-signal";
 import { useLenis } from "@/components/common/smooth-scroll-provider";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
+import {
+  getSceneBootTimeoutMs,
+  isMobileDevice,
+} from "@/lib/device/is-coarse-pointer";
 import { cn } from "@/lib/utils";
 
 const EXIT_MS = 500;
 const REVEAL_DELAY_MS = 280;
-const MAX_MS = 10000;
 
 type HeroSceneLoaderProps = {
   ready: boolean;
@@ -19,10 +22,11 @@ export function HeroSceneLoader({ ready }: HeroSceneLoaderProps) {
   const reduce = usePrefersReducedMotion();
   const lenis = useLenis();
   const [phase, setPhase] = useState<"loading" | "exiting" | "done">("loading");
+  const useLenisScroll = lenis != null && !isMobileDevice();
 
   useEffect(() => {
     if (phase !== "loading") return;
-    const timer = window.setTimeout(() => setPhase("exiting"), MAX_MS);
+    const timer = window.setTimeout(() => setPhase("exiting"), getSceneBootTimeoutMs());
     return () => window.clearTimeout(timer);
   }, [phase]);
 
@@ -41,16 +45,18 @@ export function HeroSceneLoader({ ready }: HeroSceneLoaderProps) {
   }, [phase, reduce]);
 
   useEffect(() => {
+    if (!useLenisScroll) return;
     if (phase === "done") {
       lenis?.start();
     } else {
       lenis?.stop();
     }
-  }, [phase, lenis]);
+  }, [phase, lenis, useLenisScroll]);
 
   useEffect(() => {
+    if (!useLenisScroll) return;
     return () => lenis?.start();
-  }, [lenis]);
+  }, [lenis, useLenisScroll]);
 
   if (phase === "done") return null;
 

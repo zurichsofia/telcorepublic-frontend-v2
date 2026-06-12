@@ -53,6 +53,9 @@ export function AppShell({
     <SmoothScrollProvider enabled={!isStudio && !isContact}>
       {isStudio ? null : <LenisScrollToTopOnNavigate pathname={pathname} />}
       {isHome ? <HeroSceneLoader ready={sceneReady} /> : null}
+      {isHome && !sceneReady ? (
+        <div className="fixed inset-0 z-[99] bg-telco-dark" aria-hidden />
+      ) : null}
       {isStudio ? (
         children
       ) : (
