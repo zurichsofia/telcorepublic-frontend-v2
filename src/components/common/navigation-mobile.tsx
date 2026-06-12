@@ -179,7 +179,7 @@ export function NavigationMobile({
           type="button"
           className={cn(
             "inline-flex size-10 items-center justify-center rounded-sm transition-colors",
-            menuIconClass(),
+            menuIconClass(onDark),
             open && "pointer-events-none invisible",
           )}
           aria-expanded={open}

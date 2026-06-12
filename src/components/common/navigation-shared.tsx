@@ -203,8 +203,10 @@ export function mobileSubmenuLinkClass(
   );
 }
 
-export function menuIconClass() {
-  return "text-telco-dark hover:text-telco-red";
+export function menuIconClass(onDarkLogo: boolean) {
+  return onDarkLogo
+    ? "text-white hover:text-telco-red"
+    : "text-telco-dark hover:text-telco-red";
 }
 
 export function menuCloseIconClass(onDarkPanel: boolean) {
