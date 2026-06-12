@@ -72,27 +72,6 @@ function V2ScrollCamera({
   });
   const modelCenterRef = useRef(new THREE.Vector3());
   const modelSizeRef = useRef(new THREE.Vector3());
-  const canvasSizeRef = useRef({ width: 0, height: 0 });
-
-  useEffect(() => {
-    let timer = 0;
-    const resetFraming = () => {
-      window.clearTimeout(timer);
-      timer = window.setTimeout(() => {
-        framed.current = false;
-        waitFrames.current = 0;
-        frameRef.current = null;
-        scratch.current.lastFov = null;
-      }, 250);
-    };
-    window.addEventListener("resize", resetFraming);
-    window.addEventListener("orientationchange", resetFraming);
-    return () => {
-      window.clearTimeout(timer);
-      window.removeEventListener("resize", resetFraming);
-      window.removeEventListener("orientationchange", resetFraming);
-    };
-  }, []);
 
   useFrame(() => {
     if (!(camera instanceof THREE.PerspectiveCamera)) return;
@@ -101,18 +80,6 @@ function V2ScrollCamera({
       ? { center: modelCenterRef.current, size: modelSizeRef.current }
       : bounds.getSize();
     if (modelSize.y < 1e-6) return;
-
-    const widthDelta = Math.abs(size.width - canvasSizeRef.current.width);
-    const heightDelta = Math.abs(size.height - canvasSizeRef.current.height);
-    if (canvasSizeRef.current.width === 0) {
-      canvasSizeRef.current = { width: size.width, height: size.height };
-    } else if (widthDelta > 48 || heightDelta > 48) {
-      canvasSizeRef.current = { width: size.width, height: size.height };
-      framed.current = false;
-      waitFrames.current = 0;
-      frameRef.current = null;
-      scratch.current.lastFov = null;
-    }
 
     if (!framed.current) {
       waitFrames.current += 1;
