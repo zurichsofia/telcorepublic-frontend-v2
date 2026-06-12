@@ -76,15 +76,18 @@ export function NewsCountBadge({
   count,
   onDark,
   active,
+  className,
 }: {
   count: number;
   onDark: boolean;
   active: boolean;
+  className?: string;
 }) {
   return (
     <span
       className={cn(
         "inline-flex min-h-4.5 min-w-4.5 shrink-0 items-center justify-center rounded-md px-1 text-[11px] font-medium leading-none tabular-nums transition-colors",
+        className,
         active
           ? "bg-telco-red text-white"
           : cn(
@@ -236,18 +239,22 @@ export function renderNavLeafItem({
       href={item.href}
       className={cn(
         linkClassName(isActive, theme, overlayPastHero),
-        isNews && "group inline-flex items-center gap-1.5",
+        isNews && "group",
         isNews && isActive && "font-medium",
       )}
       onClick={onNavigate}
     >
       {item.label}
       {isNews ? (
-        <NewsCountBadge
-          count={newsArticleCount}
-          onDark={onDark}
-          active={isActive}
-        />
+        <>
+          {" "}
+          <NewsCountBadge
+            count={newsArticleCount}
+            onDark={onDark}
+            active={isActive}
+            className="ml-1.5 align-middle"
+          />
+        </>
       ) : null}
     </Link>
   );

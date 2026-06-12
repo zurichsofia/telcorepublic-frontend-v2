@@ -17,6 +17,9 @@ import {
 } from "@/components/common/navigation-shared";
 import { cn } from "@/lib/utils";
 
+/** Shared shell height so labels align; bottom padding bridges submenu hover. */
+const desktopNavItemShellClass = "relative pb-3";
+
 function NavItemWithSubmenu({
   item,
   pathname,
@@ -40,7 +43,7 @@ function NavItemWithSubmenu({
   return (
     <li className="relative isolate">
       <div
-        className="group relative pb-3"
+        className={cn(desktopNavItemShellClass, "group")}
         onMouseLeave={() => setDismissed(false)}
       >
         <Link
@@ -106,8 +109,8 @@ export function NavigationDesktop({
   onDark,
 }: NavLinksContext) {
   return (
-    <nav aria-label="Primary" className="hidden pt-1 lg:block">
-      <ul className="flex items-center gap-x-24">
+    <nav aria-label="Primary" className="hidden lg:block">
+      <ul className="flex items-start gap-x-24">
         {items.map((item) => {
           if (item.children?.length) {
             return (
@@ -123,15 +126,17 @@ export function NavigationDesktop({
 
           return (
             <li key={item.label}>
-              {renderNavLeafItem({
-                item,
-                items,
-                pathname,
-                theme,
-                overlayPastHero,
-                newsArticleCount,
-                onDark,
-              })}
+              <div className={desktopNavItemShellClass}>
+                {renderNavLeafItem({
+                  item,
+                  items,
+                  pathname,
+                  theme,
+                  overlayPastHero,
+                  newsArticleCount,
+                  onDark,
+                })}
+              </div>
             </li>
           );
         })}
