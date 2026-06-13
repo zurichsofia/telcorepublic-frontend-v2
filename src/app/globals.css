@@ -132,6 +132,10 @@ body {
   height: 7px;
   border-radius: 9999px;
   background-color: var(--signal-dot-color, var(--color-white));
+  opacity: 0;
+}
+
+.brand-signal-dots-active .brand-signal-dot {
   animation-name: brand-signal-seek;
   animation-duration: var(--seek-period, 2.4s);
   animation-timing-function: linear;
@@ -155,7 +159,7 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .brand-signal-dot {
+  .brand-signal-dots-active .brand-signal-dot {
     animation: none;
     opacity: 0.22;
     transform: none;

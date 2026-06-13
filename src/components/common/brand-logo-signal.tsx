@@ -1,6 +1,7 @@
 "use client";
 
-import type { CSSProperties } from "react";
+import type { CSSProperties, SyntheticEvent } from "react";
+import { useCallback, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -38,6 +39,12 @@ export function BrandLogoSignal({
   variant = "onDark",
   size = "default",
 }: BrandLogoSignalProps) {
+  const [logoReady, setLogoReady] = useState(false);
+  const markLogoReady = useCallback((img: HTMLImageElement | null) => {
+    if (img?.complete && img.naturalWidth > 0) {
+      setLogoReady(true);
+    }
+  }, []);
   const compact = size === "compact";
   const logoImageClass = compact ? logoImageClassCompact : logoImageClassDefault;
 
@@ -62,12 +69,17 @@ export function BrandLogoSignal({
       style={shellStyle}
     >
       <Image
+        ref={markLogoReady}
         src={logoSrc}
         alt="Telco Republic"
         width={200}
         height={40}
         className={logoImageClass}
         priority={priority}
+        onLoad={(event: SyntheticEvent<HTMLImageElement>) => {
+          markLogoReady(event.currentTarget);
+        }}
+        onError={() => setLogoReady(true)}
       />
       <div
         className={cn(
@@ -75,6 +87,7 @@ export function BrandLogoSignal({
           "px-(--brand-signal-track-pad-inline)",
           signalDotsOnDark ? "brand-signal-dots-on-dark" : "brand-signal-dots-on-light",
           compact && "brand-signal-dots-compact",
+          logoReady && "brand-signal-dots-active",
         )}
         aria-hidden
       >
