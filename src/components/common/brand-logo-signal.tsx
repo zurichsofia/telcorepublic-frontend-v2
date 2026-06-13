@@ -10,7 +10,7 @@ const SIGNAL_DOT_COUNT = 12;
 /** Seconds between each dot’s pulse (one full sweep = count × step). */
 const SEEK_STEP_S = 1;
 
-const LOGO_SRC_ON_DARK = "/logo/TelcoRepublic_Logo_white.png";
+const LOGO_SRC_ON_DARK = "/logo/TelcoRepublic_Logo_red_white.png";
 const LOGO_SRC_BRAND = "/logo/TecloRepulic_logo_red_black.png";
 
 export type BrandLogoSignalProps = {
