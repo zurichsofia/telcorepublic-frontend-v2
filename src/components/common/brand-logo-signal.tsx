@@ -1,7 +1,7 @@
 "use client";
 
 import type { CSSProperties, SyntheticEvent } from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -17,6 +17,10 @@ const LOGO_SRC_BRAND = "/logo/TecloRepulic_logo_red_black.png";
 export type BrandLogoSignalProps = {
   className?: string;
   priority?: boolean;
+  /** Skip next/image optimization — use on the full-screen loader for faster first paint. */
+  unoptimized?: boolean;
+  /** Fires once when the raster logo has loaded. */
+  onLogoReady?: () => void;
   /** When set, wraps the mark in a link. Omit on loaders. */
   href?: string;
   /**
@@ -35,16 +39,24 @@ const logoImageClassCompact = "h-7 w-auto object-contain sm:h-8";
 export function BrandLogoSignal({
   className,
   priority,
+  unoptimized,
+  onLogoReady,
   href,
   variant = "onDark",
   size = "default",
 }: BrandLogoSignalProps) {
   const [logoReady, setLogoReady] = useState(false);
-  const markLogoReady = useCallback((img: HTMLImageElement | null) => {
-    if (img?.complete && img.naturalWidth > 0) {
+  const logoReadyFired = useRef(false);
+  const markLogoReady = useCallback(
+    (img: HTMLImageElement | null) => {
+      if (!img?.complete || img.naturalWidth <= 0) return;
       setLogoReady(true);
-    }
-  }, []);
+      if (logoReadyFired.current) return;
+      logoReadyFired.current = true;
+      onLogoReady?.();
+    },
+    [onLogoReady],
+  );
   const compact = size === "compact";
   const logoImageClass = compact ? logoImageClassCompact : logoImageClassDefault;
 
@@ -76,6 +88,7 @@ export function BrandLogoSignal({
         height={40}
         className={logoImageClass}
         priority={priority}
+        unoptimized={unoptimized}
         onLoad={(event: SyntheticEvent<HTMLImageElement>) => {
           markLogoReady(event.currentTarget);
         }}

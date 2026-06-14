@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { BrandLogoSignal } from "@/components/common/brand-logo-signal";
 import { useLenis } from "@/components/common/smooth-scroll-provider";
@@ -13,6 +13,8 @@ import { cn } from "@/lib/utils";
 
 const EXIT_MS = 500;
 const REVEAL_DELAY_MS = 280;
+/** Minimum time the lockup stays visible after the logo raster appears. */
+const LOCKUP_MIN_MS = 720;
 
 type HeroSceneLoaderProps = {
   ready: boolean;
@@ -22,7 +24,16 @@ export function HeroSceneLoader({ ready }: HeroSceneLoaderProps) {
   const reduce = usePrefersReducedMotion();
   const lenis = useLenis();
   const [phase, setPhase] = useState<"loading" | "exiting" | "done">("loading");
+  const [logoReady, setLogoReady] = useState(false);
+  const logoReadyAt = useRef<number | null>(null);
   const useLenisScroll = lenis != null && !isMobileDevice();
+
+  const handleLogoReady = useCallback(() => {
+    logoReadyAt.current = performance.now();
+    setLogoReady(true);
+  }, []);
+
+  const canReveal = ready && logoReady;
 
   useEffect(() => {
     if (phase !== "loading") return;
@@ -31,11 +42,17 @@ export function HeroSceneLoader({ ready }: HeroSceneLoaderProps) {
   }, [phase]);
 
   useEffect(() => {
-    if (!ready || phase !== "loading") return;
-    const delay = reduce ? 0 : REVEAL_DELAY_MS;
-    const timer = window.setTimeout(() => setPhase("exiting"), delay);
+    if (!canReveal || phase !== "loading") return;
+
+    const sinceLogo = logoReadyAt.current
+      ? performance.now() - logoReadyAt.current
+      : 0;
+    const minAfterLogo = reduce ? 0 : LOCKUP_MIN_MS;
+    const hold = Math.max(reduce ? 0 : REVEAL_DELAY_MS, minAfterLogo - sinceLogo);
+
+    const timer = window.setTimeout(() => setPhase("exiting"), hold);
     return () => window.clearTimeout(timer);
-  }, [ready, phase, reduce]);
+  }, [canReveal, phase, reduce]);
 
   useEffect(() => {
     if (phase !== "exiting") return;
@@ -72,7 +89,12 @@ export function HeroSceneLoader({ ready }: HeroSceneLoaderProps) {
       aria-busy={phase === "loading"}
       aria-label="Loading"
     >
-      <BrandLogoSignal priority size="compact" />
+      <BrandLogoSignal
+        priority
+        size="compact"
+        unoptimized
+        onLogoReady={handleLogoReady}
+      />
     </div>
   );
 }
