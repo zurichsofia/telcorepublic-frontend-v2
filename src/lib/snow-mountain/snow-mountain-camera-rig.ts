@@ -40,6 +40,53 @@ export const FOV_SECTION_1 = 0;
 export const FOV_SECTION_2 = 0;
 export const FOV_SECTION_3 = 0;
 
+/** Per-beat horizontal look-at shift (fraction of model width). */
+export type MountainLookAtXBeats = readonly [number, number, number];
+
+export const DESKTOP_LOOK_AT_X_BEATS: MountainLookAtXBeats = [
+  LOOK_AT_X_SECTION_1,
+  LOOK_AT_X_SECTION_2,
+  LOOK_AT_X_SECTION_3,
+];
+
+/**
+ * Mobile copy sits tighter on the edges — beat 1/3 nudge the mass right for left
+ * slots; beat 2 eases the desktop telco push so the right side stays visible.
+ */
+export const MOBILE_LOOK_AT_X_BEATS: MountainLookAtXBeats = [0.16, 0.08, 0.18];
+
+/** Initial portrait framing — lower `cameraAdjust` = farther camera = smaller mountain. */
+export type MountainCameraFraming = {
+  lookAtY: number;
+  lookAtX: number;
+  cameraY: number;
+  cameraAdjust: number;
+  /**
+   * Raises the look-at on the model (fraction of height). Higher = mountain sits
+   * lower in the viewport. Applied in frameMountainCameraPortrait — not model position.
+   */
+  viewportShiftY?: number;
+};
+
+export const DESKTOP_CAMERA_FRAMING: MountainCameraFraming = {
+  lookAtY: FRAME_LOOK_AT_Y,
+  lookAtX: FRAME_LOOK_AT_X,
+  cameraY: FRAME_CAMERA_Y,
+  cameraAdjust: CAMERA_ADJUST,
+};
+
+/** Mobile hero — slightly zoomed out and shifted down in the viewport. */
+export const MOBILE_BASE_FOV = 42;
+
+export const MOBILE_CAMERA_FRAMING: MountainCameraFraming = {
+  lookAtY: 0.28,
+  lookAtX: FRAME_LOOK_AT_X,
+  cameraY: 0.05,
+  cameraAdjust: 0.42,
+  /** Push the full mountain down — try 0.04–0.10 in small steps. */
+  viewportShiftY: 0.1,
+};
+
 const WORLD_UP = new THREE.Vector3(0, 1, 0);
 
 function smoothstep(edge0: number, edge1: number, x: number): number {
@@ -70,22 +117,28 @@ export type MountainCameraFrame = {
   modelWidth: number;
 };
 
-/** Portrait height-fit — matches tuned desktop vertical composition. */
+/** Portrait height-fit — used by mobile hero and narrow desktop viewports. */
 export function frameMountainCameraPortrait(
   camera: THREE.PerspectiveCamera,
   center: THREE.Vector3,
   modelSize: THREE.Vector3,
+  framing: MountainCameraFraming = DESKTOP_CAMERA_FRAMING,
 ): MountainCameraFrame {
   const pivot = center.clone();
-  pivot.y += modelSize.y * FRAME_LOOK_AT_Y;
-  pivot.x += modelSize.x * FRAME_LOOK_AT_X;
+  pivot.y += modelSize.y * framing.lookAtY;
+  pivot.x += modelSize.x * framing.lookAtX;
+  // Positive = look-at climbs the model → mountain reads lower in the viewport.
+  if (framing.viewportShiftY) {
+    pivot.y += modelSize.y * framing.viewportShiftY;
+  }
 
   const fovRad = (camera.fov * Math.PI) / 180;
-  const distance = (modelSize.y * 0.5) / Math.tan(fovRad / 2) / CAMERA_ADJUST;
+  const distance =
+    (modelSize.y * 0.5) / Math.tan(fovRad / 2) / framing.cameraAdjust;
 
   camera.position.set(
     pivot.x,
-    pivot.y + modelSize.y * FRAME_CAMERA_Y,
+    pivot.y + modelSize.y * framing.cameraY,
     pivot.z + distance,
   );
   camera.lookAt(pivot);
@@ -102,7 +155,7 @@ export function frameMountainCameraPortrait(
 
 /** Desktop Stage + bounds.lookAt path. */
 export function frameMountainCameraDesktop(
-  bounds: { lookAt: (opts: { target: THREE.Vector3 }) => void },
+  bounds: { lookAt: (opts: { target: THREE.Vector3; }) => void; },
   camera: THREE.PerspectiveCamera,
   center: THREE.Vector3,
   modelSize: THREE.Vector3,
@@ -134,6 +187,7 @@ export function applyMountainScrollCamera(
   frame: MountainCameraFrame,
   cameraT: number,
   scratch: ApplyMountainScrollCameraScratch,
+  lookAtXBeats: MountainLookAtXBeats = DESKTOP_LOOK_AT_X_BEATS,
 ): void {
   const h = frame.modelHeight;
   const w = frame.modelWidth;
@@ -142,8 +196,7 @@ export function applyMountainScrollCamera(
   const liftY = sectionBlend(cameraT, LIFT_SECTION_1, LIFT_SECTION_2, LIFT_SECTION_3) * h;
   const lookUpY =
     sectionBlend(cameraT, LOOK_UP_SECTION_1, LOOK_UP_SECTION_2, LOOK_UP_SECTION_3) * h;
-  const lookAtX =
-    sectionBlend(cameraT, LOOK_AT_X_SECTION_1, LOOK_AT_X_SECTION_2, LOOK_AT_X_SECTION_3) * w;
+  const lookAtX = sectionBlend(cameraT, ...lookAtXBeats) * w;
   const yaw = sectionBlend(cameraT, YAW_SECTION_1, YAW_SECTION_2, YAW_SECTION_3);
   const dolly = sectionBlend(cameraT, DOLLY_SECTION_1, DOLLY_SECTION_2, DOLLY_SECTION_3);
   const fovDelta = sectionBlend(cameraT, FOV_SECTION_1, FOV_SECTION_2, FOV_SECTION_3);

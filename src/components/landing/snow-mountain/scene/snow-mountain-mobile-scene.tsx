@@ -10,9 +10,11 @@ import { SnowMountainSky } from "@/components/landing/snow-mountain/scene/snow-m
 import type { HeroScrollState } from "@/lib/snow-mountain/hero-scroll-state";
 import {
   applyMountainScrollCamera,
-  BASE_CAMERA_FOV,
   computeModelBounds,
   frameMountainCameraPortrait,
+  MOBILE_BASE_FOV,
+  MOBILE_CAMERA_FRAMING,
+  MOBILE_LOOK_AT_X_BEATS,
   type ApplyMountainScrollCameraScratch,
   type MountainCameraFrame,
 } from "@/lib/snow-mountain/snow-mountain-camera-rig";
@@ -99,6 +101,7 @@ function MobileScrollRig({
         camera,
         originRef.current,
         fittedSize,
+        MOBILE_CAMERA_FRAMING,
       );
       framed.current = true;
       markSceneReady();
@@ -122,6 +125,7 @@ function MobileScrollRig({
       frame,
       mapHeroScrollProgress(progress),
       scratch.current,
+      MOBILE_LOOK_AT_X_BEATS,
     );
   });
 
@@ -157,7 +161,7 @@ export function SnowMountainMobileScene({
     <div className={cn("relative h-full w-full", className)}>
       <Canvas
         className="pointer-events-none absolute inset-0 h-full w-full"
-        camera={{ fov: BASE_CAMERA_FOV, near: 0.1, far: 500 }}
+        camera={{ fov: MOBILE_BASE_FOV, near: 0.1, far: 500 }}
         dpr={canvasDpr}
         frameloop="always"
         gl={glOptions}
