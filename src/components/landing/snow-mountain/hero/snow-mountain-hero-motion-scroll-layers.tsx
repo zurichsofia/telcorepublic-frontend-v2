@@ -17,7 +17,7 @@ export type SnowMountainHeroMotionScrollLayersProps = {
   reduceMotion: boolean;
 };
 
-const layerVerticalOffset = "-translate-y-8 sm:-translate-y-16";
+const layerVerticalOffset = "-translate-y-20 sm:-translate-y-16";
 
 const base =
   "pointer-events-auto absolute inset-y-0 z-1 flex max-w-[min(100%,52rem)] flex-col justify-center sm:max-w-[52rem]";

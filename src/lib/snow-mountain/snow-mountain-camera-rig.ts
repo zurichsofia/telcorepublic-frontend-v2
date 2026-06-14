@@ -53,7 +53,7 @@ export const DESKTOP_LOOK_AT_X_BEATS: MountainLookAtXBeats = [
  * Mobile copy sits tighter on the edges — beat 1/3 nudge the mass right for left
  * slots; beat 2 eases the desktop telco push so the right side stays visible.
  */
-export const MOBILE_LOOK_AT_X_BEATS: MountainLookAtXBeats = [0.16, 0.08, 0.18];
+export const MOBILE_LOOK_AT_X_BEATS: MountainLookAtXBeats = [0.20, 0, 0.20];
 
 /** Initial portrait framing — lower `cameraAdjust` = farther camera = smaller mountain. */
 export type MountainCameraFraming = {
@@ -82,9 +82,9 @@ export const MOBILE_CAMERA_FRAMING: MountainCameraFraming = {
   lookAtY: 0.28,
   lookAtX: FRAME_LOOK_AT_X,
   cameraY: 0.05,
-  cameraAdjust: 0.42,
+  cameraAdjust: 0.33,
   /** Push the full mountain down — try 0.04–0.10 in small steps. */
-  viewportShiftY: 0.1,
+  viewportShiftY: 0.2,
 };
 
 const WORLD_UP = new THREE.Vector3(0, 1, 0);
