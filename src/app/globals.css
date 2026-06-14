@@ -51,6 +51,21 @@ body {
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
+/*
+ * iOS 26 Safari samples an opaque, ≥80%-wide, ≥3px-tall fixed element near the
+ * bottom edge to tint its toolbar. Pushed mostly off-screen (`bottom: -8px`
+ * with a 12px min-height is still sampled), so only ~4px ever sits behind the
+ * floating toolbar / home-indicator gutter.
+ */
+.safari-toolbar-tint {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: -8px;
+  height: 12px;
+  z-index: 2147483647;
+}
+
 *,
 ::after,
 ::before {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { usePathname } from "next/navigation";
 
@@ -39,6 +39,29 @@ export function AppShell({
   const surfaceClassName = shellSurfaceClassName(theme, overlayPastHero);
   const sceneReady = useSceneReady();
 
+  // While the home boot loader covers the screen the browser chrome should stay
+  // telco-dark; once it resolves the page underneath is white.
+  //
+  // iOS 26 Safari ignores theme-color and samples the background of an opaque
+  // fixed element near the viewport edge — and only re-samples on a structural
+  // change, not when JS recolors an element or the body. So the tint strip
+  // below owns the bottom toolbar and is remounted (`key`) on every variant
+  // change to force a fresh sample. theme-color is kept synced for Android.
+  const [heroLoaderActive, setHeroLoaderActive] = useState(isHome);
+  const toolbarVariant: "light" | "dark" =
+    (isHome && heroLoaderActive) || darkShell ? "dark" : "light";
+
+  useEffect(() => {
+    const color = toolbarVariant === "dark" ? "#150f0f" : "#ffffff";
+    let meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+    if (!meta) {
+      meta = document.createElement("meta");
+      meta.name = "theme-color";
+      document.head.appendChild(meta);
+    }
+    meta.content = color;
+  }, [toolbarVariant]);
+
   // Browsers can restore/apply scroll after a client navigation, which (with a long view
   // e.g. /services or /services/slug) leaves a high scroll offset that clamps to the
   // bottom of the next, shorter page. `manual` lets us own scroll position; Lenis/native
@@ -52,7 +75,19 @@ export function AppShell({
   return (
     <SmoothScrollProvider enabled={!isStudio && !isContact}>
       {isStudio ? null : <LenisScrollToTopOnNavigate pathname={pathname} />}
-      {isHome ? <HeroSceneLoader ready={sceneReady} /> : null}
+      {isStudio ? null : (
+        <div
+          key={toolbarVariant}
+          aria-hidden
+          className={cn(
+            "safari-toolbar-tint pointer-events-none lg:hidden",
+            toolbarVariant === "dark" ? "bg-telco-dark" : "bg-white",
+          )}
+        />
+      )}
+      {isHome ? (
+        <HeroSceneLoader ready={sceneReady} onActiveChange={setHeroLoaderActive} />
+      ) : null}
       {isHome && !sceneReady ? (
         <div className="fixed inset-0 z-[99] bg-telco-dark" aria-hidden />
       ) : null}

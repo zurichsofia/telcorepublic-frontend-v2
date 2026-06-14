@@ -1,3 +1,4 @@
+import type { Viewport } from "next";
 import localFont from "next/font/local";
 
 import "swiper/css";
@@ -15,6 +16,13 @@ const helveticaNeue = localFont({
 });
 
 export const metadata = defaultMetadata;
+
+export const viewport: Viewport = {
+  // Lets `env(safe-area-inset-*)` resolve so the Safari toolbar tint strips can
+  // sit in the chrome gutter. Initial tint is dark to match the boot loader.
+  viewportFit: "cover",
+  themeColor: "#150f0f",
+};
 
 export default async function RootLayout({
   children,

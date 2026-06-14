@@ -18,9 +18,11 @@ const LOCKUP_MIN_MS = 720;
 
 type HeroSceneLoaderProps = {
   ready: boolean;
+  /** Fires `true` while the loader covers the screen, `false` once it resolves. */
+  onActiveChange?: (active: boolean) => void;
 };
 
-export function HeroSceneLoader({ ready }: HeroSceneLoaderProps) {
+export function HeroSceneLoader({ ready, onActiveChange }: HeroSceneLoaderProps) {
   const reduce = usePrefersReducedMotion();
   const lenis = useLenis();
   const [phase, setPhase] = useState<"loading" | "exiting" | "done">("loading");
@@ -60,6 +62,14 @@ export function HeroSceneLoader({ ready }: HeroSceneLoaderProps) {
     const timer = window.setTimeout(() => setPhase("done"), duration);
     return () => window.clearTimeout(timer);
   }, [phase, reduce]);
+
+  useEffect(() => {
+    onActiveChange?.(phase !== "done");
+  }, [phase, onActiveChange]);
+
+  useEffect(() => {
+    return () => onActiveChange?.(false);
+  }, [onActiveChange]);
 
   useEffect(() => {
     if (!useLenisScroll) return;
