@@ -72,6 +72,48 @@ export function HeroSceneLoader({ ready, onActiveChange }: HeroSceneLoaderProps)
   }, [onActiveChange]);
 
   useEffect(() => {
+    if (phase === "done") return;
+
+    const root = document.scrollingElement ?? document.documentElement;
+    const pinScroll = () => {
+      if (root.scrollTop !== 0) root.scrollTop = 0;
+    };
+
+    pinScroll();
+
+    const blockScrollKeys = new Set([
+      " ",
+      "ArrowDown",
+      "ArrowUp",
+      "End",
+      "Home",
+      "PageDown",
+      "PageUp",
+    ]);
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (blockScrollKeys.has(event.key)) event.preventDefault();
+    };
+    const onWheel = (event: WheelEvent) => {
+      if (event.cancelable) event.preventDefault();
+    };
+    const onTouchMove = (event: TouchEvent) => {
+      if (event.cancelable) event.preventDefault();
+    };
+
+    root.addEventListener("scroll", pinScroll, { passive: true });
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("wheel", onWheel, { passive: false });
+    document.addEventListener("touchmove", onTouchMove, { passive: false });
+
+    return () => {
+      root.removeEventListener("scroll", pinScroll);
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("wheel", onWheel);
+      document.removeEventListener("touchmove", onTouchMove);
+    };
+  }, [phase]);
+
+  useEffect(() => {
     if (!useLenisScroll) return;
     if (phase === "done") {
       lenis?.start();

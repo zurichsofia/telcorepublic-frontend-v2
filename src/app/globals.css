@@ -23,6 +23,15 @@ html {
   scroll-behavior: auto;
   min-height: 100%;
   background-color: #ffffff;
+  /* Reserve the scrollbar track so content width stays stable across routes/load states. */
+  scrollbar-gutter: stable;
+  overflow-y: scroll;
+}
+
+/* Lenis stop() adds overflow:clip, which drops the scrollbar and shifts layout. */
+html.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow-y: scroll;
+  overflow-x: clip;
 }
 
 html.lenis,
