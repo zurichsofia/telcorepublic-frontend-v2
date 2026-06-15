@@ -8,8 +8,9 @@ import { createHeroScrollState } from "@/lib/snow-mountain/hero-scroll-state";
 import { cn } from "@/lib/utils";
 
 import { SnowMountainMobileScene } from "../scene/snow-mountain-mobile-scene";
-import { HERO_SECTION_VH } from "./snow-mountain-hero-scroll";
 import { SnowMountainHeroMotionScrollLayers } from "./snow-mountain-hero-motion-scroll-layers";
+import { SnowMountainHeroOverlay } from "./snow-mountain-hero-overlay";
+import { HERO_SECTION_VH } from "./snow-mountain-hero-scroll";
 
 /** Mobile hero — fixed pin + dedicated lightweight scene (no sticky, no Lenis). */
 export function SnowMountainHeroMobile() {
@@ -40,20 +41,18 @@ export function SnowMountainHeroMobile() {
         )}
       >
         <SnowMountainMobileScene
-          className="size-full min-h-svh"
+          className="size-full"
           scrollState={scrollState}
           pinMetricsRef={metricsRef}
           reduceMotion={!!reduce}
         />
 
-        <div className="pointer-events-none absolute inset-0 z-20">
-          <div className="relative mx-auto h-full w-full max-w-[1400px]">
-            <SnowMountainHeroMotionScrollLayers
-              scrollState={scrollState}
-              reduceMotion={!!reduce}
-            />
-          </div>
-        </div>
+        <SnowMountainHeroOverlay className="max-w-7xl">
+          <SnowMountainHeroMotionScrollLayers
+            scrollState={scrollState}
+            reduceMotion={!!reduce}
+          />
+        </SnowMountainHeroOverlay>
       </div>
     </section>
   );

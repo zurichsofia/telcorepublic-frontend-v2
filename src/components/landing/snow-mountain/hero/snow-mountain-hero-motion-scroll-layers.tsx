@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 
 import { getHeroScrollLayerStyles } from "@/lib/snow-mountain/hero-scroll-layer-styles";
+import type { HeroScrollLayerStyles } from "@/lib/snow-mountain/hero-scroll-layer-styles";
 import type { HeroScrollState } from "@/lib/snow-mountain/hero-scroll-state";
 import { cn } from "@/lib/utils";
 
@@ -17,34 +18,75 @@ export type SnowMountainHeroMotionScrollLayersProps = {
   reduceMotion: boolean;
 };
 
-const layerVerticalOffset = "-translate-y-20 sm:-translate-y-16";
+type BeatKey = keyof HeroScrollLayerStyles;
 
-const base =
-  "pointer-events-auto absolute inset-y-0 z-1 flex max-w-[min(100%,52rem)] flex-col justify-center sm:max-w-[52rem]";
+const layerInsets =
+  "absolute inset-x-5 inset-y-0 -translate-y-[8vh] sm:inset-x-8 sm:-translate-y-[6vh] lg:inset-x-12";
 
-const slotLeft = cn(base, "left-2");
-const slotRight = cn(
-  base,
-  "right-5 items-end text-right sm:right-8 lg:right-12",
-);
+const beatWidth = {
+  headline: "max-w-4xl",
+  telco: "max-w-[46rem]",
+  mission: "max-w-2xl",
+} as const;
+
+const beatSlotBase =
+  "pointer-events-auto absolute inset-0 z-1 flex flex-col justify-center will-change-[transform,opacity]";
+
+const beatSlotStart = cn(beatSlotBase, "items-start");
+const beatSlotEnd = cn(beatSlotBase, "items-end text-right");
+
+const heroBeats = [
+  {
+    key: "primary" as const,
+    slotClass: beatSlotStart,
+    widthClass: beatWidth.headline,
+    staticWidthClass: beatWidth.headline,
+    content: <HeroHeadline />,
+  },
+  {
+    key: "telco" as const,
+    slotClass: beatSlotEnd,
+    widthClass: beatWidth.telco,
+    staticWidthClass: cn(beatWidth.telco, "ml-auto text-right"),
+    content: <HeroBeatText {...snowMountainHeroText.telco} />,
+  },
+  {
+    key: "mission" as const,
+    slotClass: beatSlotStart,
+    widthClass: beatWidth.mission,
+    staticWidthClass: beatWidth.mission,
+    content: <HeroBeatText {...snowMountainHeroText.mission} />,
+  },
+] satisfies ReadonlyArray<{
+  key: BeatKey;
+  slotClass: string;
+  widthClass: string;
+  staticWidthClass: string;
+  content: React.ReactNode;
+}>;
+
+function applyBeatStyle(
+  element: HTMLDivElement | null,
+  { opacity, y }: HeroScrollLayerStyles[BeatKey],
+) {
+  if (!element) return;
+  element.style.opacity = String(opacity);
+  element.style.transform = `translate3d(0, ${y}px, 0)`;
+}
 
 function HeroMotionScrollLayersStatic() {
   return (
     <div
       className={cn(
-        "pointer-events-auto absolute inset-x-5 inset-y-0 flex flex-col justify-center gap-12 py-12 sm:inset-x-8 lg:inset-x-12",
-        layerVerticalOffset,
+        layerInsets,
+        "pointer-events-auto flex flex-col justify-center gap-12 py-12",
       )}
     >
-      <div className="max-w-4xl">
-        <HeroHeadline />
-      </div>
-      <div className="ml-auto max-w-md text-right">
-        <HeroBeatText {...snowMountainHeroText.telco} />
-      </div>
-      <div className="max-w-lg">
-        <HeroBeatText {...snowMountainHeroText.mission} />
-      </div>
+      {heroBeats.map(({ key, staticWidthClass, content }) => (
+        <div key={key} className={staticWidthClass}>
+          {content}
+        </div>
+      ))}
     </div>
   );
 }
@@ -54,30 +96,17 @@ function HeroMotionScrollLayersAnimated({
 }: {
   scrollState: HeroScrollState;
 }) {
-  const primaryRef = useRef<HTMLDivElement>(null);
-  const telcoRef = useRef<HTMLDivElement>(null);
-  const missionRef = useRef<HTMLDivElement>(null);
+  const beatRefs = useRef<Record<BeatKey, HTMLDivElement | null>>({
+    primary: null,
+    telco: null,
+    mission: null,
+  });
 
   useEffect(() => {
     const apply = () => {
-      const { primary, telco, mission } = getHeroScrollLayerStyles(scrollState.get());
-
-      const primaryEl = primaryRef.current;
-      if (primaryEl) {
-        primaryEl.style.opacity = String(primary.opacity);
-        primaryEl.style.transform = `translate3d(0, ${primary.y}px, 0)`;
-      }
-
-      const telcoEl = telcoRef.current;
-      if (telcoEl) {
-        telcoEl.style.opacity = String(telco.opacity);
-        telcoEl.style.transform = `translate3d(0, ${telco.y}px, 0)`;
-      }
-
-      const missionEl = missionRef.current;
-      if (missionEl) {
-        missionEl.style.opacity = String(mission.opacity);
-        missionEl.style.transform = `translate3d(0, ${mission.y}px, 0)`;
+      const styles = getHeroScrollLayerStyles(scrollState.get());
+      for (const { key } of heroBeats) {
+        applyBeatStyle(beatRefs.current[key], styles[key]);
       }
     };
 
@@ -86,18 +115,18 @@ function HeroMotionScrollLayersAnimated({
   }, [scrollState]);
 
   return (
-    <div className={cn("pointer-events-none relative h-full w-full", layerVerticalOffset)}>
-      <div ref={primaryRef} className={cn(slotLeft, "will-change-[transform,opacity]")}>
-        <HeroHeadline />
-      </div>
-
-      <div ref={telcoRef} className={cn(slotRight, "will-change-[transform,opacity]")}>
-        <HeroBeatText {...snowMountainHeroText.telco} />
-      </div>
-
-      <div ref={missionRef} className={cn(slotLeft, "will-change-[transform,opacity]")}>
-        <HeroBeatText {...snowMountainHeroText.mission} />
-      </div>
+    <div className={cn(layerInsets, "pointer-events-none")}>
+      {heroBeats.map(({ key, slotClass, widthClass, content }) => (
+        <div
+          key={key}
+          ref={(element) => {
+            beatRefs.current[key] = element;
+          }}
+          className={slotClass}
+        >
+          <div className={widthClass}>{content}</div>
+        </div>
+      ))}
     </div>
   );
 }

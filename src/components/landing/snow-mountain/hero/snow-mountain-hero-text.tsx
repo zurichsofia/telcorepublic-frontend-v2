@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+
 export const snowMountainHeroText = {
   primary: {
     headline: "Navigating the shift.",
@@ -13,16 +15,20 @@ export const snowMountainHeroText = {
   },
 } as const;
 
+const heroCopy = "font-display leading-tight text-white";
 
-const beatTitleClass =
-  "md:mt-2 font-display text-xl leading-tight text-white md:text-5xl";
-const bodyClass =
-  "mt-2 max-w-[80vw] md:max-w-2xl text-xl leading-tight md:leading-relaxed text-white md:text-xl max-sm:text-justify";
+const headlineClass = cn(
+  heroCopy,
+  "mt-2 max-w-xs text-[32px] tracking-tight md:max-w-5xl md:text-7xl",
+);
+const beatTitleClass = cn(heroCopy, "text-xl md:mt-2 md:text-5xl");
+const beatBodyClass = cn(heroCopy, "text-xl max-sm:text-justify md:text-2xl max-sm:max-w-xs");
+
 export function HeroHeadline() {
   const { headline, subheadline } = snowMountainHeroText.primary;
 
   return (
-    <h1 className="mt-2 tracking-tight md:tracking-tight text-white font-display text-[32px] md:text-7xl max-w-xs md:max-w-5xl">
+    <h1 className={headlineClass}>
       {headline}
       <span className="block sm:mt-1.5">{subheadline}</span>
     </h1>
@@ -31,9 +37,9 @@ export function HeroHeadline() {
 
 export function HeroBeatText({ title, body }: { title: string; body: string; }) {
   return (
-    <>
+    <div className="mb-6">
       <p className={beatTitleClass}>{title}</p>
-      <p className={bodyClass}>{body}</p>
-    </>
+      <p className={beatBodyClass}>{body}</p>
+    </div>
   );
 }

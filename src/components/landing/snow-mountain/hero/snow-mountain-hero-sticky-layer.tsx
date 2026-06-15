@@ -7,6 +7,8 @@ import type { HeroScrollState } from "@/lib/snow-mountain/hero-scroll-state";
 import type { SnowMountainParallaxMotion } from "@/lib/snow-mountain/snow-mountain-parallax-motion";
 import { cn } from "@/lib/utils";
 
+import { SnowMountainHeroOverlay } from "./snow-mountain-hero-overlay";
+
 type SnowMountainHeroStickyLayerProps = {
   reduceMotion: boolean;
   heroSectionRef: RefObject<HTMLElement | null>;
@@ -24,19 +26,21 @@ export function SnowMountainHeroStickyLayer({
   motionRef,
   children,
 }: SnowMountainHeroStickyLayerProps) {
+  const hideCursor = !reduceMotion;
+
   return (
     <div
       ref={stickyRef}
-      className="sticky top-0 z-0 h-screen min-h-screen w-full shrink-0 overflow-hidden"
+      className="sticky top-0 z-0 h-screen w-full shrink-0 overflow-hidden"
     >
       <div
         className={cn(
-          "absolute inset-0 z-0 min-h-screen contain-paint",
-          !reduceMotion && "cursor-none",
+          "absolute inset-0 contain-paint",
+          hideCursor && "cursor-none",
         )}
       >
         <SnowMountainV2SimpleScene
-          className={cn("size-full min-h-screen", !reduceMotion && "cursor-none")}
+          className="size-full"
           scrollState={scrollState}
           heroSectionRef={heroSectionRef}
           motionRef={motionRef}
@@ -44,17 +48,10 @@ export function SnowMountainHeroStickyLayer({
         />
       </div>
 
-      {children != null ? (
-        <div className="pointer-events-none absolute inset-0 z-20 bg-transparent">
-          <div
-            className={cn(
-              "relative mx-auto h-full w-full max-w-[1400px]",
-              !reduceMotion && "cursor-none [&_a]:cursor-pointer",
-            )}
-          >
-            {children}
-          </div>
-        </div>
+      {children ? (
+        <SnowMountainHeroOverlay hideCursor={hideCursor}>
+          {children}
+        </SnowMountainHeroOverlay>
       ) : null}
     </div>
   );

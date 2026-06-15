@@ -1,10 +1,9 @@
 "use client";
 
+import { FloatingLinesWhyUsBackground } from "@/components/common/floating-lines/floating-lines-why-us-background";
 import { ScrollLinkedReveal } from "@/components/common/scroll-reveal";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { cn } from "@/lib/utils";
-
-import { FloatingLinesWhyUsBackground } from "@/components/common/floating-lines/floating-lines-why-us-background";
 
 const WHY_CHAPTERS = [
   {
@@ -54,57 +53,38 @@ const WHY_SCROLL_LINKED = {
 function WhyChapter({
   title,
   paragraphs,
-  variant,
-  headingId,
-  sectionClassName,
-  sectionId,
-  labelledBy,
+  alignRight,
 }: {
   title: string;
   paragraphs: readonly string[];
-  variant: "a" | "b";
-  headingId?: string;
-  sectionClassName?: string;
-  sectionId?: string;
-  labelledBy?: string;
+  alignRight: boolean;
 }) {
-  const isA = variant === "a";
   const reduceMotion = usePrefersReducedMotion();
 
   return (
     <ScrollLinkedReveal
       disabled={reduceMotion}
-      id={sectionId}
-      aria-labelledby={labelledBy}
       className={cn(
-        "flex w-full flex-col justify-center",
-        sectionClassName,
+        "w-full py-20 sm:py-14 md:py-24",
+        alignRight
+          ? "max-w-[85%] self-end md:max-w-none"
+          : "max-w-[95%] self-start md:max-w-none",
       )}
       {...WHY_SCROLL_LINKED}
     >
       <div
         className={cn(
-          "flex w-full max-w-full flex-1 flex-col justify-center overflow-x-clip",
-          !isA && "items-end",
+          "flex flex-col overflow-x-clip text-left lg:max-w-3xl",
+          alignRight && "md:ml-auto md:text-right",
         )}
       >
-        <div
-          className={cn(
-            "w-full max-w-[98%] lg:max-w-[46rem] space-y-2 md:space-y-5",
-            !isA && "text-right",
-          )}
-        >
-          <h3
-            id={headingId}
-            className="text-pretty font-sans text-xl font-medium leading-normal text-telco-red sm:text-2xl lg:text-3xl"
-          >
-            {title}
-          </h3>
-          <div className="text-pretty font-sans text-xl leading-tight text-telco-dark lg:text-justify">
-            {paragraphs.map((text) => (
-              <p key={text}>{text}</p>
-            ))}
-          </div>
+        <h3 className="text-pretty font-sans text-xl font-medium leading-normal text-telco-red sm:text-2xl lg:text-3xl">
+          {title}
+        </h3>
+        <div className="text-pretty font-sans text-xl md:text-2xl leading-tight text-telco-dark lg:text-justify">
+          {paragraphs.map((text) => (
+            <p key={text}>{text}</p>
+          ))}
         </div>
       </div>
     </ScrollLinkedReveal>
@@ -113,31 +93,19 @@ function WhyChapter({
 
 export function WhyUsSection() {
   return (
-    <FloatingLinesWhyUsBackground className="z-20 w-full px-6 pb-20 sm:px-10 sm:pt-16 sm:pb-24 lg:px-16 lg:pt-20 lg:pb-28 xl:px-20">
+    <FloatingLinesWhyUsBackground className="z-20 px-6 pb-20 sm:px-10 sm:pt-16 sm:pb-24 lg:px-16 lg:pt-20 lg:pb-28 xl:px-20">
       <section
-        className="mx-auto w-full max-w-7xl overflow-x-clip"
+        className="mx-auto flex max-w-7xl flex-col overflow-x-clip"
         aria-label="Why Telco Republic"
       >
-        {WHY_CHAPTERS.map((chapter, i) => (
+        {WHY_CHAPTERS.map((chapter, index) => (
           <WhyChapter
             key={chapter.title}
             title={chapter.title}
             paragraphs={chapter.paragraphs}
-            variant={i % 2 === 0 ? "a" : "b"}
-            headingId={i === 0 ? "why-us-entry" : undefined}
-            sectionClassName={
-              i === 0
-                ? "min-h-[min(75svh,44rem)] pt-12 pb-16 sm:pt-16 sm:pb-20 md:pb-24"
-                : "py-16 sm:py-20 md:py-24"
-            }
-            sectionId={i === 0 ? "why-us-first-screen" : undefined}
-            labelledBy={i === 0 ? "why-us-entry" : undefined}
+            alignRight={index % 2 === 1}
           />
         ))}
-        <div
-          className="pointer-events-none h-[min(24svh,18rem)] shrink-0 sm:h-[min(28svh,22rem)]"
-          aria-hidden
-        />
       </section>
     </FloatingLinesWhyUsBackground>
   );
