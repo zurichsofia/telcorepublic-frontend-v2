@@ -39,6 +39,11 @@ export const pageMetadata = {
     description:
       "We have tracked the telecom industry for decades. Our services are personalized and flexible, at an attractive price/performance ratio.",
   },
+  whoWeServe: {
+    title: buildPageTitle("Who We Serve"),
+    description:
+      "Nimble, leading-edge advisory services for ISVs, CSPs, NEPs, OTTs, hyperscalers, investors, and startups across the telecom ecosystem.",
+  },
   clients: {
     title: buildPageTitle("Our Clients"),
     description: "Telco Republic works with leading telecom vendors and cloud providers worldwide. See the organizations we are privileged to serve.",

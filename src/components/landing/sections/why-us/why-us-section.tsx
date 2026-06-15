@@ -1,9 +1,7 @@
 "use client";
 
 import { FloatingLinesWhyUsBackground } from "@/components/common/floating-lines/floating-lines-why-us-background";
-import { ScrollLinkedReveal } from "@/components/common/scroll-reveal";
-import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
-import { cn } from "@/lib/utils";
+import { ScrollLinkedChapter } from "@/components/common/scroll-linked-chapter";
 
 const WHY_CHAPTERS = [
   {
@@ -44,53 +42,6 @@ const WHY_CHAPTERS = [
   },
 ] as const;
 
-const WHY_SCROLL_LINKED = {
-  startAtVh: 0.92,
-  completeAtVh: 0.5,
-  driftPx: 36,
-} as const;
-
-function WhyChapter({
-  title,
-  paragraphs,
-  alignRight,
-}: {
-  title: string;
-  paragraphs: readonly string[];
-  alignRight: boolean;
-}) {
-  const reduceMotion = usePrefersReducedMotion();
-
-  return (
-    <ScrollLinkedReveal
-      disabled={reduceMotion}
-      className={cn(
-        "w-full py-20 sm:py-14 md:py-24",
-        alignRight
-          ? "max-w-[85%] self-end md:max-w-none"
-          : "max-w-[95%] self-start md:max-w-none",
-      )}
-      {...WHY_SCROLL_LINKED}
-    >
-      <div
-        className={cn(
-          "flex flex-col overflow-x-clip text-left lg:max-w-3xl",
-          alignRight && "md:ml-auto md:text-right",
-        )}
-      >
-        <h3 className="text-pretty font-sans text-xl font-medium leading-normal text-telco-red sm:text-2xl lg:text-3xl">
-          {title}
-        </h3>
-        <div className="text-pretty font-sans text-xl md:text-2xl leading-tight text-telco-dark lg:text-justify">
-          {paragraphs.map((text) => (
-            <p key={text}>{text}</p>
-          ))}
-        </div>
-      </div>
-    </ScrollLinkedReveal>
-  );
-}
-
 export function WhyUsSection() {
   return (
     <FloatingLinesWhyUsBackground className="z-20 px-6 pb-20 sm:px-10 sm:pt-16 sm:pb-24 lg:px-16 lg:pt-20 lg:pb-28 xl:px-20">
@@ -99,7 +50,7 @@ export function WhyUsSection() {
         aria-label="Why Telco Republic"
       >
         {WHY_CHAPTERS.map((chapter, index) => (
-          <WhyChapter
+          <ScrollLinkedChapter
             key={chapter.title}
             title={chapter.title}
             paragraphs={chapter.paragraphs}
