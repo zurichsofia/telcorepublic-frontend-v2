@@ -37,7 +37,7 @@ export function HeroHeadline() {
 
 export function HeroBeatText({ title, body }: { title: string; body: string; }) {
   return (
-    <div className="mb-6">
+    <div className="mb-12">
       <p className={beatTitleClass}>{title}</p>
       <p className={beatBodyClass}>{body}</p>
     </div>

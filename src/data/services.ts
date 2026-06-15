@@ -105,10 +105,6 @@ export const services = [
           "Distribution Rights",
         ],
       },
-      {
-        type: "paragraph",
-        text: "Telco Republic offers three subscription tiers with multiple levels of discounts and add-ons.",
-      },
     ] as const satisfies readonly ServiceContentBlock[],
   },
   {

@@ -23,8 +23,8 @@ export function NewsPostCard({
       >
         <div
           className={cn(
-            "relative aspect-square w-full max-w-[200px] shrink-0 overflow-hidden",
-            "sm:max-w-[200px] aspect-3/4",
+            "relative aspect-2/1 w-full overflow-hidden",
+            "sm:aspect-3/4 sm:max-w-[200px] sm:shrink-0",
             imageClassName,
           )}
         >
@@ -34,7 +34,7 @@ export function NewsPostCard({
               alt={post.title}
               fill
               className="object-cover"
-              sizes={"(max-width: 640px) 42vw, 200px"}
+              sizes={"(max-width: 640px) calc(100vw - 3rem), 200px"}
             />
           ) : null}
         </div>

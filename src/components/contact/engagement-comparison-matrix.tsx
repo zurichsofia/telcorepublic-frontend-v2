@@ -10,17 +10,17 @@ const thClass =
 const tdClass =
   "px-3 py-3 text-center text-sm font-medium sm:px-4 sm:py-3.5 sm:text-base";
 
-export function EngagementComparisonMatrix({ className }: { className?: string }) {
+export function EngagementComparisonMatrix({ className }: { className?: string; }) {
   return (
     <section
-      className={cn("mx-auto max-w-6xl px-5 sm:px-8", className)}
+      className={cn("mx-auto min-w-0 max-w-6xl px-5 sm:px-8", className)}
       aria-label="Engagement model comparison"
     >
-      <p className="mb-6 text-center text-sm font-medium leading-relaxed text-telco-dark sm:mb-8 sm:text-base">
+      <p className="mb-6 text-center text-lg font-medium leading-relaxed text-telco-dark sm:mb-8 sm:text-base">
         {engagementComparisonIntro}
       </p>
 
-      <div className="overflow-x-auto rounded-xl border border-neutral-700/10 ring-1 ring-neutral-700/5">
+      <div className="w-0 min-w-full overflow-x-auto overscroll-x-contain rounded-xl border border-neutral-700/10 ring-1 ring-neutral-700/5 [-webkit-overflow-scrolling:touch]">
         <table className="w-full min-w-176 border-collapse text-telco-dark">
           <caption className="sr-only">
             Comparison of Telco Republic services across engagement models

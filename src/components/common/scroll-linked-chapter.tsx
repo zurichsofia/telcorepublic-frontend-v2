@@ -29,8 +29,8 @@ export function ScrollLinkedChapter({
       className={cn(
         "w-full py-20 sm:py-14 md:py-24",
         alignRight
-          ? "max-w-[85%] self-end md:max-w-none"
-          : "max-w-[95%] self-start md:max-w-none",
+          ? "max-w-[90%] self-end md:max-w-none"
+          : "max-w-[90%] self-start md:max-w-none",
       )}
       {...SCROLL_LINKED_CHAPTER_DEFAULTS}
     >
@@ -40,10 +40,10 @@ export function ScrollLinkedChapter({
           alignRight && "md:ml-auto md:text-right",
         )}
       >
-        <h3 className="text-pretty font-sans text-xl font-medium leading-normal text-telco-red sm:text-2xl lg:text-3xl">
+        <h3 className="text-pretty text-3xl font-medium leading-normal text-telco-red sm:text-2xl lg:text-3xl">
           {title}
         </h3>
-        <div className="text-pretty font-sans text-xl leading-tight text-telco-dark md:text-2xl lg:text-justify">
+        <div className="text-pretty text-2xl leading-tight text-telco-dark md:text-2xl lg:text-justify">
           {paragraphs.map((text) => (
             <p key={text}>{text}</p>
           ))}

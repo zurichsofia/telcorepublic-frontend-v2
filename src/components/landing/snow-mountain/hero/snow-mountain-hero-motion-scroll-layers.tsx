@@ -25,7 +25,7 @@ const layerInsets =
 
 const beatWidth = {
   headline: "max-w-4xl",
-  telco: "max-w-[46rem]",
+  telco: "max-w-2xl",
   mission: "max-w-2xl",
 } as const;
 

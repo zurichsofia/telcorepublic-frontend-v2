@@ -1,11 +1,4 @@
-"use client";
-
-import { ScrollLinkedChapter } from "@/components/common/scroll-linked-chapter";
-
-type AudienceSegment = {
-  name: string;
-  description: string;
-};
+import { AudienceSegmentGrid, type AudienceSegment } from "@/components/about/audience-segment-grid";
 
 export function WhoWeServeAudienceSection({
   segments,
@@ -14,17 +7,10 @@ export function WhoWeServeAudienceSection({
 }) {
   return (
     <section
-      className="mx-auto flex max-w-7xl flex-col overflow-x-clip px-5 py-20 sm:px-8 md:py-32 lg:py-40"
+      className="mx-auto max-w-7xl px-5 pb-20"
       aria-label="Constituents we serve"
     >
-      {segments.map((segment, index) => (
-        <ScrollLinkedChapter
-          key={segment.name}
-          title={segment.name}
-          paragraphs={[segment.description]}
-          alignRight={index % 2 === 1}
-        />
-      ))}
+      <AudienceSegmentGrid segments={segments} />
     </section>
   );
 }

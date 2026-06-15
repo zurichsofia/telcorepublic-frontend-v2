@@ -57,7 +57,7 @@ export type NavLinksContext = {
 };
 
 export const dropdownPanelBase =
-  "absolute top-full z-70 mt-0 flex min-w-56 max-w-[min(100vw-2.5rem,20rem)] flex-col gap-y-0 rounded-md px-3 py-2 text-left";
+  "absolute top-full z-70 mt-0 flex min-w-56 max-w-xl flex-col gap-y-0 rounded-md px-3 py-2 text-left";
 
 export const dropdownPanelAlignStart = "left-0 right-auto";
 export const dropdownPanelAlignEnd = "right-0 left-auto";
@@ -148,6 +148,14 @@ export function navLinkClass(
   );
 }
 
+export function desktopNavLinkClass(
+  active: boolean,
+  theme: NavigationTheme,
+  overlayPastHero: boolean,
+) {
+  return cn(navLinkClass(active, theme, overlayPastHero), "text-lg");
+}
+
 export function mobileNavLinkClass(
   active: boolean,
   theme: NavigationTheme,
@@ -155,7 +163,7 @@ export function mobileNavLinkClass(
 ) {
   return cn(
     navLinkClass(active, theme, overlayPastHero),
-    "block py-4 text-2xl sm:text-3xl",
+    "block py-4 text-lg",
   );
 }
 
@@ -201,7 +209,7 @@ export function mobileSubmenuLinkClass(
   onDarkNav: boolean,
 ) {
   return cn(
-    "block py-2 pl-4 text-sm font-light leading-normal transition-colors",
+    "block py-2 pl-4 text-lg font-light leading-normal transition-colors",
     !hasHref
       ? onDarkNav
         ? "text-white/35"

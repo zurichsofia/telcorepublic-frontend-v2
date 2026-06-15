@@ -103,7 +103,7 @@ export function ExpertisePageContent() {
             Worldwide expertise
           </h2>
         </header>
-        <div className="mt-10 space-y-5 text-xl font-light text-telco-dark sm:mt-12">
+        <div className="mt-10 space-y-5 text-base md:text-xl font-light text-telco-dark sm:mt-12">
           {globalNetworkParagraphs.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
           ))}

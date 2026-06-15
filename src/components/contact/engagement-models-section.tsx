@@ -37,7 +37,7 @@ function EngagementModelCard({
         {model.description.map((paragraph) => (
           <p
             key={paragraph}
-            className="text-sm font-light leading-relaxed text-telco-dark sm:text-base"
+            className="text-base font-light leading-relaxed text-telco-dark sm:text-base"
           >
             {paragraph}
           </p>

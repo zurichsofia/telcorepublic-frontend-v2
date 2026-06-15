@@ -19,7 +19,7 @@ export type PageHeroProps = {
 };
 
 const linkClassName =
-  "font-display text-2xl font-medium tracking-tight text-telco-red transition sm:text-[2.5rem] leading-tight";
+  "font-display text-2xl font-medium tracking-tight text-telco-red transition sm:text-[2.5rem] leading-snug sm:leading-tight";
 
 export function PageHero({
   title,
@@ -54,7 +54,7 @@ export function PageHero({
       {links && (
         <ul
           role="list"
-          className="mx-auto w-max max-w-full space-y-1 text-left sm:mt-28 sm:grid sm:auto-cols-max sm:grid-flow-col sm:gap-x-48 sm:space-y-0"
+          className="mx-auto mt-16 w-full max-w-full space-y-4 text-center sm:mt-28 sm:w-max sm:grid sm:auto-cols-max sm:grid-flow-col sm:gap-x-48 sm:space-y-0 sm:text-left"
           style={{ gridTemplateRows: `repeat(${linkRows}, auto)` }}
         >
           {links.map((item) => (

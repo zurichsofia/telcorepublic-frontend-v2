@@ -121,24 +121,24 @@ export function ServiceVideoHeroV2({
             syncUrl(s.realIndex);
           }}
         >
-        {services.map((service, index) => (
-          <SwiperSlide key={service.slug} className="h-full">
-            <ServiceVideoSlide
-              title={service.title}
-              videoSrc={serviceSlugHeroVideoUrlForSlide(index)}
-              isActive={index === activeIndex && inView}
-              reduceMotion={!!reduceMotion}
-            />
-            <div
-              className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center px-8"
-              aria-hidden
-            >
-              <h2 className="font-display text-center text-2xl font-normal leading-tight tracking-wide text-white lg:text-8xl">
-                {service.title}
-              </h2>
-            </div>
-          </SwiperSlide>
-        ))}
+          {services.map((service, index) => (
+            <SwiperSlide key={service.slug} className="h-full">
+              <ServiceVideoSlide
+                title={service.title}
+                videoSrc={serviceSlugHeroVideoUrlForSlide(index)}
+                isActive={index === activeIndex && inView}
+                reduceMotion={!!reduceMotion}
+              />
+              <div
+                className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center px-8"
+                aria-hidden
+              >
+                <h2 className="text-center text-white  leading-tight text-[40px] lg:text-8xl">
+                  {service.title}
+                </h2>
+              </div>
+            </SwiperSlide>
+          ))}
         </Swiper>
       </div>
     </section>

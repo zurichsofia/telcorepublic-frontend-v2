@@ -182,7 +182,7 @@ export function NewsArticleBody({ value }: NewsArticleBodyProps) {
   if (!value?.length) return null;
 
   return (
-    <div className="max-w-none wrap-break-word text-[20px] font-medium text-white/88 [&_strong]:text-white [&_a_strong]:text-inherit [&_a_.article-underline]:text-inherit [&_a_.article-underline]:decoration-inherit [&_a_.article-strikethrough]:text-inherit [&_a_.article-strikethrough]:decoration-inherit">
+    <div className="max-w-none wrap-break-word text-base md:text-lg font-medium text-white/88 [&_strong]:text-white [&_a_strong]:text-inherit [&_a_.article-underline]:text-inherit [&_a_.article-underline]:decoration-inherit [&_a_.article-strikethrough]:text-inherit [&_a_.article-strikethrough]:decoration-inherit">
       <PortableText value={value} components={components} />
     </div>
   );

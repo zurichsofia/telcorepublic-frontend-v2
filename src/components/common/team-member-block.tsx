@@ -14,7 +14,7 @@ export type TeamMemberBlockProps = {
   moreParagraphs?: readonly string[];
   readMoreLabel?: string;
   readLessLabel?: string;
-  /** When true, body column is on the left and the name block on the right (lg+). */
+  /** When true, body column is on the left and the name block on the right (lg+ only). */
   reverse?: boolean;
   className?: string;
 };
@@ -42,8 +42,8 @@ export function TeamMemberBlock({
     <article
       id={id}
       className={cn(
-        "mx-auto grid max-w-7xl grid-cols-1 gap-12 px-6 py-20 text-justify sm:px-8 lg:gap-40 lg:py-52",
-        reverse ? "lg:grid-cols-[3fr_2fr] [&>div]:order-1 [&>header]:order-2" : "lg:grid-cols-[2fr_3fr]",
+        "mx-auto grid max-w-7xl grid-cols-1 gap-4 px-6 py-20 text-justify sm:px-8 lg:gap-40 lg:py-52",
+        reverse ? "lg:grid-cols-[3fr_2fr] lg:[&>div]:order-1 lg:[&>header]:order-2" : "lg:grid-cols-[2fr_3fr]",
         className,
       )}
     >
@@ -53,15 +53,15 @@ export function TeamMemberBlock({
           reverse && "lg:ml-auto ",
         )}
       >
-        <p className="text-xl leading-tight tracking-wider font-bold text-telco-red">
+        <p className="text-sm leading-tight tracking-wider font-bold text-telco-red">
           {role}
         </p>
-        <h2 className="mt-2 font-display text-4xl text-telco-red sm:text-5xl">
+        <h2 className="mt-2 font-display text-2xl md:text-5xl text-telco-red">
           {name}
         </h2>
       </header>
       <div className="min-w-0">
-        <div className="space-y-5 text-xl font-light  text-telco-dark">
+        <div className="space-y-2 text-base md:text-xl font-light  text-telco-dark">
           {previewParagraphs.map((p, index) => (
             <p key={`${id}-preview-${index}`}>{p}</p>
           ))}
@@ -71,7 +71,7 @@ export function TeamMemberBlock({
           <div
             id={regionId}
             hidden={!expanded}
-            className="mt-5 space-y-5 pt-5 text-xl font-light leading-relaxed text-telco-dark"
+            className="mt-5 space-y-2pt-5  text-base md:text-xl  font-light text-telco-dark"
           >
             {moreParagraphs.map((p, index) => (
               <p key={`${id}-more-${index}`}>{p}</p>
@@ -80,7 +80,7 @@ export function TeamMemberBlock({
         ) : null}
 
         {expanded && linkedinUrl ? (
-          <p className="mt-8 text-xl font-light leading-relaxed text-telco-dark">
+          <p className="mt-4 md:mt-8 text-base md:text-xl font-light text-telco-dark">
             Learn more on{" "}
             <a
               href={linkedinUrl}
@@ -95,10 +95,10 @@ export function TeamMemberBlock({
         ) : null}
 
         {hasMore ? (
-          <p className="mt-8">
+          <p className="mt-4 md:mt-8">
             <button
               type="button"
-              className="text-xl font-normal text-telco-red transition-opacity hover:opacity-75 cursor-pointer"
+              className="text-base md:text-xl font-normal text-telco-red transition-opacity hover:opacity-75 cursor-pointer"
               aria-expanded={expanded}
               aria-controls={regionId}
               onClick={() => setExpanded((v) => !v)}

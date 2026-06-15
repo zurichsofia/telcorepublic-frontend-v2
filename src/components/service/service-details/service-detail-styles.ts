@@ -13,15 +13,16 @@ export const serviceDetailHeading =
   "font-medium leading-snug text-telco-red text-lg sm:text-xl";
 
 export const serviceDetailHighlightsStack =
-  "mx-auto grid w-full max-w-6xl grid-cols-1 gap-y-14 px-5 sm:px-8 md:grid-cols-[1fr_auto_minmax(0,28rem)_1fr] md:items-center md:gap-x-10 md:gap-y-20 lg:grid-cols-[1fr_auto_minmax(0,32rem)_1fr] lg:gap-x-14 lg:gap-y-24";
+  "mx-auto grid w-full max-w-6xl grid-cols-1 gap-y-12 px-5 sm:px-8 md:grid-cols-[1fr_auto_minmax(0,28rem)_1fr] md:items-center md:gap-x-10 md:gap-y-20 lg:grid-cols-[1fr_auto_minmax(0,32rem)_1fr] lg:gap-x-14 lg:gap-y-24";
 
 export const serviceDetailHighlightsTitleCell =
-  "md:col-start-2 md:min-w-0 md:max-w-[14rem] md:text-right md:text-balance lg:max-w-[30rem] text-left";
+  "text-balance md:col-start-2 md:min-w-0 md:max-w-[14rem] md:text-right lg:max-w-[30rem]";
 
-export const serviceDetailHighlightsBodyCell = "md:col-start-3 md:text-left";
+export const serviceDetailHighlightsBodyCell =
+  "text-pretty md:col-start-3 md:text-left";
 
 export const serviceDetailHighlightTitle =
-  "m-0 font-medium leading-tight text-telco-dark text-2xl md:text-3xl lg:text-4xl";
+  "m-0 font-medium leading-tight text-telco-dark text-xl sm:text-2xl md:text-3xl lg:text-4xl";
 
 export const serviceDetailHighlightBody =
-  "m-0 font-light leading-relaxed text-telco-dark text-sm sm:text-xl";
+  "m-0 font-light leading-relaxed text-telco-dark text-base sm:text-xl";

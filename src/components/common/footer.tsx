@@ -40,7 +40,7 @@ const defaultSocial: readonly FooterLink[] = [
   { label: "Twitter", href: "https://x.com/kurth_martina" },
 ];
 
-const footerTextClass = "text-base font-light text-white";
+const footerTextClass = "text-lg font-light text-white";
 const footerLinkClass = cn(
   footerTextClass,
   "transition-colors hover:text-white/80",

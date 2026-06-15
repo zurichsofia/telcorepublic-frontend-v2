@@ -1,8 +1,4 @@
-import { Fragment } from "react";
-
 import {
-  serviceDetailColumn,
-  serviceDetailHeading,
   serviceDetailHighlightBody,
   serviceDetailHighlightsBodyCell,
   serviceDetailHighlightTitle,
@@ -27,7 +23,10 @@ export function HighlightsGrid({ heading, items }: HighlightsGridProps) {
     <section className={serviceDetailStack}>
       <div className={serviceDetailHighlightsStack}>
         {items.map((item) => (
-          <Fragment key={item.name}>
+          <div
+            key={item.name}
+            className="flex flex-col gap-3 text-center md:contents"
+          >
             <h3
               className={cn(
                 serviceDetailHighlightTitle,
@@ -44,9 +43,9 @@ export function HighlightsGrid({ heading, items }: HighlightsGridProps) {
             >
               {item.description}
             </p>
-          </Fragment>
+          </div>
         ))}
       </div>
-    </section >
+    </section>
   );
 }

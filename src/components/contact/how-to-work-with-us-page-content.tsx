@@ -7,7 +7,7 @@ import { engagementModels } from "@/data/engagement-models";
 
 export function HowToWorkWithUsPageContent() {
   return (
-    <div className="pb-8 sm:pb-12">
+    <div className="min-w-0 pb-8 sm:pb-12">
       <PageHero
         className="mb-28 sm:mb-40"
         title="How To Work With Us"

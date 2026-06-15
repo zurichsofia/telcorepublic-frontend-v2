@@ -31,6 +31,7 @@ export function AppShell({
   const isHome = pathname === "/" || pathname === "";
   const isNews = pathname === "/news" || pathname.startsWith("/news/");
   const isContact = pathname === "/contact";
+  const isHowToWorkWithUs = pathname === "/contact/how-to-work-with-us";
   const isStudio = pathname.startsWith("/studio");
   const immersiveHero = isServiceDetail || isHome;
   const darkShell = isNews || isContact;
@@ -110,7 +111,14 @@ export function AppShell({
             surfaceClassName={surfaceClassName}
             overlayPastHero={overlayPastHero}
           />
-          <div className="relative z-0 flex min-h-0 flex-1 flex-col">{children}</div>
+          <div
+            className={cn(
+              "relative z-0 flex min-h-0 min-w-0 flex-1 flex-col",
+              isHowToWorkWithUs && "overflow-x-clip",
+            )}
+          >
+            {children}
+          </div>
           <Footer className="mt-auto" />
         </div>
       )}

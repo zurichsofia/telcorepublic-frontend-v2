@@ -10,7 +10,7 @@ import {
   dropdownPanelBase,
   dropdownPanelOpenClass,
   dropdownPanelSurface,
-  navLinkClass,
+  desktopNavLinkClass,
   parentSectionActive,
   renderNavLeafItem,
   type NavItem,
@@ -52,7 +52,7 @@ function NavItemWithSubmenu({
       >
         <Link
           href={item.href}
-          className={navLinkClass(
+          className={desktopNavLinkClass(
             parentSectionActive(item, pathname),
             theme,
             overlayPastHero,
@@ -74,7 +74,7 @@ function NavItemWithSubmenu({
             const hasHref = Boolean(sub.href);
             const subActive = hasHref && pathname === sub.href;
             const className = cn(
-              "block py-1.5 text-sm font-light leading-normal transition-colors",
+              "block py-1.5 text-lg font-light leading-normal transition-colors",
               !hasHref
                 ? onDarkNav
                   ? "text-white/35"
@@ -141,6 +141,7 @@ export function NavigationDesktop({
                   overlayPastHero,
                   newsArticleCount,
                   onDark,
+                  linkClassName: desktopNavLinkClass,
                 })}
               </div>
             </li>

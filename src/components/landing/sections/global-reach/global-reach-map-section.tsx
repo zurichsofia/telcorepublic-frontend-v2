@@ -58,7 +58,7 @@ export function GlobalReachMapSection() {
         </ul>
       </div>
 
-      <div className="relative mx-auto mt-14 max-w-6xl sm:mt-20">
+      <div className="relative mx-auto mt-24 max-w-6xl sm:mt-20 scale-140 -translate-x-5 sm:scale-100 sm:translate-y-0">
         <WorldMap />
       </div>
     </section >

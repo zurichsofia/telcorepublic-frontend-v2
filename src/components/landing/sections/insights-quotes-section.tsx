@@ -28,7 +28,7 @@ type StackCard = {
 };
 
 /** Slot 0 = top (exits), slot 2 = bottom (new entries) */
-const STACK_GAP_CLASS = "gap-12 lg:gap-14";
+const STACK_GAP_CLASS = "gap-12 lg:gap-20";
 /** Room for the bottom bubble tail (absolute, does not affect flex height) */
 const STACK_TAIL_PADDING = "pb-5 sm:pb-6";
 
@@ -48,7 +48,7 @@ const STACK_SLOTS: {
     {
       size: "small",
       className:
-        "w-[72%] min-w-0 -translate-x-2 self-start lg:w-[35%] lg:-translate-x-4 xl:-translate-x-6",
+        "w-[72%] min-w-0 -translate-x-2 self-start lg:w-[55%] lg:-translate-x-4 xl:-translate-x-6",
     },
   ];
 
@@ -110,9 +110,9 @@ const exitTransition = {
  * heights keep the polished staggered layout.
  */
 const BUBBLE_HEIGHT_CLASS: Record<BubbleSize, string> = {
-  large: "h-[6.75rem] lg:h-[12rem]",
-  medium: "h-[6.75rem] lg:h-[10rem]",
-  small: "h-[6.75rem] lg:h-[9.5rem]",
+  large: "h-[7.125rem] lg:h-[12rem]",
+  medium: "h-[7.125rem] lg:h-[10rem]",
+  small: "h-[7.125rem] lg:h-[9.5rem]",
 };
 
 function createInitialCards(quotes: readonly Quote[]): StackCard[] {
@@ -246,10 +246,10 @@ function MessageBubble({
         className={cn(
           "font-sans font-normal tracking-[0.18em] text-white/55 uppercase",
           // Same date size for every bubble on mobile.
-          "text-[0.62rem]",
+          "text-xs",
           size === "large" && "lg:text-[0.8rem]",
-          size === "medium" && "lg:text-[0.65rem]",
-          size === "small" && "lg:text-[0.65rem]",
+          size === "medium" && "lg:text-[0.7rem]",
+          size === "small" && "lg:text-[0.7rem]",
         )}
       >
         {quote.date}
@@ -258,10 +258,10 @@ function MessageBubble({
         className={cn(
           "text-pretty font-sans text-white",
           // Same text size for every bubble on mobile, clamped to keep the fixed height.
-          "mt-2 line-clamp-3 text-sm font-medium leading-[1.35] lg:line-clamp-none",
+          "mt-2 line-clamp-3 text-[0.9375rem] font-medium leading-[1.32] lg:line-clamp-none",
           size === "large" && "lg:mt-4 lg:text-2xl lg:font-semibold",
-          size === "medium" && "lg:mt-3 lg:text-lg",
-          size === "small" && "lg:mt-2.5 lg:leading-snug lg:text-[0.9rem]",
+          size === "medium" && "lg:mt-3 lg:text-xl",
+          size === "small" && "lg:mt-2.5 lg:leading-snug lg:text-[0.95rem]",
         )}
       >
         <span className="text-white/90">&ldquo;</span>

@@ -89,11 +89,11 @@ export function FullBleedMediaSection({
         >
           <h2
             id={`${id}-heading`}
-            className="font-display text-4xl tracking-tight text-white lg:text-5xl"
+            className="font-display text-3xl text-white lg:text-5xl"
           >
             {title}
           </h2>
-          <p className="mt-5 text-base font-light leading-relaxed text-white lg:text-xl">
+          <p className="mt-5 text-xl font-light text-white lg:text-2xl">
             {description}
           </p>
         </div>
