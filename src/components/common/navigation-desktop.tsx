@@ -5,6 +5,8 @@ import { useState, type MouseEvent } from "react";
 
 import {
   dismissNavDropdown,
+  dropdownPanelAlignEnd,
+  dropdownPanelAlignStart,
   dropdownPanelBase,
   dropdownPanelOpenClass,
   dropdownPanelSurface,
@@ -25,11 +27,13 @@ function NavItemWithSubmenu({
   pathname,
   theme,
   overlayPastHero,
+  menuAlign = "start",
 }: {
   item: NavItem;
   pathname: string;
   theme: NavigationTheme;
   overlayPastHero: boolean;
+  menuAlign?: "start" | "end";
 }) {
   const [dismissed, setDismissed] = useState(false);
   const onDarkNav = theme === "blog";
@@ -61,6 +65,7 @@ function NavItemWithSubmenu({
           role="list"
           className={cn(
             dropdownPanelBase,
+            menuAlign === "end" ? dropdownPanelAlignEnd : dropdownPanelAlignStart,
             panelSurface,
             dismissed ? "hidden" : dropdownPanelOpenClass,
           )}
@@ -111,7 +116,7 @@ export function NavigationDesktop({
   return (
     <nav aria-label="Primary" className="hidden lg:block">
       <ul className="flex items-start gap-x-24">
-        {items.map((item) => {
+        {items.map((item, index) => {
           if (item.children?.length) {
             return (
               <NavItemWithSubmenu
@@ -120,6 +125,7 @@ export function NavigationDesktop({
                 pathname={pathname}
                 theme={theme}
                 overlayPastHero={overlayPastHero}
+                menuAlign={index === items.length - 1 ? "end" : "start"}
               />
             );
           }

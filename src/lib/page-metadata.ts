@@ -29,6 +29,11 @@ export const pageMetadata = {
     description:
       "Reach Telco Republic for research inquiries, subscriptions, and custom telecom OSS and BSS coverage.",
   },
+  howToWorkWithUs: {
+    title: buildPageTitle("How To Work With Us"),
+    description:
+      "Flexible engagement models including on-demand consultation, recurring consultation, strategy sessions, and subscription tiers.",
+  },
   operationTeam: {
     title: buildPageTitle("Operation Team"),
     description:

@@ -37,7 +37,11 @@ export const defaultNavItems: readonly NavItem[] = [
     ],
   },
   { href: "/news", label: "News" },
-  { href: "/contact", label: "Contact" },
+  {
+    href: "/contact",
+    label: "Contact",
+    children: [{ href: "/contact/how-to-work-with-us", label: "How To Work With Us" }],
+  },
 ];
 
 export type NavigationTheme = "default" | "blog" | "overlay";
@@ -53,7 +57,10 @@ export type NavLinksContext = {
 };
 
 export const dropdownPanelBase =
-  "absolute left-0 top-full z-70 mt-0 flex min-w-56 max-w-[min(100vw-2.5rem,20rem)] flex-col gap-y-0 rounded-md px-3 py-2 text-left";
+  "absolute top-full z-70 mt-0 flex min-w-56 max-w-[min(100vw-2.5rem,20rem)] flex-col gap-y-0 rounded-md px-3 py-2 text-left";
+
+export const dropdownPanelAlignStart = "left-0 right-auto";
+export const dropdownPanelAlignEnd = "right-0 left-auto";
 
 export const dropdownPanelOpenClass =
   "invisible opacity-0 transition-opacity group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100";

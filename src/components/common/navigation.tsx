@@ -62,7 +62,7 @@ export function Navigation({
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 isolate w-full shrink-0 overflow-visible px-5 py-6 sm:px-8",
+        "sticky top-0 z-50 isolate w-full shrink-0 overflow-x-clip px-5 py-6 sm:px-8",
         theme === "overlay" && shellSurfaceTransitionClass,
         surfaceClassName,
         className,
