@@ -34,6 +34,15 @@ export const pageMetadata = {
     description:
       "Martina Kurth leverages a well-established contact network with CSPs, vendors, standard bodies, start-ups and investors in the global telco industry.",
   },
+  expertise: {
+    title: buildPageTitle("Expertise"),
+    description:
+      "We have tracked the telecom industry for decades. Our services are personalized and flexible, at an attractive price/performance ratio.",
+  },
+  clients: {
+    title: buildPageTitle("Our Clients"),
+    description: "Telco Republic works with leading telecom vendors and cloud providers worldwide. See the organizations we are privileged to serve.",
+  },
   studio: {
     title: buildPageTitle("Studio"),
     robots: { index: false, follow: false },

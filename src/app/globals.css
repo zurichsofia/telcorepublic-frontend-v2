@@ -189,3 +189,39 @@ body {
     transform: none;
   }
 }
+
+@keyframes client-logo-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.client-logo-marquee {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 8%,
+    black 92%,
+    transparent
+  );
+}
+
+.client-logo-marquee-track {
+  animation: client-logo-marquee 35s linear infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .client-logo-marquee {
+    mask-image: none;
+    overflow-x: auto;
+  }
+
+  .client-logo-marquee-track {
+    animation: none;
+    will-change: auto;
+  }
+}

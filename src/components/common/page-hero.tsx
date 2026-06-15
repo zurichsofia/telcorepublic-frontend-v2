@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -9,7 +10,7 @@ export type PageHeroLink = {
 
 export type PageHeroProps = {
   title: string;
-  subtitle?: string;
+  subtitle?: ReactNode;
   description?: string;
   className?: string;
   id?: string;
