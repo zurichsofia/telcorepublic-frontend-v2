@@ -9,7 +9,7 @@ export function GlobalReachMapSection() {
   return (
     <section
       id="global-reach"
-      className="relative z-30 w-full overflow-hidden bg-white px-6 py-40 sm:px-10 sm:pb-36 lg:px-16 xl:px-20"
+      className="relative z-30 w-full overflow-hidden bg-white px-6 py-20 lg:py-40 sm:px-10 sm:pb-36 lg:px-16 xl:px-20"
       aria-labelledby="global-reach-heading"
     >
       {/* <div className="relative mx-auto max-w-7xl px-5 text-center sm:px-8">

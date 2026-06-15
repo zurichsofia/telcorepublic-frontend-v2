@@ -123,7 +123,7 @@ function createInitialCards(quotes: readonly Quote[]): StackCard[] {
 }
 
 const MEDIA_STRIP_CLASS =
-  "relative h-[100vh] w-full overflow-hidden bg-telco-dark [content-visibility:auto] [contain-intrinsic-size:100vh]";
+  "relative h-[50vh] w-full overflow-hidden bg-telco-dark [content-visibility:auto] [contain-intrinsic-size:50vh] lg:h-[100vh] lg:[contain-intrinsic-size:100vh]";
 
 function MountainImageStrip({ imageSrc }: { imageSrc: string; }) {
   return (

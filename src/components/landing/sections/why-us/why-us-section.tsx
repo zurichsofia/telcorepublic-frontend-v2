@@ -90,7 +90,7 @@ function WhyChapter({
       >
         <div
           className={cn(
-            "w-full max-w-3xl space-y-4 md:space-y-5",
+            "w-full max-w-[98%] lg:max-w-[46rem] space-y-2 md:space-y-5",
             !isA && "text-right",
           )}
         >
@@ -100,7 +100,7 @@ function WhyChapter({
           >
             {title}
           </h3>
-          <div className="space-y-4 text-pretty font-sans text-base leading-tight tracking-wide text-telco-dark lg:text-xl">
+          <div className="text-pretty font-sans text-xl leading-tight text-telco-dark lg:text-justify">
             {paragraphs.map((text) => (
               <p key={text}>{text}</p>
             ))}
@@ -113,7 +113,7 @@ function WhyChapter({
 
 export function WhyUsSection() {
   return (
-    <FloatingLinesWhyUsBackground className="z-20 w-full px-6 pt-12 pb-20 sm:px-10 sm:pt-16 sm:pb-24 lg:px-16 lg:pt-20 lg:pb-28 xl:px-20">
+    <FloatingLinesWhyUsBackground className="z-20 w-full px-6 pb-20 sm:px-10 sm:pt-16 sm:pb-24 lg:px-16 lg:pt-20 lg:pb-28 xl:px-20">
       <section
         className="mx-auto w-full max-w-7xl overflow-x-clip"
         aria-label="Why Telco Republic"

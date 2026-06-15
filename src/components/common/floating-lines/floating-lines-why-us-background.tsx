@@ -1,6 +1,7 @@
 "use client";
 
 import FloatingLines from "@/components/common/floating-lines/floating-lines";
+import { useIsMobileDevice } from "@/hooks/use-is-mobile-device";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { cn } from "@/lib/utils";
 
@@ -31,8 +32,9 @@ export function FloatingLinesWhyUsBackground({
   children,
 }: FloatingLinesWhyUsBackgroundProps) {
   const reducedMotion = usePrefersReducedMotion();
+  const isMobile = useIsMobileDevice();
 
-  if (reducedMotion) {
+  if (reducedMotion || isMobile) {
     return (
       <div
         id={SECTION_ID}
