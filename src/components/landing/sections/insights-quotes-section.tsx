@@ -28,7 +28,7 @@ type StackCard = {
 };
 
 /** Slot 0 = top (exits), slot 2 = bottom (new entries) */
-const STACK_GAP_CLASS = "gap-10 sm:gap-12 lg:gap-14";
+const STACK_GAP_CLASS = "gap-12 lg:gap-14";
 /** Room for the bottom bubble tail (absolute, does not affect flex height) */
 const STACK_TAIL_PADDING = "pb-5 sm:pb-6";
 
@@ -38,17 +38,17 @@ const STACK_SLOTS: {
 }[] = [
     {
       size: "large",
-      className: "w-full lg:w-[90%] lg:self-end",
+      className: "w-full self-end lg:w-[90%]",
     },
     {
       size: "medium",
       className:
-        "w-full lg:w-1/2 lg:translate-x-6 lg:self-center xl:translate-x-10",
+        "w-[72%] self-end lg:w-1/2 lg:translate-x-6 lg:self-center xl:translate-x-10",
     },
     {
       size: "small",
       className:
-        "w-full min-w-0 lg:w-[35%] lg:-translate-x-4 lg:self-start xl:-translate-x-6",
+        "w-[72%] min-w-0 -translate-x-2 self-start lg:w-[35%] lg:-translate-x-4 xl:-translate-x-6",
     },
   ];
 
@@ -104,11 +104,15 @@ const exitTransition = {
   mass: 0.75,
 };
 
-/** Fixed bubble heights sized to fit the tallest quote at each slot (with lg variants). */
+/**
+ * Mobile uses one minimal fixed height (~3 lines) for every bubble so the narrow,
+ * asymmetric bubbles stay compact and consistent. From `lg` up, the per-size fixed
+ * heights keep the polished staggered layout.
+ */
 const BUBBLE_HEIGHT_CLASS: Record<BubbleSize, string> = {
-  large: "h-[11rem] lg:h-[12rem]",
-  medium: "h-[9.25rem] lg:h-[10rem]",
-  small: "h-[7rem] lg:h-[9.5rem]",
+  large: "h-[6.75rem] lg:h-[12rem]",
+  medium: "h-[6.75rem] lg:h-[10rem]",
+  small: "h-[6.75rem] lg:h-[9.5rem]",
 };
 
 function createInitialCards(quotes: readonly Quote[]): StackCard[] {
@@ -231,17 +235,21 @@ function MessageBubble({
         "relative flex w-full flex-col justify-center rounded-[18px] bg-message-bubble shadow-[0_20px_50px_rgba(0,0,0,0.55)]",
         "transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/40",
         BUBBLE_HEIGHT_CLASS[size],
-        size === "large" && "px-7 py-6 sm:px-8 sm:py-7",
-        size === "medium" && "px-6 py-5 sm:px-7 sm:py-6",
-        size === "small" && "px-5 py-4 sm:px-6 sm:py-5",
+        // Uniform compact padding on mobile; richer per-size padding from lg up.
+        "px-5 py-3.5",
+        size === "large" && "lg:px-8 lg:py-7",
+        size === "medium" && "lg:px-7 lg:py-6",
+        size === "small" && "lg:px-6 lg:py-5",
       )}
     >
       <p
         className={cn(
           "font-sans font-normal tracking-[0.18em] text-white/55 uppercase",
-          size === "large" && "text-xs sm:text-[0.8rem]",
-          size === "medium" && "text-[0.62rem] sm:text-[0.65rem]",
-          size === "small" && "text-[0.6rem] sm:text-[0.65rem]",
+          // Same date size for every bubble on mobile.
+          "text-[0.62rem]",
+          size === "large" && "lg:text-[0.8rem]",
+          size === "medium" && "lg:text-[0.65rem]",
+          size === "small" && "lg:text-[0.65rem]",
         )}
       >
         {quote.date}
@@ -249,12 +257,11 @@ function MessageBubble({
       <p
         className={cn(
           "text-pretty font-sans text-white",
-          size === "large" &&
-          "mt-4 text-lg font-semibold leading-[1.35] sm:text-xl lg:text-2xl",
-          size === "medium" &&
-          "mt-3 text-sm font-medium leading-[1.35] sm:text-base lg:text-lg",
-          size === "small" &&
-          "mt-2.5 text-sm font-medium leading-snug sm:text-base lg:text-[0.9rem]",
+          // Same text size for every bubble on mobile, clamped to keep the fixed height.
+          "mt-2 line-clamp-3 text-sm font-medium leading-[1.35] lg:line-clamp-none",
+          size === "large" && "lg:mt-4 lg:text-2xl lg:font-semibold",
+          size === "medium" && "lg:mt-3 lg:text-lg",
+          size === "small" && "lg:mt-2.5 lg:leading-snug lg:text-[0.9rem]",
         )}
       >
         <span className="text-white/90">&ldquo;</span>
@@ -538,13 +545,13 @@ export function InsightsQuotesSection({
         )}
         <div className="relative mx-auto w-full max-w-6xl overflow-visible">
 
-          <div className="mb-10 flex justify-center lg:absolute lg:-left-6 lg:top-1/2 lg:mb-0 lg:-translate-y-1/2 lg:justify-start xl:-left-10">
+          <div className="pointer-events-none absolute left-0 top-1/2 z-10 flex -translate-y-1/2 justify-start lg:-left-6 xl:-left-10">
             <Image
               src="/images/TR_Bird_Icon.svg"
               alt=""
               width={200}
               height={200}
-              className="h-24 w-auto sm:h-28 lg:h-36 xl:h-44"
+              className="h-16 w-auto sm:h-20 lg:h-36 xl:h-44"
               priority={false}
             />
           </div>
