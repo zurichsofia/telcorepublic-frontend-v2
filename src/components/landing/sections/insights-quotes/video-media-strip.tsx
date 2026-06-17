@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 import { ClientLogoMarquee } from "@/components/about/client-logo-marquee";
 
 const MEDIA_STRIP_CLASS =
-  "relative h-[50vh] w-full overflow-hidden bg-telco-dark [content-visibility:auto] [contain-intrinsic-size:50vh] lg:h-[100vh] lg:[contain-intrinsic-size:100vh]";
+  "relative h-[60vh] w-full overflow-hidden bg-telco-dark [content-visibility:auto] [contain-intrinsic-size:50vh] lg:h-[100vh] lg:[contain-intrinsic-size:100vh]";
 
 export function VideoMediaStrip({
   videoSrc,
@@ -44,7 +44,7 @@ export function VideoMediaStrip({
         playRafRef.current = requestAnimationFrame(() => {
           playRafRef.current = requestAnimationFrame(() => {
             playRafRef.current = 0;
-            void v.play().catch(() => {});
+            void v.play().catch(() => { });
           });
         });
       } else {
