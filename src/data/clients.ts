@@ -10,17 +10,17 @@ export type ClientLogo = {
 export const clientLogos: readonly ClientLogo[] = [
   {
     name: "HPE",
-    src: "/images/about/clients/hpe.jpg",
+    src: "/images/about/clients/hpe2.png",
     width: 200,
     height: 80,
-    scale: 1.3,
+    scale: 0.9,
   },
   {
     name: "Amazon Web Services",
     src: "/images/about/clients/aws.png",
     width: 200,
     height: 80,
-    scale: 0.9,
+    scale: 0.8,
   },
   {
     name: "Netcracker",
@@ -45,7 +45,7 @@ export const clientLogos: readonly ClientLogo[] = [
   },
   {
     name: "Intraway",
-    src: "/images/about/clients/intraway.png",
+    src: "/images/about/clients/intraway2.png",
     width: 200,
     height: 80,
     scale: 0.8,

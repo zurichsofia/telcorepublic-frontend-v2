@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from "react";
 
+import { ClientLogoMarquee } from "@/components/about/client-logo-marquee";
+
 const MEDIA_STRIP_CLASS =
   "relative h-[50vh] w-full overflow-hidden bg-telco-dark [content-visibility:auto] [contain-intrinsic-size:50vh] lg:h-[100vh] lg:[contain-intrinsic-size:100vh]";
 
@@ -69,7 +71,7 @@ export function VideoMediaStrip({
   }, [reduceMotion, videoSrc]);
 
   return (
-    <div ref={stripRef} className={MEDIA_STRIP_CLASS} aria-hidden>
+    <div ref={stripRef} className={MEDIA_STRIP_CLASS}>
       <video
         ref={videoRef}
         className="absolute inset-0 h-full w-full object-cover object-center"
@@ -78,6 +80,14 @@ export function VideoMediaStrip({
         playsInline
         loop={!reduceMotion}
         preload={preload}
+        aria-hidden
+      />
+
+      <ClientLogoMarquee
+        variant="inverse"
+        label="Clients"
+        labelClassName="left-4 top-14 text-4xl font-light uppercase leading-relaxed text-white sm:left-8 sm:top-16 lg:left-10 lg:top-20 xl:left-12 xl:top-20"
+        className="absolute inset-0 z-10 flex items-center"
       />
     </div>
   );
