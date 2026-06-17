@@ -190,15 +190,6 @@ body {
   }
 }
 
-@keyframes client-logo-marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
 .client-logo-marquee {
   mask-image: linear-gradient(
     to right,
@@ -210,18 +201,12 @@ body {
 }
 
 .client-logo-marquee-track {
-  animation: client-logo-marquee 35s linear infinite;
-  will-change: transform;
+  backface-visibility: hidden;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .client-logo-marquee {
     mask-image: none;
     overflow-x: auto;
-  }
-
-  .client-logo-marquee-track {
-    animation: none;
-    will-change: auto;
   }
 }
