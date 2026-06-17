@@ -25,7 +25,7 @@ export type FooterProps = {
 const defaultNavLinks: readonly FooterLink[] = [
   { label: "Home", href: "/" },
   { label: "Services", href: "/services" },
-  { label: "About", href: "/about/operation-team" },
+  { label: "About", href: "/about" },
   { label: "News", href: "/news" },
   { label: "Contact", href: "/contact" },
 ];

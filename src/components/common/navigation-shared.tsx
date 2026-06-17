@@ -27,7 +27,7 @@ export const defaultNavItems: readonly NavItem[] = [
     ],
   },
   {
-    href: "/about/operation-team",
+    href: "/about",
     label: "About",
     children: [
       { href: "/about/expertise", label: "Expertise" },

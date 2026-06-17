@@ -34,6 +34,11 @@ export const pageMetadata = {
     description:
       "Flexible engagement models including on-demand consultation, recurring consultation, strategy sessions, and subscription tiers.",
   },
+  about: {
+    title: buildPageTitle("About"),
+    description:
+      "We track disruptive, innovative, emerging telecom business and operations software and services and evaluate new operating models and value creation ecosystems.",
+  },
   operationTeam: {
     title: buildPageTitle("Operation Team"),
     description:

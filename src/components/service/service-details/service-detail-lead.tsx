@@ -7,11 +7,19 @@ import { cn } from "@/lib/utils";
 export type ServiceDetailLeadProps = {
   title: string;
   intro?: string;
+  className?: string;
 };
 
-export function ServiceDetailLead({ title, intro }: ServiceDetailLeadProps) {
+export function ServiceDetailLead({ title, intro, className }: ServiceDetailLeadProps) {
   return (
-    <header className={cn(serviceDetailColumn, serviceDetailStack, "pt-20 md:pt-24")}>
+    <header
+      className={cn(
+        serviceDetailColumn,
+        serviceDetailStack,
+        "pt-20 md:pt-24",
+        className,
+      )}
+    >
       <h1 className="text-xl font-normal leading-snug text-telco-red sm:text-2xl md:text-4xl max-w-4xl mx-auto">
         {title}
       </h1>
