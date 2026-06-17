@@ -22,7 +22,7 @@ export function ContactPageContent() {
           </p>
 
           <div className="mt-12 lg:mt-16">
-            <div className="rounded-3xl border border-white/10 bg-white/5 p-8 shadow-inner backdrop-blur-xl sm:p-10 lg:flex lg:gap-14 lg:p-12">
+            <div className="rounded-3xl border border-white/10 bg-[#211b1b]/75 p-8 shadow-inner sm:p-10 lg:flex lg:gap-14 lg:p-12">
               <aside className="mb-10 flex flex-col gap-8 border-b border-white/10 pb-10 lg:mb-0 lg:min-w-0 lg:flex-1 lg:border-b-0 lg:border-r lg:border-white/10 lg:pb-0 lg:pr-10">
                 <div>
                   <p className="text-xs font-normal uppercase tracking-widest text-white/40">

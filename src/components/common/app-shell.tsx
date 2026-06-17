@@ -74,7 +74,7 @@ export function AppShell({
   }, []);
 
   return (
-    <SmoothScrollProvider enabled={!isStudio && !isContact}>
+    <SmoothScrollProvider enabled={!isStudio}>
       {isStudio ? null : <LenisScrollToTopOnNavigate pathname={pathname} />}
       {isStudio ? null : (
         <div

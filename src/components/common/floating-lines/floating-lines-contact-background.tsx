@@ -37,7 +37,7 @@ export function FloatingLinesContactBackground({
     return (
       <div
         className={cn(
-          "relative min-h-dvh overflow-hidden bg-telco-dark",
+          "relative isolate min-h-dvh overflow-hidden bg-telco-dark",
           className,
         )}
       >
@@ -53,13 +53,13 @@ export function FloatingLinesContactBackground({
   return (
     <div
       className={cn(
-        "relative min-h-dvh overflow-hidden bg-telco-dark",
+        "relative isolate min-h-dvh overflow-hidden bg-telco-dark",
         className,
       )}
     >
       {/* Edge mask: top/bottom show parent `bg-telco-dark` only (same as nav/footer), so plus-lighter output never abuts the flat shell. */}
       <div
-        className="pointer-events-none absolute inset-0 z-0 opacity-40 sm:opacity-50"
+        className="pointer-events-none absolute inset-0 z-0 contain-paint opacity-40 sm:opacity-50"
         style={{
           maskImage: EDGE_FADE_MASK,
           WebkitMaskImage: EDGE_FADE_MASK,
@@ -74,6 +74,9 @@ export function FloatingLinesContactBackground({
           lineDistance={[26, 20, 26]}
           interactive={false}
           parallax={false}
+          freezeTimeWhileScrolling
+          animationFps={20}
+          maxPixelRatio={1.25}
           animationSpeed={0.38}
           linesGradient={[...LINE_GRADIENT]}
           mixBlendMode="plus-lighter"
