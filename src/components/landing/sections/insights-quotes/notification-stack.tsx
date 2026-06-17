@@ -1,23 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 import type { InsightQuote } from "@/data/news";
-import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { isLenisActive, subscribeLenisScroll } from "@/lib/lenis-scroll";
 import { cn } from "@/lib/utils";
-
-export const INSIGHTS_QUOTES_IMAGE_SRC =
-  "/images/TelcoRepublic_Mountain.jpg";
-
-export const INSIGHTS_QUOTES_VIDEO_SRC =
-  "/videos/TelcoRepublic_Ocean_1280x720.mp4";
-
-/** Pause between stack updates */
-const SWAP_INTERVAL_MS = 4000;
 
 type Quote = InsightQuote;
 type BubbleSize = "large" | "medium" | "small";
@@ -26,6 +15,9 @@ type StackCard = {
   id: number;
   quoteIndex: number;
 };
+
+/** Pause between stack updates */
+const SWAP_INTERVAL_MS = 4000;
 
 /** Slot 0 = top (exits), slot 2 = bottom (new entries) */
 const STACK_GAP_CLASS = "gap-12 lg:gap-20";
@@ -36,21 +28,21 @@ const STACK_SLOTS: {
   size: BubbleSize;
   className: string;
 }[] = [
-    {
-      size: "large",
-      className: "w-full self-end lg:w-[90%]",
-    },
-    {
-      size: "medium",
-      className:
-        "w-[72%] self-end lg:w-1/2 lg:translate-x-6 lg:self-center xl:translate-x-10",
-    },
-    {
-      size: "small",
-      className:
-        "w-[72%] min-w-0 -translate-x-2 self-start lg:w-[55%] lg:-translate-x-4 xl:-translate-x-6",
-    },
-  ];
+  {
+    size: "large",
+    className: "w-full self-end lg:w-[90%]",
+  },
+  {
+    size: "medium",
+    className:
+      "w-[72%] self-end lg:w-1/2 lg:translate-x-6 lg:self-center xl:translate-x-10",
+  },
+  {
+    size: "small",
+    className:
+      "w-[72%] min-w-0 -translate-x-2 self-start lg:w-[55%] lg:-translate-x-4 xl:-translate-x-6",
+  },
+];
 
 const layoutSpring = {
   type: "spring" as const,
@@ -65,6 +57,31 @@ const enterSpring = {
   damping: 36,
   mass: 0.8,
 };
+
+const exitTransition = {
+  type: "spring" as const,
+  stiffness: 520,
+  damping: 38,
+  mass: 0.75,
+};
+
+/**
+ * Mobile uses one minimal fixed height (~3 lines) for every bubble so the narrow,
+ * asymmetric bubbles stay compact and consistent. From `lg` up, the per-size fixed
+ * heights keep the polished staggered layout.
+ */
+const BUBBLE_HEIGHT_CLASS: Record<BubbleSize, string> = {
+  large: "h-[7.125rem] lg:h-[12rem]",
+  medium: "h-[7.125rem] lg:h-[10rem]",
+  small: "h-[7.125rem] lg:h-[9.5rem]",
+};
+
+function createInitialCards(quotes: readonly Quote[]): StackCard[] {
+  return Array.from({ length: Math.min(3, quotes.length) }, (_, i) => ({
+    id: i,
+    quoteIndex: i % quotes.length,
+  }));
+}
 
 const SCROLL_IDLE_MS = 150;
 
@@ -95,129 +112,6 @@ function useScrollIdle() {
   }, []);
 
   return idle;
-}
-
-const exitTransition = {
-  type: "spring" as const,
-  stiffness: 520,
-  damping: 38,
-  mass: 0.75,
-};
-
-/**
- * Mobile uses one minimal fixed height (~3 lines) for every bubble so the narrow,
- * asymmetric bubbles stay compact and consistent. From `lg` up, the per-size fixed
- * heights keep the polished staggered layout.
- */
-const BUBBLE_HEIGHT_CLASS: Record<BubbleSize, string> = {
-  large: "h-[7.125rem] lg:h-[12rem]",
-  medium: "h-[7.125rem] lg:h-[10rem]",
-  small: "h-[7.125rem] lg:h-[9.5rem]",
-};
-
-function createInitialCards(quotes: readonly Quote[]): StackCard[] {
-  return Array.from({ length: Math.min(3, quotes.length) }, (_, i) => ({
-    id: i,
-    quoteIndex: i % quotes.length,
-  }));
-}
-
-const MEDIA_STRIP_CLASS =
-  "relative h-[50vh] w-full overflow-hidden bg-telco-dark [content-visibility:auto] [contain-intrinsic-size:50vh] lg:h-[100vh] lg:[contain-intrinsic-size:100vh]";
-
-function MountainImageStrip({ imageSrc }: { imageSrc: string; }) {
-  return (
-    <div className={MEDIA_STRIP_CLASS} aria-hidden>
-      <Image
-        src={imageSrc}
-        alt=""
-        fill
-        sizes="100vw"
-        quality={75}
-        fetchPriority="low"
-        className="object-cover object-center"
-        priority={false}
-      />
-    </div>
-  );
-}
-
-function OceanStrip({
-  videoSrc,
-  reduceMotion,
-  preload = "metadata",
-}: {
-  videoSrc: string;
-  reduceMotion: boolean;
-  preload?: "metadata" | "none";
-}) {
-  const stripRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const playRafRef = useRef(0);
-
-  useEffect(() => {
-    const strip = stripRef.current;
-    const v = videoRef.current;
-    if (!strip || !v) return;
-
-    const cancelDeferredPlay = () => {
-      if (playRafRef.current !== 0) {
-        cancelAnimationFrame(playRafRef.current);
-        playRafRef.current = 0;
-      }
-    };
-
-    if (reduceMotion) {
-      v.pause();
-      return cancelDeferredPlay;
-    }
-
-    const syncPlayback = (inView: boolean) => {
-      cancelDeferredPlay();
-      if (inView) {
-        // Defer play until after scroll/layout settles to avoid main-thread spikes.
-        playRafRef.current = requestAnimationFrame(() => {
-          playRafRef.current = requestAnimationFrame(() => {
-            playRafRef.current = 0;
-            void v.play().catch(() => { });
-          });
-        });
-      } else {
-        v.pause();
-      }
-    };
-
-    if (typeof IntersectionObserver === "undefined") {
-      syncPlayback(true);
-      return cancelDeferredPlay;
-    }
-
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry) syncPlayback(entry.isIntersecting);
-      },
-      { root: null, rootMargin: "0px", threshold: 0.05 },
-    );
-    io.observe(strip);
-    return () => {
-      io.disconnect();
-      cancelDeferredPlay();
-    };
-  }, [reduceMotion, videoSrc]);
-
-  return (
-    <div ref={stripRef} className={MEDIA_STRIP_CLASS} aria-hidden>
-      <video
-        ref={videoRef}
-        className="absolute inset-0 h-full w-full object-cover object-center"
-        src={videoSrc}
-        muted
-        playsInline
-        loop={!reduceMotion}
-        preload={preload}
-      />
-    </div>
-  );
 }
 
 function MessageBubble({
@@ -281,7 +175,13 @@ function MessageBubble({
   );
 }
 
-function StaticStack({ cards, quotes }: { cards: StackCard[]; quotes: readonly Quote[]; }) {
+function StaticStack({
+  cards,
+  quotes,
+}: {
+  cards: StackCard[];
+  quotes: readonly Quote[];
+}) {
   return (
     <div
       className={cn(
@@ -302,7 +202,7 @@ function StaticStack({ cards, quotes }: { cards: StackCard[]; quotes: readonly Q
   );
 }
 
-function NotificationStack({
+export function NotificationStack({
   quotes,
   reduceMotion,
   paused = false,
@@ -445,15 +345,15 @@ function NotificationStack({
                     layout: layoutSpring,
                     ...(isEntering
                       ? {
-                        y: enterSpring,
-                        opacity: enterSpring,
-                        scale: enterSpring,
-                      }
+                          y: enterSpring,
+                          opacity: enterSpring,
+                          scale: enterSpring,
+                        }
                       : {
-                        y: layoutSpring,
-                        opacity: { duration: 0.35 },
-                        scale: layoutSpring,
-                      }),
+                          y: layoutSpring,
+                          opacity: { duration: 0.35 },
+                          scale: layoutSpring,
+                        }),
                   }}
                 >
                   <MessageBubble
@@ -475,109 +375,5 @@ function NotificationStack({
           .join(". ")}
       </p>
     </>
-  );
-}
-
-export function InsightsQuotesSection({
-  quotes,
-  imageSrc = INSIGHTS_QUOTES_IMAGE_SRC,
-  videoSrc = INSIGHTS_QUOTES_VIDEO_SRC,
-  showOceanStrip = true,
-  heroTitle = false,
-}: {
-  quotes: readonly InsightQuote[];
-  imageSrc?: string;
-  videoSrc?: string;
-  showOceanStrip?: boolean;
-  /** Large centered page title (e.g. news index). */
-  heroTitle?: boolean;
-}) {
-  const reduceMotion = usePrefersReducedMotion();
-  const sectionRef = useRef<HTMLElement>(null);
-  const [inView, setInView] = useState(false);
-
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-
-    if (typeof IntersectionObserver === "undefined") {
-      setInView(true);
-      return;
-    }
-
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        setInView(entry?.isIntersecting ?? false);
-      },
-      { root: null, rootMargin: "20% 0px", threshold: 0 },
-    );
-    io.observe(section);
-    return () => io.disconnect();
-  }, []);
-
-  if (quotes.length === 0) return null;
-
-  return (
-    <section
-      ref={sectionRef}
-      id="insights-quotes"
-      className="relative isolate w-full"
-      aria-label="Insights and perspectives"
-    >
-      {showOceanStrip ? <MountainImageStrip imageSrc={imageSrc} /> : null}
-
-      <div
-        className={cn(
-          "relative bg-telco-dark px-4 sm:px-8 lg:px-10 xl:px-12",
-          heroTitle
-            ? "pb-14 pt-32 sm:pb-16 sm:pt-44 lg:pb-20 lg:pt-48"
-            : "py-14 sm:py-16 lg:py-20 xl:py-20",
-        )}
-      >
-        {heroTitle ? (
-          <h1 className="mx-auto mb-16 text-center font-display text-5xl uppercase text-telco-red sm:mb-12 sm:text-6xl lg:text-7xl">
-            Insights
-          </h1>
-        ) : (
-          <p className="mb-4 text-4xl font-light uppercase leading-relaxed text-telco-red">
-            Insights
-          </p>
-        )}
-        <div className="relative mx-auto w-full max-w-6xl overflow-visible">
-
-          <div className="pointer-events-none absolute left-0 top-1/2 z-10 flex -translate-y-1/2 justify-start lg:-left-6 xl:-left-10">
-            <Image
-              src="/images/TR_Bird_Icon.svg"
-              alt=""
-              width={200}
-              height={200}
-              className="h-16 w-auto sm:h-20 lg:h-36 xl:h-44"
-              priority={false}
-            />
-          </div>
-
-          <div
-            className="relative overflow-visible lg:pl-[4%] xl:pl-[2%]"
-            role="region"
-            aria-live="polite"
-            aria-label="Industry insights"
-          >
-            <NotificationStack
-              quotes={quotes}
-              reduceMotion={reduceMotion}
-              paused={!inView}
-            />
-          </div>
-        </div>
-      </div>
-
-      {showOceanStrip ? (
-        <OceanStrip
-          videoSrc={videoSrc}
-          reduceMotion={reduceMotion}
-          preload="none"
-        />
-      ) : null}
-    </section>
   );
 }

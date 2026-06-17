@@ -1,6 +1,6 @@
 import { GlobalReachMapSection } from "@/components/landing/sections/global-reach/global-reach-map-section";
 import { GetInTouchSection } from "@/components/landing/sections/get-in-touch-section";
-import { InsightsQuotesSection } from "@/components/landing/sections/insights-quotes-section";
+import { InsightsQuotesSection } from "@/components/landing/sections/insights-quotes/insights-quotes-section";
 import { WhyUsSection } from "@/components/landing/sections/why-us/why-us-section";
 import { YoutubeVideoSection } from "@/components/landing/sections/youtube-video-section";
 import { SnowMountainHero } from "@/components/landing/snow-mountain/hero/snow-mountain-hero";

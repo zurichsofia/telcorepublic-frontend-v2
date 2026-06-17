@@ -1,4 +1,4 @@
-import { InsightsQuotesSection } from "@/components/landing/sections/insights-quotes-section";
+import { InsightsQuotesSection } from "@/components/landing/sections/insights-quotes/insights-quotes-section";
 import { NewsHeroStackedTitle } from "@/components/news/news-hero-stacked-title";
 import { NewsList } from "@/components/news/news-list";
 import { getAllNewsPosts, newsPostsToInsightQuotes } from "@/data/news";
@@ -18,7 +18,8 @@ export default async function NewsIndexPage() {
     <div>
       <InsightsQuotesSection
         quotes={quotes}
-        showOceanStrip={false}
+        showTopImage={false}
+        showBottomVideo={false}
         heroTitle
       />
 
