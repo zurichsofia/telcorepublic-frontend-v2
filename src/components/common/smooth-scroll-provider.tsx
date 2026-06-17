@@ -13,7 +13,7 @@ import {
 
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { isMobileDevice } from "@/lib/device/is-coarse-pointer";
-import { resetLenisScrollY, setLenisScrollY } from "@/lib/lenis-scroll";
+import { markUserScrollIntent, resetLenisScrollY, setLenisScrollY } from "@/lib/lenis-scroll";
 
 const LenisContext = createContext<Lenis | null>(null);
 
@@ -28,13 +28,13 @@ type SmoothScrollProviderProps = {
 };
 
 /** Site-wide scroll smoothing — lower = slower/butterier. */
-export const LENIS_LERP = 0.05;
+export const LENIS_LERP = 0.038;
 
 const LENIS_BASE_OPTIONS = {
   lerp: LENIS_LERP,
   smoothWheel: true,
   syncTouch: false,
-  wheelMultiplier: 1.4,
+  wheelMultiplier: 1.25,
   autoRaf: false,
 } as const satisfies ConstructorParameters<typeof Lenis>[0];
 
@@ -62,13 +62,20 @@ export function SmoothScrollProvider({
 
     const instance = new Lenis(LENIS_BASE_OPTIONS);
 
-    const syncScrollY = () => {
-      setLenisScrollY(instance.scroll);
+    const syncScrollY = (event: { scroll: number; velocity?: number; }) => {
+      setLenisScrollY(event.scroll);
+      if (Math.abs(event.velocity ?? 0) > 0.02) {
+        markUserScrollIntent();
+      }
     };
+
+    const markIntent = () => markUserScrollIntent();
+    window.addEventListener("wheel", markIntent, { passive: true });
+    window.addEventListener("touchstart", markIntent, { passive: true });
 
     document.documentElement.classList.add("lenis", "lenis-smooth");
     setLenis(instance);
-    syncScrollY();
+    syncScrollY({ scroll: instance.scroll });
     const offScroll = instance.on("scroll", syncScrollY);
 
     let rafId = 0;
@@ -80,6 +87,8 @@ export function SmoothScrollProvider({
 
     return () => {
       offScroll();
+      window.removeEventListener("wheel", markIntent);
+      window.removeEventListener("touchstart", markIntent);
       cancelAnimationFrame(rafId);
       instance.destroy();
       document.documentElement.classList.remove("lenis", "lenis-smooth");

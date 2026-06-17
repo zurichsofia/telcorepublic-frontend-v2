@@ -1,7 +1,7 @@
 "use client";
 
 import { FloatingLinesWhyUsBackground } from "@/components/common/floating-lines/floating-lines-why-us-background";
-import { ScrollLinkedChapter } from "@/components/common/scroll-linked-chapter";
+import { WhyUsChapters } from "@/components/landing/sections/why-us/why-us-chapters";
 
 const WHY_CHAPTERS = [
   {
@@ -49,14 +49,7 @@ export function WhyUsSection() {
         className="mx-auto flex max-w-7xl flex-col overflow-x-clip"
         aria-label="Why Telco Republic"
       >
-        {WHY_CHAPTERS.map((chapter, index) => (
-          <ScrollLinkedChapter
-            key={chapter.title}
-            title={chapter.title}
-            paragraphs={chapter.paragraphs}
-            alignRight={index % 2 === 1}
-          />
-        ))}
+        <WhyUsChapters chapters={WHY_CHAPTERS} />
       </section>
     </FloatingLinesWhyUsBackground>
   );

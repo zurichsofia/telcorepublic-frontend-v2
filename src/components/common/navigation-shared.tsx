@@ -310,19 +310,11 @@ export function useOverlayPastHero(theme: NavigationTheme, pathname: string) {
 
     sync();
 
-    let rafId = 0;
-    const scheduleSync = () => {
-      if (rafId !== 0) return;
-      rafId = requestAnimationFrame(() => {
-        rafId = 0;
-        sync();
-      });
-    };
-
-    const offLenis = subscribeLenisScroll(scheduleSync);
+    // subscribeLenisScroll already batches to one rAF — avoid a second frame of lag.
+    const offLenis = subscribeLenisScroll(sync);
     const onNativeScroll = () => {
       if (isLenisActive()) return;
-      scheduleSync();
+      sync();
     };
     window.addEventListener("scroll", onNativeScroll, { passive: true });
     window.addEventListener("resize", sync);
@@ -330,7 +322,6 @@ export function useOverlayPastHero(theme: NavigationTheme, pathname: string) {
       offLenis();
       window.removeEventListener("scroll", onNativeScroll);
       window.removeEventListener("resize", sync);
-      if (rafId !== 0) cancelAnimationFrame(rafId);
     };
   }, [theme, pathname]);
 

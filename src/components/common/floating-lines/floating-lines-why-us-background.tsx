@@ -23,8 +23,7 @@ export type FloatingLinesWhyUsBackgroundProps = {
 
 /**
  * Why Us editorial field: sticky viewport canvas behind long-form content.
- * Avoids fixed + clip-path (WebGL compositor glitches) and uses section-linear
- * scroll parallax so lines keep drifting through every chapter.
+ * Lines scroll in/out naturally with the section — no fixed-position sync.
  */
 export function FloatingLinesWhyUsBackground({
   className,
@@ -56,15 +55,14 @@ export function FloatingLinesWhyUsBackground({
         className="pointer-events-none absolute inset-x-0 top-0 bottom-0 z-0"
         aria-hidden
       >
-        <div className="sticky top-0 h-svh w-full opacity-55 sm:opacity-65 [transform:translateZ(0)]">
+        <div className="sticky top-0 h-svh w-full opacity-55 sm:opacity-65">
           <FloatingLines
             lightBackground
             interactive={false}
-            parallax
-            scrollParallaxSectionId={SECTION_ID}
-            scrollParallaxStrength={15}
-            maxPixelRatio={1.5}
-            animationFps={24}
+            parallax={false}
+            freezeTimeWhileScrolling
+            maxPixelRatio={1.25}
+            animationFps={20}
             animationSpeed={1}
             linesGradient={[...LINE_GRADIENT]}
             enabledWaves={["top", "bottom"]}

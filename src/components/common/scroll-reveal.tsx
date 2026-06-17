@@ -24,7 +24,7 @@ export type ScrollLinkedRevealOptions = {
   lead?: number;
 };
 
-function getScrollLinkedRevealProgress(
+export function getScrollLinkedRevealProgress(
   rect: DOMRect,
   vh: number,
   {

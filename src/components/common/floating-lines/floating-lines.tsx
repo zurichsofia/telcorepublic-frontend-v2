@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from 'react';
 import {
-  Clock,
   Mesh,
   OrthographicCamera,
   PlaneGeometry,
@@ -13,7 +12,7 @@ import {
   WebGLRenderer
 } from 'three';
 
-import { getLenisScrollY, isLenisActive, subscribeLenisScroll } from '@/lib/lenis-scroll';
+import { getLenisScrollY, isLenisActive, isUserScrollIntentActive, subscribeLenisScroll } from '@/lib/lenis-scroll';
 
 const vertexShader = `
 precision highp float;
@@ -269,6 +268,11 @@ type FloatingLinesProps = {
   maxPixelRatio?: number;
   /** Max render rate for non-interactive backgrounds (default 24). */
   animationFps?: number;
+  /**
+   * Hold shader time still while the user scrolls — reduces sticky compositor load
+   * without the time-jump that skipping frames causes on resume.
+   */
+  freezeTimeWhileScrolling?: boolean;
 };
 
 function hexToVec3(hex: string): Vector3 {
@@ -316,6 +320,7 @@ export default function FloatingLines({
   lightBackground = false,
   maxPixelRatio = 2,
   animationFps = 24,
+  freezeTimeWhileScrolling = false,
 }: FloatingLinesProps) {
   const useScrollParallax = parallax && scrollParallaxStrength > 0;
   const useMouseParallax = parallax && scrollParallaxStrength <= 0;
@@ -441,7 +446,11 @@ export default function FloatingLines({
     const mesh = new Mesh(geometry, material);
     scene.add(mesh);
 
-    const clock = new Clock();
+    /** Manual time so we can pause during scroll without a resume jump. */
+    let animTime = 0;
+    let lastAnimMs = 0;
+    let scrollTimeFrozen = false;
+    let frozenRenderDone = false;
 
     const setSize = () => {
       if (!active) return;
@@ -586,10 +595,32 @@ export default function FloatingLines({
 
     const renderFrame = (now: number) => {
       if (!shouldAnimate()) return;
-      if (now - lastRenderMs < minFrameMs) return;
+
+      const scrolling =
+        freezeTimeWhileScrolling && isUserScrollIntentActive();
+
+      if (scrolling) {
+        if (!scrollTimeFrozen) {
+          scrollTimeFrozen = true;
+          frozenRenderDone = false;
+        }
+        if (frozenRenderDone) return;
+      } else {
+        if (scrollTimeFrozen) {
+          scrollTimeFrozen = false;
+          frozenRenderDone = false;
+          lastAnimMs = now;
+        }
+        if (lastAnimMs > 0) {
+          animTime += (now - lastAnimMs) / 1000;
+        }
+        lastAnimMs = now;
+      }
+
+      if (now - lastRenderMs < minFrameMs && !scrolling) return;
       lastRenderMs = now;
 
-      uniforms.iTime.value = clock.getElapsedTime();
+      uniforms.iTime.value = animTime;
 
       if (interactive) {
         currentMouseRef.current.lerp(targetMouseRef.current, mouseDamping);
@@ -630,7 +661,7 @@ export default function FloatingLines({
       } else if (useScrollParallax) {
         const target = targetParallaxRef.current;
         target.set(scrollPx, scrollPy);
-        const lerp = scrollParallaxSectionId ? 0.14 : 1;
+        const lerp = 1;
         if (lerp >= 1) {
           uniforms.parallaxOffset.value.copy(target);
         } else {
@@ -640,6 +671,10 @@ export default function FloatingLines({
       }
 
       renderer.render(scene, camera);
+
+      if (scrolling) {
+        frozenRenderDone = true;
+      }
     };
 
     const renderLoop = (now: number) => {
@@ -650,6 +685,7 @@ export default function FloatingLines({
     };
 
     uniforms.iTime.value = 0;
+    lastAnimMs = performance.now();
     renderer.render(scene, camera);
     lastRenderMs = performance.now();
     scheduleLoop();
@@ -682,7 +718,6 @@ export default function FloatingLines({
       ? () => {
           if (sectionScrollHeight <= 0) syncSectionScrollMetrics();
           if (sectionVisible || getSectionInView()) {
-            lastRenderMs = 0;
             scheduleLoop();
           }
         }
@@ -749,6 +784,7 @@ export default function FloatingLines({
     lightBackground,
     maxPixelRatio,
     animationFps,
+    freezeTimeWhileScrolling,
   ]);
 
   return (

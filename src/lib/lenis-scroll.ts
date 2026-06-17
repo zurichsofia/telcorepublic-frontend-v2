@@ -5,12 +5,26 @@ let lenisActive = false;
 const scrollSubscribers = new Set<() => void>();
 let notifyRafId = 0;
 
+/** True while the user is actively wheeling/touching — not Lenis lerp tail-off. */
+let userScrollIntentUntil = 0;
+
+const USER_SCROLL_INTENT_MS = 220;
+
 function notifySubscribers(): void {
   if (notifyRafId !== 0) return;
   notifyRafId = requestAnimationFrame(() => {
     notifyRafId = 0;
     scrollSubscribers.forEach((listener) => listener());
   });
+}
+
+/** Mark active user input — call on wheel/touch or high Lenis velocity. */
+export function markUserScrollIntent(durationMs = USER_SCROLL_INTENT_MS): void {
+  userScrollIntentUntil = performance.now() + durationMs;
+}
+
+export function isUserScrollIntentActive(): boolean {
+  return performance.now() < userScrollIntentUntil;
 }
 
 export function setLenisScrollY(y: number): void {
@@ -22,6 +36,7 @@ export function setLenisScrollY(y: number): void {
 export function resetLenisScrollY(): void {
   smoothScrollY = 0;
   lenisActive = false;
+  userScrollIntentUntil = 0;
   if (notifyRafId !== 0) {
     cancelAnimationFrame(notifyRafId);
     notifyRafId = 0;
