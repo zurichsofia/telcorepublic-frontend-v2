@@ -2,7 +2,7 @@
 export const HERO_CAMERA_SCROLL_VH = 480;
 
 /** Extra pinned scroll on the last copy beat before the hero unpins. */
-export const HERO_LAST_SECTION_HOLD_VH = 16;
+export const HERO_LAST_SECTION_HOLD_VH = 8;
 
 /** Unpinned runway after release so mobile momentum exits inside the hero. */
 export const HERO_RELEASE_RUNWAY_VH = 36;
@@ -17,6 +17,9 @@ export const HERO_VIEWPORT_VH = 100;
 /** Total hero `<section>` height — pin distance + viewport + release runway. */
 export const HERO_SECTION_VH =
   HERO_STICKY_SCROLL_VH + HERO_VIEWPORT_VH + HERO_RELEASE_RUNWAY_VH;
+
+/** Mobile hero `<section>` height — pin distance + scene viewport handoff. */
+export const HERO_MOBILE_SECTION_VH = HERO_STICKY_SCROLL_VH + HERO_VIEWPORT_VH;
 
 /** Pin progress (0–1) at which camera + copy finish; remainder is hold. */
 export const HERO_CAMERA_END_PROGRESS =

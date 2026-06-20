@@ -1,7 +1,6 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import type { ReactNode } from "react";
 
 import type { InsightQuote } from "@/data/news";
 
@@ -23,21 +22,30 @@ const InsightsQuotesSection = dynamic(() =>
   ).then((module) => module.InsightsQuotesSection),
 );
 
+const YoutubeVideoSection = dynamic(() =>
+  import("@/components/landing/sections/youtube-video-section").then(
+    (module) => module.YoutubeVideoSection,
+  ),
+);
+
+const GetInTouchSection = dynamic(() =>
+  import("@/components/landing/sections/get-in-touch-section").then(
+    (module) => module.GetInTouchSection,
+  ),
+);
+
 type LandingBelowFoldSectionsProps = {
   quotes: readonly InsightQuote[];
-  children?: ReactNode;
 };
 
-export function LandingBelowFoldSections({
-  quotes,
-  children,
-}: LandingBelowFoldSectionsProps) {
+export function LandingBelowFoldSections({ quotes }: LandingBelowFoldSectionsProps) {
   return (
     <>
       <GlobalReachMapSection />
-      {children}
+      <YoutubeVideoSection />
       <WhyUsSection />
       <InsightsQuotesSection quotes={quotes} />
+      <GetInTouchSection />
     </>
   );
 }

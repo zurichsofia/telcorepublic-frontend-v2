@@ -130,7 +130,7 @@ function MobileScrollRig({
     if (!section) return;
 
     const target = readHeroPinProgress(pinMetricsRef.current);
-    const progress = reduceMotion
+    const progress = reduceMotion || target >= 1
       ? target
       : dampHeroScrollProgress(
           dampedProgressRef.current,

@@ -1,4 +1,4 @@
-import { HERO_SECTION_VH } from "./snow-mountain-hero-scroll";
+import { HERO_MOBILE_SECTION_VH } from "./snow-mountain-hero-scroll";
 import {
   MOBILE_VIEWPORT_HEIGHT,
   mobileHeroSectionHeight,
@@ -6,7 +6,7 @@ import {
 
 /** Placeholder while the WebGL hero chunk loads — matches sky tone and section height. */
 export function StaticHeroPoster() {
-  const sectionHeight = mobileHeroSectionHeight(HERO_SECTION_VH);
+  const sectionHeight = mobileHeroSectionHeight(HERO_MOBILE_SECTION_VH);
 
   return (
     <section

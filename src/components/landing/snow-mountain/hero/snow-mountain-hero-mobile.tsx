@@ -14,22 +14,15 @@ import { cn } from "@/lib/utils";
 import { SnowMountainMobileScene } from "../scene/snow-mountain-mobile-scene";
 import { SnowMountainHeroMotionScrollLayers } from "./snow-mountain-hero-motion-scroll-layers";
 import { SnowMountainHeroOverlay } from "./snow-mountain-hero-overlay";
-import {
-  HERO_RELEASE_RUNWAY_VH,
-  HERO_SECTION_VH,
-  HERO_STICKY_SCROLL_VH,
-} from "./snow-mountain-hero-scroll";
+import { HERO_MOBILE_SECTION_VH } from "./snow-mountain-hero-scroll";
 
 /** Mobile hero — fixed pin + dedicated lightweight scene (no sticky, no Lenis). */
 export function SnowMountainHeroMobile() {
   const reduce = usePrefersReducedMotion();
   const sectionRef = useRef<HTMLElement | null>(null);
   const scrollState = useRef(createHeroScrollState(0)).current;
-  const { phase, metricsRef } = useHeroFixedPin(sectionRef, {
-    releaseRunwayVh: HERO_RELEASE_RUNWAY_VH,
-  });
-  const sectionHeight = mobileHeroSectionHeight(HERO_SECTION_VH);
-  const releaseTop = mobileHeroSectionHeight(HERO_STICKY_SCROLL_VH);
+  const { phase, metricsRef } = useHeroFixedPin(sectionRef);
+  const sectionHeight = mobileHeroSectionHeight(HERO_MOBILE_SECTION_VH);
 
   return (
     <section
@@ -59,7 +52,7 @@ export function SnowMountainHeroMobile() {
         style={{
           height: MOBILE_VIEWPORT_HEIGHT,
           minHeight: MOBILE_VIEWPORT_HEIGHT,
-          top: phase === "after" ? releaseTop : undefined,
+          top: phase === "after" ? metricsRef.current.pinPx : undefined,
         }}
       >
         <SnowMountainMobileScene

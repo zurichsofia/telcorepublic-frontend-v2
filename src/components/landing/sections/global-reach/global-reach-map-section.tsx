@@ -11,7 +11,7 @@ export function GlobalReachMapSection() {
   return (
     <section
       id="global-reach"
-      className="relative z-30 w-full overflow-hidden bg-white px-6 py-20 lg:py-40 sm:px-10 sm:pb-36 lg:px-16 xl:px-20"
+      className="relative z-30 w-full overflow-hidden bg-white px-6 pt-40 pb-20 sm:px-10 sm:pt-20 sm:pb-36 lg:px-16 lg:py-40 xl:px-20"
       aria-labelledby="global-reach-heading"
     >
 
@@ -19,7 +19,7 @@ export function GlobalReachMapSection() {
 
         <h2
           id="global-reach-heading"
-          className="mt-8 text-pretty font-display text-3xl md:text-5xl font-normal leading-[1.2] tracking-tight text-telco-dark"
+          className="text-pretty font-display text-3xl font-normal leading-[1.2] tracking-tight text-telco-dark sm:mt-8 md:text-5xl"
         >
           We bring together
           <br />
