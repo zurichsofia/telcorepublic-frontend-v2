@@ -5,6 +5,10 @@ import { useRef } from "react";
 import { useHeroFixedPin } from "@/hooks/use-hero-fixed-pin";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { createHeroScrollState } from "@/lib/snow-mountain/hero-scroll-state";
+import {
+  MOBILE_VIEWPORT_HEIGHT,
+  mobileHeroSectionHeight,
+} from "@/lib/viewport-css-vars";
 import { cn } from "@/lib/utils";
 
 import { SnowMountainMobileScene } from "../scene/snow-mountain-mobile-scene";
@@ -18,6 +22,7 @@ export function SnowMountainHeroMobile() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const scrollState = useRef(createHeroScrollState(0)).current;
   const { phase, metricsRef } = useHeroFixedPin(sectionRef);
+  const sectionHeight = mobileHeroSectionHeight(HERO_SECTION_VH);
 
   return (
     <section
@@ -25,20 +30,28 @@ export function SnowMountainHeroMobile() {
       id="hero"
       className="relative"
       style={{
-        height: `${HERO_SECTION_VH}svh`,
-        minHeight: `${HERO_SECTION_VH}svh`,
+        height: sectionHeight,
+        minHeight: sectionHeight,
       }}
     >
       {phase !== "before" ? (
-        <div className="h-svh shrink-0" aria-hidden />
+        <div
+          className="shrink-0"
+          style={{ height: MOBILE_VIEWPORT_HEIGHT }}
+          aria-hidden
+        />
       ) : null}
 
       <div
         className={cn(
-          "h-svh w-full overflow-hidden",
+          "w-full overflow-hidden",
           phase === "pinned" && "fixed inset-x-0 top-0 z-0",
           phase === "after" && "absolute inset-x-0 bottom-0",
         )}
+        style={{
+          height: "100vh",
+          minHeight: MOBILE_VIEWPORT_HEIGHT,
+        }}
       >
         <SnowMountainMobileScene
           className="size-full"

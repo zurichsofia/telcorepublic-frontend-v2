@@ -4,11 +4,15 @@ import { getHeroCameraProgress } from "@/lib/snow-mountain/hero-scroll-layer-sty
  * Progress (0–1) over the hero pin distance — 0 when the section top hits the
  * viewport top, 1 when the sticky pin ends (not the extra release runway).
  */
-export function readHeroScrollProgress(section: HTMLElement | null): number {
+export function readHeroScrollProgress(
+  section: HTMLElement | null,
+  /** Lock on mobile so URL-bar collapse doesn't compress beat pacing mid-scroll. */
+  lockedViewportPx?: number,
+): number {
   if (!section || typeof window === "undefined") return 0;
 
   const { top, height } = section.getBoundingClientRect();
-  const vh = window.innerHeight;
+  const vh = lockedViewportPx ?? window.innerHeight;
   if (height <= vh) return 0;
   if (top >= vh) return 0;
   if (top + height <= 0) return 1;
@@ -23,12 +27,16 @@ export function readHeroScrollProgress(section: HTMLElement | null): number {
  */
 export const HERO_CAMERA_PROGRESS_DAMPING = 1;
 
+/** Native touch scroll — light follow so beats/camera stay smooth between samples. */
+export const MOBILE_HERO_CAMERA_PROGRESS_DAMPING = 14;
+
 const PROGRESS_SNAP_EPSILON = 1e-4;
 
 export function dampHeroScrollProgress(
   current: number,
   target: number,
   deltaSeconds: number,
+  damping = HERO_CAMERA_PROGRESS_DAMPING,
 ): number {
   const clampedTarget = Math.min(1, Math.max(0, target));
   if (Math.abs(clampedTarget - current) < PROGRESS_SNAP_EPSILON) {
@@ -36,7 +44,7 @@ export function dampHeroScrollProgress(
   }
 
   const dt = Math.min(Math.max(deltaSeconds, 0), 0.1);
-  const alpha = 1 - Math.exp(-HERO_CAMERA_PROGRESS_DAMPING * dt);
+  const alpha = 1 - Math.exp(-damping * dt);
   const next = current + (clampedTarget - current) * alpha;
   return Math.min(1, Math.max(0, next));
 }

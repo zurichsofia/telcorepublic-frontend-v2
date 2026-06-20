@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 
+import { isMobileDevice } from "@/lib/device/is-coarse-pointer";
+
 type ViewportSize = { width: number; height: number };
 
 function readViewportSize(): ViewportSize {
@@ -16,10 +18,13 @@ function viewportJumped(
   prev: ViewportSize,
   next: ViewportSize,
   threshold: number,
+  /** On touch devices, height-only jumps are usually the URL bar — not a broken hero. */
+  mobile: boolean,
 ): boolean {
+  const widthJumped = Math.abs(next.width - prev.width) > threshold;
+  if (mobile) return widthJumped;
   return (
-    Math.abs(next.width - prev.width) > threshold ||
-    Math.abs(next.height - prev.height) > threshold
+    widthJumped || Math.abs(next.height - prev.height) > threshold
   );
 }
 
@@ -51,8 +56,15 @@ export function useReloadOnViewportResize({
     const maybeReload = () => {
       if (!armed) return;
 
+      const mobile = isMobileDevice();
       const next = readViewportSize();
-      if (!viewportJumped(baseline, next, threshold)) return;
+      if (!viewportJumped(baseline, next, threshold, mobile)) {
+        // Address-bar collapse/expand only shifts height on mobile — keep baseline in sync.
+        if (mobile && Math.abs(next.width - baseline.width) <= threshold) {
+          baseline = next;
+        }
+        return;
+      }
 
       window.location.reload();
     };

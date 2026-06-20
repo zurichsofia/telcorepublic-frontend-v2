@@ -17,6 +17,7 @@ import {
 } from "@/components/common/smooth-scroll-provider";
 import { HeroSceneLoader } from "@/components/landing/snow-mountain/hero/hero-scene-loader";
 import { useSceneReady } from "@/hooks/use-scene-ready";
+import { useViewportCssVars } from "@/hooks/use-viewport-css-vars";
 import { cn } from "@/lib/utils";
 
 export function AppShell({
@@ -39,6 +40,7 @@ export function AppShell({
   const overlayPastHero = useOverlayPastHero(theme, pathname);
   const surfaceClassName = shellSurfaceClassName(theme, overlayPastHero);
   const sceneReady = useSceneReady();
+  useViewportCssVars();
 
   // While the home boot loader covers the screen the browser chrome should stay
   // telco-dark; once it resolves the page underneath is white.
@@ -51,6 +53,7 @@ export function AppShell({
   const [heroLoaderActive, setHeroLoaderActive] = useState(isHome);
   const toolbarVariant: "light" | "dark" =
     (isHome && heroLoaderActive) || darkShell ? "dark" : "light";
+  const transparentHeroToolbar = isHome && !heroLoaderActive && !overlayPastHero;
 
   useEffect(() => {
     const color = toolbarVariant === "dark" ? "#150f0f" : "#ffffff";
@@ -82,7 +85,11 @@ export function AppShell({
           aria-hidden
           className={cn(
             "safari-toolbar-tint pointer-events-none lg:hidden",
-            toolbarVariant === "dark" ? "bg-telco-dark" : "bg-white",
+            transparentHeroToolbar
+              ? "bg-transparent"
+              : toolbarVariant === "dark"
+                ? "bg-telco-dark"
+                : "bg-white",
           )}
         />
       )}

@@ -19,8 +19,12 @@ import {
   type MountainCameraFrame,
 } from "@/lib/snow-mountain/snow-mountain-camera-rig";
 import type { HeroPinMetrics } from "@/lib/snow-mountain/hero-pin-metrics";
-import { readHeroPinProgress } from "@/lib/snow-mountain/hero-pin-metrics";
-import { mapHeroScrollProgress } from "@/lib/snow-mountain/snow-mountain-hero-scroll";
+import {
+  dampHeroScrollProgress,
+  mapHeroScrollProgress,
+  MOBILE_HERO_CAMERA_PROGRESS_DAMPING,
+  readHeroScrollProgress,
+} from "@/lib/snow-mountain/snow-mountain-hero-scroll";
 import { SNOW_MOUNTAIN_SOURCE_MODEL } from "@/lib/snow-mountain/snow-mountain-model";
 import { getCanvasDprRange } from "@/lib/snow-mountain/scene-quality";
 import {
@@ -54,6 +58,7 @@ function MobileMountainModel({ onReady, reduceMotion }: MobileMountainModelProps
 type MobileScrollRigProps = {
   scrollState: HeroScrollState;
   pinMetricsRef: RefObject<HeroPinMetrics>;
+  heroSectionRef: RefObject<HTMLElement | null>;
   modelRoot: THREE.Object3D | null;
   reduceMotion: boolean;
 };
@@ -62,12 +67,14 @@ type MobileScrollRigProps = {
 function MobileScrollRig({
   scrollState,
   pinMetricsRef,
+  heroSectionRef,
   modelRoot,
   reduceMotion,
 }: MobileScrollRigProps) {
   const camera = useThree((s) => s.camera);
   const framed = useRef(false);
   const waitFrames = useRef(0);
+  const dampedProgressRef = useRef(0);
   const frameRef = useRef<MountainCameraFrame | null>(null);
   const scratch = useRef<ApplyMountainScrollCameraScratch>({
     lookAt: new THREE.Vector3(),
@@ -116,8 +123,23 @@ function MobileScrollRig({
     return () => cancelAnimationFrame(raf);
   }, [camera, modelRoot]);
 
-  useFrame(() => {
-    const progress = readHeroPinProgress(pinMetricsRef.current);
+  useFrame((_, delta) => {
+    const section = heroSectionRef.current;
+    if (!section) return;
+
+    const target = readHeroScrollProgress(
+      section,
+      pinMetricsRef.current.viewportPx || undefined,
+    );
+    const progress = reduceMotion
+      ? target
+      : dampHeroScrollProgress(
+          dampedProgressRef.current,
+          target,
+          delta,
+          MOBILE_HERO_CAMERA_PROGRESS_DAMPING,
+        );
+    dampedProgressRef.current = progress;
     scrollState.set(progress);
 
     if (!framed.current || reduceMotion) return;
@@ -141,7 +163,7 @@ export type SnowMountainMobileSceneProps = {
   className?: string;
   scrollState: HeroScrollState;
   pinMetricsRef: RefObject<HeroPinMetrics>;
-  heroSectionRef?: RefObject<HTMLElement | null>;
+  heroSectionRef: RefObject<HTMLElement | null>;
   reduceMotion?: boolean;
 };
 
@@ -178,7 +200,7 @@ export function SnowMountainMobileScene({
       return;
     }
 
-    const section = heroSectionRef?.current;
+    const section = heroSectionRef.current;
     if (!section) return;
 
     if (typeof IntersectionObserver === "undefined") {
@@ -236,6 +258,7 @@ export function SnowMountainMobileScene({
           <MobileScrollRig
             scrollState={scrollState}
             pinMetricsRef={pinMetricsRef}
+            heroSectionRef={heroSectionRef}
             modelRoot={modelRoot}
             reduceMotion={reduceMotion}
           />

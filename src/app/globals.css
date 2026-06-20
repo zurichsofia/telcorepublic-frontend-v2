@@ -16,6 +16,9 @@
   --color-white: #ffffff;
   --color-black: #000000;
   --color-message-bubble: #211b1b;
+  /* Locked by JS — fall back to native units before hydration. */
+  --svh: 1svh;
+  --lvh: 1lvh;
 }
 
 html {
