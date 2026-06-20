@@ -1,3 +1,5 @@
+"use client";
+
 import WorldMap from "./world-map";
 
 const MISSION_BENEFITS = [

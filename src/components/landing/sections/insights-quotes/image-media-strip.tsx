@@ -16,7 +16,7 @@ export function ImageMediaStrip({ imageSrc }: { imageSrc: string; }) {
         src={imageSrc}
         alt=""
         fill
-        sizes="100vw"
+        sizes="(max-width: 1024px) 100vw, 1280px"
         quality={75}
         fetchPriority="low"
         className="object-cover object-center"

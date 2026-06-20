@@ -44,6 +44,7 @@ export function SnowMountainHeroMobile() {
           className="size-full"
           scrollState={scrollState}
           pinMetricsRef={metricsRef}
+          heroSectionRef={sectionRef}
           reduceMotion={!!reduce}
         />
 

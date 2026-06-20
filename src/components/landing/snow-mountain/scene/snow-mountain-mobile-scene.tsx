@@ -23,7 +23,12 @@ import { readHeroPinProgress } from "@/lib/snow-mountain/hero-pin-metrics";
 import { mapHeroScrollProgress } from "@/lib/snow-mountain/snow-mountain-hero-scroll";
 import { SNOW_MOUNTAIN_SOURCE_MODEL } from "@/lib/snow-mountain/snow-mountain-model";
 import { getCanvasDprRange } from "@/lib/snow-mountain/scene-quality";
-import { markSceneReady, registerScene } from "@/lib/scene-ready";
+import {
+  isSceneReady,
+  markSceneReady,
+  registerScene,
+  waitForScene,
+} from "@/lib/scene-ready";
 import { cn } from "@/lib/utils";
 
 const SKY_COLOR = "#e8e8e8";
@@ -136,6 +141,7 @@ export type SnowMountainMobileSceneProps = {
   className?: string;
   scrollState: HeroScrollState;
   pinMetricsRef: RefObject<HeroPinMetrics>;
+  heroSectionRef?: RefObject<HTMLElement | null>;
   reduceMotion?: boolean;
 };
 
@@ -144,10 +150,51 @@ export function SnowMountainMobileScene({
   className,
   scrollState,
   pinMetricsRef,
+  heroSectionRef,
   reduceMotion = false,
 }: SnowMountainMobileSceneProps) {
   const [modelRoot, setModelRoot] = useState<THREE.Object3D | null>(null);
+  const [sceneReady, setSceneReady] = useState(isSceneReady);
+  const [frameloop, setFrameloop] = useState<"always" | "demand">("always");
   const canvasDpr = useMemo(() => getCanvasDprRange("mobile"), []);
+
+  useEffect(() => {
+    if (sceneReady) return;
+    if (isSceneReady()) {
+      setSceneReady(true);
+      return;
+    }
+    void waitForScene().then(() => setSceneReady(true));
+  }, [sceneReady]);
+
+  useEffect(() => {
+    if (reduceMotion) {
+      setFrameloop("demand");
+      return;
+    }
+
+    if (!sceneReady) {
+      setFrameloop("always");
+      return;
+    }
+
+    const section = heroSectionRef?.current;
+    if (!section) return;
+
+    if (typeof IntersectionObserver === "undefined") {
+      setFrameloop("always");
+      return;
+    }
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        setFrameloop(entry?.isIntersecting ? "always" : "demand");
+      },
+      { root: null, rootMargin: "0px", threshold: 0 },
+    );
+    io.observe(section);
+    return () => io.disconnect();
+  }, [heroSectionRef, reduceMotion, sceneReady]);
 
   const glOptions = useMemo(
     () => ({
@@ -163,7 +210,7 @@ export function SnowMountainMobileScene({
         className="pointer-events-none absolute inset-0 h-full w-full"
         camera={{ fov: MOBILE_BASE_FOV, near: 0.1, far: 500 }}
         dpr={canvasDpr}
-        frameloop="always"
+        frameloop={frameloop}
         gl={glOptions}
         onCreated={({ gl }) => {
           gl.setClearColor(new THREE.Color(SKY_COLOR), 1);

@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 import { NotificationStack } from "./notification-stack";
 
 export const INSIGHTS_QUOTES_IMAGE_SRC =
-  "/images/TelcoRepublic_Mountain.jpg";
+  "/images/TelcoRepublic_Mountain.webp";
 
 export const INSIGHTS_QUOTES_VIDEO_SRC =
   "/videos/TelcoRepublic_Ocean_1280x720.mp4";

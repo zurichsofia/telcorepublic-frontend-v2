@@ -1,9 +1,7 @@
-import { GlobalReachMapSection } from "@/components/landing/sections/global-reach/global-reach-map-section";
+import { LandingBelowFoldSections } from "@/components/landing/landing-below-fold-sections";
 import { GetInTouchSection } from "@/components/landing/sections/get-in-touch-section";
-import { InsightsQuotesSection } from "@/components/landing/sections/insights-quotes/insights-quotes-section";
-import { WhyUsSection } from "@/components/landing/sections/why-us/why-us-section";
 import { YoutubeVideoSection } from "@/components/landing/sections/youtube-video-section";
-import { SnowMountainHero } from "@/components/landing/snow-mountain/hero/snow-mountain-hero";
+import { SnowMountainHero } from "@/components/landing/snow-mountain/hero/snow-mountain-hero-dynamic";
 import { getAllNewsPosts, newsPostsToInsightQuotes } from "@/data/news";
 
 export default async function Home() {
@@ -13,10 +11,9 @@ export default async function Home() {
   return (
     <main id="home" className="relative z-10 isolate overflow-x-clip bg-white">
       <SnowMountainHero />
-      <GlobalReachMapSection />
-      <YoutubeVideoSection />
-      <WhyUsSection />
-      <InsightsQuotesSection quotes={quotes} />
+      <LandingBelowFoldSections quotes={quotes}>
+        <YoutubeVideoSection />
+      </LandingBelowFoldSections>
       <GetInTouchSection />
     </main>
   );
