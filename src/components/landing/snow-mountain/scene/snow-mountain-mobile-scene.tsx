@@ -18,12 +18,14 @@ import {
   type ApplyMountainScrollCameraScratch,
   type MountainCameraFrame,
 } from "@/lib/snow-mountain/snow-mountain-camera-rig";
-import type { HeroPinMetrics } from "@/lib/snow-mountain/hero-pin-metrics";
+import {
+  readHeroPinProgress,
+  type HeroPinMetrics,
+} from "@/lib/snow-mountain/hero-pin-metrics";
 import {
   dampHeroScrollProgress,
   mapHeroScrollProgress,
   MOBILE_HERO_CAMERA_PROGRESS_DAMPING,
-  readHeroScrollProgress,
 } from "@/lib/snow-mountain/snow-mountain-hero-scroll";
 import { SNOW_MOUNTAIN_SOURCE_MODEL } from "@/lib/snow-mountain/snow-mountain-model";
 import { getCanvasDprRange } from "@/lib/snow-mountain/scene-quality";
@@ -127,10 +129,7 @@ function MobileScrollRig({
     const section = heroSectionRef.current;
     if (!section) return;
 
-    const target = readHeroScrollProgress(
-      section,
-      pinMetricsRef.current.viewportPx || undefined,
-    );
+    const target = readHeroPinProgress(pinMetricsRef.current);
     const progress = reduceMotion
       ? target
       : dampHeroScrollProgress(

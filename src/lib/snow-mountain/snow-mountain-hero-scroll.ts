@@ -28,7 +28,7 @@ export function readHeroScrollProgress(
 export const HERO_CAMERA_PROGRESS_DAMPING = 1;
 
 /** Native touch scroll — light follow so beats/camera stay smooth between samples. */
-export const MOBILE_HERO_CAMERA_PROGRESS_DAMPING = 14;
+export const MOBILE_HERO_CAMERA_PROGRESS_DAMPING = 30;
 
 const PROGRESS_SNAP_EPSILON = 1e-4;
 

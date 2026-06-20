@@ -2,7 +2,10 @@
 export const HERO_CAMERA_SCROLL_VH = 480;
 
 /** Extra pinned scroll on the last copy beat before the hero unpins. */
-export const HERO_LAST_SECTION_HOLD_VH = 80;
+export const HERO_LAST_SECTION_HOLD_VH = 16;
+
+/** Unpinned runway after release so mobile momentum exits inside the hero. */
+export const HERO_RELEASE_RUNWAY_VH = 36;
 
 /** Scroll distance while the sticky canvas stays pinned. */
 export const HERO_STICKY_SCROLL_VH =
@@ -11,8 +14,9 @@ export const HERO_STICKY_SCROLL_VH =
 /** Viewport height in the hero section layout (sticky panel height). */
 export const HERO_VIEWPORT_VH = 100;
 
-/** Total hero `<section>` height — pin distance + viewport. */
-export const HERO_SECTION_VH = HERO_STICKY_SCROLL_VH + HERO_VIEWPORT_VH;
+/** Total hero `<section>` height — pin distance + viewport + release runway. */
+export const HERO_SECTION_VH =
+  HERO_STICKY_SCROLL_VH + HERO_VIEWPORT_VH + HERO_RELEASE_RUNWAY_VH;
 
 /** Pin progress (0–1) at which camera + copy finish; remainder is hold. */
 export const HERO_CAMERA_END_PROGRESS =

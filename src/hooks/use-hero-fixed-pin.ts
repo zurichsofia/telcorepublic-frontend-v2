@@ -16,6 +16,10 @@ export type { HeroPinMetrics };
 
 export { readHeroPinProgress, getHeroBottomFromPinMetrics } from "@/lib/snow-mountain/hero-pin-metrics";
 
+type UseHeroFixedPinOptions = {
+  releaseRunwayVh?: number;
+};
+
 function getScrollY(): number {
   return (
     window.scrollY ||
@@ -28,7 +32,10 @@ function getScrollY(): number {
 /**
  * Fixed-position hero pin — avoids iOS `position: sticky` + WebGL compositor jitter.
  */
-export function useHeroFixedPin(sectionRef: RefObject<HTMLElement | null>) {
+export function useHeroFixedPin(
+  sectionRef: RefObject<HTMLElement | null>,
+  { releaseRunwayVh = 0 }: UseHeroFixedPinOptions = {},
+) {
   const [phase, setPhase] = useState<HeroPinPhase>("before");
   const metricsRef = useRef<HeroPinMetrics>({
     pinStartY: 0,
@@ -48,13 +55,18 @@ export function useHeroFixedPin(sectionRef: RefObject<HTMLElement | null>) {
     return lockedViewportRef.current;
   };
 
+  const readPinPx = (sectionHeight: number, viewportPx: number) => {
+    const releaseRunwayPx = (viewportPx * releaseRunwayVh) / 100;
+    return Math.max(1, sectionHeight - viewportPx - releaseRunwayPx);
+  };
+
   useLayoutEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
 
     const viewportPx = readViewportPx();
     const sectionHeight = section.offsetHeight;
-    const pinPx = Math.max(1, sectionHeight - viewportPx);
+    const pinPx = readPinPx(sectionHeight, viewportPx);
     const rect = section.getBoundingClientRect();
     metricsRef.current = {
       pinStartY: getScrollY() + rect.top,
@@ -63,7 +75,7 @@ export function useHeroFixedPin(sectionRef: RefObject<HTMLElement | null>) {
       viewportPx,
     };
     setSharedHeroPinMetrics(metricsRef.current);
-  }, [sectionRef]);
+  }, [releaseRunwayVh, sectionRef]);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -72,7 +84,7 @@ export function useHeroFixedPin(sectionRef: RefObject<HTMLElement | null>) {
     const refreshMetrics = (forceViewport = false) => {
       const viewportPx = readViewportPx(forceViewport);
       const sectionHeight = section.offsetHeight;
-      const pinPx = Math.max(1, sectionHeight - viewportPx);
+      const pinPx = readPinPx(sectionHeight, viewportPx);
       const rect = section.getBoundingClientRect();
       const pinStartY =
         phaseRef.current === "pinned"
@@ -135,7 +147,7 @@ export function useHeroFixedPin(sectionRef: RefObject<HTMLElement | null>) {
       window.removeEventListener("orientationchange", onOrientationChange);
       setSharedHeroPinMetrics(null);
     };
-  }, [sectionRef]);
+  }, [releaseRunwayVh, sectionRef]);
 
   return { phase, metricsRef };
 }

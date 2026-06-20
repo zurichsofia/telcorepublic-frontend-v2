@@ -31,7 +31,7 @@ export function getStableViewportPx(): number {
 }
 
 /** CSS length for one full stable mobile viewport. */
-export const MOBILE_VIEWPORT_HEIGHT = "calc(100 * var(--svh))";
+export const MOBILE_VIEWPORT_HEIGHT = "100vh";
 
 /** CSS length for hero section scroll track on mobile. */
 export function mobileHeroSectionHeight(sectionVh: number): string {
