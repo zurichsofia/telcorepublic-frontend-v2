@@ -68,9 +68,11 @@ export function ContactForm({
     variant === "minimal"
       ? ""
       : "rounded-2xl border border-white/12 bg-telco-dark/75 p-5 backdrop-blur-md sm:p-7";
+  const values = state.values;
+  const formKey = values ? JSON.stringify(values) : "empty";
 
   return (
-    <form action={formAction} className={cn(formShell, className)} noValidate>
+    <form key={formKey} action={formAction} className={cn(formShell, className)} noValidate>
       <div className="space-y-4">
         <div>
           <label htmlFor="contact-name" className={labelClass}>
@@ -84,6 +86,7 @@ export function ContactForm({
             required
             className={inputClass}
             disabled={pending}
+            defaultValue={values?.name ?? ""}
           />
         </div>
         <div>
@@ -98,6 +101,7 @@ export function ContactForm({
             required
             className={inputClass}
             disabled={pending}
+            defaultValue={values?.email ?? ""}
           />
         </div>
         <div>
@@ -113,6 +117,7 @@ export function ContactForm({
             required
             className={inputClass}
             disabled={pending}
+            defaultValue={values?.phone ?? ""}
           />
         </div>
         <div>
@@ -126,6 +131,7 @@ export function ContactForm({
             autoComplete="organization"
             className={inputClass}
             disabled={pending}
+            defaultValue={values?.company ?? ""}
           />
         </div>
         <div>
@@ -139,6 +145,7 @@ export function ContactForm({
             rows={3}
             className={cn(inputClass, "min-h-28 resize-y")}
             disabled={pending}
+            defaultValue={values?.message ?? ""}
           />
         </div>
       </div>
